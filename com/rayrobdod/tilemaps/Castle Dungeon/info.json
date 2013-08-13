@@ -1,0 +1,1 @@
+{ "name":"Castle (Shiny, new, bad spriting version)",  "tiles":"Castle.png", "tileWidth":32, "tileHeight":32,  "rules":"Castle.json", "classMap":"../../deductionTactics/letterMapping.json" }

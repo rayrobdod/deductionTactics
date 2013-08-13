@@ -17,9 +17,9 @@ import Statuses.Status
  */
 class TokenEventPrinter(trackedToken:Token, allTokens:ListOfTokens) extends Reaction
 {
-	val out:java.io.OutputStream = System.out;
-	val tokensToLetters = consoleView.tokensToLetters(allTokens)
-	val trackedTokenLetter = tokensToLetters(trackedToken)
+	private val out:java.io.OutputStream = System.out;
+	private val tokensToLetters = consoleView.tokensToLetters(allTokens)
+	private val trackedTokenLetter = tokensToLetters(trackedToken)
 	
 	def apply(e:Event) = {
 		val line = e match {
@@ -31,7 +31,7 @@ class TokenEventPrinter(trackedToken:Token, allTokens:ListOfTokens) extends Reac
 				
 				trackedTokenLetter + " attacked " + tokensToLetters(localTar) + " and dealt " + ele.name + ' ' + kind.name + " damage."
 			}
-			case AttackForStatus(tar:MirrorToken, sta:Status, from:Space) => {
+			case AttackForStatus(tar:MirrorToken, sta:Status, _) => {
 				val localTar = allTokens.aliveTokens.flatten.filter{_.currentSpace == tar.currentSpace}.head
 				
 				trackedTokenLetter + " attacked " + tokensToLetters(localTar) + " and inflicted " + sta.name + '.'

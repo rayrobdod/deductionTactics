@@ -20,6 +20,8 @@ import com.rayrobdod.deductionTactics.LoggerInitializer.{elementsLogger => logge
  * @version 11 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
  * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
  * @version 30 Jul 2012 - Element never obeyed the transetivity requirement of Ordered, so it no longer implements that class
+ 
+ * @todo: extract the swing and awt stuff (Icon and Color) and put it someplace else 
  */
 object Elements
 {

@@ -1,6 +1,1 @@
-{
-	" " : "com.rayrobdod.deductionTactics.UnitAwareSpaceClass",
-	"." : "com.rayrobdod.deductionTactics.NoStandOnSpaceClass",
-	"|" : "com.rayrobdod.deductionTactics.ImpassibleSpaceClass",
-	":" : "com.rayrobdod.deductionTactics.AttackableOnlySpaceClass"
-}
+{ " " : "com.rayrobdod.deductionTactics.UnitAwareSpaceClass", "." : "com.rayrobdod.deductionTactics.NoStandOnSpaceClass", "|" : "com.rayrobdod.deductionTactics.ImpassibleSpaceClass", ":" : "com.rayrobdod.deductionTactics.AttackableOnlySpaceClass" } 

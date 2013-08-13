@@ -173,7 +173,7 @@ class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenCl
  */
 object CannonicalTokenClass
 {
-	private val SERVICE = "com.rayrobdod.deducitonTactics.TokenClass"
+	private val SERVICE = "com.rayrobdod.deductionTactics.TokenClass"
 	
 	val allKnown:ISeq[CannonicalTokenClass] =
 	{

@@ -17,6 +17,7 @@ import com.rayrobdod.deductionTactics.consoleView.{
  *
  * @author Raymond Dodge
  * @version 10 Aug 2012
+ * @version 2012 Nov 30 - modifying toString to include the base
  */
 final class WithConsoleViewport(val base:PlayerAI) extends PlayerAI
 {
@@ -54,5 +55,5 @@ final class WithConsoleViewport(val base:PlayerAI) extends PlayerAI
 	}
 	override def hashCode = base.hashCode * 7 + 31
 	
-	override def toString = this.getClass.getName
+	override def toString = base.toString + " with " + this.getClass.getName
 }

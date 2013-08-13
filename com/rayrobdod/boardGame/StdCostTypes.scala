@@ -1,5 +1,8 @@
 package com.rayrobdod.boardGame
 
+// to make Ant stop recompiling this file
+trait StdCostTypes
+
 /*
  * Types of costs that I can concieve of on short notice
  */

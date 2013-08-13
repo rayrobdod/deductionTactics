@@ -10,7 +10,7 @@ import scala.actors.Future
  * @author Raymond Dodge
  * @version 16 June 2011 - debugging!
  * @version 15 Dec 2011 - moved from {@code net.verizon.rayrobdod.boardGame} to {@code com.rayrobdod.boardGame}
- * @deprecated replaced by the oserver/obserable based com.rayrobdod.animation.Animation
+ * @deprecated replaced by the observer/obserable based com.rayrobdod.animation.Animation
  */
 trait Animation
 {

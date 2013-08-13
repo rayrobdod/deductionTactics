@@ -1,6 +1,6 @@
 package com.rayrobdod.deductionTactics.test
 
-import com.rayrobdod.deductionTactics.view.BoardGamePanel
+import com.rayrobdod.deductionTactics.swingView.BoardGamePanel
 import com.rayrobdod.deductionTactics.{CannonicalListOfTokens,
 		CannonicalToken, CannonicalTokenClass, PlayerListOfTokens,
 		MirrorToken, generateField}
@@ -14,7 +14,7 @@ import com.rayrobdod.boardGame.{Moved, StartOfTurn}
  */
 object BoardGamePanelMultiTest extends App
 {
-	val field = generateField
+	val field = generateField("/com/rayrobdod/deductionTactics/maps/emptyField")
 	
 	val canonTokens = Seq(
 			((0 to 4).map{(i:Int) => new CannonicalToken( CannonicalTokenClass.allKnown(i) )}),

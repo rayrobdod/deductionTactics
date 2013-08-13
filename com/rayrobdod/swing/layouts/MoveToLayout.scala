@@ -92,6 +92,7 @@ class MoveToInstantLayout extends MoveToLayout
  * @version 30 May 2012 - optimized to always remove used paths from the layout, such that this will
 			stop repainting the parent component at some point.
  * @version 30 May 2012 - now, first move of a component will be instant
+ * @version 01 Aug 2012 - removing a null pointer exception (comp.getParent)
  */
 class MoveToGradualLayout(val speed:Float) extends MoveToLayout
 {
@@ -118,7 +119,7 @@ class MoveToGradualLayout(val speed:Float) extends MoveToLayout
 			MoveToGradualLayout.logger.finer(path.toString)
 			
 			compPathMap = compPathMap + ((comp, path))
-			comp.getParent.doLayout()
+			Option(comp.getParent).foreach{_.doLayout()}
 		}
 	}
 	

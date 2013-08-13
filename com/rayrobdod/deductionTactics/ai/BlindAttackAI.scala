@@ -11,7 +11,8 @@ import java.util.logging.Level
 
 
 /**
- * An AI that will go after the closest enemy and attack it.
+ * An AI that, for each of it's tokens, will have the token move towards
+ * and attack the closest enemy tokens.
  * 
  * @author Raymond Dodge
  * @version 24 Jan 2012

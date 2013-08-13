@@ -11,7 +11,7 @@ import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace}
 import scala.swing.Reactions.Reaction
 import scala.swing.event.Event
 
-import com.rayrobdod.deductionTactics.view.{
+import com.rayrobdod.deductionTactics.swingView.{
 			BoardGamePanel,
 			ShowHumanSuspicionsPanelMouseListener,
 			HighlightMovableSpacesReaction,
@@ -62,7 +62,7 @@ sealed class SwingInterface extends PlayerAI
 		val attackTypeSelector = new SellectAttackTypePanel()
 
 		tokens.tokens.flatten.foreach{(x:Token) => x.reactions += new HighlightMovableSpacesReaction(x, panel, player.tokens)}
-		panel.fieldComp.spaceLabelMap.foreach({(s:RectangularSpace, c:JLabel) => 
+		panel.centerpiece.spaceLabelMap.foreach({(s:RectangularSpace, c:JLabel) => 
 			c.addMouseListener(new SelectTokenOnSpaceMouseListener(s, player.tokens))
 			c.addMouseListener(new MoveTokenMouseListener(player, s, attackTypeSelector))
 		}.tupled)

@@ -1,6 +1,6 @@
 package com.rayrobdod.deductionTactics.test
 
-import com.rayrobdod.deductionTactics.view.ChooseAIsComponent
+import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 import javax.swing.JFrame
 
 /**

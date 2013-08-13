@@ -1,8 +1,8 @@
 package com.rayrobdod.deductionTactics.test
 
-import com.rayrobdod.deductionTactics.view.{
+import com.rayrobdod.deductionTactics.swingView.{
 		AvailibleTilesheetListModel, TilesheetListRenderer}
-import com.rayrobdod.boardGame.view.{Tilesheet}
+import com.rayrobdod.boardGame.swingView.{RectangularTilesheet}
 import javax.swing.{JFrame, JList}
 
 /**
@@ -11,7 +11,7 @@ import javax.swing.{JFrame, JList}
  */
 object ChooseTilesheetComponentTest extends App
 {
-	val list = new JList[Tilesheet](AvailibleTilesheetListModel)
+	val list = new JList[RectangularTilesheet](AvailibleTilesheetListModel)
 	list.setCellRenderer(TilesheetListRenderer)
 	
 	val frame:JFrame = new JFrame()

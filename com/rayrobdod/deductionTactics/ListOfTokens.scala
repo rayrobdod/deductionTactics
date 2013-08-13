@@ -36,13 +36,14 @@ class CannonicalListOfTokens(
  * @author Raymond Dodge
  * @version 19 Jan 2012
  * @version 25 Jan 2012 - added aliveMyTokens and aliveOtherTokens
+ * @version 27 Nov 2012 - in tokens: prepending myTokens to otherTokens rather than appending myTokens to otherTokens
  */
 class PlayerListOfTokens(
 			val myTokens:ISeq[CannonicalToken],
 			val otherTokens:ISeq[ISeq[MirrorToken]]
 		) extends ListOfTokens
 {
-	def tokens():ISeq[ISeq[Token]] = otherTokens :+ myTokens
+	def tokens():ISeq[ISeq[Token]] = myTokens +: otherTokens
 	
 	def aliveMyTokens = myTokens.filter(ListOfTokens.aliveFilter)
 	def aliveOtherTokens = otherTokens.map{_.filter(ListOfTokens.aliveFilter)}

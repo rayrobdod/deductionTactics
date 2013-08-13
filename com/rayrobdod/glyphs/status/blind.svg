@@ -1,14 +1,1 @@
-<?xml version="1.0" standalone="yes"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-			id="blind" class="circle-glyph status" x="0" y="0" width="120" height="120">
-	<title>Blind Status Glyph</title>
-	<g transform="translate(10,10)" style="fill:none;stroke:black;stroke-width:2.5">
-		<circle class="outline" cx="50" cy="50" r="50" style="stroke-width:4;fill:purple" />
-		
-		<path d="M15,40 C25,40 30,35 40,35 C55,35 75,40 85,40" />
-		<line y1="50" y2="50" x1="15" x2="85" />
-		<line y1="50" y2="75" x1="45" x2="45" />
-		<path d="M50,50 C55,60 70,75 75,75 S80,75 80,70" />
-	</g>
-</svg>
+<?xml version="1.0" standalone="yes"?> <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"> <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="blind" class="circle-glyph status" x="0" y="0" width="120" height="120"> <title>Blind Status Glyph</title> <g transform="translate(10,10)" style="fill:none;stroke:black;stroke-width:2.5"> <circle class="outline" cx="50" cy="50" r="50" style="stroke-width:4;fill:purple" />  <path d="M15,40 C25,40 30,35 40,35 C55,35 75,40 85,40" /> <line y1="50" y2="50" x1="15" x2="85" /> <line y1="50" y2="75" x1="45" x2="45" /> <path d="M50,50 C55,60 70,75 75,75 S80,75 80,70" /> </g> </svg> 

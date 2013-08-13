@@ -11,6 +11,7 @@ import com.rayrobdod.boardGame.{RectangularField => Field}
  * @version ???
  * @version 03 Jul 2012 - renamed from HumanAutorecordAI to SwingInterfaceWithAutorecord
  * @version 09 Jul 2012 - renaming from SwingInterfaceWithAutorecord to WithAutorecord; making a decorator
+ * @version 2012 Nov 30 - modifying toString to include the base
  */
 final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 {
@@ -45,5 +46,5 @@ final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 	}
 	override def hashCode = base.hashCode * 13 + 19
 	
-	override def toString = this.getClass.getName
+	override def toString = base.toString + " with " + this.getClass.getName
 }

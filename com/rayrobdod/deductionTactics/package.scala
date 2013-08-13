@@ -7,16 +7,6 @@ import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
 import java.awt.Image.{SCALE_SMOOTH => imageScaleSmooth}
 
-// Field Generation
-import com.rayrobdod.commaSeparatedValues.parser.{CSVParser, ToSeqSeqCSVParseListener, CSVPatterns}
-import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToSeqJSONParseListener
-import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
-import com.rayrobdod.boardGame.RectangularField
-import com.rayrobdod.boardGame.mapValuesFromObjectNameToSpaceClassConstructor
-import com.rayrobdod.boardGame.view.{FieldComponent, JSONTilesheet, TokenComponent}
-import scala.collection.immutable.Seq
-import java.io.InputStreamReader
-
 
 import deductionTactics.Elements.Element
 import scala.collection.mutable.{Map => MMap}
@@ -34,10 +24,27 @@ import scala.collection.mutable.{Map => MMap}
  * @version 28 Jun 2012 - adding a cache to generateGenericIcon
  * @version 14 Jul 2012 - moving a resource from /com/rayrobdod/tilemaps/Supermarket/letterMapping.json
  			to /com/rayrobdod/deductionTactics/letterMapping.json
+ * @version 19 Nov 2012 - adding parameter to generate field
+ * @version 19 Nov 2012 - implementing placeUnits
+ * @version 28 Nov 2012 - placeUnits and generateField removed; functionality now proived by Maps
+ * @version 10 Dec 2012 - changed VERSION from a static string to being read from the MANIFEST.MF file
  */
 package object deductionTactics
 {
-	val VERSION = "a.3.2"
+	def VERSION = {
+		val v = java.lang.Package.getPackage("com.rayrobdod.deductionTactics").getImplementationVersion();
+		
+		if (v != null) {
+			if (v.take(8) == "000.010.")
+				"a" + v.drop(7);
+			else if (v.take(8) == "000.011.")
+				"b" + v.drop(7);
+			else
+				v;
+		} else "Unversioned";
+	}
+	def TITLE = "Deduction Tactics" //java.lang.Package.getPackage("com.rayrobdod.deductionTactics").getImplementationTitle();
+		
 	private val ICON_DIMENSION = 32
 	
 	// Icon loading
@@ -59,6 +66,7 @@ package object deductionTactics
 	
 	/**
 	 * Turns an PNG file at the given URL into an icon
+	 * @todo use a reader and reader options
 	 */
 	def loadPNGIcon(url:URL):ImageIcon =
 	{
@@ -80,30 +88,6 @@ package object deductionTactics
 			case "png" => loadPNGIcon(url)
 		}
 	}
-	
-	// Field Generation
-	
-	def generateField:RectangularField = {
-		val letterToNameMapReader = new InputStreamReader(this.getClass().getResourceAsStream("/com/rayrobdod/deductionTactics/letterMapping.json"))
-		val letterToNameMap:Map[String,String] = {
-			val listener = new ToSeqJSONParseListener()
-			JSONParser.parse(listener, letterToNameMapReader)
-			listener.resultMap.mapValues{_.toString}
-		}
-		val letterToSpaceClassConsMap = mapValuesFromObjectNameToSpaceClassConstructor(letterToNameMap)
-		
-		val fieldLetterReader = new InputStreamReader(this.getClass().getResourceAsStream("/com/rayrobdod/tilemaps/emptyField.csv"))
-
-		val fieldLetterTable:Seq[Seq[String]] = {
-			val listener = new ToSeqSeqCSVParseListener()
-			new CSVParser(CSVPatterns.commaDelimeted).parse(listener, fieldLetterReader)
-			listener.result
-		}
-		val fieldSpaceClassConsTable = fieldLetterTable.map{_.map{letterToSpaceClassConsMap}}
-		
-		RectangularField.applySCC(fieldSpaceClassConsTable)
-	}
-	
 	
 	private[this] val genericIconCache = MMap.empty[TokenClass, ImageIcon]
 	/**

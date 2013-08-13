@@ -129,11 +129,13 @@ class AttackableOnlySpaceClass extends BoardGameSpaceClass
  * A constructor and deconstructor for AttackableOnlySpaceClass
  * @author Raymond Dodge
  * @version 14 Jul 2012
+ * @version 18 Nov 2012 - unapply now checks for AttackableOnlySpaceClass, not ImpassibleSpaceClass
+ * @version 19 Nov 2012 - apply now creates AttackableOnlySpaceClass, not ImpassibleSpaceClass
  */
 object AttackableOnlySpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[ImpassibleSpaceClass]}
-	def apply = new ImpassibleSpaceClass
+	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[AttackableOnlySpaceClass]}
+	def apply = new AttackableOnlySpaceClass
 }
 
 /**
@@ -159,9 +161,11 @@ class NoStandOnSpaceClass extends BoardGameSpaceClass
  * A constructor and deconstructor for NoStandOnSpaceClass
  * @author Raymond Dodge
  * @version 14 Jul 2012
+ * @version 18 Nov 2012 - unapply now checks for NoStandOnSpaceClass, not ImpassibleSpaceClass 
+ * @version 19 Nov 2012 - unapply now creates NoStandOnSpaceClass, not ImpassibleSpaceClass 
  */
 object NoStandOnSpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[ImpassibleSpaceClass]}
-	def apply = new ImpassibleSpaceClass
+	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[NoStandOnSpaceClass]}
+	def apply = new NoStandOnSpaceClass
 }

@@ -1,15 +1,17 @@
 package com.rayrobdod.deductionTactics
 package main
 
-import view._
-import test.UnselectOtherTokens
+import swingView._
 import java.awt.BorderLayout
-import java.awt.BorderLayout.{SOUTH => borderSouth}
+import java.awt.BorderLayout.{SOUTH => borderSouth, NORTH => borderNorth}
+import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
 import scala.swing.Swing.ActionListener
 import scala.collection.immutable.Seq
 import javax.swing.{JFrame, JButton, JPanel, JCheckBox}
 import java.awt.event.ActionEvent
 import com.rayrobdod.boardGame.{Moved}
+import com.rayrobdod.boardGame.RectangularField
+
 
 /**
  * @author Raymond Dodge
@@ -21,6 +23,7 @@ import com.rayrobdod.boardGame.{Moved}
  * @version 28 Jun 2012 - adding a few default buttons to the startNewGame frame
  * @version 12 Jul 2012 - removing viewpoint choosers, since PlayerAI decorators can do that now
  * @version 04 Aug 2012 - putting the PlayerAI.initialize(player,field) inside a loop
+ * @version 28 Nov 2012 - adding map-selection abilities
  */
 object Main extends App
 {
@@ -30,17 +33,36 @@ object Main extends App
 	{
 		val okButton = new JButton("OK")
 		val aiChooser = new ChooseAIsComponent()
+		val mapChooser = new ChooseMapComponent()
 		
 		val aiChooserFrame = new JFrame("Choose PlayerTypes")
-		aiChooserFrame.getContentPane.add(aiChooser)
+		aiChooserFrame.getContentPane.add({
+			val returnValue = new JPanel(new BorderLayout)
+			returnValue.add(mapChooser, borderNorth)
+			returnValue.add(aiChooser)
+			returnValue
+		})
 		aiChooserFrame.getContentPane.add(okButton, borderSouth)
 		aiChooserFrame.getRootPane.setDefaultButton(okButton);
 
 		
+		mapChooser.numPlayersList.addListSelectionListener(AiChooserCountChanger)
+		object AiChooserCountChanger extends ListSelectionListener {
+			def valueChanged(e:ListSelectionEvent) = {
+				Option(mapChooser.numPlayersList.getSelectedValue).map{_.intValue}.foreach{(x:Int) =>
+					aiChooser.players = x;
+					aiChooserFrame.pack();
+				}
+			}
+		}
+		
 		okButton.addActionListener(ActionListener{(e:ActionEvent) =>
 			aiChooserFrame.setVisible(false)
 			new Thread(new Runnable{
-				def run = buildTeams(aiChooser.getAIs)
+				def run = buildTeams(
+						aiChooser.getAIs,
+						Maps.getMap(mapChooser.mapList.getSelectedIndex),
+						Maps.startingPositions(mapChooser.mapList.getSelectedIndex, mapChooser.numPlayersList.getSelectedValue))
 			}, "build teams").start()
 		})
 		
@@ -48,7 +70,7 @@ object Main extends App
 		aiChooserFrame.setVisible(true)
 	}
 	
-	private def buildTeams(ais:Seq[PlayerAI])
+	private def buildTeams(ais:Seq[PlayerAI], field:RectangularField, tokenPositions:Seq[Seq[(Int, Int)]]) =
 	{
 		val tokenClasses = ais.map{_.buildTeam}
 		val canonTokens = tokenClasses.map{_.map{new CannonicalToken(_)}}
@@ -62,8 +84,6 @@ object Main extends App
 		).tupled}
 		val allTokens = (canonTokens ++ mirrorTokens).flatten
 		
-		val field = generateField
-				
 		val players = playerListOfTokens.map(new Player(_))
 		ais.zip(players).foreach({(ai:PlayerAI, player:Player) =>
 			ai.initialize(player, field)
@@ -92,17 +112,11 @@ object Main extends App
 			x.reactions += new UnselectOtherTokens(x,allTokens) 
 		}}
 		
-		// TODO: make dynamic and map based
-		canonTokens(0)(0) ! Moved(field.space(1,1),true)
-		canonTokens(0)(1) ! Moved(field.space(1,3),true)
-		canonTokens(0)(2) ! Moved(field.space(1,5),true)
-		canonTokens(0)(3) ! Moved(field.space(1,7),true)
-		canonTokens(0)(4) ! Moved(field.space(1,9),true)
-		canonTokens(1)(0) ! Moved(field.space(8,1),true)
-		canonTokens(1)(1) ! Moved(field.space(8,3),true)
-		canonTokens(1)(2) ! Moved(field.space(8,5),true)
-		canonTokens(1)(3) ! Moved(field.space(8,7),true)
-		canonTokens(1)(4) ! Moved(field.space(8,9),true)
+		canonTokens.zip(tokenPositions).map(
+			{(x:Seq[CannonicalToken], y:Seq[(Int, Int)]) => x.zip(y)}.tupled
+		).flatten.foreach({(t:CannonicalToken, p:(Int,Int)) => 
+			t ! Moved(field.space(p._1, p._2), true)
+		}.tupled)
 		
 		allTokens.foreach{_.start()}
 		players.foreach{_.start()}

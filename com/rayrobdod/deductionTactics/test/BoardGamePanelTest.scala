@@ -1,6 +1,6 @@
 package com.rayrobdod.deductionTactics.test
 
-import com.rayrobdod.deductionTactics.view.BoardGamePanel
+import com.rayrobdod.deductionTactics.swingView.BoardGamePanel
 import com.rayrobdod.deductionTactics.{CannonicalListOfTokens,
 		CannonicalToken, CannonicalTokenClass, generateField}
 import javax.swing.JFrame
@@ -13,7 +13,7 @@ import com.rayrobdod.boardGame.{Moved, StartOfTurn}
  */
 object BoardGamePanelTest extends App
 {
-	val field = generateField
+	val field = generateField("/com/rayrobdod/deductionTactics/maps/emptyField")
 	
 	val tokenList = new CannonicalListOfTokens(
 		Seq(

@@ -1,6 +1,6 @@
 package com.rayrobdod.deductionTactics.test
 
-import com.rayrobdod.deductionTactics.view.TeamBuilderPanel
+import com.rayrobdod.deductionTactics.swingView.TeamBuilderPanel
 import javax.swing.JFrame
 
 /**

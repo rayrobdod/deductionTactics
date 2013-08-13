@@ -1,5 +1,9 @@
 package com.rayrobdod.boardGame
 
+// to make Ant stop recompiling this file
+trait StdEvents
+
+
 import scala.swing.event.Event
 
 /**

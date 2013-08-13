@@ -1,6 +1,6 @@
 package com.rayrobdod.deductionTactics.test
 
-import com.rayrobdod.deductionTactics.view.{FilterKnownTokenClassesComponent, HumanSuspicionsPanel}
+import com.rayrobdod.deductionTactics.swingView.{FilterKnownTokenClassesComponent, HumanSuspicionsPanel}
 import com.rayrobdod.deductionTactics.SuspicionsTokenClass
 import javax.swing.{JFrame, JScrollPane}
 import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,

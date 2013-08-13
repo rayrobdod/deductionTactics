@@ -9,22 +9,23 @@ package object consoleView
 
 	/**
 	 * @version 10 Aug 2012
+	 * @version 2012 Nov 30 - making use zips instead of Iterators and maps
 	 * @throws IllegalArgumentException if tokens has more tokens than this has letters reserved for
 	 */
 	def tokensToLetters(tokens:ListOfTokens):Map[Token, Char] = {
-		try {
-			val myChars = (('0' to '9')).toIterator
-			val enemyChars = (('a' to 'z') ++ ('A' to 'Z')).toIterator
-			
-			tokens.tokens.flatMap{_.map{_ match {
-				case x:MirrorToken => ((x, enemyChars.next))
-				case x:CannonicalToken => ((x, myChars.next))
-			}}}.toMap
+		val myChars = '0' to '9'
+		val enemyChars = ('a' to 'z') ++ ('A' to 'Z')
+		
+		val returnValue:Map[Token, Char] = tokens match {
+			case x:PlayerListOfTokens =>
+				(x.myTokens.zip(myChars) ++ x.otherTokens.flatten.zip(enemyChars)).toMap
+			case _ =>
+				tokens.tokens.flatten.zip(enemyChars).toMap
 		}
-		catch
-		{
-			case x:NoSuchElementException =>
-				throw new IllegalArgumentException("list of tokens contained more tokens than this is capable of supporting.", x)
-		}
+		
+		if (tokens.tokens.flatten.size != returnValue.size)
+			throw new IllegalArgumentException("list of tokens contained more tokens than this is capable of supporting.")
+		
+		return returnValue;
 	}
 }

@@ -6,7 +6,7 @@ import com.rayrobdod.boardGame.{RectangularField => Field}
 import javax.swing.{JButton, JFrame, JPanel, JLabel, JList, JFormattedTextField}
 import java.awt.event.{ActionListener, ActionEvent}
 import java.awt.BorderLayout
-import com.rayrobdod.deductionTactics.view.InputFrame
+import com.rayrobdod.deductionTactics.swingView.InputFrame
 
 /**
  * A decorator for PlayerAIs. It intercepts the buildTeam command and creates
@@ -17,6 +17,7 @@ import com.rayrobdod.deductionTactics.view.InputFrame
  * @version 12 Jul 2012 - giving seedBox a default value; changed initialize to base.initialize
  * @version 24 Jul 2012 - changing seedBox from being a JTextField to a JFormattedTextField
  * @version 03 Aug 2012 - replacing an annonymous inner class with an instance of InputFrame
+ * @version 2012 Nov 30 - modifying toString to include the base
  */
 final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 {
@@ -69,5 +70,5 @@ final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 	}
 	override def hashCode = base.hashCode * 7 + 23
 	
-	override def toString = this.getClass.getName
+	override def toString = base.toString + " with " + this.getClass.getName
 }

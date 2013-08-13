@@ -1,6 +1,6 @@
 package com.rayrobdod.deductionTactics.test
 
-import com.rayrobdod.deductionTactics.view.AboutDialog
+import com.rayrobdod.deductionTactics.swingView.AboutDialog
 import javax.swing.{JDialog, JPanel, JLabel, ImageIcon}
 import javax.imageio.ImageIO
 import java.awt.{GridBagLayout, GridBagConstraints, FlowLayout,

@@ -2,7 +2,7 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace, EndOfTurn, Space}
-import com.rayrobdod.deductionTactics.view.{NetworkServerSetupPanel, InputFrame}
+import com.rayrobdod.deductionTactics.swingView.{NetworkServerSetupPanel, InputFrame}
 import com.rayrobdod.deductionTactics.LoggerInitializer.{networkServerLogger => Logger}
 import java.awt.BorderLayout
 import java.awt.event.{ActionListener, ActionEvent}
@@ -28,6 +28,7 @@ import scala.parallel.Future
  * @version 19 Jul 2012 - corecting equals with new class name
  * @version 03 Aug 2012 - replacing an annonymous inner class with an instance of InputFrame
  * @version 09 Aug 2012 - removing instance variables in exchange for `TokenClassWithHiddenData`
+ * @version 2012 Nov 30 - modifying toString to include the base
  */
 class WithNetworkServer(base:PlayerAI) extends PlayerAI
 {
@@ -91,7 +92,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 	// arbitrary number (17)
 	override def hashCode = 21
 	
-	override def toString = this.getClass.getName
+	override def toString = base.toString + " with " + this.getClass.getName
 	
 	class StartServer(socket:ServerSocket, myTokenClasses:Seq[CannonicalTokenClass]) extends Runnable {
 		val player = new SetFuture[Player]

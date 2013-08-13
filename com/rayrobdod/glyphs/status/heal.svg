@@ -1,13 +1,1 @@
-<?xml version="1.0" standalone="yes"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-			id="medical" class="circle-glyph status" x="0" y="0" width="120" height="120">
-	<title>Medical Adheisive Strip Glyph</title>
-	<g transform="translate(10,10)" style="fill:none;stroke:black;stroke-width:2.5">
-		<circle class="outline" cx="50" cy="50" r="50" style="stroke-width:4;fill:#EBC89B" />
-		
-		<path d="M0,50 Q0,25 25,25 H75 Q100,25 100,50 Q100,75 75,75 H25 Q0,75 0,50" />
-		<line x1="33" x2="33" y1="25" y2="75" />
-		<line x1="66" x2="66" y1="25" y2="75" />
-	</g>
-</svg>
+<?xml version="1.0" standalone="yes"?> <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"> <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="medical" class="circle-glyph status" x="0" y="0" width="120" height="120"> <title>Medical Adheisive Strip Glyph</title> <g transform="translate(10,10)" style="fill:none;stroke:black;stroke-width:2.5"> <circle class="outline" cx="50" cy="50" r="50" style="stroke-width:4;fill:#EBC89B" />  <path d="M0,50 Q0,25 25,25 H75 Q100,25 100,50 Q100,75 75,75 H25 Q0,75 0,50" /> <line x1="33" x2="33" y1="25" y2="75" /> <line x1="66" x2="66" y1="25" y2="75" /> </g> </svg> 

@@ -1,81 +1,120 @@
 ﻿deductionTactics
 
+== a.4.0 ==
+=== Major level ===
+* "How to make dungeons pretty" 2.0
+  > overlay - tile images can be compositions of multiple images, and some
+    images can be specified to appear over the tokens
+  > infinte discretion - tiles can use tiles from any distance to determine its
+    own appearance
+  > Doesn't actually have multiple layers of randomness yet…
+* map-choosing ability
+
+=== Minor level ===
+* The beginings of combat-noises; currently only one type of sound when there
+		is a hit and accessed with a new ai decorator: WithSound
+* Swing view: Added status infliction animations
+* Swing view: When selected, token's background will be a team color rather
+		than a constant lime-green.
+  > I would prefer a constant colored ring - like Fire Emblem Tellius - but
+  		that would require effort
+* Swing view: Now able to display information about more than two players
+* Started an interface using the console
+* Made the space types actually work as expected.
+
+=== Data Level ===
+* Added Forest tileset, because it shows off the Major change in a noticable
+		way.
+  > MORE CREDITS!!!1!
+* Added a Castle-like tileset, because ???
+* Removed the supermarket tileset, due to lack of abilty to handle multiple
+		types of tiles
+* Added Tokenclasses: Haunted Hoodie, Tiny Evergreen Tree, Snowman; with icons.
+
+=== Miniscule level ===
+* Changed the title of the Filter Classes dialog
+* Swing view: Switched which side the player's and enemy's token info panels
+		appear on.
+* Better MANIFEST.MF
+
+
+
 == a.3.2 ==
-‣ Adding tokenclass icons
+* Adding tokenclass icons
   > Bluebird, Cardinal, Eagle, Crow, Falcon, Turkey
-‣ Selecting a token will cause it's side panel to scroll into view
-‣ WithNetworkServer and NetworkClient AIs can control multiple players now.
-‣ The "View Classes…" dialog now includes multiple views for displaying
+* Selecting a token will cause it's side panel to scroll into view
+* WithNetworkServer and NetworkClient AIs can control multiple players now.
+* The "View Classes…" dialog now includes multiple views for displaying
 		tokenclass information.
   > Todo: get that type of information display choice everywhere else
-‣ Adding Player AI Decorator: WithConsoleViewport
+* Adding Player AI Decorator: WithConsoleViewport
 
 
 == a.3.1 ==
-‣ Adding tokenclasses
+* Adding tokenclasses
   > The birds
-‣ Adding tokenclass icons
+* Adding tokenclass icons
   > Remaining Swordsmen generics
   > Clubmen generics
   > Pitcher
   > Penguin
-‣ Adding Base AI
+* Adding Base AI
   > GangUpAI
 
-‣ Fixed the About Dialog, which broke due to moved image resources
-‣ WithArbitraryTeam's frame now uses a JFormattedTextBox instead of a JTextBox
+* Fixed the About Dialog, which broke due to moved image resources
+* WithArbitraryTeam's frame now uses a JFormattedTextBox instead of a JTextBox
 		it's now impossible to enter an invalid value and attempt to parse it
-‣ Making movement speed a public option
-‣ Making sure that when units die, they stay dead: Status effects can kill a
+* Making movement speed a public option
+* Making sure that when units die, they stay dead: Status effects can kill a
 		unit, and units will not be able to move or attack when dead.
 
 
 == a.3.0 ==
-‣ Decorators can be applied to PlayerAIs
-	‣ Turning SwingInterfaceWithAutorecord base into WithAutorecord decorator
-	‣ Turning SwingInterfaceWithNetworkServer base into WithNetworkServer decorator
-	‣ Replacing hardcoded Viewport option into WithSwingViewport decorator
-	‣ Adding WithRandomTeam decorator
-	‣ Adding WithArbitraryTeam decorator
+* Decorators can be applied to PlayerAIs
+	* Turning SwingInterfaceWithAutorecord base into WithAutorecord decorator
+	* Turning SwingInterfaceWithNetworkServer base into WithNetworkServer decorator
+	* Replacing hardcoded Viewport option into WithSwingViewport decorator
+	* Adding WithRandomTeam decorator
+	* Adding WithArbitraryTeam decorator
 
-‣ Moving icons from /sprites/** to /com/rayrobdod/deductionTactics/tokenClasses/**
-‣ Tokenclass maps can now have their "weakDirection" key set to "Rand"
+* Moving icons from /sprites/** to /com/rayrobdod/deductionTactics/tokenClasses/**
+* Tokenclass maps can now have their "weakDirection" key set to "Rand"
 	which is changed to a real Direction at run time deterministically.
 	Thus, removing the PHP scripts whose only purpose was to do this at compile time.
 
 
 
 == a.2.3 ==
-‣ Renaming com.rayrobdod.deductionTactics.ai.HumanAI to
+* Renaming com.rayrobdod.deductionTactics.ai.HumanAI to
 		com.rayrobdod.deductionTactics.ai.SwingInterface
-‣ Renaming com.rayrobdod.deductionTactics.ai.HumanAutorecordAI to
+* Renaming com.rayrobdod.deductionTactics.ai.HumanAutorecordAI to
 		com.rayrobdod.deductionTactics.ai.SwingInterfaceWithAutorecord
-‣ Adding PlayerAI: NetworkClient
-‣ Adding PlayerAI: SwingInterfaceWithNetworkServer
+* Adding PlayerAI: NetworkClient
+* Adding PlayerAI: SwingInterfaceWithNetworkServer
 
 
 
 == a.2.2 ==
-‣ Allowing observation of computer-vs-computer games
-‣ Giving a few dialogs default buttons
-‣ No longer eats CPU while idle (Added cache to generated generic images)
-‣ Class filters when working with numbers treat number as a lower bound, not an equality 
+* Allowing observation of computer-vs-computer games
+* Giving a few dialogs default buttons
+* No longer eats CPU while idle (Added cache to generated generic images)
+* Class filters when working with numbers treat number as a lower bound, not an equality 
 
 
 
 == a.2.1 ==
 ==== Interface Change ====
-‣ Possibility of animated Tilesheets (not that any of them are)
+* Possibility of animated Tilesheets (not that any of them are)
 
-‣ Allowing specification of a suspicion class's weapon weaknesses
-‣ Allowing to fill in all details by selecting a class by clicking on a name
+* Allowing specification of a suspicion class's weapon weaknesses
+* Allowing to fill in all details by selecting a class by clicking on a name
 
 ==== Model Change ====
-‣ The unused body value in a tokenclass is read from files properly now
+* The unused body value in a tokenclass is read from files properly now
 
 ==== Data Change ====
-‣ Golfer tokenclass added
-‣ Additional class icons provided
+* Golfer tokenclass added
+* Additional class icons provided
 
 
 
@@ -83,45 +122,45 @@
 
 === Major level ===
 ==== Model Change ====
-‣ Turning unit classes into a service
-  ‣ no longer stored in the file unitClasses/basic.json
-  ‣ built-in classes resides in com/rayrobdod/deductionTactics/tokenClasses/‣.json,
+* Turning unit classes into a service
+  * no longer stored in the file unitClasses/basic.json
+  * built-in classes resides in com/rayrobdod/deductionTactics/tokenClasses/*.json,
         but see service for extending
 
 === Minor level ===
 ==== Model Change ====
-‣ Adding Weakponkind: Powderkind
-‣ Adding Status: Heal
+* Adding Weakponkind: Powderkind
+* Adding Status: Heal
 
 ==== Interface Change ====
-‣ Adding indication about all of a class's weapon weakness values.
-‣ Allowing unsetting of suspicions
+* Adding indication about all of a class's weapon weakness values.
+* Allowing unsetting of suspicions
 
 ==== Data Change ====
-‣ Adding more classes; 36 now, although most don't have proper icons
-‣ A few more icons for token classes
+* Adding more classes; 36 now, although most don't have proper icons
+* A few more icons for token classes
 
 
 
 == a.1.1 ==
 === Interface Change ===
-‣ In the battle screen, BUTTON3 click (Right click on windows) a unit selects it
-  ‣ Move and attack orders now only sent by BUTTON1 (Left click for windows)
-‣ Changed layout of "Choose Team" panel; the current members and buttons are fixed width, while the possible members are variable width 
+* In the battle screen, BUTTON3 click (Right click on windows) a unit selects it
+  * Move and attack orders now only sent by BUTTON1 (Left click for windows)
+* Changed layout of "Choose Team" panel; the current members and buttons are fixed width, while the possible members are variable width 
 
 
 
 == a.1.0 ==
 First released version
 
-‣ There are 25 units - the 20 standard ones, plus some either showing extra
+* There are 25 units - the 20 standard ones, plus some either showing extra
   range, or extra speed.
-‣ There are 4 player intelligences.
-  ‣ HumanAI is human controlled and uses a GUI.  
-  ‣ HumanAutorecordAI is an extension of HumanAI that uses the same algorithms
+* There are 4 player intelligences.
+  * HumanAI is human controlled and uses a GUI.  
+  * HumanAutorecordAI is an extension of HumanAI that uses the same algorithms
     as the computer-controlled players to determine enemy attributes
-  ‣ BlindAttackAI is computer controlled and simply tries to attack whatever is
+  * BlindAttackAI is computer controlled and simply tries to attack whatever is
     closest, ignoring whatever it knows about enemy units
-  ‣ SleepAbuserAI is computer controlled and will attempt to use sleep to it's
+  * SleepAbuserAI is computer controlled and will attempt to use sleep to it's
     potential, staying out of enemy range when possible, and putting enemies to
     sleep to reduce range further.

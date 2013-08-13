@@ -1,9 +1,7 @@
--injars 'C:\Users\Raymond\Documents\Programming\Java\classes'
--injars 'C:\Users\Raymond\Documents\Programming\Java\Games\DeductionTactics'
+-injars 'C:\Users\Raymond\Documents\Programming\Java\Games\DeductionTactics'(!**.proguard)
 -injars 'C:\Users\Raymond\Documents\Programming\Java\Games\BoardGameGeneric'
--outjars 'C:\Users\Raymond\Documents\website\programming\java\programs\deductionTactics\a.?.?\deductionTactics-a.?.?-mini-orig-src.jar'
 
--libraryjars 'C:\Program Files (x86)\Java\jdk1.7.0_03\jre\lib\rt.jar'
+-libraryjars 'C:\Program Files (x86)\Java\jdk1.7.0_07\jre\lib\rt.jar'
 -libraryjars 'C:\Program Files\Scala\scala-2.9.1.final\lib\scala-swing.jar'(!**/test/**)
 -libraryjars 'C:\Program Files\Scala\scala-2.9.1.final\lib\scala-library.jar'
 -libraryjars 'C:\Users\Raymond\Documents\Programming\Java\Imported JAR Files\svgSalamander\svgSalamander.jar'(com/**)
@@ -17,9 +15,11 @@
 
 -keep class * extends com.rayrobdod.deductionTactics.PlayerAI
 
--keep class * extends com.rayrobdod.boardGame.SpaceClass
+# SpaceClasses that Deduction Tactics uses
+-keep class com.rayrobdod.deductionTactics.* extends com.rayrobdod.boardGame.SpaceClass
 
--keep class * extends com.rayrobdod.boardGame.SpaceClassConstructor
+# SpaceClassConstructors that Deduction Tactics uses
+-keep class com.rayrobdod.deductionTactics.* extends com.rayrobdod.boardGame.SpaceClassConstructor
 
 # Keep - Applications. Keep all application classes, along with their 'main'
 # methods.
@@ -40,4 +40,4 @@
 }
 
 
--keep,allowshrinking class com.rayrobdod.deductionTactics.ai.PlayerAI
+-keep,allowshrinking class com.rayrobdod.deductionTactics.PlayerAI

@@ -3,7 +3,7 @@ package ai
 
 import scala.collection.immutable.{Seq => ISeq, Map}
 import scala.collection.mutable.{Set => MSet}
-import com.rayrobdod.deductionTactics.view.{NetworkClientSetupPanel, InputFrame}
+import com.rayrobdod.deductionTactics.swingView.{NetworkClientSetupPanel, InputFrame}
 import javax.swing.{JButton, JFrame, JPanel, JLabel, JList}
 import java.awt.BorderLayout
 import java.awt.event.{ActionListener, ActionEvent}

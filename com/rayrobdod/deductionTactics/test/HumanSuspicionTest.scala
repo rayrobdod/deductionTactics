@@ -1,12 +1,11 @@
 package com.rayrobdod.deductionTactics.test
 
 import com.rayrobdod.deductionTactics._
-import com.rayrobdod.deductionTactics.view._
+import com.rayrobdod.deductionTactics.swingView._
 
 import javax.swing.JFrame
 import javax.swing.{JLabel, JPanel, JList}
 import java.awt.event.{MouseAdapter, MouseEvent}
-import java.lang.Integer
 import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
 import javax.swing.{ListModel, ListCellRenderer, DefaultListCellRenderer, AbstractListModel}
 
@@ -34,24 +33,4 @@ object HumanSuspicionTest extends App
 	}
 }
 
-/** 
- * @author Raymond Dodge
- * @version 01 Feb 2012
- * TODO: move to util
- */
-class ScalaSeqListModel[A](backing:Seq[A]) extends AbstractListModel[A]
-{
-	def getSize = backing.size
-	def getElementAt(i:Int) = backing(i)
-}
-
-/** 
- * @author Raymond Dodge
- * @version 01 Feb 2012
- * TODO: move to util
- */
-class RangeListModel(override val getSize:Int) extends AbstractListModel[Integer]
-{
-	override def getElementAt(i:Int):Integer = i
-}
 

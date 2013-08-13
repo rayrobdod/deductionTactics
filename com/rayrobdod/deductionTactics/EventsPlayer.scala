@@ -8,6 +8,9 @@ import Weaponkinds.Weaponkind
 import Directions.Direction
 import Statuses.Status
 
+// so that ant doesn't recompile this file
+class EventsPlayer
+
 /**
  * A player is requesting that a unit attack to deal damage
  * @author Raymond Dodge

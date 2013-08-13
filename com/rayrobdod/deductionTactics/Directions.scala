@@ -58,9 +58,6 @@ object Directions
 					pathDirections.count(_ == strngDir)
 			val orthoCount = pathDirections.count(_ == othogDir1) -
 					pathDirections.count(_ == othogDir2)
-			import com.rayrobdod.scalaParser.IsEqualTo
-			val orthoCount2 = pathDirections.count(new IsEqualTo(othogDir1)) -
-					pathDirections.count(new IsEqualTo(othogDir2))
 			
 			import java.lang.Math.{atan2, PI, abs}		
 			val theta = abs(atan2(orthoCount, parelCount))

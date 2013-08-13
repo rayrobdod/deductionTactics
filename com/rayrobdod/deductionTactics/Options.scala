@@ -1,7 +1,7 @@
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.view.{Tilesheet}
-import com.rayrobdod.deductionTactics.view.{AvailibleTilesheetListModel}
+import com.rayrobdod.boardGame.swingView.{RectangularTilesheet => Tilesheet}
+import com.rayrobdod.deductionTactics.swingView.{AvailibleTilesheetListModel}
 import com.rayrobdod.swing.layouts.{MoveToLayout,
 		MoveToInstantLayout, MoveToGradualLayout2,
 		MoveToGradualLayout, SequentialMoveToLayout
@@ -12,7 +12,9 @@ import com.rayrobdod.swing.layouts.{MoveToLayout,
  * @author Raymond Dodge
  * @version 29 May 2012 - only contains currentTilesheet
  * @version 24 Jul 2012 - adding movementSpeed and movementLayout
- * @todo make observable 
+ * @version 28 Oct 2012 - changing imports from com.rayrobdod.boardGame.view to com.rayrobdod.boardGame.swingView
+ * @todo make observable
+ * @todo use java.util.prefs.Preferences
  */
 object Options
 {

@@ -1,12 +1,12 @@
 package com.rayrobdod.deductionTactics.test
 
-import com.rayrobdod.deductionTactics.view.BoardGamePanel
+import com.rayrobdod.deductionTactics.swingView.BoardGamePanel
 import com.rayrobdod.deductionTactics.{_}
 import javax.swing.JFrame
 import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.{Moved, StartOfTurn,
 		EndOfTurn, BeSelected}
-import com.rayrobdod.deductionTactics.ai.{HumanAI,
+import com.rayrobdod.deductionTactics.ai.{
 		BlindAttackAI, SleepAbuserAI}
 import scala.swing.Reactions
 import scala.swing.event.Event
@@ -19,7 +19,7 @@ import scala.swing.event.Event
  */
 object BoardGamePanelPlayerTest extends App
 {
-	val field = generateField
+	val field = generateField("/com/rayrobdod/deductionTactics/maps/emptyField")
 //	val ais = Seq(new HumanAI, new BlindAttackAI)
 //	val ais = Seq(new BlindAttackAI, new HumanAI)
 //	val ais = Seq(new HumanAI, new SleepAbuserAI)
@@ -133,21 +133,4 @@ object BoardGamePanelPlayerTest extends App
 			case _ => false
 		}}
 	}
-}
-
-/**
- * @author Raymond Dodge
- * @version 14 Feb 2012
- */
-class UnselectOtherTokens(token:Token, otherTokens:Seq[Token])
-		extends Reactions.Reaction
-{
-	def apply(event:Event) = {
-		(otherTokens diff Seq[Token](token)).foreach{_ ! BeSelected(false)}
-	}
-	
-	def isDefinedAt(e:Event) = {e match {
-		case BeSelected(true) => true
-		case _ => false
-	}}
 }

@@ -1,0 +1,1 @@
+{ "name":"Grassy Field",  "tiles":"tiles.png", "tileWidth":32, "tileHeight":32,  "rules":"tiles.json", "classMap":"../../deductionTactics/letterMapping.json" }
