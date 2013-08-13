@@ -20,12 +20,13 @@ import javax.imageio.ImageIO
 import com.rayrobdod.boardGame.BeSelected
 
 /**
+ * @author Raymond Dodge
  * @version 29 Feb 2012 ?
  * @version 08 Apr 2012 - working on ShowDamageReaction; works to my satisfaction now.
  * @version 30 May 2012 - removing File from ImageIO call, using URL instead
- * @version 01 Jun 2012 - Double-clicking a token will now select it.
  */
-class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout, tokens:ListOfTokens) extends BoardGameTokenComponent(token, fieldComp, layout, token.tokenClass.icon)
+class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout, tokens:ListOfTokens)
+		extends BoardGameTokenComponent(token, fieldComp, layout, token.tokenClass.icon)
 {
 	token.reactions += UpdateIconReaction
 	object UpdateIconReaction extends Reaction
@@ -115,4 +116,12 @@ class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout,
 			case _ => false
 		}}
 	}
-}
+	
+/*	import java.awt.event.{MouseAdapter, MouseEvent}
+	this.addMouseListener(new MouseAdapter(){
+		override def mouseClicked(e:MouseEvent)
+		{
+			if (e.getClickCount >= 3) {token ! BeSelected(true)}
+		}
+	})
+*/}

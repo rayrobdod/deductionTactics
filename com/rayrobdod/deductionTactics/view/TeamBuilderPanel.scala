@@ -22,6 +22,8 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
 			to com.rayrobdod.deductionTactics.view
  * @version 11 Feb 2012 - added cabability to multi-add and multi-remove
  * @version 27 Apr 2012 - made the allTokenClassesList have a VERTICAL_WRAP oritntation, rather than the default
+ * @version 01 Jun 2012 - redoing the layout; the currentSelectionList is constant Width, as are the buttons,
+			but the allTokenClassesList is variable width 
  */
 class TeamBuilderPanel extends JPanel
 {
@@ -39,7 +41,7 @@ class TeamBuilderPanel extends JPanel
 		setLayoutOrientation(JList.VERTICAL_WRAP)
 	}
 	
-	val addButton = new JButton("<-") {
+	val addButton = new JButton("←") {
 		this.addActionListener(new ActionListener(){
 			override def actionPerformed(e:ActionEvent) = {
 				allTokenClassesList.getSelectedValuesList.foreach{
@@ -48,7 +50,7 @@ class TeamBuilderPanel extends JPanel
 			}
 		})
 	}
-	val removeButton = new JButton("->") {
+	val removeButton = new JButton("→") {
 		addActionListener(new ActionListener(){
 			override def actionPerformed(e:ActionEvent) = {
 				currentSelectionList.getSelectedValuesList.foreach{
@@ -65,7 +67,7 @@ class TeamBuilderPanel extends JPanel
 		})
 	}
 	
-	setLayout(new BoxLayout(this, boxXAxis))
+/*	setLayout(new BoxLayout(this, boxXAxis))
 	add(new JScrollPane(currentSelectionList,
 			scrollVerticalAlways, scrollHorizontalNever), BorderLayout.WEST)
 	add(new JPanel() {
@@ -78,6 +80,22 @@ class TeamBuilderPanel extends JPanel
 	})
 	add(new JScrollPane(allTokenClassesList,
 			scrollVerticalAlways, scrollHorizontalAlways), BorderLayout.EAST)
+*/
+	setLayout(new BorderLayout)
+	add(new JPanel(new BorderLayout){
+		add(new JScrollPane(currentSelectionList,
+				scrollVerticalAlways, scrollHorizontalNever), BorderLayout.WEST)
+		add(new JPanel() {
+			add(new JPanel() {
+				setLayout(new BoxLayout(this, boxYAxis))
+				add(addButton)
+				add(removeButton)
+				add(removeAllButton)
+			})
+		})
+	}, BorderLayout.WEST)
+	add(new JScrollPane(allTokenClassesList,
+			scrollVerticalAlways, scrollHorizontalAlways), BorderLayout.CENTER)
 }
 
 /**

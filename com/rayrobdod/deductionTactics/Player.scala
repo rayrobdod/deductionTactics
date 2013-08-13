@@ -19,7 +19,8 @@ import java.util.ServiceLoader
  * @version 19 Jan 2012 - changing parameters from Seq[Token] to PlayerListOfTokens
  * @version 27 Jan 2012 - added ForwardAttackObservations
  * @version 12 Feb 2012 - made forward EndOfTurn to tokens too
- * * @version 20 Mar 2012 - modified reactions for new event model
+ * @version 20 Mar 2012 - modified reactions for new event model
+ * @version 01 Jun 2012 - disabled the debug version of the Reactions thing
  */
 final class Player(val tokens:PlayerListOfTokens) extends Actor
 {
@@ -31,8 +32,8 @@ final class Player(val tokens:PlayerListOfTokens) extends Actor
 	}
 	
 	/** A list of things this can do in reponse to recieving an Event in a #! */
-//	val reactions:Reactions = new Reactions.Impl
-	val reactions:Reactions = new com.rayrobdod.tmp.ReactionsWithToString
+	val reactions:Reactions = new Reactions.Impl
+//	val reactions:Reactions = new com.rayrobdod.tmp.ReactionsWithToString
 	reactions.+=(TurnStartReaction)
 	object TurnStartReaction extends Reactions.Reaction
 	{

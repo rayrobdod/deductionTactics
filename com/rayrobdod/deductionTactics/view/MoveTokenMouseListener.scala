@@ -4,7 +4,6 @@ import com.rayrobdod.deductionTactics.{CannonicalToken, RequestMove,
 		Player, RequestAttackForDamage}
 import com.rayrobdod.boardGame.{Space, BeSelected,
 		PhysicalStrikeCost, TokenMovementCost}
-import javax.swing.{JDialog, JList}
 import java.awt.event.{MouseAdapter, MouseEvent}
 import com.rayrobdod.deductionTactics.ai.attackRangeOf
 
@@ -15,16 +14,17 @@ import com.rayrobdod.deductionTactics.ai.attackRangeOf
  * @version 21 Mar 2012 - modified reactions for new event model
  * @version 06 Apr 2012 - adding SellectAttackTypePanel parameter
  * @version 30 May 2012 - allowing for long-range attacks without running out of movment
+ * @version 01 Jun 2012 - Now only resonds to BUTTON1 mouse clicks.
  */
 class MoveTokenMouseListener(owner:Player, space:Space, attackType:SellectAttackTypePanel) extends MouseAdapter
 {
 	override def mouseClicked(e:MouseEvent) {
-		if (e.getClickCount() == 2) {
+		if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
 			val tokenOnThisSpace = owner.tokens.aliveOtherTokens.flatten.find{_.currentSpace == space}
 			
 			// don't move if there is a unit on this space and it is not out of reach
-			if (!tokenOnThisSpace.isDefined ||
-					activeToken.currentSpace.distanceTo(space, activeToken, PhysicalStrikeCost) > activeToken.tokenClass.range.get)
+			if (!tokenOnThisSpace.isDefined || activeToken.currentSpace.distanceTo(
+					space, activeToken, PhysicalStrikeCost) > activeToken.tokenClass.range.get)
 			{
 				activeToken.movementEndedLock.synchronized {
 					owner ! RequestMove(activeToken, space)

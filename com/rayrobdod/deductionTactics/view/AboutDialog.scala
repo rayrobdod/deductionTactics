@@ -20,7 +20,7 @@ class AboutDialog(
 {
 	val icon = new ImageIcon(ImageIO.read(this.getClass().getResourceAsStream("/sprites/generic/Gray shirt.png")))
 	val appName = "Deduction Tactics"
-	val version = "0.4.0"
+	val version = "0.4.1"
 	val runningOn = "Using Java v" + System.getProperty("java.version")
 	
 	val credits = Array(

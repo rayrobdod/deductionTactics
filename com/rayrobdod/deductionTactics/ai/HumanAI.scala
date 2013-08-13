@@ -16,7 +16,8 @@ import com.rayrobdod.deductionTactics.view.{
 			TeamBuilderPanel,
 			MoveTokenMouseListener,
 			MenuBar,
-			SellectAttackTypePanel
+			SellectAttackTypePanel,
+			SelectTokenOnSpaceMouseListener
 }
 
 /**
@@ -57,9 +58,10 @@ sealed class HumanAI extends PlayerAI
 		val attackTypeSelector = new SellectAttackTypePanel()
 
 		tokens.tokens.flatten.foreach{(x:Token) => x.reactions += new HighlightMovableSpacesReaction(x, panel, player.tokens)}
-		panel.fieldComp.spaceLabelMap.foreach{((s:RectangularSpace, c:JLabel) => 
+		panel.fieldComp.spaceLabelMap.foreach({(s:RectangularSpace, c:JLabel) => 
+			c.addMouseListener(new SelectTokenOnSpaceMouseListener(s, player.tokens))
 			c.addMouseListener(new MoveTokenMouseListener(player, s, attackTypeSelector))
-		).tupled}
+		}.tupled)
 		
 		val endOfTurnButton = new JButton("End Turn")
 		playerButtons += ((player, endOfTurnButton))

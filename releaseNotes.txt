@@ -1,0 +1,24 @@
+﻿deductionTactics
+
+== 0.4.1 ==
+=== Feature ===
+‣ In the battle screen, BUTTON3 click (Right click on windows) a unit selects it
+  ‣ Move and attack orders now only sent by BUTTON1 (Left click for windows)
+
+=== Interface Change ===
+‣ Changed layout of "Choose Team" panel; the current members and buttons are fixed width, while the possible members are variable width 
+
+== 0.4.0 ==
+First released version
+
+‣ There are 25 units - the 20 standard ones, plus some either showing extra
+  range, or extra speed.
+‣ There are 4 player intelligences.
+  ‣ HumanAI is human controlled and uses a GUI.  
+  ‣ HumanAutorecordAI is an extension of HumanAI that uses the same algorithms
+    as the computer-controlled players to determine enemy attributes
+  ‣ BlindAttackAI is computer controlled and simply tries to attack whatever is
+    closest, ignoring whatever it knows about enemy units
+  ‣ SleepAbuserAI is computer controlled and will attempt to use sleep to it's
+    potential, staying out of enemy range when possible, and putting enemies to
+    sleep to reduce range further.
