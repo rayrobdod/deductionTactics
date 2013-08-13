@@ -1,0 +1,8 @@
+{
+	"name": "Yellow Forest",
+	
+	"deductionTactics::startSpaces":"pikachu-startSpaces.json",
+	"layout":"pikachu-layout.csv",
+	
+	"classMap":"../letterMapping.json"
+}

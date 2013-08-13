@@ -1,0 +1,128 @@
+[{
+	"comment":"
+		-100 is twe ground
+		-9x is tree roots
+		-8x is other decorations
+		-4x is tree trunk
+		+10 is tree leaves
+	",
+		
+	"tiles":{"-100":0}
+},{
+	"tiles":{"-100":1},
+	"indexies":"x%2==0"
+},{
+	"tiles":{"-100":8},
+	"indexies":"y%2==0"
+	
+},{
+	"tiles":{"-100":9},
+	"indexies":"x%2==0 && y%2==0"
+},
+
+{
+	"comment":"twe random littery stuff",
+	"tiles":{"-80":10},
+	"surroundingSpaces":{"(0,0)":"."}
+},{
+	"tiles":{"-80":11},
+	"surroundingSpaces":{"(0,0)":"."},
+	"tileRand":5
+},{
+	"tiles":{"-80":12},
+	"surroundingSpaces":{"(0,0)":"."},
+	"tileRand":5
+},{
+	"tiles":{"-80":18},
+	"surroundingSpaces":{"(0,0)":"."},
+	"tileRand":5
+},{
+	"tiles":{"-80":19},
+	"surroundingSpaces":{"(0,0)":"."},
+	"tileRand":5
+},{
+	"tiles":{"-80":20},
+	"surroundingSpaces":{"(0,0)":"."},
+	"tileRand":5
+},{
+	"tiles":{"-80":26},
+	"surroundingSpaces":{"(0,0)":"."},
+	"tileRand":5
+},{
+	"tiles":{"-80":27},
+	"surroundingSpaces":{"(0,0)":"."},
+	"tileRand":5
+},{
+	"tiles":{"-80":28},
+	"surroundingSpaces":{"(0,0)":"."},
+	"tileRand":5
+},{
+	"tiles":{"-80":34},
+	"surroundingSpaces":{"(0,0)":"."},
+	"tileRand":5
+},{
+	"tiles":{"-80":35},
+	"surroundingSpaces":{"(0,0)":"."},
+	"tileRand":5
+},{
+	"tiles":{"-80":36},
+	"surroundingSpaces":{"(0,0)":"."},
+	"tileRand":5
+},	
+	
+{
+	"comment":"the two-tile log",
+	"tiles":{"-80":31},
+	"surroundingSpaces":{"(0,-1)":" ",
+						 "(0,+0)":".",
+						 "(0,+1)":".",
+						 "(0,+2)":" "}
+},{
+	"tiles":{"-80":39},
+	"surroundingSpaces":{"(0,-2)":" ",
+						 "(0,-1)":".",
+						 "(0,+0)":".",
+						 "(0,+1)":" "}
+	
+},
+
+{
+	"comment":"trees",
+	"tiles":{"-40":22},
+	"surroundingSpaces":{"(0,0)":"|"}
+},{
+	"tiles":{"-91":21},
+	"surroundingSpaces":{"(1,0)":"|"},
+	"indexies":"x<h-1 && 1==1"
+},{
+	"tiles":{"-92":23},
+	"surroundingSpaces":{"(-1,0)":"|"},
+	"indexies":"x>=1 && 1==1"
+},{
+	"tiles":{"11":13},
+	"surroundingSpaces":{"(1,1)":"|"},
+	"indexies":"y<(w-1) && x<h-1 && 1==1"
+},{
+	"tiles":{"10":14},
+	"surroundingSpaces":{"(0,1)":"|"},
+	"indexies":"y<(w-1) && 1==1"
+},{
+	"tiles":{"12":15},
+	"surroundingSpaces":{"(-1,1)":"|"},
+	"indexies":"y<(w-1) && x>=1 && 1==1"
+},{
+	"tiles":{"14":5},
+	"surroundingSpaces":{"(1,2)":"|"},
+	"indexies":"y<(w-2) && x<h-1 && 1==1"
+},{
+	"tiles":{"13":6},
+	"surroundingSpaces":{"(0,2)":"|"},
+	"indexies":"y<(w-2) && 1==1"
+},{
+	"tiles":{"15":7},
+	"surroundingSpaces":{"(-1,2)":"|"},
+	"indexies":"y<(w-2) && x>=1 && 1==1"
+}
+
+
+]
