@@ -1,0 +1,10 @@
+{
+	"name":"Supermarket Primary-Color-Tiles",
+	
+	"tiles":"PrimaryColorTiles.png",
+	"tileWidth":32,
+	"tileHeight":32,
+	
+	"rules":"PrimaryColorTiles_Monotile.json",
+	"classMap":"letterMapping.json"
+}

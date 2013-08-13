@@ -1,0 +1,17 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+			id="electric" class="circle-glyph element" x="0" y="0" width="120" height="120">
+	<title>Electric Elemental Glyph</title>
+	<g transform="translate(10,10)" fill="none" stroke="black" stroke-width="2.5">
+		<circle class="outline" cx="50" cy="50" r="50" style="stroke-width:4;fill:yellow" />
+		<!-- yes, I cheated on these: I used a trim function -->
+		<line x1="0" x2="100" y1="50" y2="50" />
+		<line x1="4.5" x2="15" y1="70.87" y2="50" />
+		<line x1="23.66" x2="45" y1="92.54" y2="50" />
+		<line x1="20" x2="44.868" y1="50" y2="0.2641" />
+		<line x1="50" x2="75" y1="100" y2="50" />
+		<line x1="50" x2="72.36" y1="50" y2="5.27" />
+		<line x1="80" x2="92.868" y1="50" y2="24.26" />
+	</g>
+</svg>

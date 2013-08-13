@@ -1,0 +1,102 @@
+[
+	{
+		"comment":"null",
+		"tile":63
+	},
+	{
+		"comment":"Grass",
+		"tile":0,
+		
+		"center":" ",
+		"animationFrames":1,
+		"equation":"true",
+		"rand":1
+	},
+	{
+		"tile":1,
+		
+		"center":" ",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"comment":"Water",
+		"tile":2,
+		
+		"center":"W"
+	},
+	{
+		"tile":3,
+		
+		"center":"W",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"comment":"Water surrounded by Grass",
+		"tile":4,
+		
+		"center":"W",
+		"north":" ",
+		"east":" ",
+		"south":" ",
+		"west":" "
+	},
+	{
+		"tile":5,
+		
+		"center":"W",
+		"north":" ",
+		"east":" ",
+		"south":" ",
+		"west":" ",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"comment":"Grass surrounded by Water",
+		"tile":6,
+		
+		"center":" ",
+		"north":"W",
+		"east":"W",
+		"south":"W",
+		"west":"W"
+	},
+	{
+		"tile":7,
+		
+		"center":" ",
+		"north":"W",
+		"east":"W",
+		"south":"W",
+		"west":"W",
+		"indexies":"(x+y)%2==0"
+	},
+}
+
+	{
+		"comment":"Grass w/ flower",
+		"tile":9,
+		
+		"center":" ",
+		"rand":5
+	},
+	{
+		"tile":8,
+		
+		"center":" ",
+		"rand":5,
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":11,
+		
+		"center":"W",
+		"rand":5
+	},
+	{
+		"tile":10,
+		
+		"center":"W",
+		"rand":5,
+		"indexies":"(x+y)%2==0"
+	}
+]

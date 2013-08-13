@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+			id="burn" class="circle-glyph status" x="0" y="0" width="120" height="120">
+	<title>Burn Status Glyph</title>
+	<g transform="translate(10,10)" style="fill:none;stroke:black;stroke-width:2.5">
+		<circle class="outline" cx="50" cy="50" r="50" style="stroke-width:4;fill:#d52" />
+		
+		<line y1="65" y2="65" x1="2.3" x2="97.7" />
+		<path d="M30,55 c-10,-18 10,-18 0,-36"/>
+		<path d="M50,55 c-10,-20 10,-20 0,-40"/>
+		<path d="M70,55 c-10,-18 10,-18 0,-36"/>
+	</g>
+</svg>
