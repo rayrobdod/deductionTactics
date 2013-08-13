@@ -89,7 +89,7 @@
 		"weakWeapon":{"blade":2,"blunt":.5,"spear":1.5,"whip":1,"powder":.75},
 		"weakStatus":"Confuse",
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
-		"iconc":"/sprites/classes/Farmer.png"
+		"icon":"/sprites/classes/Yoyoer.png"
 	},
 	{
 		"name":"Flashlightman",

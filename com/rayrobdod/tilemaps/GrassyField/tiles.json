@@ -70,7 +70,319 @@
 		"west":"W",
 		"indexies":"(x+y)%2==0"
 	},
+	
+	
+	
+	{
+		"tile":32,
+		
+		"center":"W",
+		"north":" ",
+		"east":"W",
+		"south":"W",
+		"west":" "
+	},
+	{
+		"tile":33,
+		
+		"center":"W",
+		"north":" ",
+		"east":" ",
+		"south":"W",
+		"west":"W"
+	},
+	{
+		"tile":40,
+		
+		"center":"W",
+		"north":"W",
+		"east":"W",
+		"south":" ",
+		"west":" "
+	},
+	{
+		"tile":41,
+		
+		"center":"W",
+		"north":"W",
+		"east":" ",
+		"south":" ",
+		"west":"W"
+	},
+	{
+		"tile":48,
+		
+		"center":"W",
+		"north":" ",
+		"east":"W",
+		"south":" ",
+		"west":" "
+	},
+	{
+		"tile":49,
+		
+		"center":"W",
+		"north":" ",
+		"east":" ",
+		"south":" ",
+		"west":"W"
+	},
+	{
+		"tile":56,
+		
+		"center":"W",
+		"north":" ",
+		"east":" ",
+		"south":"W",
+		"west":" "
+	},
+	{
+		"tile":57,
+		
+		"center":"W",
+		"north":"W",
+		"east":" ",
+		"south":" ",
+		"west":" "
+	},
+	
+	{
+		"tile":34,
+		
+		"center":" ",
+		"north":"W",
+		"east":" ",
+		"south":" ",
+		"west":"W"
+	},
+	{
+		"tile":35,
+		
+		"center":" ",
+		"north":"W",
+		"east":"W",
+		"south":" ",
+		"west":" "
+	},
+	{
+		"tile":42,
+		
+		"center":" ",
+		"north":" ",
+		"east":" ",
+		"south":"W",
+		"west":"W"
+	},
+	{
+		"tile":43,
+		
+		"center":" ",
+		"north":" ",
+		"east":"W",
+		"south":"W",
+		"west":" "
+	},
+	{
+		"tile":50,
+		
+		"center":" ",
+		"north":"W",
+		"east":" ",
+		"south":"W",
+		"west":"W"
+	},
+	{
+		"tile":51,
+		
+		"center":" ",
+		"north":"W",
+		"east":"W",
+		"south":"W",
+		"west":" "
+	},
+	{
+		"tile":58,
+		
+		"center":" ",
+		"north":"W",
+		"east":"W",
+		"south":" ",
+		"west":"W"
+	},
+	{
+		"tile":59,
+		
+		"center":" ",
+		"north":" ",
+		"east":"W",
+		"south":"W",
+		"west":"W"
+	},
+	
+	{
+		"tile":36,
+		
+		"center":"W",
+		"north":" ",
+		"east":"W",
+		"south":"W",
+		"west":" ",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":37,
+		
+		"center":"W",
+		"north":" ",
+		"east":" ",
+		"south":"W",
+		"west":"W",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":44,
+		
+		"center":"W",
+		"north":"W",
+		"east":"W",
+		"south":" ",
+		"west":" ",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":45,
+		
+		"center":"W",
+		"north":"W",
+		"east":" ",
+		"south":" ",
+		"west":"W",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":52,
+		
+		"center":"W",
+		"north":" ",
+		"east":"W",
+		"south":" ",
+		"west":" ",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":53,
+		
+		"center":"W",
+		"north":" ",
+		"east":" ",
+		"south":" ",
+		"west":"W",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":60,
+		
+		"center":"W",
+		"north":" ",
+		"east":" ",
+		"south":"W",
+		"west":" ",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":61,
+		
+		"center":"W",
+		"north":"W",
+		"east":" ",
+		"south":" ",
+		"west":" ",
+		"indexies":"(x+y)%2==0"
+	},
+	
+	{
+		"tile":38,
+		
+		"center":" ",
+		"north":"W",
+		"east":" ",
+		"south":" ",
+		"west":"W",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":39,
+		
+		"center":" ",
+		"north":"W",
+		"east":"W",
+		"south":" ",
+		"west":" ",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":46,
+		
+		"center":" ",
+		"north":" ",
+		"east":" ",
+		"south":"W",
+		"west":"W",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":47,
+		
+		"center":" ",
+		"north":" ",
+		"east":"W",
+		"south":"W",
+		"west":" ",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":54,
+		
+		"center":" ",
+		"north":"W",
+		"east":" ",
+		"south":"W",
+		"west":"W",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":55,
+		
+		"center":" ",
+		"north":"W",
+		"east":"W",
+		"south":"W",
+		"west":" ",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":62,
+		
+		"center":" ",
+		"north":"W",
+		"east":"W",
+		"south":" ",
+		"west":"W",
+		"indexies":"(x+y)%2==0"
+	},
+	{
+		"tile":63,
+		
+		"center":" ",
+		"north":" ",
+		"east":"W",
+		"south":"W",
+		"west":"W",
+		"indexies":"(x+y)%2==0"
+	},
 }
+
+
 
 	{
 		"comment":"Grass w/ flower",

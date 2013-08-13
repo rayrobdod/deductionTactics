@@ -10,5 +10,5 @@ package com.rayrobdod.deductionTactics
  */
 object BodyTypes extends Enumeration
 {
-	val Humanoid = Value("Humanoid")
+	val Humanoid = Value("Human")
 }

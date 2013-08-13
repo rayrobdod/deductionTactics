@@ -4,6 +4,8 @@ import com.rayrobdod.boardGame.{RectangularField, SpaceClassConstructor => Space
 import scala.util.Random
 import scala.parallel.Future
 import java.awt.Image
+import javax.swing.{Icon, ImageIcon}
+import com.rayrobdod.animation.{AnimationIcon, ImageFrameAnimation}
 import com.rayrobdod.util.BlitzAnimImage
 
 /**
@@ -18,12 +20,29 @@ import com.rayrobdod.util.BlitzAnimImage
  * @version 06 Aug 2011 - moved from net.verizon.rayrobdod.rpgTest.view to net.verizon.rayrobdod.boardGame.view
  * @version 18 Aug 2011 - matching changes in RectangularVisualizationRule; changing #onMod to #equation
  * @version 15 Dec 2011 - moved from {@code net.verizon.rayrobdod.boardGame.view} to {@code com.rayrobdod.boardGame.view}
+ * @version 11 Jun 2012 - changing image from an java.awt.Image to a javax.swing.Icon
+ * @version 11 Jun 2012 - making image able to be animated
  */
 class MapRunVisualizationRule(strConsMap:Map[String, SpaceConstructor], rules:Map[String, Any],
 		tiledImage:BlitzAnimImage) extends RectangularVisualizationRule
 {
-	// TODO make able to be animated
-	def image:Image = tiledImage.getFrame(getInt("tile"))
+	def image:Icon = {
+		val startTile = getInt("tile")
+		val frameCount = getInt("animationFrames")
+		
+		if (frameCount == 1)
+		{
+			new ImageIcon(tiledImage.getFrame(startTile))
+		}
+		else
+		{
+			val frames = (startTile until (startTile + frameCount)).map{(i:Int) =>
+				tiledImage.getFrame(i)
+			}
+			
+			new AnimationIcon(new ImageFrameAnimation(frames, 1000/5, true))
+		}
+	}
 	
 	// TODO magic strings
 	override def center:SpaceConstructor = getSpaceConstructor("center")

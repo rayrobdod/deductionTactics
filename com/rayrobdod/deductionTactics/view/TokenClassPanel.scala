@@ -8,7 +8,7 @@ import com.rayrobdod.deductionTactics.Directions.Direction
 import com.rayrobdod.deductionTactics.loadIcon
 
 import javax.swing.{JPanel, JLabel, Icon, JProgressBar,
-DefaultBoundedRangeModel}
+		DefaultBoundedRangeModel}
 import java.awt.{GridBagLayout, GridBagConstraints, FlowLayout}
 import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds}
 
@@ -23,6 +23,7 @@ import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds}
  * @version 20 Apr 2012 - reducing the number of anonimous classes by replacing a few identiacl ones with one object
  * @version 05 Jun 2012 - adding JProgressbars indicating weapon weaknesses
  * @version 05 Jun 2012 - changes due to weakWeapon change in [[com.rayrobdod.deductionTactics.TokenClass]]
+ * @version 11 Jun 2012 - adding command to update weapon weakness bars
  */
 class TokenClassPanel(val tokenClass:TokenClass) extends JPanel
 {
@@ -108,6 +109,10 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel
 		this.weakWeapon.setIcon(getWeakWeaponIcon())
 		this.weakStatus.setIcon(tokenClass.weakStatus.map(getIcon).getOrElse(TokenClassPanel.unknownIcon))
 		this.weakDirection.setIcon(tokenClass.weakDirection.map(getIcon).getOrElse(TokenClassPanel.unknownIcon))
+		this.weaponWeakPanel.addends.zip(Weaponkinds.values).foreach(
+			{(bar:JProgressBar, e:Weaponkind) =>
+				bar.setModel(new TokenClassPanel.TokenWeakRangeModel(tokenClass, e))
+		}.tupled)
 		super.paint(g)
 	}
 	

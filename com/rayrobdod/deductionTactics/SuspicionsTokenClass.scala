@@ -6,6 +6,7 @@ import Statuses.Status
 import BodyTypes.{Value => BodyType}
 import Directions.Direction
 import scala.collection.immutable.Map
+import javax.swing.Icon
 
 /**
  * A class that mirrors [[com.rayrobdod.deductionTactics.CannonicalTokenClass]] but with all methods being mutable and the
@@ -21,6 +22,7 @@ import scala.collection.immutable.Map
  * @version 28 Feb 2012 - made the icon function use package#generateGenericIcon
  * @version 05 Jun 2012 - changing weakWeapon from Option[Map[Weaponkind, Float]]
 			to Map[Weaponkind, Option[Float]]
+ * @version 12 Jun 2012 - changed name from val to var, and implementing a icon_= function
  */
 class SuspicionsTokenClass extends TokenClass
 {
@@ -36,8 +38,10 @@ class SuspicionsTokenClass extends TokenClass
 	var weakStatus:Option[Status] = None
 	var weakDirection:Option[Direction] = None
 	
-	val name = "???"
-	def icon = generateGenericIcon(this)
+	var name = "???"
+	private var setIcon:Option[Icon] = None
+	def icon_=(icon:Option[Icon]) {setIcon = icon}
+	def icon = setIcon.getOrElse(generateGenericIcon(this))
 }
 
 object SuspicionsTokenClass {

@@ -1,5 +1,20 @@
 ﻿deductionTactics
 
+== a.2.1 ==
+==== Interface Change ====
+‣ Possibility of animated Tilesheets (not that any of them are)
+
+‣ Allowing specification of a suspicion class's weapon weaknesses
+‣ Allowing to fill in all details by selecting a class by clicking on a name
+
+==== Model Change ====
+‣ The unused body value in a tokenclass is read from files properly now
+
+==== Data Change ====
+‣ Golfer tokenclass added
+‣ Additional class icons provided
+
+
 == a.2.0 ==
 
 === Major level ===

@@ -30,7 +30,7 @@ object SpaceClass extends SpaceClassConstructor
  * but impossible to get onto if another unit is on the space
  * @author Raymond Dodge
  * @version 20 Mar 2012
- * @version 05 Apr 2012 - #movementCost(Token) => #cost(Token, TypeOfCost). Also, only TokenMovmentCost gets inflated value 
+ * @version 05 Apr 2012 - #movementCost(Token) => #cost(Token, TypeOfCost). Also, only TokenMovementCost gets inflated value 
  */
 class UnitAwareSpaceClass(tokens:ListOfTokens) extends BoardGameSpaceClass
 		with NoLandOnAction
@@ -66,4 +66,29 @@ object UnitAwareSpaceClass extends SpaceClassConstructor
 	
 	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[UnitAwareSpaceClass]}
 	def apply = new UnitAwareSpaceClass(tokens)
+}
+
+/**
+ * A SpaceClass that is impossible to move to or attack through
+ * @author Raymond Dodge
+ * @version 11 Jun 2012
+ */
+class ImpassibleSpaceClass extends BoardGameSpaceClass
+		with NoLandOnAction
+		with NoPassOverAction
+{
+	override def cost(tokenMoving:BoardGameToken, costType:TypeOfCost) = {
+		1000
+	}
+}
+
+/**
+ * A constructor and deconstructor for ImpassibleSpaceClass
+ * @author Raymond Dodge
+ * @version 20 Mar 2012
+ */
+object ImpassibleSpaceClass extends SpaceClassConstructor
+{
+	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[ImpassibleSpaceClass]}
+	def apply = new ImpassibleSpaceClass
 }

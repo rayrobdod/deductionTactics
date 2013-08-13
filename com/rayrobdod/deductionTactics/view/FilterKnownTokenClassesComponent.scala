@@ -26,8 +26,15 @@ class FilterKnownTokenClassesComponent extends JPanel
 		this.removeAll()
 		applicable.values.foreach{this.add(_)}
 	}
-	
-	class TokenClassMatcher(template:TokenClass) extends Function1[TokenClass,Boolean]
+}
+
+/**
+ * @author Raymond Dodge
+ * @version 29 Feb 2012
+ * @version 06 Jun 2012 - change due to change of weakWeapon in tokenClass
+ * @version 11 Jun 2012 - extracted from FilterKnownTokenClassesComponent
+ */
+class TokenClassMatcher(template:TokenClass) extends Function1[TokenClass,Boolean]
 	{
 		def apply(tc:TokenClass) = {
 			(
@@ -49,4 +56,3 @@ class FilterKnownTokenClassesComponent extends JPanel
 			!a.isDefined || !b.isDefined || (a.get == b.get) 
 		}
 	}
-}

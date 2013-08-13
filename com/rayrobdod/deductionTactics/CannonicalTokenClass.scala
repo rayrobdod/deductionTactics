@@ -63,7 +63,7 @@ class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenCl
 {
 	override def name = map("name").toString
 	
-	override def body = Some(BodyTypes.withName(map("bodyType").toString))
+	override def body = Some(BodyTypes.withName(map("body").toString))
 	
 	override def atkElement = Some(Elements.withName(map("element").toString))
 	override def atkWeapon = Some(Weaponkinds.withName(map("atkWeapon").toString))

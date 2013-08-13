@@ -13,13 +13,16 @@ import javax.swing.{JLabel, JPanel, JList}
 import java.awt.event.{MouseAdapter, MouseEvent}
 import java.lang.Integer
 import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
-import javax.swing.{ListModel, ListCellRenderer, DefaultListCellRenderer, AbstractListModel}
+import javax.swing.{ListModel, ListCellRenderer, DefaultListCellRenderer, AbstractListModel, JScrollBar, JProgressBar}
+import java.awt.Adjustable.{HORIZONTAL => horizontal}
+import java.awt.{GridBagLayout, GridBagConstraints, FlowLayout}
 
 import com.rayrobdod.swing.NameAndIconCellRenderer
 
 /** 
  * @author Raymond Dodge
  * @version 11 Feb 2012 - cut vast majority of content from {@link HumanSuspicionTest} and pasted here
+ * @version 11 Jun 2012 - adding listeners to WeaponWeakPanel
  */
 class HumanSuspicionsPanel(tokenClass:SuspicionsTokenClass) extends TokenClassPanel(tokenClass)
 {
@@ -37,5 +40,14 @@ class HumanSuspicionsPanel(tokenClass:SuspicionsTokenClass) extends TokenClassPa
 			tokenClass.speed_=_, this))
 	this.range.addMouseListener(new IntSetterChooserFrameMaker(
 			tokenClass.range_=_, this))
+	
+	this.weaponWeakPanel.addends.zip(Weaponkinds.values).foreach(
+		{(bar:JProgressBar, weapon:Weaponkind) =>
+			bar.addMouseListener(new WeaponMultiplerSetterChooserFrameMaker(
+			{(i:Option[Float]) => tokenClass.weakWeapon += ((weapon, i))}, this))
+	}.tupled)
+	
+	this.name.addMouseListener(new ClassSynchonizerFrameMaker(
+			tokenClass, this))
 }
 

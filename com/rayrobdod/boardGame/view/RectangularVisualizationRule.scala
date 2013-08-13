@@ -4,6 +4,7 @@ import com.rayrobdod.boardGame.{RectangularField, RectangularSpace, SpaceClassCo
 import scala.util.Random
 import scala.parallel.Future
 import java.awt.Image
+import javax.swing.Icon
 import java.util.regex.{Pattern, Matcher}
 import javax.script.{Bindings, SimpleBindings, ScriptEngineManager}
 
@@ -21,11 +22,12 @@ import javax.script.{Bindings, SimpleBindings, ScriptEngineManager}
  * @version 03 Aug 2011 - Switchiing from RectangularSpaceConstructor to SpaceClassConstructor
  * @version 04 Aug 2011 - changing the matches() function such that it works with SpaceClassConstructors
  * @version 15 Dec 2011 - moved from {@code net.verizon.rayrobdod.boardGame.view} to {@code com.rayrobdod.boardGame.view}
+ * @version 11 Jun 2012 - changing image from an java.awt.Image to a javax.swing.Icon
  */
 trait RectangularVisualizationRule
 {
-	/** the image used in the rule is matched */
-	def image:Image
+	/** the image used if the rule is matched */
+	def image:Icon
 	
 	def center:SpaceConstructor = AnySpace
 	def north:SpaceConstructor = AnySpace
@@ -163,9 +165,10 @@ object VisualizationRulePriorityOrdering extends Ordering[RectangularVisualizati
  * @version 02 Aug 2011
  * @version 06 Aug 2011 - moved from net.verizon.rayrobdod.rpgTest.view to net.verizon.rayrobdod.boardGame.view
  * @version 15 Dec 2011 - moved from {@code net.verizon.rayrobdod.boardGame.view} to {@code com.rayrobdod.boardGame.view}
+ * @version 11 Jun 2012 - changing image from an java.awt.Image to a javax.swing.Icon
  */
 class BluntRectangularVisualizationRule(
-		override val image:Image,
+		override val image:Icon,
 		override val center:SpaceConstructor = AnySpace,
 		override val north:SpaceConstructor = AnySpace,
 		override val south:SpaceConstructor = AnySpace,

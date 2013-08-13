@@ -5,6 +5,7 @@ import scala.swing.Swing
 import java.awt.{Image, GridLayout, Point}
 import javax.swing.{JLabel, JComponent, Icon}
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace, SpaceClassConstructor => SpaceConstructor}
+import com.rayrobdod.animation.{AnimationIcon, ImageFrameAnimation}
 
 /**
  * A component that displays a RectangularFiled using a certain Tilesheet
@@ -16,6 +17,8 @@ import com.rayrobdod.boardGame.{RectangularField, RectangularSpace, SpaceClassCo
  			This reduced 18 class files to 8. Also 37.5 KB down to 17.4 KB, uncompressed.
  * @version 06 Aug 2011 - moved from net.verizon.rayrobdod.rpgTest.view to net.verizon.rayrobdod.boardGame.view
  * @version 15 Dec 2011 - moved from {@code net.verizon.rayrobdod.boardGame.view} to {@code com.rayrobdod.boardGame.view}
+ * @version 11 Jun 2012 - due to RectangularVisualizationRule.image being an icon now, no longer turning it into an icon before putting it in a JLabel
+ * @version 11 Jun 2012 - adding attempt to recognise an animation as one, and adding a frame change listener if it is an animation
  */
 class FieldComponent(tilesheet:Tilesheet, field:RectangularField) extends JComponent
 {
@@ -28,7 +31,19 @@ class FieldComponent(tilesheet:Tilesheet, field:RectangularField) extends JCompo
 	
 	val spaces:Seq[RectangularSpace] = flatPoints.map{(p:Point) => field.space(p.x, p.y)}
 	
-	val labels:Seq[JLabel] = rules.map{(x:RectangularVisualizationRule) => new JLabel(Swing.Icon(x.image))}
+	val labels:Seq[JLabel] = rules.map{(x:RectangularVisualizationRule) => new JLabel(x.image)}
+	labels.filter{_.getIcon.isInstanceOf[AnimationIcon]}.foreach{(x:JLabel) => 
+		val animIcon = x.getIcon.asInstanceOf[AnimationIcon]
+		animIcon.addRepaintOnNextFrameListener(x)
+	}
+	// TODO: stop threads at some point
+	val threads:Seq[Threads] = labels.map{_.getIcon}.distinct.filter{_.isInstanceOf[AnimationIcon]}.map{
+				_.asInstanceOf[AnimationIcon]}.map{(x:AnimationIcon) =>
+		returnValue = new Thread(x.animation, "AnimationIcon animator")
+		returnValue.setDaemon(true)
+		returnValue.start()
+		returnValue
+	}
 	
 	val spaceLabelMap:Map[RectangularSpace, JLabel] = spaces.zip(labels).toMap
 	

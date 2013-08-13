@@ -9,7 +9,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":.75,"blunt":1,"spear":2,"whip":.5,"powder":1.5},
 		"weakStatus":"Blind",
-		"weakDirection":"Down",
+		"weakDirection":"Right",
 		"iconc":""
 	},
 	{
@@ -22,7 +22,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":1,"blunt":2,"spear":.5,"whip":1.5,"powder":.75},
 		"weakStatus":"Blind",
-		"weakDirection":"Left",
+		"weakDirection":"Right",
 		"iconc":""
 	},
 	{
@@ -62,7 +62,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":1.25,"blunt":1.5,"spear":2,"whip":1,"powder":.5},
 		"weakStatus":"Snake",
-		"weakDirection":"Right",
+		"weakDirection":"Down",
 		"iconc":""
 	},
 	{
@@ -75,7 +75,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":.75,"blunt":2,"spear":1.5,"whip":.5,"powder":1},
 		"weakStatus":"Blind",
-		"weakDirection":"Right",
+		"weakDirection":"Left",
 		"iconc":""
 	},
 	{
@@ -88,7 +88,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":.75,"blunt":.5,"spear":1.5,"whip":1,"powder":2},
 		"weakStatus":"Confuse",
-		"weakDirection":"Down",
+		"weakDirection":"Right",
 		"iconc":""
 	},
 	{
@@ -101,7 +101,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":1.5,"blunt":.75,"spear":2,"whip":1,"powder":.5},
 		"weakStatus":"Sleep",
-		"weakDirection":"Down",
+		"weakDirection":"Right",
 		"icon":"/sprites/classes/RIT Hockey Player.png"
 	},
 	{
@@ -114,7 +114,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":2,"blunt":.5,"spear":1,"whip":.75,"powder":1.5},
 		"weakStatus":"Snake",
-		"weakDirection":"Up",
+		"weakDirection":"Right",
 		"iconc":""
 	},
 	{
@@ -127,7 +127,20 @@
 		"body":"Human",
 		"weakWeapon":{"blade":.75,"blunt":1,"spear":1.5,"whip":.5,"powder":2},
 		"weakStatus":"Blind",
-		"weakDirection":"Up",
+		"weakDirection":"Left",
 		"iconc":""
 	},
- ]
+	{
+		"name":"Golfer",
+		"element":"Sound",
+		"atkWeapon":"Blunt",
+		"atkStatus":"Snake",
+		"range":1,
+		"speed":3,
+		"body":"Human",
+		"weakWeapon":{"blade":.5,"blunt":1,"spear":2,"whip":1.5,"powder":.75},
+		"weakStatus":"Blind",
+		"weakDirection":"Right",
+		"icon":"/sprites/classes/Golfer.png"
+	},
+]

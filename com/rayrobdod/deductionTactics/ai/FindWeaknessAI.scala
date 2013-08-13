@@ -26,7 +26,8 @@ class FindWeaknessAI extends PlayerAI
 	case class AttackRecord(
 		val element:Element,
 		val kind:Weaponkind,
-		val dir:Direction
+		val dir:Direction,
+		val status:Status
 	) extends Event
 	
 	case class HidingAttributes(

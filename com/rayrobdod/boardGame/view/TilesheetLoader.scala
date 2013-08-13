@@ -19,6 +19,8 @@ import java.net.URL
  */
 final class TilesheetLoader(val service:String) extends Iterable[Tilesheet]
 {
+	// IDEA: recognise files ("com/*.json") verses classes ("com.*") and load based on that difference
+	
 	private val PREFIX = "META-INF/services/"
 	private val fullName = PREFIX + service
 	

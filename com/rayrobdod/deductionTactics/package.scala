@@ -33,7 +33,7 @@ import deductionTactics.Elements.Element
  */
 package object deductionTactics
 {
-	val VERSION = "a.2.0"
+	val VERSION = "a.2.1"
 	private val ICON_DIMENSION = 32
 	
 	/**

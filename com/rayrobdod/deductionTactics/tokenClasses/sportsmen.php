@@ -103,7 +103,7 @@
 		"weakWeapon":{"blade":1.5,"blunt":.75,"spear":2,"whip":1,"powder":.5},
 		"weakStatus":"Sleep",
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
-		"iconc":""
+		"icon":"/sprites/classes/RIT Hockey Player.png"
 	},
 	{
 		"name":"Lacrosse Sticksman",
@@ -131,17 +131,17 @@
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
 		"iconc":""
 	},
-<?php /*	{
-		"name":"Tennis Racketman",
+	{
+		"name":"Golfer",
 		"element":"Sound",
-		"atkWeapon":"Whip",
-		"atkStatus":"Burn",
+		"atkWeapon":"Blunt",
+		"atkStatus":"Snake",
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":.75,"blunt":1,"spear":1.5,"whip":.5,"powder":2},
+		"weakWeapon":{"blade":.5,"blunt":1,"spear":2,"whip":1.5,"powder":.75},
 		"weakStatus":"Blind",
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
-		"iconc":""
+		"icon":"/sprites/classes/Golfer.png"
 	},
-*/ ?> ]
+]

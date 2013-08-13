@@ -2,8 +2,6 @@ package com.rayrobdod.boardGame.view
 
 import java.awt.Color
 import java.awt.Dimension
-import java.awt.image.BufferedImage
-import java.awt.image.BufferedImage.{TYPE_INT_RGB => ImageTypeIntRGB}
 import com.rayrobdod.boardGame.view.{BluntRectangularVisualizationRule => VisRule}
 
 /**
@@ -11,6 +9,7 @@ import com.rayrobdod.boardGame.view.{BluntRectangularVisualizationRule => VisRul
  * 
  * @author Raymond Dodge
  * @version 2012 Apr 20
+ * @version 11 Jun 2012 - changing due to the change of image in RectangularVisualizationRule
  * @param light,dark the two colors the checkerboard should show
  * @param dim the size of each tile in the checkerboard
  */
@@ -30,10 +29,8 @@ case class CheckerboardTilesheet(
 	}
 	
 	private def image(color:Color) = {
-		val returnValue = new BufferedImage(dim.width, dim.height, ImageTypeIntRGB)
-		val g = returnValue.getGraphics 
-		g.setColor(color)
-		g.fillRect(0, 0, dim.width, dim.height)
-		returnValue
+		import com.rayrobdod.swing.SolidColorIcon
+		
+		new SolidColorIcon(color, dim.width, dim.height)
 	}
 }

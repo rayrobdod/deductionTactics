@@ -9,7 +9,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":1,"blunt":.5,"spear":1.75,"whip":2,"powder":1},
 		"weakStatus":"Neuro",
-		"weakDirection":"Up",
+		"weakDirection":"Down",
 		"icon":"/sprites/classes/Ninja.png"
 	},
 	{
@@ -22,7 +22,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":1.5 ,"blunt":.5,"spear":.75 ,"whip":1,"powder":2},
 		"weakStatus":"Blind",
-		"weakDirection":"Left",
+		"weakDirection":"Down",
 		"icon":"/sprites/classes/Farmer.png"
 	},
 	{
@@ -61,7 +61,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":2,"blunt":1.5,"spear":.5 ,"whip":.5,"powder":.75},
 		"weakStatus":"Neuro",
-		"weakDirection":"Up",
+		"weakDirection":"Down",
 		"icon":"/sprites/classes/Pyro.png"
 	},
 	{
@@ -74,7 +74,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":.75,"blunt":.5,"spear":1.5 ,"whip":2,"powder":1},
 		"weakStatus":"Sleep",
-		"weakDirection":"Down",
+		"weakDirection":"Up",
 		"icon":"/sprites/classes/torchbearer.png"
 	},
 	{
@@ -87,8 +87,8 @@
 		"body":"Human",
 		"weakWeapon":{"blade":2,"blunt":.5,"spear":1.5,"whip":1,"powder":.75},
 		"weakStatus":"Confuse",
-		"weakDirection":"Up",
-		"iconc":"/sprites/classes/Farmer.png"
+		"weakDirection":"Left",
+		"icon":"/sprites/classes/Yoyoer.png"
 	},
 	{
 		"name":"Flashlightman",
@@ -113,7 +113,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":2,"blunt":1,"spear":1.5,"whip":.75,"powder":1},
 		"weakStatus":"Confuse",
-		"weakDirection":"Left",
+		"weakDirection":"Down",
 		"icon":"/sprites/classes/Pikachu suit.png"
 	},
 	{
@@ -139,7 +139,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":.5,"blunt":.75,"spear":2,"whip":1,"powder":1.5},
 		"weakStatus":"Confuse",
-		"weakDirection":"Up",
+		"weakDirection":"Left",
 		"iconc":"/sprites/classes/Farmer.png"
 	}
 ]
