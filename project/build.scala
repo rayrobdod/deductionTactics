@@ -2,7 +2,7 @@ import sbt._
 import Keys._
 import java.util.zip.{ZipInputStream, ZipOutputStream, ZipEntry}
 
-object ImageManipulatorBuild extends Build {
+object DeductionTacticsBuild extends Build {
 	
 	val websitePath = SettingKey[File]("website-path", "A staging area for setting up website publish things")
 	val websitePathSetting = websitePath <<= crossTarget(new File(_, "website"))
@@ -163,11 +163,16 @@ Content-Encoding: pack200-gzip; q=1"""
 	
 	
 	lazy val root = Project(
-			id = "imageManipulator",
+			id = "deductionTactics",
 			base = file("."),
 			settings = Defaults.defaultSettings ++ Seq(websitePathSetting, 
 					proguardTypeSetting, packageBinPackTask, packageBinGzipTask,
 					proguardPackTask, proguardGzipTask, prepForWebsiteTask,
-					sourcesGzipTask)
+					sourcesGzipTask) // ++ CompileTokensPlugin.compileTokensSettings
 	)
+	/* lazy val meta = Project(
+			id = "deductionTactics-meta",
+			base = file("src/meta"),
+			settings = Defaults.defaultSettings
+	) dependsOn(root) */
 }
