@@ -33,6 +33,7 @@ import java.util.logging.Level
  * @version 24 Mar 2012 - Added toString to all sub-class reactions
  * @version 05 Apr 2012 - {@link BoardGameSpaceClass}.movementCost -> BoardGameSpaceClass.cost and adding {@link TypeOfCost}s to those that now need it in {@link BoardGameSpace}
  * @version 24 Apr 2012 - trying to implement the damage direction multiplier
+ * @version 04 Jun 2012 - adding an effect for Status.Heal to the StatusAct object
  */
 class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 {
@@ -65,7 +66,7 @@ class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 				Logger.entering("com.rayrobdod.deductionTactics.CannonicalToken.BeAttackedReacion",
 						"apply", e)
 				
-				val multiplier = tokenClass.weakWeapon.get(kind) *
+				val multiplier = tokenClass.weakWeapon(kind).get *
 					(if (currentStatus == tokenClass.weakStatus) {2} else {1}) *
 					(directionMultiplier(currentSpace, from)) *
 					(tokenClass.atkElement.get.damageModifier(elem));
@@ -366,6 +367,9 @@ class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 			case Some(Statuses.Neuro) => {
 				(1 to 1).foldLeft(currentSpace)(moveToRandomSpace)
 				_currentHitpoints = _currentHitpoints - baseDamage
+			}
+			case Some(Statuses.Heal) => {
+				_currentHitpoints = _currentHitpoints + (baseDamage)
 			}
 		}}
 		

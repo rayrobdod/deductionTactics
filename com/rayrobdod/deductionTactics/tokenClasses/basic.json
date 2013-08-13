@@ -1,4 +1,4 @@
-[
+[	
 	{
 		"name":"Shining Swordsman",
 		"element":"Light",
@@ -7,7 +7,7 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":.5 ,"blunt":.75,"spear":1.5,"whip":2  },
+		"weakWeapon":{"blade":.5 ,"blunt":.75,"spear":1.5,"whip":2  ,"powder":1  },
 		"weakStatus":"Sleep",
 		"weakDirection":"Left"
 	},
@@ -19,9 +19,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":1.5,"blunt":.5 ,"spear":2  ,"whip":.75},
+		"weakWeapon":{"blade":1.5,"blunt":.5 ,"spear":2  ,"whip":1  ,"powder":.75},
 		"weakStatus":"Burn",
-		"weakDirection":"Left"
+		"weakDirection":"Right"
 	},
 	{
 		"name":"Shining Pikeman",
@@ -31,9 +31,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":2  ,"blunt":1.5,"spear":.5 ,"whip":1.5},
+		"weakWeapon":{"blade":2  ,"blunt":1  ,"spear":.5 ,"whip":.75,"powder":1.5},
 		"weakStatus":"Blind",
-		"weakDirection":"Up"
+		"weakDirection":"Right"
 	},
 	{
 		"name":"Shining Whipman",
@@ -43,9 +43,21 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":.75,"blunt":2  ,"spear":.75,"whip":.5 },
+		"weakWeapon":{"blade":1  ,"blunt":1.5,"spear":.75,"whip":.5 ,"powder":2  },
 		"weakStatus":"Confuse",
-		"weakDirection":"Down"
+		"weakDirection":"Left"
+	},
+	{
+		"name":"Shining Powderman",
+		"element":"Light",
+		"atkWeapon":"Powder",
+		"atkStatus":"Blind",
+		"range":1,
+		"speed":3,
+		"body":"Human",
+		"weakWeapon":{"blade":.75,"blunt":2  ,"spear":1  ,"whip":1.5,"powder":.5 },
+		"weakStatus":"Neuro",
+		"weakDirection":"Left"
 	},
 	{
 		"name":"Static Swordsman",
@@ -55,9 +67,10 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":.5 ,"blunt":.75,"spear":1.5,"whip":2  },
+		"weakWeapon":{"blade":.5 ,"blunt":.75,"spear":1.5,"whip":2  ,"powder":1  },
 		"weakStatus":"Sleep",
-		"weakDirection":"Up"
+		"weakDirection":"Left",
+		"icon":"/sprites/classes/Static Swordsman.png"
 	},
 	{
 		"name":"Static Clubsman",
@@ -67,9 +80,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":1.5,"blunt":.5 ,"spear":2  ,"whip":.75},
+		"weakWeapon":{"blade":1.5,"blunt":.5 ,"spear":2  ,"whip":1  ,"powder":.75},
 		"weakStatus":"Burn",
-		"weakDirection":"Left"
+		"weakDirection":"Right"
 	},
 	{
 		"name":"Static Pikeman",
@@ -79,7 +92,7 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":2  ,"blunt":1.5,"spear":.5 ,"whip":1.5},
+		"weakWeapon":{"blade":2  ,"blunt":1  ,"spear":.5 ,"whip":.75,"powder":1.5},
 		"weakStatus":"Blind",
 		"weakDirection":"Down"
 	},
@@ -91,8 +104,20 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":.75,"blunt":2  ,"spear":.75,"whip":.5 },
+		"weakWeapon":{"blade":1  ,"blunt":1.5,"spear":.75,"whip":.5 ,"powder":2  },
 		"weakStatus":"Confuse",
+		"weakDirection":"Down"
+	},
+	{
+		"name":"Static Powderman",
+		"element":"Electric",
+		"atkWeapon":"Powder",
+		"atkStatus":"Neuro",
+		"range":1,
+		"speed":3,
+		"body":"Human",
+		"weakWeapon":{"blade":.75,"blunt":2  ,"spear":1  ,"whip":1.5,"powder":.5 },
+		"weakStatus":"Neuro",
 		"weakDirection":"Right"
 	},
 	{
@@ -103,9 +128,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":.5 ,"blunt":.75,"spear":1.5,"whip":2  },
+		"weakWeapon":{"blade":.5 ,"blunt":.75,"spear":1.5,"whip":2  ,"powder":1  },
 		"weakStatus":"Sleep",
-		"weakDirection":"Down",
+		"weakDirection":"Right",
 		"icon":"/sprites/classes/Flaming Swordsman.png"
 	},
 	{
@@ -116,9 +141,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":1.5,"blunt":.5 ,"spear":2  ,"whip":.75},
+		"weakWeapon":{"blade":1.5,"blunt":.5 ,"spear":2  ,"whip":1  ,"powder":.75},
 		"weakStatus":"Burn",
-		"weakDirection":"Up"
+		"weakDirection":"Down"
 	},
 	{
 		"name":"Flaming Pikeman",
@@ -128,9 +153,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":2  ,"blunt":1.5,"spear":.5 ,"whip":1.5},
+		"weakWeapon":{"blade":2  ,"blunt":1  ,"spear":.5 ,"whip":.75,"powder":1.5},
 		"weakStatus":"Blind",
-		"weakDirection":"Right"
+		"weakDirection":"Left"
 	},
 	{
 		"name":"Flaming Whipman",
@@ -140,8 +165,20 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":.75,"blunt":2  ,"spear":.75,"whip":.5 },
+		"weakWeapon":{"blade":1  ,"blunt":1.5,"spear":.75,"whip":.5 ,"powder":2  },
 		"weakStatus":"Confuse",
+		"weakDirection":"Up"
+	},
+	{
+		"name":"Flaming Powderman",
+		"element":"Fire",
+		"atkWeapon":"Powder",
+		"atkStatus":"Burn",
+		"range":1,
+		"speed":3,
+		"body":"Human",
+		"weakWeapon":{"blade":.75,"blunt":2  ,"spear":1  ,"whip":1.5,"powder":.5 },
+		"weakStatus":"Neuro",
 		"weakDirection":"Right"
 	},
 	{
@@ -152,9 +189,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":.5 ,"blunt":.75,"spear":1.5,"whip":2  },
+		"weakWeapon":{"blade":.5 ,"blunt":.75,"spear":1.5,"whip":2  ,"powder":1  },
 		"weakStatus":"Sleep",
-		"weakDirection":"Down"
+		"weakDirection":"Up"
 	},
 	{
 		"name":"Frosty Clubsman",
@@ -164,9 +201,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":1.5,"blunt":.5 ,"spear":2  ,"whip":.75},
+		"weakWeapon":{"blade":1.5,"blunt":.5 ,"spear":2  ,"whip":1  ,"powder":.75},
 		"weakStatus":"Burn",
-		"weakDirection":"Down"
+		"weakDirection":"Right"
 	},
 	{
 		"name":"Frosty Pikeman",
@@ -176,9 +213,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":2  ,"blunt":1.5,"spear":.5 ,"whip":1.5},
+		"weakWeapon":{"blade":2  ,"blunt":1  ,"spear":.5 ,"whip":.75,"powder":1.5},
 		"weakStatus":"Blind",
-		"weakDirection":"Down"
+		"weakDirection":"Right"
 	},
 	{
 		"name":"Frosty Whipman",
@@ -188,9 +225,21 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":.75,"blunt":2  ,"spear":.75,"whip":.5 },
+		"weakWeapon":{"blade":1  ,"blunt":1.5,"spear":.75,"whip":.5 ,"powder":2  },
 		"weakStatus":"Confuse",
-		"weakDirection":"Right"
+		"weakDirection":"Up"
+	},
+	{
+		"name":"Frosty Powderman",
+		"element":"Frost",
+		"atkWeapon":"Powder",
+		"atkStatus":"Sleep",
+		"range":1,
+		"speed":3,
+		"body":"Human",
+		"weakWeapon":{"blade":.75,"blunt":2  ,"spear":1  ,"whip":1.5,"powder":.5 },
+		"weakStatus":"Neuro",
+		"weakDirection":"Left"
 	},
 	{
 		"name":"Sonic Swordsman",
@@ -200,9 +249,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":.5 ,"blunt":.75,"spear":1.5,"whip":2  },
+		"weakWeapon":{"blade":.5 ,"blunt":.75,"spear":1.5,"whip":2  ,"powder":1  },
 		"weakStatus":"Sleep",
-		"weakDirection":"Down"
+		"weakDirection":"Up"
 	},
 	{
 		"name":"Sonic Clubsman",
@@ -212,9 +261,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":1.5,"blunt":.5 ,"spear":2  ,"whip":.75},
+		"weakWeapon":{"blade":1.5,"blunt":.5 ,"spear":2  ,"whip":1  ,"powder":.75},
 		"weakStatus":"Burn",
-		"weakDirection":"Down"
+		"weakDirection":"Right"
 	},
 	{
 		"name":"Sonic Pikeman",
@@ -224,9 +273,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":2  ,"blunt":1.5,"spear":.5 ,"whip":1.5},
+		"weakWeapon":{"blade":2  ,"blunt":1  ,"spear":.5 ,"whip":.75,"powder":1.5},
 		"weakStatus":"Blind",
-		"weakDirection":"Right"
+		"weakDirection":"Down"
 	},
 	{
 		"name":"Sonic Whipman",
@@ -236,73 +285,20 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":.75,"blunt":2  ,"spear":.75,"whip":.5 },
+		"weakWeapon":{"blade":1  ,"blunt":1.5,"spear":.75,"whip":.5 ,"powder":2  },
 		"weakStatus":"Confuse",
-		"weakDirection":"Up"
+		"weakDirection":"Left"
 	},
 	{
-		"name":"Ninja",
+		"name":"Sonic Powderman",
 		"element":"Sound",
-		"atkWeapon":"Blade",
+		"atkWeapon":"Powder",
 		"atkStatus":"Confuse",
 		"range":1,
-		"speed":5,
+		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":1 ,"blunt":.5,"spear":1.75,"whip":2  },
+		"weakWeapon":{"blade":.75,"blunt":2  ,"spear":1  ,"whip":1.5,"powder":.5 },
 		"weakStatus":"Neuro",
-		"weakDirection":"Down",
-		"icon":"/sprites/classes/Ninja.png"
-	},
-	{
-		"name":"Farmer",
-		"element":"Light",
-		"atkWeapon":"Spear",
-		"atkStatus":"Snake",
-		"range":1,
-		"speed":3,
-		"body":"Human",
-		"weakWeapon":{"blade":1.5  ,"blunt":.5,"spear":.75 ,"whip":2},
-		"weakStatus":"Blind",
-		"weakDirection":"Down",
-		"icon":"/sprites/classes/Farmer.png"
-	},
-	{
-		"name":"Umbreallaswordsman",
-		"element":"Frost",
-		"atkWeapon":"Blade",
-		"atkStatus":"Blind",
-		"range":1,
-		"speed":3,
-		"body":"Human",
-		"weakWeapon":{"blade":1.5,"blunt":.5,"spear":2 ,"whip":.5},
-		"weakStatus":"Blind",
-		"weakDirection":"Down",
-		"icon":"/sprites/classes/Umbrellaswordsman.png"
-	},
-	{
-		"name":"Yoyoer",
-		"element":"Light",
-		"atkWeapon":"Whip",
-		"atkStatus":"Sleep",
-		"range":2,
-		"speed":3,
-		"body":"Human",
-		"weakWeapon":{"blade":2,"blunt":.5,"spear":1.5 ,"whip":1},
-		"weakStatus":"Confuse",
-		"weakDirection":"Left",
-		"icfgson":"/sprites/classes/Farmer.png"
-	},
-	{
-		"name":"Pikachu Cosplayer",
-		"element":"Electric",
-		"atkWeapon":"Whip",
-		"atkStatus":"Neuro",
-		"range":2,
-		"speed":3,
-		"body":"Human",
-		"weakWeapon":{"blade":2,"blunt":1,"spear":1.5 ,"whip":.75},
-		"weakStatus":"Confuse",
-		"weakDirection":"Right",
-		"icon":"/sprites/classes/Pikachu suit.png"
-	}
+		"weakDirection":"Down"
+	},	
 ]

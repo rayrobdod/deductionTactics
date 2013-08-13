@@ -15,6 +15,8 @@ import com.rayrobdod.boardGame.{Moved}
  * @version 2012 Apr 20
  * @version 30 May 2012 - moving the tokens' moving to their starting spaces
  		until after all players are initialized
+ * @version 05 Jun 2012 - adding a sleep after tokens move in hopes that they
+ 		are done moving by the time the sleep ends
  */
 object Main extends App
 {
@@ -95,6 +97,10 @@ object Main extends App
 		
 		allTokens.foreach{_.start()}
 		players.foreach{_.start}
+		
+		// pray that the tokens have moved by the time
+		// this sleep is over
+		Thread.sleep(1000)
 		
 		new PlayerTurnCycler(players.zip(ais)).run()
 	}

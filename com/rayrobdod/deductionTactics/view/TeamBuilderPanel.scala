@@ -24,6 +24,7 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
  * @version 27 Apr 2012 - made the allTokenClassesList have a VERTICAL_WRAP oritntation, rather than the default
  * @version 01 Jun 2012 - redoing the layout; the currentSelectionList is constant Width, as are the buttons,
 			but the allTokenClassesList is variable width 
+ * @version 05 Jun 2012 - setting allTokenClassesList's visibleRowCount to 10
  */
 class TeamBuilderPanel extends JPanel
 {
@@ -39,6 +40,7 @@ class TeamBuilderPanel extends JPanel
 		setCellRenderer(TokenClassListRenderer)
 		setBackground(null)
 		setLayoutOrientation(JList.VERTICAL_WRAP)
+		setVisibleRowCount(10)
 	}
 	
 	val addButton = new JButton("←") {

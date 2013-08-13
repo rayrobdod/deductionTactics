@@ -1,4 +1,5 @@
 [
+	<?php $directions = array('Down', 'Left', 'Up', 'Right'); ?>
 	{
 		"name":"Ninja",
 		"element":"Sound",
@@ -7,7 +8,7 @@
 		"range":1,
 		"speed":5,
 		"body":"Human",
-		"weakWeapon":{"blade":1 ,"blunt":.5,"spear":1.75,"whip":2},
+		"weakWeapon":{"blade":1,"blunt":.5,"spear":1.75,"whip":2,"powder":1},
 		"weakStatus":"Neuro",
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
 		"icon":"/sprites/classes/Ninja.png"
@@ -20,7 +21,7 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":1.5 ,"blunt":.5,"spear":.75 ,"whip":2},
+		"weakWeapon":{"blade":1.5 ,"blunt":.5,"spear":.75 ,"whip":1,"powder":2},
 		"weakStatus":"Blind",
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
 		"icon":"/sprites/classes/Farmer.png"
@@ -33,7 +34,7 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":1.5,"blunt":.5,"spear":2 ,"whip":.5},
+		"weakWeapon":{"blade":1.5,"blunt":.5,"spear":2 ,"whip":.75,"powder":.5},
 		"weakStatus":"Blind",
 		"weakDirection":"Down",
 		"icon":"/sprites/classes/Umbrellaswordsman.png"
@@ -46,10 +47,10 @@
 		"range":2,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":1.5,"blunt":1,"spear":2 ,"whip":1},
+		"weakWeapon":{"blade":1.5,"blunt":1,"spear":2 ,"whip":1,"powder":.75},
 		"weakStatus":"Blind",
 		"weakDirection":"Down",
-		"icon":"/sprites/classes/Farmer.png"
+		"icon":"/sprites/classes/Umbrellaswordsman.png"
 	},
 	{
 		"name":"Pyro",
@@ -59,10 +60,10 @@
 		"range":2,
 		"speed":2,
 		"body":"Human",
-		"weakWeapon":{"blade":2,"blunt":1.5,"spear":.5 ,"whip":.5},
+		"weakWeapon":{"blade":2,"blunt":1.5,"spear":.5 ,"whip":.5,"powder":.75},
 		"weakStatus":"Neuro",
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
-		"icon":"/sprites/classes/Farmer.png"
+		"icon":"/sprites/classes/Pyro.png"
 	},
 	{
 		"name":"Torchbearer",
@@ -72,10 +73,10 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":.75,"blunt":.5,"spear":1.5 ,"whip":2},
+		"weakWeapon":{"blade":.75,"blunt":.5,"spear":1.5 ,"whip":2,"powder":1},
 		"weakStatus":"Sleep",
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
-		"icon":"/sprites/classes/Farmer.png"
+		"icon":"/sprites/classes/torchbearer.png"
 	},
 	{
 		"name":"Yoyoer",
@@ -85,10 +86,10 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":2,"blunt":.5,"spear":1.5 ,"whip":1},
+		"weakWeapon":{"blade":2,"blunt":.5,"spear":1.5,"whip":1,"powder":.75},
 		"weakStatus":"Confuse",
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
-		"icon":"/sprites/classes/Farmer.png"
+		"iconc":"/sprites/classes/Farmer.png"
 	},
 	{
 		"name":"Flashlightman",
@@ -98,23 +99,23 @@
 		"range":2,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":1,"blunt":1.5,"spear":2 ,"whip":.5},
+		"weakWeapon":{"blade":1,"blunt":1.5,"spear":2,"whip":.75,"powder":.5},
 		"weakStatus":"Confuse",
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
-		"icon":"/sprites/classes/Farmer.png"
+		"iconc":"/sprites/classes/Farmer.png"
 	},
 	{
 		"name":"Pikachu Cosplayer",
 		"element":"Electric",
 		"atkWeapon":"Whip",
-		"atkStatus":"Neurotoxin",
+		"atkStatus":"Neuro",
 		"range":2,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":{"blade":2,"blunt":1,"spear":1.5 ,"whip":.75},
+		"weakWeapon":{"blade":2,"blunt":1,"spear":1.5,"whip":.75,"powder":1},
 		"weakStatus":"Confuse",
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
-		"icon":"/sprites/classes/Farmer.png"
+		"icon":"/sprites/classes/Pikachu suit.png"
 	},
 	{
 		"name":"Entei Shirt Guy",
@@ -124,10 +125,10 @@
 		"range":1,
 		"speed":5,
 		"body":"Human",
-		"weakWeapon":{"blade":1.5,"blunt":.75,"spear":2 ,"whip":.5},
+		"weakWeapon":{"blade":1.5,"blunt":1,"spear":2 ,"whip":.5,"powder":.75},
 		"weakStatus":"Snake",
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
-		"icon":"/sprites/classes/Farmer.png"
+		"icon":"/sprites/classes/Katie's Entei shirt.png"
 	},
 	{
 		"name":"Medic",
@@ -137,9 +138,9 @@
 		"range":1,
 		"speed":3,
 		"body":"Human",
-		"weakWeapon":???,
+		"weakWeapon":{"blade":.5,"blunt":.75,"spear":2,"whip":1,"powder":1.5},
 		"weakStatus":"Confuse",
 		"weakDirection":"<?php echo $directions[rand(0,3)]?>",
-		"icon":"/sprites/classes/Farmer.png"
+		"iconc":"/sprites/classes/Farmer.png"
 	}
 ]

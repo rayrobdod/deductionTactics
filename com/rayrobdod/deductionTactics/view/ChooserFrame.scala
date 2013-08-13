@@ -17,29 +17,47 @@ import com.rayrobdod.swing.NameAndIcon
 /** 
  * @author Raymond Dodge
  * @version 06 Feb 2012
+ * @version 07 Jun 2012 - changing to use Option instead of Some
+ * @version 07 Jun 2012 - adding support for null values in the list
  */
 class NameAndIconSetterChooserFrameMaker[A <: NameAndIcon](
 			listOfItems:Seq[A],
-			setter:Function1[Some[A],Any],
+			setter:Function1[Option[A],Any],
 			panel:JPanel
 	) extends ChooserFrameMaker[A](
 			new ScalaSeqListModel[A](listOfItems),
-			new NameAndIconCellRenderer(),
+			new NameAndIconCellRenderer() {
+				override def getListCellRendererComponent(list:JList[_ <: NameAndIcon], value:NameAndIcon,
+						index:Int, isSelected:Boolean, cellHasFocus:Boolean):java.awt.Component =
+				{
+					super.getListCellRendererComponent(list,
+							if (value == null) {UnsetNameAndIcon} else {value},
+							index, isSelected, cellHasFocus)
+				}
+			},
 			new ListSelectionListener() {
 				override def valueChanged(e:ListSelectionEvent)
 				{
-					setter(Some(listOfItems(e.getFirstIndex)))
+					setter(Option(listOfItems(e.getFirstIndex)))
 					panel.repaint()
 				}
 			}
 	)
 
+object UnsetNameAndIcon extends NameAndIcon
+{
+	val name = "Unset"
+	val icon = TokenClassPanel.unknownIcon
+}
+
 /** 
  * @author Raymond Dodge
  * @version 06 Feb 2012
+ * @version 07 Jun 2012 - changing to use Option instead of Some
+ * @version 07 Jun 2012 - adding support for null values in the list
  */
 class IntSetterChooserFrameMaker(
-			setter:Function1[Some[Int],Any],
+			setter:Function1[Option[Int],Any],
 			panel:JPanel
 	) extends ChooserFrameMaker[Integer](
 			new RangeListModel(6),
@@ -47,7 +65,7 @@ class IntSetterChooserFrameMaker(
 			new ListSelectionListener() {
 				override def valueChanged(e:ListSelectionEvent)
 				{
-					setter(Some(e.getFirstIndex))
+					setter(Option(e.getFirstIndex))
 					panel.repaint()
 				}
 			}

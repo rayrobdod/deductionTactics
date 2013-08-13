@@ -24,6 +24,8 @@ import scala.collection.JavaConversions.mapAsScalaMap
  * @version 21 Aug 2011
  * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
 			to com.rayrobdod.deductionTactics
+ * @version 05 Jun 2012 - changing weakWeapon from Option[Map[Weaponkind, Float]]
+			to Map[Weaponkind, Option[Float]]
  */
 trait TokenClass
 {
@@ -49,7 +51,7 @@ trait TokenClass
 	/** When a unit is attacked from this direction, the attack is strongest */
 	def weakDirection:Option[Direction]
 	/** The weaknesses when a unit is attacked form a type of weapon */
-	def weakWeapon:Option[Map[Weaponkind,Float]]
+	def weakWeapon:Map[Weaponkind,Option[Float]]
 	/** When a unit is attacked while suffering this status, the attack is strongest */
 	def weakStatus:Option[Status]
 }

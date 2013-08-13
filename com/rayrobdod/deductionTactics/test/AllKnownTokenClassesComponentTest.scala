@@ -24,4 +24,11 @@ object AllKnownTokenClassesComponentTest extends App
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
 	frame.setSize(250,600)
 	frame.setVisible(true)
+	
+	import java.awt.event.{ComponentAdapter, ComponentEvent}
+	frame.addComponentListener(new ComponentAdapter(){
+		override def componentResized(e:ComponentEvent) {
+			e.getComponent.invalidate()
+		}
+	})
 }

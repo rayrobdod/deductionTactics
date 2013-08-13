@@ -14,6 +14,7 @@ import com.rayrobdod.swing.NameAndIcon
  * @version 02 Feb 2012 - subtrait Weaponkind now extends NameAndIcon
  * @version 27 Feb 2011 - added fileImage
  * @version 15 Apr 2012 - moving icons
+ * @version 03 Jun 2012 - adding Powderkind
  */
 object Weaponkinds
 {
@@ -32,8 +33,9 @@ object Weaponkinds
 	val Bluntkind = new Weaponkind(1, "Bluntkind", "clubman")
 	val Spearkind = new Weaponkind(2, "Spearkind", "pikeman")
 	val Whipkind  = new Weaponkind(3, "Whipkind", "whipman")
+	val Powderkind= new Weaponkind(4, "Powderkind", "powderman")
 	
-	def values = Seq[Weaponkind](Bladekind, Bluntkind, Spearkind, Whipkind)
+	def values = Seq[Weaponkind](Bladekind, Bluntkind, Spearkind, Whipkind, Powderkind)
 	def withName(s:String) = values.find{_.name.equalsIgnoreCase(s + "kind")}.get
 	def apply(x:Int) = values.find{_.id == x}.get
 }

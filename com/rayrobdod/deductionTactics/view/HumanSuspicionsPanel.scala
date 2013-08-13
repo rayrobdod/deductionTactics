@@ -24,15 +24,15 @@ import com.rayrobdod.swing.NameAndIconCellRenderer
 class HumanSuspicionsPanel(tokenClass:SuspicionsTokenClass) extends TokenClassPanel(tokenClass)
 {
 	this.atkElement.addMouseListener(new NameAndIconSetterChooserFrameMaker[Element](
-			Elements.values, tokenClass.atkElement_=_, this))
+			null +: Elements.values, tokenClass.atkElement_=_, this))
 	this.atkWeapon.addMouseListener(new NameAndIconSetterChooserFrameMaker[Weaponkind](
-			Weaponkinds.values, tokenClass.atkWeapon_=_, this))
+			null +: Weaponkinds.values, tokenClass.atkWeapon_=_, this))
 	this.atkStatus.addMouseListener(new NameAndIconSetterChooserFrameMaker[Status](
-			Statuses.values, tokenClass.atkStatus_=_, this))
+			null +: Statuses.values, tokenClass.atkStatus_=_, this))
 	this.weakStatus.addMouseListener(new NameAndIconSetterChooserFrameMaker[Status](
-			Statuses.values, tokenClass.weakStatus_=_, this))
+			null +: Statuses.values, tokenClass.weakStatus_=_, this))
 	this.weakDirection.addMouseListener(new NameAndIconSetterChooserFrameMaker[Direction](
-			Directions.values, tokenClass.weakDirection_=_, this))
+			null +: Directions.values, tokenClass.weakDirection_=_, this))
 	this.speed.addMouseListener(new IntSetterChooserFrameMaker(
 			tokenClass.speed_=_, this))
 	this.range.addMouseListener(new IntSetterChooserFrameMaker(

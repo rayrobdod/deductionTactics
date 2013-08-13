@@ -15,6 +15,8 @@ import com.rayrobdod.swing.NameAndIcon
  * @version 27 Jan 2012 - using Seq.find().get instead of Seq.filter().head
  * @version 02 Feb 2012 - subtrait Element now extends NameAndIcon
  * @version 15 Apr 2012 - moving icons
+ * @version 03 Jun 2012 - adding Heal
+ * @version 04 Jun 2012 - adding toString to Status
  */
 object Statuses
 {
@@ -23,6 +25,8 @@ object Statuses
 		lazy val icon:Icon = {
 			loadIcon(this.getClass().getResource("/com/rayrobdod/glyphs/status/" + name.toLowerCase + ".svg"))
 		}
+		
+		override def toString = "com.rayrobdod.deductionTactics.Elements." + name
 	}
 	
 	
@@ -32,8 +36,9 @@ object Statuses
 	val Confuse = new Status(3, "Confuse") // move three space or attack before player given control
 	val Neuro = new Status(4, "Neuro") // damage + move a space or attack before player given control
 	val Snake = new Status(5, "Snake") // damage + move one space per turn max
+	val Heal = new Status(6, "Heal") // undamage (given that you can't attack partners...)
 	
-	def values = Seq[Status](Sleep, Burn, Blind, Confuse, Neuro, Snake)
+	def values = Seq[Status](Sleep, Burn, Blind, Confuse, Neuro, Snake, Heal)
 	def withName(s:String) = values.find{_.name equalsIgnoreCase s}.get
 	def apply(x:Int) = values.find{_.id == x}.get
 }

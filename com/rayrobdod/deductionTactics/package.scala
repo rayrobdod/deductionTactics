@@ -29,9 +29,11 @@ import deductionTactics.Elements.Element
  * @version 27 Feb 2012 - started generateGenericIcon
  * @version 15 Apr 2012 - figured out salamander's SVGICon, so loadSVGIcon works now
  * @version 20 Apr 2012 - modifying the location of a few resources
+ * @version 03 Jun 2012 - Adding VERSION variable
  */
 package object deductionTactics
 {
+	val VERSION = "a.2.0"
 	private val ICON_DIMENSION = 32
 	
 	/**

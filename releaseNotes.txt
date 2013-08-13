@@ -1,14 +1,38 @@
 ﻿deductionTactics
 
-== 0.4.1 ==
-=== Feature ===
+== a.2.0 ==
+
+=== Major level ===
+==== Model Change ====
+‣ Turning unit classes into a service
+  ‣ no longer stored in the file unitClasses/basic.json
+  ‣ built-in classes resides in com/rayrobdod/deductionTactics/tokenClasses/*.json,
+        but see service for extending
+
+=== Minor level ===
+==== Model Change ====
+‣ Adding Weakponkind: Powderkind
+‣ Adding Status: Heal
+
+==== Interface Change ====
+‣ Adding indication about all of a class's weapon weakness values.
+‣ Allowing unsetting of suspicions
+
+==== Data Change ====
+‣ Adding more classes; 36 now, although most don't have proper icons
+‣ A few more icons for token classes
+
+
+
+== a.1.1 ==
+=== Interface Change ===
 ‣ In the battle screen, BUTTON3 click (Right click on windows) a unit selects it
   ‣ Move and attack orders now only sent by BUTTON1 (Left click for windows)
-
-=== Interface Change ===
 ‣ Changed layout of "Choose Team" panel; the current members and buttons are fixed width, while the possible members are variable width 
 
-== 0.4.0 ==
+
+
+== a.1.0 ==
 First released version
 
 ‣ There are 25 units - the 20 standard ones, plus some either showing extra

@@ -11,6 +11,8 @@ import java.awt.{GridBagLayout, GridBagConstraints, FlowLayout,
  * @version 06 Feb 2012
  * @version 27 Apr 2012 - replacing a call to setLocation to an equivalent
  		setLocationRelativeTo call
+ * @version 30 May 2012 - turning a bunch of variables into an array of arrays (credits)
+ * @version 03 Jun 2012 - Moving version to the deductionTactics package
  */
 class AboutDialog(
 		owner:Window,
@@ -20,7 +22,7 @@ class AboutDialog(
 {
 	val icon = new ImageIcon(ImageIO.read(this.getClass().getResourceAsStream("/sprites/generic/Gray shirt.png")))
 	val appName = "Deduction Tactics"
-	val version = "0.4.1"
+	val version = com.rayrobdod.deductionTactics.VERSION
 	val runningOn = "Using Java v" + System.getProperty("java.version")
 	
 	val credits = Array(

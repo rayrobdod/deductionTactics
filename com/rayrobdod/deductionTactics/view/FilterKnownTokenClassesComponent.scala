@@ -6,10 +6,12 @@ import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVe
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever}
 import com.rayrobdod.deductionTactics.{TokenClass, CannonicalTokenClass, SuspicionsTokenClass}
 import scala.collection.immutable.Seq
+import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 
 /**
  * @author Raymond Dodge
  * @version 29 Feb 2012
+ * @version 06 Jun 2012 - change due to change of weakWeapon in tokenClass
  */
 class FilterKnownTokenClassesComponent extends JPanel
 {
@@ -36,8 +38,9 @@ class FilterKnownTokenClassesComponent extends JPanel
 				(eitherIsNoneOrBothAreEqual(template.speed, tc.speed)) &&
 				
 				(eitherIsNoneOrBothAreEqual(template.weakDirection, tc.weakDirection)) &&
-				(eitherIsNoneOrBothAreEqual(template.weakWeapon, tc.weakWeapon)) &&
-				(eitherIsNoneOrBothAreEqual(template.weakStatus, tc.weakStatus))
+				(eitherIsNoneOrBothAreEqual(template.weakStatus, tc.weakStatus)) &&
+				template.weakWeapon.keys.forall{(key:Weaponkind) =>
+						eitherIsNoneOrBothAreEqual(template.weakWeapon(key), tc.weakWeapon(key))} 
 			)
 		}
 		
