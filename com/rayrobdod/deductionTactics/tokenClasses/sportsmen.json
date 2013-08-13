@@ -1,5 +1,5 @@
 [
-		{
+	{
 		"name":"Bowler",
 		"element":"Frost",
 		"atkWeapon":"Blunt",
@@ -9,7 +9,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":.75,"blunt":1,"spear":2,"whip":.5,"powder":1.5},
 		"weakStatus":"Blind",
-		"weakDirection":"Right",
+		"weakDirection":"Rand",
 		"iconc":""
 	},
 	{
@@ -22,7 +22,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":1,"blunt":2,"spear":.5,"whip":1.5,"powder":.75},
 		"weakStatus":"Blind",
-		"weakDirection":"Right",
+		"weakDirection":"Rand",
 		"iconc":""
 	},
 	{
@@ -62,7 +62,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":1.25,"blunt":1.5,"spear":2,"whip":1,"powder":.5},
 		"weakStatus":"Snake",
-		"weakDirection":"Down",
+		"weakDirection":"Rand",
 		"iconc":""
 	},
 	{
@@ -75,7 +75,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":.75,"blunt":2,"spear":1.5,"whip":.5,"powder":1},
 		"weakStatus":"Blind",
-		"weakDirection":"Left",
+		"weakDirection":"Rand",
 		"iconc":""
 	},
 	{
@@ -88,7 +88,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":.75,"blunt":.5,"spear":1.5,"whip":1,"powder":2},
 		"weakStatus":"Confuse",
-		"weakDirection":"Right",
+		"weakDirection":"Rand",
 		"iconc":""
 	},
 	{
@@ -101,8 +101,8 @@
 		"body":"Human",
 		"weakWeapon":{"blade":1.5,"blunt":.75,"spear":2,"whip":1,"powder":.5},
 		"weakStatus":"Sleep",
-		"weakDirection":"Right",
-		"icon":"/sprites/classes/RIT Hockey Player.png"
+		"weakDirection":"Rand",
+		"icon":"/com/rayrobdod/deductionTactics/tokenClasses/sportsmen/RIT Hockey Player.png"
 	},
 	{
 		"name":"Lacrosse Sticksman",
@@ -114,7 +114,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":2,"blunt":.5,"spear":1,"whip":.75,"powder":1.5},
 		"weakStatus":"Snake",
-		"weakDirection":"Right",
+		"weakDirection":"Rand",
 		"iconc":""
 	},
 	{
@@ -127,7 +127,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":.75,"blunt":1,"spear":1.5,"whip":.5,"powder":2},
 		"weakStatus":"Blind",
-		"weakDirection":"Left",
+		"weakDirection":"Rand",
 		"iconc":""
 	},
 	{
@@ -140,7 +140,7 @@
 		"body":"Human",
 		"weakWeapon":{"blade":.5,"blunt":1,"spear":2,"whip":1.5,"powder":.75},
 		"weakStatus":"Blind",
-		"weakDirection":"Right",
-		"icon":"/sprites/classes/Golfer.png"
+		"weakDirection":"Rand",
+		"icon":"/com/rayrobdod/deductionTactics/tokenClasses/sportsmen/Golfer.png"
 	},
 ]

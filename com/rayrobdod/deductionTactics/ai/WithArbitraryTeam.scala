@@ -1,0 +1,68 @@
+package com.rayrobdod.deductionTactics
+package ai
+
+import scala.util.Random
+import com.rayrobdod.boardGame.{RectangularField => Field}
+import javax.swing.{JButton, JFrame, JPanel, JLabel, JList, JTextField}
+import java.awt.event.{ActionListener, ActionEvent}
+import java.awt.BorderLayout
+
+/**
+ * A decorator for PlayerAIs. It intercepts the buildTeam command and creates
+ * a random one using the package randomTeam method
+ *
+ * @author Raymond Dodge
+ * @version 09 Jul 2012
+ * @version 12 Jul 2012 - giving seedBox a default value; changed initialize to base.initialize
+ */
+final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
+{
+	/** Forwards command to base */
+	def takeTurn(player:Player) = base.takeTurn(player)
+	/** Forwards command to base */
+	def initialize(player:Player, field:Field) = base.initialize(player, field)
+	
+	/** chooses a team randomly */
+	def buildTeam = {
+		
+		val buildingLock = new Object()
+		val seedBox = new JTextField(Random.nextInt.toString, 10)
+		val okButton = new JButton("OK")
+		
+		val frame = new JFrame() {
+			add(seedBox)
+			add(new JPanel(){add(okButton)}, BorderLayout.SOUTH)
+			setTitle("Choose Seed")
+			pack()
+			setVisible(true)
+			getRootPane.setDefaultButton(okButton)
+		}
+		
+		okButton.addActionListener(new ActionListener {
+			override def actionPerformed(e:ActionEvent) = {
+				buildingLock.synchronized { buildingLock.notifyAll }
+			}
+		})
+		
+		
+		buildingLock.synchronized {
+			frame.setVisible(true)
+			buildingLock.wait
+		}
+		
+		frame.setVisible(false)
+		ai.randomTeam(new Random(Integer.parseInt(seedBox.getText)))
+	}
+	
+	
+	
+	
+	def canEquals(other:Any) = {other.isInstanceOf[WithRandomTeam]}
+	override def equals(other:Any) = {
+		this.canEquals(other) && other.asInstanceOf[WithRandomTeam].canEquals(this) &&
+				this.base == other.asInstanceOf[WithRandomTeam].base
+	}
+	override def hashCode = base.hashCode * 7 + 23
+	
+	override def toString = this.getClass.getName
+}

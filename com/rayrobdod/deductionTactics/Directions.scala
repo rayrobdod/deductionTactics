@@ -18,7 +18,8 @@ import LoggerInitializer.{cannonicalTokenLogger => Logger}
  * @version 15 Apr 2012 - moving icons
  * @version 24 Apr 2012 - implementing Directions.Direction.toString
  * @version 27 Jun 2012 - moving the majority of CannonicalToken.BeAttackedReaction.directionMultiplier's
-			implementation to Directions.pathDirections and Directions.Direction.weaknessMultiplier 
+			implementation to Directions.pathDirections and Directions.Direction.weaknessMultiplier
+ * @version 10 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
  */
 object Directions
 {
@@ -56,6 +57,9 @@ object Directions
 					pathDirections.count(_ == strngDir)
 			val orthoCount = pathDirections.count(_ == othogDir1) -
 					pathDirections.count(_ == othogDir2)
+			import com.rayrobdod.scalaParser.IsEqualTo
+			val orthoCount2 = pathDirections.count(new IsEqualTo(othogDir1)) -
+					pathDirections.count(new IsEqualTo(othogDir2))
 			
 			import java.lang.Math.{atan2, PI, abs}		
 			val theta = abs(atan2(orthoCount, parelCount))
@@ -79,7 +83,7 @@ object Directions
 	
 	def values = Seq[Direction](Left, Up, Right, Down)
 	def withName(s:String) = values.find{_.name equalsIgnoreCase s}.get
-	def apply(x:Int) = values.find{_.id == x}.get
+	def apply(x:Int) = values(x) // values.find{_.id == x}.get
 	
 	/**
 	 * The directions one would move to go from fromSpace to toSpace

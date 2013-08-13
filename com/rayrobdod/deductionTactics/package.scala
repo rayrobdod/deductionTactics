@@ -35,7 +35,7 @@ import scala.collection.mutable.{Map => MMap}
  */
 package object deductionTactics
 {
-	val VERSION = "a.2.3"
+	val VERSION = "a.3.0"
 	private val ICON_DIMENSION = 32
 	
 	/**
@@ -105,7 +105,7 @@ package object deductionTactics
 		}
 		else
 		{
-			val fileName = tokenClass.atkWeapon.map{_.genericTokenClassFile}.getOrElse("/sprites/generic/Gray shirt.png")
+			val fileName = tokenClass.atkWeapon.map{_.genericTokenClassFile}.getOrElse("/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/Gray shirt.png")
 			//System.out.println(fileName)
 			val base = ImageIO.read(this.getClass().getResource(fileName))
 			

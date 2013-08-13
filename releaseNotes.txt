@@ -1,5 +1,20 @@
 ﻿deductionTactics
 
+== a.3.0==
+* Decorators can be applied to PlayerAIs
+	‣ Turning SwingInterfaceWithAutorecord base into WithAutorecord decorator
+	‣ Turning SwingInterfaceWithNetworkServer base into WithNetworkServer decorator
+	‣ Replacing hardcoded Viewport option into WithSwingViewport decorator
+	‣ Adding WithRandomTeam decorator
+	‣ Adding WithArbitraryTeam decorator
+
+* Moving icons from /sprites/** to /com/rayrobdod/deductionTactics/tokenClasses/**
+* Tokenclass maps can now have their "weakDirection" key set to "Rand"
+	which is changed to a real Direction at run time deterministically.
+	Thus, removing the PHP scripts whose only purpose was to do this at compile time.
+
+
+
 == a.2.3 ==
 * Renaming com.rayrobdod.deductionTactics.ai.HumanAI to
 		com.rayrobdod.deductionTactics.ai.SwingInterface
@@ -7,6 +22,8 @@
 		com.rayrobdod.deductionTactics.ai.SwingInterfaceWithAutorecord
 * Adding PlayerAI: NetworkClient
 * Adding PlayerAI: SwingInterfaceWithNetworkServer
+
+
 
 == a.2.2 ==
 ‣ Allowing observation of computer-vs-computer games

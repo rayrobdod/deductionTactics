@@ -21,6 +21,7 @@ import com.rayrobdod.commonFunctionNotation.Parser.{parse => cfnParse}
  * @author Raymond Dodge
  * @version 03 Jul 2012
  * @version 05 Jul 2012
+ * @version 12 Jul 2012 - minor notify-before-lock condition fixed
  */
 class NetworkClient extends PlayerAI
 {
@@ -37,7 +38,6 @@ class NetworkClient extends PlayerAI
 			add(new JPanel(){add(okButton)}, BorderLayout.SOUTH)
 			setTitle("Setup Connection")
 			pack()
-			setVisible(true)
 			getRootPane.setDefaultButton(okButton)
 		}
 		
@@ -47,7 +47,10 @@ class NetworkClient extends PlayerAI
 			}
 		})
 		
-		buildingLock.synchronized {buildingLock.wait}
+		buildingLock.synchronized {
+			frame.setVisible(true)
+			buildingLock.wait
+		}
 		
 		// Change to Logger
 		socket = network.otherSocket
@@ -118,8 +121,8 @@ class NetworkClient extends PlayerAI
 			nextCommand = cfnParse(nextCommandString, functions)
 			
 			player ! nextCommand
-			
 		} while (nextCommand != EndOfTurn);
+		
 		Logger.fine("Ending recieveing of commands")
 	}
 	

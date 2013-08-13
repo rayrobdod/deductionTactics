@@ -8,6 +8,7 @@ import scala.collection.immutable.Seq
 import scala.collection.mutable.Map
 import scala.collection.JavaConversions.iterableAsScalaIterable
 import java.util.ServiceLoader
+import com.rayrobdod.util.services.ClassServiceLoader
 
 /**
  * A Deduction Tactics player
@@ -77,7 +78,7 @@ abstract class PlayerAI extends Reactions.Reaction
 	def buildTeam:Seq[CannonicalTokenClass]
 	/**
 	 * Called once at the beginning of each turn.
-	 * 
+	 *  
 	 * @post the last command is {@code player ! EndTurn}
 	 */
 	def takeTurn(player:Player):Any
@@ -101,9 +102,16 @@ abstract class PlayerAI extends Reactions.Reaction
 /**
  * A service provider for getting player AIs
  * 
- * This uses (a) file(s) in the classpath at
- * "/META-INF/services/com.rayrobdod.deductionTactics.PlayerAI" that
- * contains lists of classes that extends [[com.rayrobdod.deductionTactics.PlayerAI]].
+ * There are two types of PlayerAI.
+ 
+ * The bases are listed in (a) file(s) in the classpath at
+ * "/META-INF/services/com.rayrobdod.deductionTactics.PlayerAI".
+ * The bases extends PlayerAI and have a no-arg constructor
+ 
+ * The decorators are listed in (a) file(s) in the classpath at
+ * "/META-INF/services/com.rayrobdod.deductionTactics.PlayerAIDecorator".
+ * The bases extends PlayerAI and have a one PlayerAI arg constructor
+ * 
  * @author Raymond Dodge
  * @version 21 Aug 2011
  * @version 24 Aug 2011 made service loader refer to class, not companion object
@@ -111,16 +119,25 @@ abstract class PlayerAI extends Reactions.Reaction
 			to com.rayrobdod.deductionTactics
  * @version 20 Mar 2012 - added StandardObserveAttacks, to move out of the PlayerAI class
  * @version 25 Mar 2012 - moved StandardObserveAttacks to com.rayrobdod.deductionTactics.ai
+ * @version 10 Jul 2012 - replacing long Class.forName("com. ... .PlayerAI").asInstanceOf[Class[PlayerAI]] with classOf[PlayerAI]
+ * @version 12 Jul 2012 - renaming serviceLoader and serviceSeq to baseServiceLoader and baseServiceSeq;
+ 			adding decoratorServiceLoader and decoratorServiceSeq
  */
 object PlayerAI
 {
 	/** A service loader that lists the known PlayerAIs */
-	val serviceLoader = ServiceLoader.load[PlayerAI](
-			Class.forName("com.rayrobdod.deductionTactics.PlayerAI").asInstanceOf[Class[PlayerAI]])
+	val baseServiceLoader = ServiceLoader.load[PlayerAI](classOf[PlayerAI])
 	
 	/** The values from the serviceLoader, turned into a Seq for convenience */
-	def serviceSeq:Seq[PlayerAI] = {
-		Seq.empty ++ iterableAsScalaIterable(serviceLoader)
+	def baseServiceSeq:Seq[PlayerAI] = {
+		Seq.empty ++ iterableAsScalaIterable(baseServiceLoader)
+	}
+	
+	/** A service loader that lists the known PlayerAI decorators */
+	val decoratorServiceLoader = new ClassServiceLoader[PlayerAI](classOf[PlayerAI], "com.rayrobdod.deductionTactics.PlayerAIDecorator")
+	
+	def decoratorServiceSeq:Seq[Class[_ <: PlayerAI]] = {
+		Seq.empty ++ iterableAsScalaIterable(decoratorServiceLoader)
 	}
 	
 	final def teamSize:Int = 5

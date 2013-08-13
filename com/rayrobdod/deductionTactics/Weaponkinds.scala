@@ -13,8 +13,10 @@ import com.rayrobdod.swing.NameAndIcon
  * @version 02 Feb 2012 - changed "filter{}.head" to "find{}.get"
  * @version 02 Feb 2012 - subtrait Weaponkind now extends NameAndIcon
  * @version 27 Feb 2011 - added fileImage
- * @version 15 Apr 2012 - moving icons
+ * @version 15 Apr 2012 - moving glyph icons
  * @version 03 Jun 2012 - adding Powderkind
+ * @version 09 Jul 2012 - moving tokenClass icons and attackEffect icons
+ * @version 10 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
  */
 object Weaponkinds
 {
@@ -25,8 +27,9 @@ object Weaponkinds
 					name.toLowerCase.dropRight(4) + ".svg"))
 		}
 		
-		val genericTokenClassFile = "/sprites/generic/" + classType + ".png"
-		val attackEffectFile = "/sprites/effects/" + name + " strike.png"
+		// TODO: figure out relative URLs.
+		val genericTokenClassFile = "/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/" + classType + ".png"
+		val attackEffectFile = "/com/rayrobdod/deductionTactics/tokenClasses/sprites/effects/" + name + " strike.png"
 	}
 	
 	val Bladekind = new Weaponkind(0, "Bladekind", "swordsman")
@@ -37,5 +40,5 @@ object Weaponkinds
 	
 	def values = Seq[Weaponkind](Bladekind, Bluntkind, Spearkind, Whipkind, Powderkind)
 	def withName(s:String) = values.find{_.name.equalsIgnoreCase(s + "kind")}.get
-	def apply(x:Int) = values.find{_.id == x}.get
+	def apply(x:Int) = values(x) //.find{_.id == x}.get
 }

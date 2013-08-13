@@ -17,6 +17,7 @@ import com.rayrobdod.swing.NameAndIcon
  * @version 15 Apr 2012 - moving icons
  * @version 03 Jun 2012 - adding Heal
  * @version 04 Jun 2012 - adding toString to Status
+ * @version 10 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
  */
 object Statuses
 {
@@ -40,5 +41,5 @@ object Statuses
 	
 	def values = Seq[Status](Sleep, Burn, Blind, Confuse, Neuro, Snake, Heal)
 	def withName(s:String) = values.find{_.name equalsIgnoreCase s}.get
-	def apply(x:Int) = values.find{_.id == x}.get
+	def apply(x:Int) = values(x) //.find{_.id == x}.get
 }

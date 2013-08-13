@@ -83,6 +83,10 @@ trait CannonicalTokenClass extends TokenClass
  * @version 05 Jun 2012 - changing weakWeapon from Option[Map[Weaponkind, Float]]
 			to Map[Weaponkind, Option[Float]]
  * @version 03 Jul 2012 - adding method toJSONObject
+ * @version 09 Jul 2012 - renaming a few private methods from "toXXX" to "asXXX",
+			because they convert parameters, not the object
+ * @version 09 Jul 2012 - if the map contains (weakDirection => "Rand"), an
+			arbitrary direction is chosen based on other attributes of the map. 
  */
 class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenClass
 {
@@ -93,10 +97,10 @@ class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenCl
 	override def atkElement = Some(Elements.withName(map("element").toString))
 	override def atkWeapon = Some(Weaponkinds.withName(map("atkWeapon").toString))
 	override def atkStatus = Some(Statuses.withName(map("atkStatus").toString))
-	override def range = Some(toInt(map("range")))
-	override def speed = Some(toInt(map("speed")))
-	override def weakDirection = Some(Directions.withName(map("weakDirection").toString))
-	override def weakWeapon = toWeakWeaponMap(map("weakWeapon")).mapValues{Some(_)}
+	override def range = Some(asInt(map("range")))
+	override def speed = Some(asInt(map("speed")))
+	override def weakDirection = Some(asDirection(map("weakDirection")))
+	override def weakWeapon = asWeakWeaponMap(map("weakWeapon")).mapValues{Some(_)}
 	override def weakStatus = Some(Statuses.withName(map("weakStatus").toString))
 	
 	override def icon:Icon = {
@@ -117,14 +121,14 @@ class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenCl
 	
 	
 	
-	private def toInt(any:Any):Int = {any match {
+	private def asInt(any:Any):Int = {any match {
 		case x:Int => x
 		case x:Integer => x
 		case x:String => Integer.parseInt(x)
 		case x:Any =>  Integer.parseInt(x.toString)
 	}}
 	
-	private def toFloat(any:Any):Float = {any match {
+	private def asFloat(any:Any):Float = {any match {
 		case x:Int => x.floatValue
 		case x:Long => x.floatValue
 		case x:Float => x
@@ -133,11 +137,23 @@ class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenCl
 		case x:Any => java.lang.Float.parseFloat(x.toString)
 	}}
 	
-	private def toWeakWeaponMap(any:Any):Map[Weaponkind, Float] = {any match {
+	private def asWeakWeaponMap(any:Any):Map[Weaponkind, Float] = {any match {
 		case x:scala.collection.Map[_,_] => Map.empty ++ x
 		case x:java.util.Map[_,_] => Map.empty ++ mapAsScalaMap(x)
 //		case _ => Map.empty
-	}}.map{(kindValue:Pair[_,_]) => ((Weaponkinds.withName(kindValue._1.toString), toFloat(kindValue._2)))} 
+	}}.map{(kindValue:Pair[_,_]) => ((Weaponkinds.withName(kindValue._1.toString), asFloat(kindValue._2)))}
+	
+	private def arbitraryDirection:Direction = {
+		val nameHash = this.name.hashCode
+		Directions.values((nameHash % Directions.values.length + Directions.values.length) % Directions.values.length)
+	}
+	
+	private def asDirection(any:Any):Direction = {any match {
+		case x:Direction => x
+		case "Rand" => arbitraryDirection
+		case x:String => Directions.withName(x)
+		case x:Any => asDirection(x.toString)
+	}}
 }
 
 /**
@@ -147,12 +163,15 @@ class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenCl
  * @version 06 Oct 2011 - Java7: ListModel takes type paramters now
  * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
 			to com.rayrobdod.deductionTactics
- * @version 18 Jan 2011 - modified due to changes in the JSONParser
- * @version 19 Jan 2011 - renamed from TokenClass to CannonicalTokenClass
+ * @version 18 Jan 2012 - modified due to changes in the JSONParser
+ * @version 19 Jan 2012 - renamed from TokenClass to CannonicalTokenClass
  * @version 04 Jun 2012 - making the tokens a service, instead of a fixed resource
+ * @version 12 Jul 2012 - only making a new jar file system if there isn't already one
  */
 object CannonicalTokenClass
 {
+	//TODO: use stuff in com.rayrobdod.util.services
+	
 	private val SERVICE = "com.rayrobdod.deducitonTactics.TokenClass"
 	private val PREFIX = "META-INF/services/"
 	private val fullName = PREFIX + SERVICE
@@ -161,10 +180,16 @@ object CannonicalTokenClass
 	private val listOfClassFiles = listOfClassFileFiles.map{(oneServiceFileURL:URL) =>
 		if (oneServiceFileURL.toString().startsWith("jar:"))
 		{
-			val env = new java.util.HashMap[String, String](); 
-			env.put("create", "true");
-			
-			FileSystems.newFileSystem(new java.net.URI(oneServiceFileURL.toString().split('!').apply(0)), env)
+			try {
+				val env = new java.util.HashMap[String, String]();
+				env.put("create", "true");
+				
+				FileSystems.newFileSystem(new java.net.URI(oneServiceFileURL.toString().split("!").apply(0)), env);
+			}
+			catch {
+				case e:java.nio.file.FileSystemAlreadyExistsException =>
+					{} // FileSystem exists, so it doesn't have to be made
+			}
 		}
 		
 		val oneServiceFilePath = Paths.get(oneServiceFileURL.toURI)

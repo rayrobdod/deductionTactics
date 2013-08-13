@@ -19,6 +19,7 @@ import com.rayrobdod.boardGame.{Moved}
  * @version 05 Jun 2012 - adding a sleep after tokens move in hopes that they
  		are done moving by the time the sleep ends
  * @version 28 Jun 2012 - adding a few default buttons to the startNewGame frame
+ * @version 12 Jul 2012 - removing viewpoint choosers, since PlayerAI decorators can do that now
  */
 object Main extends App
 {
@@ -28,21 +29,9 @@ object Main extends App
 	{
 		val okButton = new JButton("OK")
 		val aiChooser = new ChooseAIsComponent()
-		object viewpointChooser extends JPanel(){
-			val choosers = Seq(
-				new JCheckBox("Viewpoint Player 1"),
-				new JCheckBox("Viewpoint Player 2")
-			)
-			
-			choosers.foreach{this.add(_)}
-			def showExtraFrames = choosers.map(_.isSelected)
-		}
 		
 		val aiChooserFrame = new JFrame("Choose PlayerTypes")
-		aiChooserFrame.getContentPane.add(new JPanel(new BorderLayout){
-			add(aiChooser)
-			add(viewpointChooser, borderSouth)
-		})
+		aiChooserFrame.getContentPane.add(aiChooser)
 		aiChooserFrame.getContentPane.add(okButton, borderSouth)
 		aiChooserFrame.getRootPane.setDefaultButton(okButton);
 
@@ -50,7 +39,7 @@ object Main extends App
 		okButton.addActionListener(ActionListener{(e:ActionEvent) =>
 			aiChooserFrame.setVisible(false)
 			new Thread(new Runnable{
-				def run = buildTeams(aiChooser.getAIs, viewpointChooser.showExtraFrames)
+				def run = buildTeams(aiChooser.getAIs)
 			}, "build teams").start()
 		})
 		
@@ -58,7 +47,7 @@ object Main extends App
 		aiChooserFrame.setVisible(true)
 	}
 	
-	private def buildTeams(ais:Seq[PlayerAI], viewpoints:Seq[Boolean])
+	private def buildTeams(ais:Seq[PlayerAI])
 	{
 		val tokenClasses = ais.map{_.buildTeam}
 		val canonTokens = tokenClasses.map{_.map{new CannonicalToken(_)}}
@@ -99,7 +88,7 @@ object Main extends App
 			x.reactions += new UnselectOtherTokens(x,allTokens) 
 		}}
 		
-		// TODO: make dinamic and map based
+		// TODO: make dynamic and map based
 		canonTokens(0)(0) ! Moved(field.space(1,1),true)
 		canonTokens(0)(1) ! Moved(field.space(1,3),true)
 		canonTokens(0)(2) ! Moved(field.space(1,5),true)
@@ -114,17 +103,9 @@ object Main extends App
 		allTokens.foreach{_.start()}
 		players.foreach{_.start()}
 		
-		// pray that the tokens have moved by the time
-		// this sleep is over
+		// pray that the tokens have moved by the time this sleep is over
+		// TODO: Figure out what the delay is for, if anything
 		Thread.sleep(1000)
-		
-		playerListOfTokens.zip(viewpoints).filter{_._2}.map{_._1}.foreach{(tokens:PlayerListOfTokens) => 
-			new JFrame("Deduction Tactics - Observer"){
-				add(new BoardGamePanel(tokens, field))
-				pack()
-				setVisible(true)
-			}
-		}
 		
 		// run, meaning this returns when PlayerTurnCycler returns
 		new PlayerTurnCycler(players.zip(ais)).run()

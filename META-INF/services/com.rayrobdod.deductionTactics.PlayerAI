@@ -1,6 +1,9 @@
+# Interfaces the player can use
 com.rayrobdod.deductionTactics.ai.SwingInterface
-com.rayrobdod.deductionTactics.ai.SwingInterfaceWithAutorecord
-com.rayrobdod.deductionTactics.ai.SwingInterfaceWithNetworkServer
+
+# Computer opponents
 com.rayrobdod.deductionTactics.ai.BlindAttackAI
 com.rayrobdod.deductionTactics.ai.SleepAbuserAI
+
+# A network client that recieves commands over the net
 com.rayrobdod.deductionTactics.ai.NetworkClient

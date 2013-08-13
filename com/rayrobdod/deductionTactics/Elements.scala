@@ -17,6 +17,7 @@ import com.rayrobdod.deductionTactics.LoggerInitializer.{elementsLogger => logge
  * @version 15 Feb 2012 - implementing Element.toString
  * @version 27 Feb 2012 - adding Element.color
  * @version 15 Apr 2012 - moving icons
+ * @version 11 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
  */
 object Elements
 {
@@ -66,5 +67,5 @@ object Elements
 	
 	def values = Seq[Element](Light, Electric, Fire, Frost, Sound)
 	def withName(s:String) = values.find{_.name equalsIgnoreCase s}.get
-	def apply(x:Int) = values.find{_.id == x}.get
+	def apply(x:Int) = values(x) //.find{_.id == x}.get
 }

@@ -70,7 +70,7 @@
 		"weakWeapon":{"blade":.5 ,"blunt":.75,"spear":1.5,"whip":2  ,"powder":1  },
 		"weakStatus":"Sleep",
 		"weakDirection":"Left",
-		"icon":"/sprites/classes/Static Swordsman.png"
+		"icon":"/com/rayrobdod/deductionTactics/tokenClasses/basic/Static Swordsman.png"
 	},
 	{
 		"name":"Static Clubsman",
@@ -131,7 +131,7 @@
 		"weakWeapon":{"blade":.5 ,"blunt":.75,"spear":1.5,"whip":2  ,"powder":1  },
 		"weakStatus":"Sleep",
 		"weakDirection":"Right",
-		"icon":"/sprites/classes/Flaming Swordsman.png"
+		"icon":"/com/rayrobdod/deductionTactics/tokenClasses/basic/Flaming Swordsman.png"
 	},
 	{
 		"name":"Flaming Clubsman",
