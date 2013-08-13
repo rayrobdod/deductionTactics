@@ -111,5 +111,5 @@ class GangUpAI extends PlayerAI
 	// arbitrary number (17)
 	override def hashCode =  41
 	
-	override def toString = this.getClass.getName + "[" + currentTargetMap + "]"
+	override def toString = this.getClass.getName //+ "[" + currentTargetMap + "]"
 }

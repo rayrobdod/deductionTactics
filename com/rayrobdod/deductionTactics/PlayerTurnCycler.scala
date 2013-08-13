@@ -2,13 +2,14 @@ package com.rayrobdod.deductionTactics
 
 import scala.swing.Reactions.Reaction
 import scala.swing.event.Event
-import scala.collection.immutable.Seq
+import scala.collection.immutable.{Seq, Set, BitSet}
 import com.rayrobdod.boardGame.{EndOfTurn, StartOfTurn}
 
 /**
  * @author Raymond Dodge
  * @version 2012 Apr 20
  * @version 2012 May 22 - adding a game ended condition (a player has run out of tokens)
+ * @version 2012 Aug 04 - modified to work with more than two players; implementing remainingPlayers
  */
 class PlayerTurnCycler(val playersAndAIs:Seq[(Player, PlayerAI)], var timeBetweenTurns:Int = 500) extends Runnable
 {
@@ -24,14 +25,18 @@ class PlayerTurnCycler(val playersAndAIs:Seq[(Player, PlayerAI)], var timeBetwee
 			p.reactions += new EndOfTurnNotification(lock)
 		}}.tupled)
 		
-		var i:Int = 0;
+		var i:Int = 0
 		while(gameContinues)
 		{
+//			System.out.println(i)
 			doPlayerTurn(players(i), ais(i), endOfTurnLocks(i))
-			i = (i + 1) % players.length
+			i = remainingPlayers.filter{_>i}.headOption.getOrElse{remainingPlayers.head}
+//			System.out.println(i)
 			
-			gameContinues = !players(i).tokens.aliveMyTokens.isEmpty
+			gameContinues = remainingPlayers.size > 1
 		}
+		
+		remainingPlayers.foreach{players(_) ! Victory}
 	}
 	
 	private def doPlayerTurn(player:Player, ai:PlayerAI, endOfTurnLock:Object)
@@ -39,6 +44,8 @@ class PlayerTurnCycler(val playersAndAIs:Seq[(Player, PlayerAI)], var timeBetwee
 		endOfTurnLock.synchronized {
 			player ! StartOfTurn
 			ai.takeTurn(player)
+			// Won't work until `player.reactions.+=(ai)` (Main.scala : 71) works.
+			//player ! DoAI(player)
 			endOfTurnLock.wait
 		}
 	}
@@ -55,5 +62,11 @@ class PlayerTurnCycler(val playersAndAIs:Seq[(Player, PlayerAI)], var timeBetwee
 			case EndOfTurn => true
 			case _ => false
 		}}
+	}
+	
+	def remainingPlayers:Set[Int] = {
+		val t:ListOfTokens = playersAndAIs(0)._1.tokens
+		
+		BitSet.empty ++ t.aliveTokens.zipWithIndex.filter{_._1.length != 0}.map{_._2}
 	}
 }

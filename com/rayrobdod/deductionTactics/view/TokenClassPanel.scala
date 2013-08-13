@@ -45,18 +45,18 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel
 	val weakStatus = new JLabel(tokenClass.weakStatus.map(getIcon).getOrElse(TokenClassPanel.unknownIcon))
 	val weakDirection = new JLabel(tokenClass.weakDirection.map(getIcon).getOrElse(TokenClassPanel.unknownIcon))
 	
-	val atkRow = new JPanel(){
-		add(atkElement)
-		add(atkWeapon)
-		add(atkStatus)
-		setBackground(null)
-	}
-	val weakRow = new JPanel(){
-		add(weakDirection)
-		add(weakWeapon)
-		add(weakStatus)
-		setBackground(null)
-	}
+	val atkRow = new JPanel()
+	atkRow.add(atkElement)
+	atkRow.add(atkWeapon)
+	atkRow.add(atkStatus)
+	atkRow.setBackground(null)
+	
+	val weakRow = new JPanel()
+	weakRow.add(weakDirection)
+	weakRow.add(weakWeapon)
+	weakRow.add(weakStatus)
+	weakRow.setBackground(null)
+	
 	val weaponWeakPanel = new JPanel(new java.awt.GridLayout(5,1)){
 		val addends = Weaponkinds.values.map{(e:Weaponkind) => 
 			new JProgressBar(new TokenClassPanel.TokenWeakRangeModel(tokenClass, e)){
@@ -116,14 +116,12 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel
 		super.paint(g)
 	}
 	
-	def getWeakWeaponIcon() = {
+	private def getWeakWeaponIcon() = {
 		val maxWeakness = tokenClass.weakWeapon.map{_._2.getOrElse(0f)}.max
-		if (maxWeakness == 0f)
-		{
+		
+		if (maxWeakness == 0f) {
 			TokenClassPanel.unknownIcon
-		}
-		else
-		{
+		} else {
 			tokenClass.weakWeapon.maxBy{_._2.getOrElse(0f)}._1.icon
 		}
 	}

@@ -1,9 +1,26 @@
 ﻿deductionTactics
 
+== a.3.2 ==
+‣ Adding tokenclass icons
+  > Bluebird, Cardinal, Eagle, Crow, Falcon, Turkey
+‣ Selecting a token will cause it's side panel to scroll into view
+‣ WithNetworkServer and NetworkClient AIs can control multiple players now.
+‣ The "View Classes…" dialog now includes multiple views for displaying
+		tokenclass information.
+  > Todo: get that type of information display choice everywhere else
+‣ Adding Player AI Decorator: WithConsoleViewport
+
+
 == a.3.1 ==
 ‣ Adding tokenclasses
+  > The birds
 ‣ Adding tokenclass icons
-‣ Adding Base AI  -  GangUpAI
+  > Remaining Swordsmen generics
+  > Clubmen generics
+  > Pitcher
+  > Penguin
+‣ Adding Base AI
+  > GangUpAI
 
 ‣ Fixed the About Dialog, which broke due to moved image resources
 ‣ WithArbitraryTeam's frame now uses a JFormattedTextBox instead of a JTextBox

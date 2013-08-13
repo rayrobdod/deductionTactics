@@ -29,6 +29,7 @@ import java.util.logging.Level
  */
 class BlindAttackAI extends PlayerAI
 {
+	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
 	def buildTeam = randomTeam()
 	
 	def takeTurn(player:Player):Any =

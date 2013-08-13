@@ -9,7 +9,7 @@
 	"weakWeapon":{"blade":.75,"blunt":2,"spear":1,"whip":1.5,"powder":.5},
 	"weakStatus":"Sleep",
 	"weakDirection":"Rand",
-	"iconc":""
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Golden Eagle.png"
 },{
 	"name":"Falcon",
 	"element":"Electric",
@@ -21,7 +21,7 @@
 	"weakWeapon":{"blade":1,"blunt":2,"spear":.75,"whip":1.5,"powder":.5},
 	"weakStatus":"Blind",
 	"weakDirection":"Rand",
-	"iconc":""
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Peregrine Falcon.png"
 },{
 	"name":"Penguin",
 	"element":"Frost",
@@ -45,7 +45,7 @@
 	"weakWeapon":{"blade":1,"blunt":2,"spear":.75,"whip":1.5,"powder":.5},
 	"weakStatus":"Burn",
 	"weakDirection":"Rand",
-	"iconc":""
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Wild Turkey.png"
 },{
 	"name":"Bluebird",
 	"element":"Sound", "comment":"songbird, yes?",
@@ -57,7 +57,7 @@
 	"weakWeapon":{"blade":1,"blunt":1.5,"spear":.75,"whip":2,"powder":.5},
 	"weakStatus":"Confuse",
 	"weakDirection":"Rand",
-	"iconc":""
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Eastern Bluebird.png"
 },{
 	"name":"Cardinal",
 	"element":"Sound",
@@ -69,7 +69,7 @@
 	"weakWeapon":{"blade":1,"blunt":2,"spear":.75,"whip":1.5,"powder":.5},
 	"weakStatus":"Sleep",
 	"weakDirection":"Rand",
-	"iconc":""
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Northern Cardinal.png"
 },{
 	"name":"Crow", "comment":"and/or raven",
 	"element":"Light",
@@ -81,7 +81,7 @@
 	"weakWeapon":{"blade":1.5,"blunt":2,"spear":1,"whip":.75,"powder":.5},
 	"weakStatus":"Neuro",
 	"weakDirection":"Rand",
-	"iconc":""
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Northwestern Crow.png"
 },{
 	"name":"Parrot",
 	"element":"Sound",

@@ -12,6 +12,7 @@ import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToSeqJSONParseLis
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import java.io.{StringReader, InputStreamReader}
 import scala.collection.JavaConversions.mapAsScalaMap
+import com.rayrobdod.swing.NameAndIcon
 
 /**
  * A description of the attributes of a unit.
@@ -26,15 +27,16 @@ import scala.collection.JavaConversions.mapAsScalaMap
 			to com.rayrobdod.deductionTactics
  * @version 05 Jun 2012 - changing weakWeapon from Option[Map[Weaponkind, Float]]
 			to Map[Weaponkind, Option[Float]]
+ * @version 08 Aug 2012 - without adding any members, now extends NameAndIcon
  */
-trait TokenClass
+trait TokenClass extends NameAndIcon
 {
 	/** A class's name */
 	def name:String
 	/** An icon representing this class */
 	def icon:Icon
 	
-	/** A class's bodytype. Currently nonfunctional */
+	/** A class's bodytype. Currently doesn't affect anything */
 	def body:Option[BodyType]
 	
 	/** The element a unit attacks with. Also determines it's defenses against elements. */

@@ -20,6 +20,7 @@ import com.rayrobdod.boardGame.{Moved}
  		are done moving by the time the sleep ends
  * @version 28 Jun 2012 - adding a few default buttons to the startNewGame frame
  * @version 12 Jul 2012 - removing viewpoint choosers, since PlayerAI decorators can do that now
+ * @version 04 Aug 2012 - putting the PlayerAI.initialize(player,field) inside a loop
  */
 object Main extends App
 {
@@ -64,8 +65,11 @@ object Main extends App
 		val field = generateField
 				
 		val players = playerListOfTokens.map(new Player(_))
-		ais(0).initialize(players(0), field)
-		ais(1).initialize(players(1), field)
+		ais.zip(players).foreach({(ai:PlayerAI, player:Player) =>
+			ai.initialize(player, field)
+			// Breaks a lock or something I DON'T KNOW LEAVE ME ALONE
+			//player.reactions.+=(ai)
+		}.tupled)
 		
 		canonTokens.flatten.zip(mirrorTokens.flatten).foreach({(hisCannon:CannonicalToken, hisMirror:MirrorToken) => {
 			canonTokens.flatten.foreach{(mine:CannonicalToken) => {
@@ -104,7 +108,7 @@ object Main extends App
 		players.foreach{_.start()}
 		
 		// pray that the tokens have moved by the time this sleep is over
-		// TODO: Figure out what the delay is for, if anything
+		// This seems to solve a null pointer exception in the PlayerAI
 		Thread.sleep(1000)
 		
 		// run, meaning this returns when PlayerTurnCycler returns

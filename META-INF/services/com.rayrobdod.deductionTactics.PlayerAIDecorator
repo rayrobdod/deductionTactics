@@ -7,4 +7,6 @@ com.rayrobdod.deductionTactics.ai.WithRandomTeam
 com.rayrobdod.deductionTactics.ai.WithArbitraryTeam
 
 
+# viewports
 com.rayrobdod.deductionTactics.ai.WithSwingViewport
+com.rayrobdod.deductionTactics.ai.WithConsoleViewport

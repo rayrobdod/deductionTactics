@@ -43,11 +43,11 @@ private[deductionTactics] object LoggerInitializer
 	val networkServerLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.SwingInterfaceWithNetworkServer")
 	networkServerLogger.addHandler(finerConsoleHander)
-	networkServerLogger.setLevel(Level.WARNING)
+	networkServerLogger.setLevel(Level.FINER)
 	
 	val networkClientLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.NetworkClient")
 	networkClientLogger.addHandler(finerConsoleHander)
-	networkClientLogger.setLevel(Level.WARNING)
+	networkClientLogger.setLevel(Level.FINER)
 	
 }

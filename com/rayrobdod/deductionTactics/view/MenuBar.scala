@@ -8,7 +8,7 @@ import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVe
 import javax.swing.KeyStroke.{getKeyStroke => KeyStroke}
 import javax.swing.SwingUtilities.getWindowAncestor
 import com.rayrobdod.deductionTactics.SuspicionsTokenClass
-import java.awt.BorderLayout.NORTH
+import java.awt.BorderLayout.{NORTH, SOUTH}
 		
 /**
  * @author Raymond Dodge
@@ -16,6 +16,7 @@ import java.awt.BorderLayout.NORTH
  * @version 13 Feb 2012 - discovered some useful things in {@link javax.swing.SwingUtilities}, so this doesn't need parameters anymore
  * @version 20 Apr 2012 - Adding action to new game
  * @version 20 Apr 2012 - reducing repetion by creating MyMenuItem and adding those instead of having each MenuItem be a new anonymous class
+ * @version 14 Aug 2012 - modifying the "View Classes…" frame to include a TokenClassPanelTypeSelector
  */
 class MenuBar() extends JMenuBar
 {
@@ -49,13 +50,15 @@ class MenuBar() extends JMenuBar
 		
 		add(new MyMenuItem("View Classes…", 'c', new ActionListener{
 				def actionPerformed(e:ActionEvent) = {
-					val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this)) {
-						add(new JScrollPane(
-							new AllKnownTokenClassesComponent(),
-									scrollVerticalAsNeeded, scrollHorizontalNever))
-					}
+					val classesComp = new AllKnownTokenClassesComponent()
+					val classesPane = new JScrollPane(classesComp,
+									scrollVerticalAsNeeded, scrollHorizontalNever)
+					
+					val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
+					frame.add(classesPane)
+					frame.add(new TokenClassPanelTypeSelector(classesComp), SOUTH)
 					frame.setTitle("Known Classes - Deduction Tactics")
-					frame.setSize(225,600)
+					frame.pack()
 					frame.setVisible(true)
 				}
 			})

@@ -3,11 +3,13 @@ package com.rayrobdod.deductionTactics.ai
 import scala.collection.immutable.Seq
 import scala.collection.mutable.{Map => MMap}
 import com.rayrobdod.boardGame.{StartOfTurn, EndOfTurn, Moved, Space}
-import com.rayrobdod.deductionTactics.{PlayerAI, Player, Token, RequestMove}
+import com.rayrobdod.deductionTactics.{PlayerAI, Player, Token, RequestMove, Victory}
 import java.awt.event.{ActionListener, ActionEvent}
 import javax.swing.{JButton, JFrame, JPanel, JLabel, JList}
 import java.awt.BorderLayout
 import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace}
+import scala.swing.Reactions.Reaction
+import scala.swing.event.Event
 
 import com.rayrobdod.deductionTactics.view.{
 			BoardGamePanel,
@@ -17,7 +19,8 @@ import com.rayrobdod.deductionTactics.view.{
 			MoveTokenMouseListener,
 			MenuBar,
 			SellectAttackTypePanel,
-			SelectTokenOnSpaceMouseListener
+			SelectTokenOnSpaceMouseListener,
+			InputFrame
 }
 
 /**
@@ -36,6 +39,8 @@ import com.rayrobdod.deductionTactics.view.{
 			now can choose between status and damage attacks.
  * @version 30 May 2012 - now repaints frame after modifying it
  * @version 03 Jul 2012 - renamed from HumanAI to SwingInterface
+ * @version 04 Aug 2012 - replacing an annonymous inner class with an instance of InputFrame
+ * @version 04 Aug 2012 - failed attempt to make a victory display
  */
 sealed class SwingInterface extends PlayerAI
 {
@@ -54,8 +59,6 @@ sealed class SwingInterface extends PlayerAI
 		frame.setJMenuBar(new MenuBar)
 		frame.getContentPane add panel
 		
-		tokens.tokens.flatten.foreach{(x:Token) => x ! Moved(x.currentSpace, true)}
-		
 		val attackTypeSelector = new SellectAttackTypePanel()
 
 		tokens.tokens.flatten.foreach{(x:Token) => x.reactions += new HighlightMovableSpacesReaction(x, panel, player.tokens)}
@@ -71,6 +74,26 @@ sealed class SwingInterface extends PlayerAI
 			player ! EndOfTurn
 		})
 		
+		player.reactions += new Reaction(){
+			def apply(e:Event) = {e match {
+				case Victory => {
+					// TODO: make work
+					val label = new JLabel("Victor!")
+					
+					panel.centerpiece add label
+					label.setLocation(200, 200)
+					label.setFont(label.getFont.deriveFont(24f))
+					panel.centerpiece.repaint()
+				}
+				case _ => {}
+			}}
+			
+			def isDefinedAt(e:Event) = {e match {
+				case Victory => true
+				case _ => false
+			}}
+		}
+		
 		val southPanel = new JPanel()
 		southPanel.add(attackTypeSelector)
 		southPanel.add(endOfTurnButton)
@@ -84,24 +107,18 @@ sealed class SwingInterface extends PlayerAI
 	def buildTeam = {
 		val buildingLock = new Object()
 		val teamBuilder = new TeamBuilderPanel()
-		val okButton = new JButton("OK")
 		
-		val frame = new JFrame() {
-			add(teamBuilder)
-			add(new JPanel(){add(okButton)}, BorderLayout.SOUTH)
-			setTitle("Choose Team")
-			setSize(400, 600)
-			setVisible(true)
-			getRootPane.setDefaultButton(okButton)
-		}
-		
-		okButton.addActionListener(new ActionListener {
+		val frame = new InputFrame("Choose Team", teamBuilder, new ActionListener {
 			override def actionPerformed(e:ActionEvent) = {
 				buildingLock.synchronized { buildingLock.notifyAll }
 			}
 		})
 		
-		buildingLock.synchronized {buildingLock.wait}
+		buildingLock.synchronized
+		{
+			frame.setVisible(true)
+			buildingLock.wait
+		}
 		
 		frame.setVisible(false)
 		teamBuilder.currentSelection
@@ -120,13 +137,3 @@ sealed class SwingInterface extends PlayerAI
 	
 	override def toString = this.getClass.getName
 }
-
-/**
- * An object that extends the class and provides no further
- * funtionality.
- * @author Raymond Dodge
- * @version 22 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics.ai
- */
-object HumanAI extends SwingInterface

@@ -3,7 +3,7 @@ package ai
 
 import scala.collection.immutable.{Seq => ISeq, Map}
 import scala.collection.mutable.{Set => MSet}
-import com.rayrobdod.deductionTactics.view.NetworkClientSetupPanel
+import com.rayrobdod.deductionTactics.view.{NetworkClientSetupPanel, InputFrame}
 import javax.swing.{JButton, JFrame, JPanel, JLabel, JList}
 import java.awt.BorderLayout
 import java.awt.event.{ActionListener, ActionEvent}
@@ -15,6 +15,7 @@ import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToSeqJSONParseLis
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import com.rayrobdod.deductionTactics.LoggerInitializer.{networkClientLogger => Logger}
 import com.rayrobdod.commonFunctionNotation.Parser.{parse => cfnParse}
+import scala.parallel.Future
 
 /**
  * 
@@ -22,26 +23,19 @@ import com.rayrobdod.commonFunctionNotation.Parser.{parse => cfnParse}
  * @version 03 Jul 2012
  * @version 05 Jul 2012
  * @version 12 Jul 2012 - minor notify-before-lock condition fixed
+ * @version 03 Aug 2012 - replacing an annonymous inner class with an instance of InputFrame
+ * @version 09 Aug 2012 - changed a line of logging to show the recived tokenclass
+ * @version 09 Aug 2012 - Instead of collecting values in a MSet in a range's foreach function,
+ 			using the same range's map function instead
+ * @version 10 Aug 2012 - removing instance variables in exchange for `TokenClassWithHiddenData`
  */
 class NetworkClient extends PlayerAI
 {
-	var socket = new Socket()
-	var field:Field = null
-	
 	def buildTeam = {
 		val buildingLock = new Object()
 		val network = new NetworkClientSetupPanel()
-		val okButton = new JButton("OK")
 		
-		val frame = new JFrame() {
-			add(network)
-			add(new JPanel(){add(okButton)}, BorderLayout.SOUTH)
-			setTitle("Setup Connection")
-			pack()
-			getRootPane.setDefaultButton(okButton)
-		}
-		
-		okButton.addActionListener(new ActionListener {
+		val frame = new InputFrame("Setup Connection", network, new ActionListener {
 			override def actionPerformed(e:ActionEvent) = {
 				buildingLock.synchronized { buildingLock.notifyAll }
 			}
@@ -52,9 +46,8 @@ class NetworkClient extends PlayerAI
 			buildingLock.wait
 		}
 		
-		// Change to Logger
-		socket = network.otherSocket
-		System.out.println(socket)
+		val socket = network.otherSocket
+		Logger.fine(socket.toString)
 		
 		{
 			val in = new Scanner(socket.getInputStream)
@@ -76,29 +69,27 @@ class NetworkClient extends PlayerAI
 		
 		frame.setVisible(false)
 		
-		val tokenClasses = MSet.empty[CannonicalTokenClass]
-		
 		{
 			val in = new Scanner(socket.getInputStream)
 			val jsonListener = new ToSeqJSONParseListener()
 			val count = Integer.parseInt(in.nextLine().trim())
 			Logger.finer("Got a count: " + count)
 			
-			(1 to count).foreach{(i:Int) =>
+			(1 to count).map{(i:Int) =>
 				val line = in.nextLine
-				Logger.finer("Reading an instance of TokenClass")
+				Logger.finer("Reading an instance of TokenClass: " + line)
 				JSONParser.parse(jsonListener, line)// new InputStreamReader(socket.getInputStream))
 				
 				Logger.finer("Got an instance of TokenClass")
-				tokenClasses += new CannonicalTokenClassFromMap(jsonListener.resultMap)
-			}
+				new CannonicalTokenClassFromMap(jsonListener.resultMap)
+			}.map{new TokenClassWithHiddenData(_, in)}
 		}
-		
-		ISeq.empty ++ tokenClasses
 	}
 	
 	def takeTurn(player:Player):Any = {
-		// TODO: read commands
+		val (field, in) = player.tokens.myTokens.head.tokenClass match {
+			case x:TokenClassWithHiddenData => (( x.field(), x.in ))
+		}
 		
 		val functions = Map(
 			"EndOfTurn" -> {() => EndOfTurn},
@@ -110,7 +101,6 @@ class NetworkClient extends PlayerAI
 			"RequestAttackForStatus" -> {(m:CannonicalToken, o:MirrorToken) => RequestAttackForDamage(m,o)}
 		)
 		
-		val in = new Scanner(socket.getInputStream)
 		// I could do this with Streams, but I'd rather a more real-time observation
 		// stream.takeWhile{_ != EndOfTurn}.foreach{player ! _}
 		var nextCommand:Any = 0;
@@ -127,7 +117,17 @@ class NetworkClient extends PlayerAI
 	}
 	
 	/** do nothing */
-	def initialize(player:Player, field:Field) = {this.field = field}
+	def initialize(player:Player, field:Field) = {
+		player.tokens.myTokens.foreach{_.tokenClass match {
+			// TODO: dig to find TokenClassWithHiddenData - else make something reusable
+			case x:TokenClassWithHiddenData => {
+				x.field.apply_=(field)
+			}
+			case _ => {
+				Logger.warning("A tokenclass without needed hidden data")
+			}
+		}}
+	}
 	
 	
 	def canEquals(other:Any) = {other.isInstanceOf[BlindAttackAI]}
@@ -139,4 +139,48 @@ class NetworkClient extends PlayerAI
 	override def hashCode = 19
 	
 	override def toString = this.getClass.getName
+	
+	
+	
+	
+	
+	private[this] class TokenClassWithHiddenData(
+			base:CannonicalTokenClass,
+			val in:Scanner
+	) extends CannonicalTokenClass
+	{
+		val field:SetFuture[Field] = new SetFuture[Field]
+		
+		
+		def name = base.name
+		def icon = base.icon
+		
+		def body = base.body
+		def atkElement = base.atkElement
+		def atkWeapon = base.atkWeapon
+		def atkStatus = base.atkStatus
+		def range = base.range
+		def speed = base.speed
+		
+		def weakDirection = base.weakDirection
+		def weakWeapon = base.weakWeapon
+		def weakStatus = base.weakStatus
+	}
+	
+	class SetFuture[A] extends Future[A]
+	{
+		private var _apply:Option[A] = None
+		def apply = {this.synchronized{
+			while (_apply == None) {this.wait}
+			_apply.get
+		}}
+		def apply_=(a:A) = {this.synchronized{
+			_apply = Some(a)
+			this.notifyAll
+		}}
+		
+		def isDone = {this.synchronized{
+			!(_apply == None)
+		}}
+	}
 }

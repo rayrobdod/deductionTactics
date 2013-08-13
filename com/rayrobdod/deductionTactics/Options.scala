@@ -11,7 +11,8 @@ import com.rayrobdod.swing.layouts.{MoveToLayout,
  * A set of options used by the program
  * @author Raymond Dodge
  * @version 29 May 2012 - only contains currentTilesheet
- * @version 24 Jul 2012 - adding movementSpeed and movementLayout 
+ * @version 24 Jul 2012 - adding movementSpeed and movementLayout
+ * @todo make observable 
  */
 object Options
 {

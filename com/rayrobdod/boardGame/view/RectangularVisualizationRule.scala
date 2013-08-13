@@ -29,6 +29,7 @@ trait RectangularVisualizationRule
 	/** the image used if the rule is matched */
 	def image:Icon
 	
+	// TODO: replace with a map of directions to SpaceConstructors
 	def center:SpaceConstructor = AnySpace
 	def north:SpaceConstructor = AnySpace
 	def south:SpaceConstructor = AnySpace
@@ -38,6 +39,7 @@ trait RectangularVisualizationRule
 	
 	def rand:Int = 1
 	
+	// TODO: turn into a Function4[Int,Int,Int,Int,Boolean]
 	def equation:String = "true"
 	
 	/** @see matches */
@@ -47,6 +49,7 @@ trait RectangularVisualizationRule
 	{
 		import RectangularVisualizationRule.{scriptEngine, buildBindings}
 		
+		// TODO: switch whether the x or y is one the plus or minus.
 		(!field.containsIndexies(x,y) || center.unapply(field.space(x,y).typeOfSpace)) &&
 			(!field.containsIndexies(x,y-1) || west.unapply(field.space(x,y-1).typeOfSpace)) &&
 			(!field.containsIndexies(x,y+1) || east.unapply(field.space(x,y+1).typeOfSpace)) &&

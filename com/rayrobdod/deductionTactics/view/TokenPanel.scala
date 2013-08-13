@@ -27,6 +27,7 @@ import java.awt.event.{MouseAdapter, MouseEvent}
  * @version 05 Apr 2012 - unbroke UpdateAct such that it will respond to stuff now
  * @version 06 Apr 2012 - apparently UpdateAct only works for my tokens and at the EndOfTurn.
  * @version 06 Apr 2012 - Somehow managed to break UpdateAct such that it only works for enemy tokens, not your own.
+ * @version 03 Aug 2012 - If the corresponding token is selected, the panel will request itself to be visible.
  */
 class TokenPanel(val token:Token) extends JPanel
 {
@@ -87,6 +88,15 @@ class TokenPanel(val token:Token) extends JPanel
 				TokenPanel.this.setBackground(if (x) {
 					new java.awt.Color(184, 207, 229)
 				}else{null})
+				
+				if (x) {
+					TokenPanel.this.scrollRectToVisible(
+						new java.awt.Rectangle(
+							new java.awt.Point(0,0),
+							TokenPanel.this.getSize()
+						)
+					)
+				}
 			}
 		}}
 		

@@ -19,12 +19,15 @@ import com.rayrobdod.animation.{AnimationIcon, ImageFrameAnimation}
  * @version 15 Dec 2011 - moved from {@code net.verizon.rayrobdod.boardGame.view} to {@code com.rayrobdod.boardGame.view}
  * @version 11 Jun 2012 - due to RectangularVisualizationRule.image being an icon now, no longer turning it into an icon before putting it in a JLabel
  * @version 11 Jun 2012 - adding attempt to recognise an animation as one, and adding a frame change listener if it is an animation
- * @version 24 Jun 2012 - adding rng as an optional paramter to the constructor, which defults to scala.util.Random$ 
+ * @version 24 Jun 2012 - adding rng as an optional paramter to the constructor, which defults to scala.util.Random$
+ * @param tilesheet the tilesheet that images to display are selected from
+ * @param field the field that this tile will represent
  */
 class FieldComponent(tilesheet:Tilesheet, field:RectangularField, rng:Random) extends JComponent
 {
 	def this(tilesheet:Tilesheet, field:RectangularField) = this(tilesheet, field, Random);
 	
+	// TODO: switch x and y
 	val points:Seq[Seq[Point]] = field.spaces.indices.map{(x:Int) => field.spaces(x).indices.map{(y:Int) => new Point(x,y)}}
 	val flatPoints:Seq[Point] = points.flatten
 	
@@ -48,6 +51,9 @@ class FieldComponent(tilesheet:Tilesheet, field:RectangularField, rng:Random) ex
 		returnValue
 	}
 	
+	/**
+	 * A map of RectangularSpaces to the JLabel that represents that RectangularSpace
+	 */
 	val spaceLabelMap:Map[RectangularSpace, JLabel] = spaces.zip(labels).toMap
 	
 	labels.foreach{this.add(_)}

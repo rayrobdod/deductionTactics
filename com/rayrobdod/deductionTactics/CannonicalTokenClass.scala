@@ -5,6 +5,7 @@ import Weaponkinds.Weaponkind
 import Statuses.Status
 import BodyTypes.{Value => BodyType}
 import Directions.Direction
+
 import javax.swing.Icon
 import scala.collection.Seq
 import scala.collection.immutable.{Map, Seq => ISeq}

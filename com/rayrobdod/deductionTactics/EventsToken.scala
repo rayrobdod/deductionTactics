@@ -22,7 +22,7 @@ case class AttackForDamage(val target:Token, val element:Element, val kind:Weapo
  */
 case class AttackForStatus(val target:Token, val status:Status, from:BoardGameSpace) extends Event
 
-// Move is in com.rayrobdod.boardGame
+// Moved is in com.rayrobdod.boardGame
 
 /**
  * A unit has run out of hitpoints

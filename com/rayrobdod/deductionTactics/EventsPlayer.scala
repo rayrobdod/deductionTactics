@@ -31,3 +31,9 @@ case class RequestMove(val attacker:CannonicalToken, val to:BoardGameSpace) exte
 
 // StartOfTurn and EndOfTurn are in com.rayrobdod.boardGame
 
+/**
+ * Sent to a player at the end of a game to indicate that it has won
+ * @author Raymond Dodge
+ * @version 4 Aug 2012
+ */
+case object Victory extends Event

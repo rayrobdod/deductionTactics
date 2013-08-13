@@ -11,7 +11,6 @@ import javax.swing.BoxLayout.{Y_AXIS => boxYAxis, X_AXIS => boxXAxis}
 import java.awt.BorderLayout
 import java.awt.event.{ActionListener, ActionEvent}
 import com.rayrobdod.deductionTactics.{PlayerAI, TokenClass, CannonicalTokenClass}
-import com.rayrobdod.deductionTactics.ai.HumanAI
 import scala.collection.immutable.Seq
 import scala.collection.JavaConversions.iterableAsScalaIterable
 

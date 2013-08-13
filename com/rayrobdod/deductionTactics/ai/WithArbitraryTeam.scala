@@ -6,6 +6,7 @@ import com.rayrobdod.boardGame.{RectangularField => Field}
 import javax.swing.{JButton, JFrame, JPanel, JLabel, JList, JFormattedTextField}
 import java.awt.event.{ActionListener, ActionEvent}
 import java.awt.BorderLayout
+import com.rayrobdod.deductionTactics.view.InputFrame
 
 /**
  * A decorator for PlayerAIs. It intercepts the buildTeam command and creates
@@ -15,6 +16,7 @@ import java.awt.BorderLayout
  * @version 09 Jul 2012
  * @version 12 Jul 2012 - giving seedBox a default value; changed initialize to base.initialize
  * @version 24 Jul 2012 - changing seedBox from being a JTextField to a JFormattedTextField
+ * @version 03 Aug 2012 - replacing an annonymous inner class with an instance of InputFrame
  */
 final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 {
@@ -30,18 +32,8 @@ final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 		
 		val seedBox = new JFormattedTextField(java.text.NumberFormat.getIntegerInstance())
 			seedBox.setValue(Random.nextInt)
-		val okButton = new JButton("OK")
 		
-		val frame = new JFrame() {
-			add(seedBox)
-			add(new JPanel(){add(okButton)}, BorderLayout.SOUTH)
-			setTitle("Choose Seed")
-			pack()
-			setVisible(true)
-			getRootPane.setDefaultButton(okButton)
-		}
-		
-		okButton.addActionListener(new ActionListener {
+		val frame = new InputFrame("Choose Seed", seedBox, new ActionListener {
 			override def actionPerformed(e:ActionEvent) = {
 				seedBox.commitEdit()
 				if (seedBox.isEditValid()) {
@@ -49,7 +41,6 @@ final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 				}
 			}
 		})
-		
 		
 		buildingLock.synchronized {
 			frame.setVisible(true)

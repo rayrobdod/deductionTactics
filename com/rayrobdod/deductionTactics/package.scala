@@ -37,9 +37,10 @@ import scala.collection.mutable.{Map => MMap}
  */
 package object deductionTactics
 {
-	val VERSION = "a.3.1"
+	val VERSION = "a.3.2"
 	private val ICON_DIMENSION = 32
 	
+	// Icon loading
 	/**
 	 * Turns an SVG file at the given URL into an icon
 	 */
@@ -67,6 +68,10 @@ package object deductionTactics
 		new ImageIcon(image32)
 	}
 	
+	/**
+	 * Turns an file at the given URL into an icon, based on the url's last
+	 * filetype extension
+	 */
 	def loadIcon(url:URL):Icon = 
 	{
 		url.getPath.split('.').last match
@@ -75,6 +80,8 @@ package object deductionTactics
 			case "png" => loadPNGIcon(url)
 		}
 	}
+	
+	// Field Generation
 	
 	def generateField:RectangularField = {
 		val letterToNameMapReader = new InputStreamReader(this.getClass().getResourceAsStream("/com/rayrobdod/deductionTactics/letterMapping.json"))
@@ -97,8 +104,11 @@ package object deductionTactics
 		RectangularField.applySCC(fieldSpaceClassConsTable)
 	}
 	
-	private[this] val genericIconCache = MMap.empty[TokenClass, ImageIcon]
 	
+	private[this] val genericIconCache = MMap.empty[TokenClass, ImageIcon]
+	/**
+	 * Creates an undetailed icon which matches some of the traits of the TokenClass
+	 */
 	def generateGenericIcon(tokenClass:TokenClass) =
 	{
 		if (genericIconCache.contains(tokenClass))
