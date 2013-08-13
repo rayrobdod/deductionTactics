@@ -32,6 +32,7 @@ import com.rayrobdod.swing.GridBagConstraintsFactory
  * @version 2013 Jun 14 - getWeakWeaponIcon only traverses the traverses weakWeapon once now
  * @version 2013 Jun 17 - putting subcomponent update stuff in "doLayout" instead of "repaint"
  * @version 2013 Jun 25 - weakWeaponPanel changed from val to object because it seems more Proguard-friendly
+ * @version 2013 Aug 08 - uses package.tokenClassNameToIcon and package.generateGenericIcon instead of token.icon
  */
 class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayout)
 {
@@ -105,7 +106,9 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 	
 	override def doLayout()
 	{
-		this.icon.setIcon(tokenClass.icon)
+		this.icon.setIcon({
+			tokenClassNameToIcon.getOrElse(tokenClass.name, generateGenericIcon(tokenClass))
+		})
 		this.name.setText(tokenClass.name)
 		this.range.setText("Range: " + tokenClass.range.getOrElse("?"))
 		this.speed.setText("Speed: " + tokenClass.speed.getOrElse("?"))
@@ -140,11 +143,6 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 
 object TokenClassPanel
 {
-	@deprecated("Use com.rayrobdod.deductionTactics.swingView.unkownIcon instead",
-			"2013 Jun 14")
-	val unknownIcon:Icon = loadIcon(this.getClass().getResource(
-			"/com/rayrobdod/glyphs/unknown.svg").toString, 32)
-	
 	class TokenWeakRangeModel(tokenClass:TokenClass, kind:Weaponkind)
 			extends DefaultBoundedRangeModel(10, 0, 5, 20)
 	{

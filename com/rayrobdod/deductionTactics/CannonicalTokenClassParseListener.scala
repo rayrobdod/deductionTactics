@@ -30,19 +30,11 @@ import com.rayrobdod.javaScriptObjectNotation.parser.JSONParseListener
 /**
  * A builder for CannonicalTokenClasses.
  * @version 2013 Jun 23
+ * @version 2013 Aug 06 - removing icon
  */
 class CannonicalTokenClassBuilder extends TokenClass {
 	var nameOpt:Option[String] = None
 	def name = nameOpt.getOrElse("???")
-	var iconLoc:Option[String] = None
-	
-	def icon = {
-		import com.rayrobdod.deductionTactics.swingView.loadIcon
-		val MAGIC_NUMBER = 32
-		
-		iconLoc.map{loadIcon(_, MAGIC_NUMBER)}.
-				getOrElse(generateGenericIcon(this))
-	}
 	
 	var body:Option[BodyType] = None
 	var atkElement:Option[Element] = None
@@ -57,7 +49,6 @@ class CannonicalTokenClassBuilder extends TokenClass {
 	
 	def clear() = {
 		nameOpt = None;
-		iconLoc = None
 		body = None;
 		atkElement = None
 		atkWeapon = None
@@ -81,7 +72,6 @@ class CannonicalTokenClassBuilder extends TokenClass {
 		try {
 			new CannonicalTokenClassBlunt (
 				CannonicalTokenClassBuilder.this.name,
-				CannonicalTokenClassBuilder.this.icon,
 				Some(CannonicalTokenClassBuilder.this.body.get),
 				Some(CannonicalTokenClassBuilder.this.atkElement.get),
 				Some(CannonicalTokenClassBuilder.this.atkWeapon.get),
@@ -117,6 +107,7 @@ object CannonicalTokenClassDecoder extends JSONDecoder[CannonicalTokenClass] {
  * When parsing a token, parses it into a CannonicalTokenClass
  * @version 2013 Jun 23
  * @version 2013 Jun 24 - internal FloadDecoder directly makes Some(Float)s now
+ * @version 2013 Aug 06 - removing icon
  */
 class CannonicalTokenClassParseListener extends JSONParseListener {
 	private val builder = new CannonicalTokenClassBuilder
@@ -144,7 +135,6 @@ class CannonicalTokenClassParseListener extends JSONParseListener {
 			try {
 				x match {
 					case "name" => builder.nameOpt = Some(value)
-					case "icon" => builder.iconLoc = Some(value)
 					case "body" => builder.body = Some(BodyTypes.withName(value))
 					case "element" => builder.atkElement = Some(Elements.withName(value))
 					case "atkWeapon" => builder.atkWeapon = Some(Weaponkinds.withName(value))

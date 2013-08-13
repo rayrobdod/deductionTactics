@@ -121,10 +121,10 @@ class TokenClassNameToIconFromBinary(sources:Seq[Path]) {
 	val map:Map[String, Icon] = {
 		val a:Seq[Seq[(String, Icon)]] = sources.map{(jsonPath:Path) =>
 			val is = Files.newInputStream(jsonPath)
+			val dis = new java.io.DataInputStream(is)
+			val count = dis.readShort()
 			
-			var values = Seq.empty[(String, Icon)]
-			
-			while (true) { // ???
+			var values = (1 to count).map{ (a) =>
 				val nameBytes = new Array[Byte](nameLength)
 				is.read(nameBytes)
 				val name = new String(nameBytes.takeWhile{_ != 0})
@@ -148,7 +148,7 @@ class TokenClassNameToIconFromBinary(sources:Seq[Path]) {
 					})
 				}
 				
-				values = values :+ ((name, icon))
+				((name, icon))
 			}
 			
 			values

@@ -6,11 +6,8 @@ import Statuses.Status
 import BodyTypes.{Value => BodyType}
 import Directions.Direction
 
-import scala.collection.Seq
-import scala.collection.immutable.{Map, Seq => ISeq}
-
 /**
- * A Token Class that gets its values from a Map.
+ * A Token Class that gets its values from a DataInput.
  * @author Raymond Dodge
  * @version 2013 Aug 06
  */
@@ -37,8 +34,6 @@ class CannonicalTokenClassFromBinary(reader:java.io.DataInput) extends Cannonica
 		((x, Some(reader.readFloat()) ))
 	}.toMap
 	
-	override def icon:javax.swing.Icon = null
-	
 	reader.skipBytes(imageLocLength)
 }
 
@@ -49,7 +44,7 @@ class CannonicalTokenClassFromBinary(reader:java.io.DataInput) extends Cannonica
  */
 object CannonicalTokenClassFromBinary {
 	val nameLength = 20;
-	val enumsLength = 8;
+	val enumsLength = 8 + (5 * 4); // 8 bytes + 5 floats
 	val imageLocLength = 80;
 	
 	val totalLength = nameLength + enumsLength + imageLocLength;

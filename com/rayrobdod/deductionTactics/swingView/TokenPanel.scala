@@ -11,12 +11,7 @@ import java.awt.{GridBagLayout, GridBagConstraints, FlowLayout}
 import com.rayrobdod.deductionTactics.Token
 
 import javax.swing.{JList, ListCellRenderer}
-import com.rayrobdod.boardGame.{BeSelected, StartOfTurn, EndOfTurn}
-import com.rayrobdod.deductionTactics.{AttackForDamage, AttackForStatus}
 import com.rayrobdod.swing.{GridBagConstraintsFactory}
-
-import scala.swing.Reactions.Reaction
-import scala.swing.event.Event
 
 import java.awt.event.{MouseAdapter, MouseEvent}
 
@@ -32,6 +27,7 @@ import java.awt.event.{MouseAdapter, MouseEvent}
  * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  * @version 29 Jan 2013 - Using the new class: com.rayrobdod.swing.GridBagConstraintsFactory
  * @version 2013 Jun 14 - using makeIconFor instead of per-class icon properties
+ * @version 2013 Aug 07 - ripples from rewriting BoardGameToken
  */
 class TokenPanel(val token:Token) extends JPanel
 {
@@ -55,42 +51,22 @@ class TokenPanel(val token:Token) extends JPanel
 	add(statusRow, GridBagConstraintsFactory( gridwidth = GridBagConstraints.REMAINDER ))
 	add(tokenClass, GridBagConstraintsFactory( gridwidth = GridBagConstraints.REMAINDER ))
 	
-	token.reactions += UpdateAct
+	token.addUpdateReaction(UpdateAct)
 	/** add to all tokens and players */
-	object UpdateAct extends Reaction
-	{
-		case object DelayedUpdate extends Event
-		
-		override def apply(e:Event) =
-		{
+	object UpdateAct extends Function0[Unit] {
+		override def apply():Unit = {
 			hitpoints.setText(token.currentHitpoints + " / " + token.maximumHitpoints)
 			status.setIcon( makeIconFor(token.currentStatus, ICON_SIZE) )
 			statusTurnsLeft.setText("" + token.currentStatusTurnsLeft)
-			
-			
-			{e match {
-				case DelayedUpdate => {}
-				case _ => token ! DelayedUpdate
-			}}
 		}
-		
-		override def isDefinedAt(e:Event) = {e match {
-			case EndOfTurn => true
-			case StartOfTurn => true
-			case AttackForDamage(target,_,_,_) => true //target == token
-			case AttackForStatus(target,_,_) => true //target == token
-			case BeSelected(_) => true
-			case DelayedUpdate => true
-			case _ => false
-		}}
 	}
 	
-	token.reactions += SelectedAct
+	token.addSelectedReaction(SelectedAct)
 	/** Add to token */
-	object SelectedAct extends Reaction
+	object SelectedAct extends Function1[Boolean, Unit]
 	{
-		override def apply(e:Event):Unit = {e match {
-			case BeSelected(x) => {
+		override def apply(x:Boolean):Unit = {
+			
 				TokenPanel.this.setBackground(if (x) {
 					new java.awt.Color(184, 207, 229)
 				} else {null})
@@ -103,20 +79,15 @@ class TokenPanel(val token:Token) extends JPanel
 						)
 					)
 				}
-			}
-		}}
-		
-		override def isDefinedAt(e:Event) = {e match {
-			case BeSelected(_) => true
-			case _ => false
-		}}
+			
+		}
 	}
 	
 	this.addMouseListener(SelectMouseListener)
 	object SelectMouseListener extends MouseAdapter
 	{
 		override def mouseClicked(e:MouseEvent) = {
-			token ! BeSelected(true)
+			token.beSelected(true)
 		}
 	}
 }
@@ -127,6 +98,7 @@ class TokenPanel(val token:Token) extends JPanel
  * @version 20 Jan 2012 - c/p and modified from TokenClassListRender
  * @version 06 Feb 2012 - made the thing's color the same as the list's prefered seleciton color
  * @version 11 Feb 2012 - renamed from TokenListRender to TokenListRenderer
+ * @version 2013 Aug 07 - ripples from rewriting BoardGameToken
  */
 object TokenListRenderer extends ListCellRenderer[Token]
 {
@@ -145,7 +117,7 @@ object TokenListRenderer extends ListCellRenderer[Token]
 			returnValue.tokenClass.atkRow.setBackground(list.getSelectionBackground)
 			returnValue.tokenClass.weakRow.setBackground(list.getSelectionBackground)
 		}
-		value ! BeSelected(isSelected)
+		value.beSelected(isSelected)
 		
 		returnValue
 	}

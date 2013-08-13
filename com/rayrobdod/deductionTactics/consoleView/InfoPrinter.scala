@@ -1,15 +1,9 @@
 package com.rayrobdod.deductionTactics.consoleView
 
 import com.rayrobdod.deductionTactics.{
-	RequestAttackForDamage,
-	RequestAttackForStatus,
-	RequestMove,
-	Token, CannonicalToken,
-	ListOfTokens
+	Token, CannonicalToken,ListOfTokens
 }
 import com.rayrobdod.boardGame.{Space, RectangularField => Field}
-import scala.swing.Reactions.Reaction
-import scala.swing.event.Event
 
 
 /**
@@ -18,30 +12,24 @@ import scala.swing.event.Event
  * @version 2012 Dec 08
  * @version 2012 Dec 17 - now gets the noun from a SupplyInfo rather than getting a Tuple2
  * @version 2012 Dec 20 - added support for SpacePrinter
+ * @version 2013 Aug 07 - ripples from rewriting Player
  */
-class InfoPrinter( allTokens:ListOfTokens, field:Field ) extends Reaction{
+class InfoPrinter(allTokens:ListOfTokens, field:Field) {
 
-	private val out:java.io.OutputStream = System.out;
+	private val out:java.io.PrintStream = System.out
 	private val spacePrinter = new SpacePrinter(allTokens)
-
-	def apply(e:Event) = {
-		val line = e match {
-			case SupplyHelp => InfoPrinter.help;
-			case SupplyInfo(a:Any, _) => a match {
-				case x:Token => { TokenPrinter(x); ""; }
-				case x:Space => { spacePrinter(x); ""; }
-				case _ => InfoPrinter.unkownItem
-			}
-			case _ => "";
-		}
-		out.write(line.getBytes)
-		out.write('\n')
+	
+	def supplyHelp:Unit = {
+		out.println(InfoPrinter.help)
 	}
 	
-	def isDefinedAt(e:Event) = e match {
-		case SupplyHelp => true
-		case SupplyInfo(_,_) => true
-		case _ => false
+	def supplyInfo(a:Any) = {
+		a match {
+			case x:Token => { TokenPrinter(x) }
+			case x:Space => { spacePrinter(x) }
+			case _ => out.print(InfoPrinter.unkownItem)
+		}
+		out.write('\n');
 	}
 }
 

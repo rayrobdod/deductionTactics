@@ -43,6 +43,8 @@ object CompileTokenClassesToBinary // extends scala.App
 		val os = Files.newOutputStream(outPath)
 		val dos = new DataOutputStream(os);
 		
+		dos.writeShort(classes.length)
+		
 		classes.map{(tclass:CannonicalTokenClass) =>
 			val name:Array[Byte] = (tclass.name.getBytes(UTF_8) ++: Seq.fill(nameLength)(0.byteValue)).toArray
 			dos.write(name, 0, nameLength);

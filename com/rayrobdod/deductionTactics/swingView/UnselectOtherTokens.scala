@@ -2,24 +2,17 @@ package com.rayrobdod.deductionTactics.swingView
 
 import com.rayrobdod.deductionTactics.Token
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.BeSelected
-import scala.swing.Reactions
-import scala.swing.event.Event
 
 /**
  * @author Raymond Dodge
  * @version 14 Feb 2012
  * @version 03 Nov 2012 - moved from com.rayrobdod.deductionTactics.test to com.rayrobdod.deductionTactics.swingView
+ * @version 2013 Aug 07 - ripples from rewriting BoardGameToken
  */
 class UnselectOtherTokens(token:Token, otherTokens:Seq[Token])
-		extends Reactions.Reaction
+		extends Function1[Boolean, Unit]
 {
-	def apply(event:Event) = {
-		(otherTokens diff Seq[Token](token)).foreach{_ ! BeSelected(false)}
+	def apply(b:Boolean):Unit = if (b) {
+		(otherTokens diff Seq[Token](token)).foreach{_.beSelected(false)}
 	}
-	
-	def isDefinedAt(e:Event) = {e match {
-		case BeSelected(true) => true
-		case _ => false
-	}}
 }

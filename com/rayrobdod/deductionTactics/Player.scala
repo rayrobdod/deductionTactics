@@ -1,14 +1,12 @@
 package com.rayrobdod.deductionTactics
 
-import scala.actors.Actor
-import scala.swing.Reactions
-import scala.swing.event.Event
-import com.rayrobdod.boardGame.{StartOfTurn, EndOfTurn, RectangularField => Field}
+import com.rayrobdod.boardGame.{RectangularField => Field, Space}
 import scala.collection.immutable.Seq
-import scala.collection.mutable.Map
+import scala.collection.mutable.{Map, Buffer}
 import scala.collection.JavaConversions.iterableAsScalaIterable
 import java.util.ServiceLoader
 import com.rayrobdod.util.services.ClassServiceLoader
+
 
 /**
  * A Deduction Tactics player
@@ -22,41 +20,38 @@ import com.rayrobdod.util.services.ClassServiceLoader
  * @version 12 Feb 2012 - made forward EndOfTurn to tokens too
  * @version 20 Mar 2012 - modified reactions for new event model
  * @version 01 Jun 2012 - disabled the debug version of the Reactions thing
+ * @version 2013 Aug 07 - complete rewrite to remove the Actor aspect
  */
-final class Player(val tokens:PlayerListOfTokens) extends Actor
+final class Player(val tokens:PlayerListOfTokens, val ai:PlayerAI)
 {
-	override def act() {
-		loop { react {
-			case x:Event => reactions(x)
-		}}
+	def takeTurn() = {
+		startTurnReaction.foreach{a => a()}
+		ai.takeTurn(this)
+		endTurnReaction.foreach{a => a()}
 	}
 	
-	/** A list of things this can do in reponse to recieving an Event in a #! */
-	val reactions:Reactions = new Reactions.Impl
-//	val reactions:Reactions = new com.rayrobdod.tmp.ReactionsWithToString
-	reactions.+=(TurnStartReaction)
-	object TurnStartReaction extends Reactions.Reaction
-	{
-		override def apply(e:Event) = {e match {
-			case StartOfTurn => {
-				Player.this ! DoAI(Player.this)
-			}
-		}}
-		override def isDefinedAt(e:Event) = {e match {
-			case StartOfTurn => true
-			case EndOfTurn => false
-			case _ => false
-		}}
-	}
+	val startTurnReaction:Buffer[Function0[Any]] = Buffer.empty
+	def addStartTurnReaction(f:Function0[Any]) = startTurnReaction += f
+	
+	val endTurnReaction:Buffer[Function0[Any]] = Buffer.empty
+	def addEndTurnReaction(f:Function0[Any]) = endTurnReaction += f
+	
+	val victoryReaction:Buffer[Function0[Any]] = Buffer.empty
+	def addVictoryReaction(f:Function0[Any]) = victoryReaction += f
+	
+	val defeatReaction:Buffer[Function0[Any]] = Buffer.empty
+	def addDefeatReaction(f:Function0[Any]) = defeatReaction += f
+	
 }
 
-/**
- * @author Raymond Dodge
- * @version 21 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- */
-case class DoAI(player:Player) extends Event
+object Player {
+	type StartTurnReactionType = Function0[Unit]
+	type EndTurnReactionType = Function0[Unit]
+	type VictoryReactionType = Function0[Unit]
+	type DefeatReactionType = Function0[Unit]
+}
+
+
 /**
  * An abstract class that provides an interface for ais to play this game.
  * Because that was easiest, this is a Reaction.
@@ -70,8 +65,9 @@ case class DoAI(player:Player) extends Event
  * @version 06 Feb 2012 - added prepareIO 
  * @version 27 Feb 2012 - adding observeStatusAttack
  * @version 20 Mar 2012 - modified reactions for new event model
+ * @version 2013 Jun 07 - no longer implements scala.swing.Reactions.Reaction
  */
-abstract class PlayerAI extends Reactions.Reaction
+abstract class PlayerAI
 {
 	/** create a team of tokens */
 	def buildTeam:Seq[CannonicalTokenClass]
@@ -87,15 +83,6 @@ abstract class PlayerAI extends Reactions.Reaction
 	 * or other such tasks.
 	 */
 	def initialize(player:Player, field:Field):Any
-	
-	final override def apply(e:Event) = e match {
-		case DoAI(x) => this.takeTurn(x)
-		case _ => {}
-	}
-	final override def isDefinedAt(e:Event) = e match {
-		case DoAI(_) => true
-		case _ => false
-	}
 }
 
 /**

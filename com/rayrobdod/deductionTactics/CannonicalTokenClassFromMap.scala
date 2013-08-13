@@ -41,6 +41,7 @@ import scala.collection.JavaConversions.mapAsJavaMap
  * @version 09 Jul 2012 - if the map contains (weakDirection => "Rand"), an
 			arbitrary direction is chosen based on other attributes of the map. 
  * @version 15 Jun 2012 - Changing "Rand" to "DontCare" - is slightly more precise
+ * @version 2013 Aug 06 - removing icon
  */
 class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenClass
 {
@@ -56,13 +57,6 @@ class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenCl
 	override def weakDirection = Some(asDirection(map("weakDirection")))
 	override def weakWeapon = asWeakWeaponMap(map("weakWeapon")).mapValues{Some(_)}
 	override def weakStatus = Some(Statuses.withName(map("weakStatus").toString))
-	
-	override def icon:Icon = {
-		if (map.contains("icon") && this.getClass().getResource(map("icon").toString) != null)
-			loadIcon(this.getClass().getResource(map("icon").toString))
-		else
-			generateGenericIcon(this)
-	}
 	
 	override def toJSONObject = new JSONObject(mapAsJavaMap(
 			map.map({(x:String, y:Any) => 

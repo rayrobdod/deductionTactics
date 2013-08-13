@@ -1,15 +1,15 @@
 package com.rayrobdod.deductionTactics
 // http://en.wikipedia.org/wiki/Blackboard_system
 
+import Elements.Element
+import Weaponkinds.Weaponkind
+import Statuses.{Status, Sleep}
 
 import scala.util.Random
 import scala.collection.immutable.Seq
-import scala.swing.Reactions.Reaction
-import scala.swing.event.Event
 import com.rayrobdod.deductionTactics.PlayerAI.teamSize
-import com.rayrobdod.boardGame.{Moved, StartOfTurn,
-		PhysicalStrikeCost, Space, TokenMovementCost}
-import com.rayrobdod.deductionTactics.Statuses.Sleep
+import com.rayrobdod.boardGame.{PhysicalStrikeCost,
+			Space, TokenMovementCost}
 import com.rayrobdod.deductionTactics.LoggerInitializer.{
 				observeMovementLogger => somLogger}
 import scala.runtime.{AbstractFunction1 => Function1}
@@ -24,6 +24,7 @@ import scala.runtime.{AbstractFunction1 => Function1}
  * @version 30 May 2012 - moved speedRangeOf and attackRangeOf from SleepAbuserAI
  * @version 2013 Jan 18 - adding logging to StandardObserveMovement
  * @version 2013 Jan 18 - speedRangeOf and attackRangeOf now contains no overlap in functionality
+ * @version 2013 Aug 07 - ripples from rewriting Player
  */
 package object ai
 {
@@ -48,45 +49,47 @@ package object ai
 	 * 
 	 * Might only need one per player. Add to enemy mirror tokens.
 	 */
-	class StandardObserveAttacks(attacker:MirrorToken) extends Function1[Event, Unit] with Reaction
+	class StandardObserveAttacks(target:MirrorToken, allTokens:ListOfTokens)
+			extends Token.StatusAttackedReactionType with Token.DamageAttackedReactionType
 	{
-		attacker.reactions += this;
-		
-		override def apply(e:Event) = {
-			val attackerSpace = e match {
-				case damage:AttackForDamage => damage.from
-				case status:AttackForStatus => status.from
-			}
-			val target = e match {
-				case damage:AttackForDamage => damage.target
-				case status:AttackForStatus => status.target
-			}
+		def apply(status:Status, attackerSpace:Space) = {
 			val targetSpace = target.currentSpace
+			val attacker = allTokens.tokens.flatten.find{_.currentSpace == attackerSpace}
 			
-			val range = attackerSpace.distanceTo(targetSpace, attacker, PhysicalStrikeCost)
-			
-			val attackerClass = attacker.tokenClass
-			
-			e match {
-				case damage:AttackForDamage => {
-					attackerClass.atkElement = Some(damage.element)
-					attackerClass.atkWeapon = Some(damage.kind)
+			attacker match {
+				case Some(attacker2:MirrorToken) => {
+					val range = attackerSpace.distanceTo(targetSpace, attacker2, PhysicalStrikeCost)
+					val attackerClass = attacker2.tokenClass
+					
+					attackerClass.atkStatus = Some(status)
+					
+					if (range > attackerClass.range.getOrElse(0)) {
+						attackerClass.range = Some(range)
+					}
 				}
-				case status:AttackForStatus => {
-					attackerClass.atkStatus = Some(status.status)
-				}
-			}
-			if (range > attackerClass.range.getOrElse(0))
-			{
-				attackerClass.range = Some(range)
+				case _ => {}
 			}
 		}
 		
-		override def isDefinedAt(e:Event) = {e match {
-			case x:AttackForDamage => true
-			case x:AttackForStatus => true
-			case _ => false
-		}}
+		def apply(element:Element, kind:Weaponkind, attackerSpace:Space) = {
+			val targetSpace = target.currentSpace
+			val attacker = allTokens.tokens.flatten.find{_.currentSpace == attackerSpace}
+			
+			attacker match {
+				case Some(attacker2:MirrorToken) => {
+					val range = attackerSpace.distanceTo(targetSpace, attacker2, PhysicalStrikeCost)
+					val attackerClass = attacker2.tokenClass
+					
+					attackerClass.atkElement = Some(element)
+					attackerClass.atkWeapon = Some(kind)
+					
+					if (range > attackerClass.range.getOrElse(0)) {
+						attackerClass.range = Some(range)
+					}
+				}
+				case _ => {}
+			}
+		}
 	}
 	
 	/**
@@ -94,30 +97,24 @@ package object ai
 	 * 
 	 * One per enemy token. Parameter is that token. Add to that token and at least one player.
 	 */
-	class StandardObserveMovement(token:MirrorToken) extends Function1[Event, Unit] with Reaction
+	class StandardObserveMovement(token:MirrorToken)
+				extends Function2[Space, Boolean, Unit] with Function0[Unit]
 	{
 		private var countThisTurn = 0;
 		
-		override def apply(e:Event) = {e match {
-			case x:Moved => {
+		override def apply():Unit = {
 				countThisTurn = countThisTurn + 1
 				somLogger.finer("Incremented token's movement");
-			}
-			case StartOfTurn => {
+		}
+		
+		override def apply(e:Space, b:Boolean) = {
 				if (countThisTurn > token.tokenClass.speed.getOrElse(0))
 				{
 					token.tokenClass.speed = Some(countThisTurn)
 					somLogger.fine("Recording token's movement: " + countThisTurn);
 				}
 				countThisTurn = 0;
-			}
-		}}
-		
-		override def isDefinedAt(e:Event) = {e match {
-			case x:Moved => true
-			case StartOfTurn => true
-			case _ => false
-		}}
+		}
 	}
 
 	

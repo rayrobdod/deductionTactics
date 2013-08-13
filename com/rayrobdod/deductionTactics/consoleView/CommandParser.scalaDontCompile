@@ -1,14 +1,9 @@
 package com.rayrobdod.deductionTactics.consoleView
 
 import com.rayrobdod.deductionTactics.{
-	RequestAttackForDamage,
-	RequestAttackForStatus,
-	RequestMove,
-	Token, CannonicalToken,
-	ListOfTokens
+	Token, CannonicalToken, ListOfTokens
 }
 import com.rayrobdod.boardGame.{Space, RectangularField => Field}
-import scala.swing.event.Event
 import java.util.regex.{Pattern, Matcher}
 
 /**
@@ -17,13 +12,13 @@ import java.util.regex.{Pattern, Matcher}
  * @author Raymond Dodge
  * @version 2012 Dec 07
  * @version 2012 Dec 08 - fixes from testing
+ * @version 2013 Aug 07 - ripples from rewriting Player
  */
 class CommandParser(tokens:ListOfTokens, field:Field) {
 	import CommandParser._;
 	private val lettersToTokens:Map[Char,Token] = tokensToLetters(tokens).map{_.swap}
 	
-	// player ! parseCommand(scanner.nextLine())
-	def parseCommand(line:String):Event = {
+	def parseCommand(line:String):Unit = {
 		val matcher = TOTAL_PATTERN.matcher(line.trim)
 		if (! matcher.matches())
 				throw new IllegalArgumentException("line doesn't match pattern.");
@@ -147,17 +142,3 @@ object CommandParser {
 	
 	private val SPACE_NUMBER_PATTERN = Pattern.compile("(\\d+)([A-Za-z]+)")
 }
-
-/**
- * @author Raymond Dodge
- * @version 2012 Dec 07
- */
-case object SupplyHelp extends Event
-
-/**
- * @author Raymond Dodge
- * @version 2012 Dec 07
- * @version 2012 Dec 17 - making a two-item case class, since I had previously
- 		and accedentally making this hold a scala.Tuple2
- */
-case class  SupplyInfo(item:Any, adjective:Any) extends Event

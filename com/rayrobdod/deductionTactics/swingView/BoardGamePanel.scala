@@ -2,8 +2,6 @@ package com.rayrobdod.deductionTactics.swingView
 
 import javax.swing.{JButton, JList, JPanel, ImageIcon,
 		DefaultListModel, JScrollPane}
-import scala.swing.Reactions.Reaction
-import scala.swing.event.Event
 import javax.imageio.ImageIO
 import java.awt.{BorderLayout, GridLayout}
 import java.awt.event.{ActionListener, ActionEvent}
@@ -40,13 +38,14 @@ import com.rayrobdod.boardGame.swingView.{TokenComponent => BGTokenComponent}
                           Includes removing centerpiece, renaming fieldComponent to centerpiece, removing tokenLayer
  * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  * @version 28 Nov 2012 - Now can show more than two players worth of tokens
+ * @version 2013 Aug 07 - ripples from rewriting BoardGameToken
  */
 class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JPanel
 {
 	setLayout(new BorderLayout)
 	
 	def tokenLayer:JPanel = centerpiece.tokenLayer
-		
+	
 	val centerpiece = 
 	{
 		import com.rayrobdod.swing.layouts.MoveToLayout
@@ -61,22 +60,12 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 //			val comp = new BGTokenComponent(t, fieldComp, layout, t.tokenClass.icon)
 			val comp = new DTTokenComponent(t, fieldComp, layout, tokens)
 			
-			t.reactions += RemoveComponentUponDeathAct
-			object RemoveComponentUponDeathAct extends Reaction
-			{
-				override def apply(e:Event) = {e match {
-					case Died() => 
-					{
+			t.addDiedReaction(RemoveComponentUponDeathAct)
+			object RemoveComponentUponDeathAct extends Function0[Unit] {
+				override def apply() = {
 						tokenLayer remove comp
 						tokenLayer.repaint()
-					}
-					case _ => {}
-				}}
-				
-				override def isDefinedAt(e:Event) = {e match {
-					case Died() => true
-					case _ => false
-				}}
+				}
 			}
 			
 			comp
@@ -107,7 +96,7 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 		
 		tokenPanels.foreach{(panel:TokenPanel) => 
 			tokens.tokens.flatten.foreach{(token:Token) =>
-				token.reactions += panel.UpdateAct
+				token.addUpdateReaction(panel.UpdateAct)
 			}
 		}
 		

@@ -1,9 +1,10 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{RectangularField => Field, StartOfTurn, EndOfTurn}
-import scala.swing.Reactions.Reaction
-import scala.swing.event.Event
+import Elements.Element
+import Weaponkinds.Weaponkind
+import Statuses.Status
+import com.rayrobdod.boardGame.{RectangularField => Field, Space}
 import javax.sound.sampled.AudioSystem
 
 /**
@@ -12,6 +13,7 @@ import javax.sound.sampled.AudioSystem
  * @author Raymond Dodge
  * @version 17 Sept 2012
  * @version 2012 Nov 30 - implementing canEquals, equals, hashCode and toString
+ * @version 2013 Aug 07 - ripples from rewriting Player
  */
 final class WithSound(val base:PlayerAI) extends PlayerAI
 {
@@ -24,7 +26,9 @@ final class WithSound(val base:PlayerAI) extends PlayerAI
 	def initialize(player:Player, field:Field) = {
 		base.initialize(player, field)
 		
-		player.tokens.tokens.flatten.foreach{_.reactions += WithSound.AttackSoundReaction}
+		player.tokens.tokens.flatten.foreach{
+				_.addDamageAttackedReaction(WithSound.AttackSoundReaction)
+		}
 	}
 	
 	
@@ -41,6 +45,10 @@ final class WithSound(val base:PlayerAI) extends PlayerAI
 
 /**
  * A container for stateless anonymous inner classes
+ *
+ * @author Raymond Dodge
+ * @version 17 Sept 2012
+ * @version 2013 Aug 07 - ripples from rewriting Player
  */
 object WithSound
 {
@@ -49,31 +57,21 @@ object WithSound
 	/**
 	 * A reaction that plays an audio clip when an action occurs.
 	 */
-	object AttackSoundReaction extends Reaction
-	{
-		def apply(e:Event) = {e match {
-			case AttackForDamage(_, element, kind, _) => {
-				// TODO: sound depends on how hard the hit was?
-				// TODO: sound depends on element and kind of attack
-				// TODO: give some units a unique attack sound (very ?)
-				
-				val fileName = PREFIX + "Hits/Hit.wav"
-				val file = this.getClass().getResource(fileName)
-				
-				val audioIS = AudioSystem.getAudioInputStream(file)
-				val audioClip = AudioSystem.getClip()
-				
-				audioClip.open(audioIS)
-				
-				audioClip.start()
-			}
-			case _ => {}
-		}}
-		
-		def isDefinedAt(e:Event) = {e match {
-			case x:AttackForDamage => true
-			case x:AttackForStatus => true
-			case _ => false
-		}}
+	object AttackSoundReaction extends Token.DamageAttackedReactionType {
+		def apply(e:Element, k:Weaponkind, s:Space):Unit = {
+			// TODO: sound depends on how hard the hit was?
+			// TODO: sound depends on element and kind of attack
+			// TODO: give some units a unique attack sound (very ?)
+			
+			val fileName = PREFIX + "Hits/Hit.wav"
+			val file = this.getClass().getResource(fileName)
+			
+			val audioIS = AudioSystem.getAudioInputStream(file)
+			val audioClip = AudioSystem.getClip()
+			
+			audioClip.open(audioIS)
+			
+			audioClip.start()
+		}
 	}
 }

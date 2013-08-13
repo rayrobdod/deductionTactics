@@ -29,44 +29,42 @@ import scala.parallel.Future
  * @version 03 Aug 2012 - replacing an annonymous inner class with an instance of InputFrame
  * @version 09 Aug 2012 - removing instance variables in exchange for `TokenClassWithHiddenData`
  * @version 2012 Nov 30 - modifying toString to include the base
+ * @version 2013 Aug 08 - removing certain parenthesis that Scala 2.11 doesn't like
  */
 class WithNetworkServer(base:PlayerAI) extends PlayerAI
 {
-	/** Forwards action to base */
-	def takeTurn(player:Player) = base.takeTurn(player)
+	var output:Option[Writer] = None
+	var player:Option[Player] = None
+	var field:Option[Field]   = None
 	
-	def initialize(player:Player, field:Field)
-	{
+	/** Forwards action to base */
+	def takeTurn(player:Player):Unit = {
+		base.takeTurn(player)
+		output.write("EndOfTurn\n")
+		output.flush();
+	}
+	
+	def initialize(player:Player, field:Field):Unit = {
 		base.initialize(player, field)
-		
-		player.tokens.myTokens.foreach{_.tokenClass match {
-			// TODO: dig to find TokenClassWithHiddenData - else make something reusable
-			case x:TokenClassWithHiddenData => {
-				x.server.field.apply_=(field)
-				x.server.player.apply_=(player)
-			}
-			case _ => {
-				Logger.finer("A tokenclass without needed hidden data")
-			}
-		}}
+		this.player = player;
+		this.field = field;
 	}
 	
 	def buildTeam = {
 		val buildingLock = new Object()
 		val network = new NetworkServerSetupPanel()
 		
-		// TODO: figure out how to combine into one frame
-		val frame = new InputFrame("Network Server", network, new ActionListener {
-			override def actionPerformed(e:ActionEvent) = {
-				buildingLock.synchronized { buildingLock.notifyAll }
-			}
-		})
-		
-		frame.setVisible(true)
-		
-		val returnValue = base.buildTeam
-		
 		buildingLock.synchronized {
+			// TODO: figure out how to combine into one frame
+			val frame = new InputFrame("Network Server", network, new ActionListener {
+				override def actionPerformed(e:ActionEvent) = {
+					buildingLock.synchronized { buildingLock.notifyAll }
+				}
+			})
+			
+			frame.setVisible(true)
+			
+			val returnValue = base.buildTeam
 			buildingLock.wait
 		}
 		
@@ -79,7 +77,6 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 		threadFactory.newThread(server).start()
 		
 		frame.setVisible(false)
-		returnValue.map{new TokenClassWithHiddenData(_,server)}
 	}
 	
 	
@@ -164,7 +161,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 				}
 				out.flush()
 				
-				player().reactions += new SendCommandsToNetworkReaction(out, player, field)
+				player.reactions += new SendCommandsToNetworkReaction(out, player, field)
 				while (true)
 				{
 					Thread.sleep(1000000)
@@ -188,7 +185,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 		{
 			val writen = convertToCFN(e)
 			
-			out.write( writen.getBytes() )
+			out.write( writen.getBytes(UTF_8) )
 			out.write('\n')
 			out.flush()
 			Logger.finer("Writing: " + writen)
@@ -221,9 +218,9 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 		def convertToCFN(e:Object):String = {e match{
 			case EndOfTurn => "EndOfTurn"
 			case x:CannonicalToken =>
-					"MyTokens(" + player().tokens.myTokens.indexOf(x) + ")"
+					"MyTokens(" + player.tokens.myTokens.indexOf(x) + ")"
 			case x:MirrorToken =>
-					"OtherTokens" + player().tokens.otherTokens.twoDIndexOf(x)
+					"OtherTokens" + player.tokens.otherTokens.twoDIndexOf(x)
 			case x:RectangularSpace =>
 					"Field" + field().spaces.twoDIndexOf(x)
 			case RequestMove(t:CannonicalToken, s:Space) =>
@@ -239,31 +236,6 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 		}}
 	}
 	
-	/**
-	 * A CannonicalTokenClass that holds data for a player
-	 * 
-	 * Forwards all calls to CannonicalTokenClass to base,
-	 * and has two other vals: socket and field
-	 */
-	private[this] class TokenClassWithHiddenData(
-			base:CannonicalTokenClass,
-			val server:StartServer
-	) extends CannonicalTokenClass
-	{
-		def name = base.name
-		def icon = base.icon
-		
-		def body = base.body
-		def atkElement = base.atkElement
-		def atkWeapon = base.atkWeapon
-		def atkStatus = base.atkStatus
-		def range = base.range
-		def speed = base.speed
-		
-		def weakDirection = base.weakDirection
-		def weakWeapon = base.weakWeapon
-		def weakStatus = base.weakStatus
-	}
 	
 	object threadFactory extends ThreadFactory
 	{
@@ -280,22 +252,5 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 			}
 			t
 		}
-	}
-	
-	class SetFuture[A] extends Future[A]
-	{
-		private var _apply:Option[A] = None
-		def apply = {this.synchronized{
-			while (_apply == None) {this.wait}
-			_apply.get
-		}}
-		def apply_=(a:A) = {this.synchronized{
-			_apply = Some(a)
-			this.notifyAll
-		}}
-		
-		def isDone = {this.synchronized{
-			!(_apply == None)
-		}}
 	}
 }

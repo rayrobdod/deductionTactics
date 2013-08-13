@@ -3,7 +3,7 @@ package ai
 
 //import com.rayrobdod.deductionTactics.{PlayerAI, Player,
 //		CannonicalTokenClass, Token, RequestAttackForDamage, RequestMove}
-import com.rayrobdod.boardGame.{EndOfTurn, Space, TokenMovementCost}
+import com.rayrobdod.boardGame.{Space, TokenMovementCost}
 import com.rayrobdod.boardGame.{RectangularField => Field}
 import scala.collection.mutable.PriorityQueue
 import LoggerInitializer.{blindAttackAILogger => Logger}
@@ -27,6 +27,7 @@ import java.util.logging.Level
  * @version 05 Apr 2012 - adding TokenCosts to Space and SpaceClass methods that now require them
  * @version 08 Apr 2012 - changed initialize to use new StandardObserveAttacks and StandardObserveMovement
  * @version 30 Jul 2012 - doesn't use any info from initialize, so removing its implementation
+ * @version 2013 Aug 07 - ripples from rewriting Player
  */
 class BlindAttackAI extends PlayerAI
 {
@@ -54,26 +55,12 @@ class BlindAttackAI extends PlayerAI
 		}
 		
 		queue.foreach({(myToken:CannonicalToken, hisToken:MirrorToken) =>
-			myToken.movementEndedLock.synchronized {
-		//		Logger.log(Level.FINEST, "I am sending a request to move to " + myToken)
-				player ! RequestMove(myToken, hisToken.currentSpace)
-				myToken.movementEndedLock.wait
-			}
-			player ! RequestAttackForDamage(myToken, hisToken)
+			myToken.requestMoveTo(hisToken.currentSpace)
+			myToken.tryAttackDamage(hisToken)
 		}.tupled)
-		
-		player ! EndOfTurn
 	}
 	
-	def initialize(player:Player, field:Field) = { /*
-		player.tokens.otherTokens.flatten.foreach{(token:MirrorToken) =>
-			token.reactions += new StandardObserveAttacks(token)
-			
-			val movement = new StandardObserveMovement(token)
-			token.reactions += movement
-			player.reactions += movement
-		}
-	*/ }
+	def initialize(player:Player, field:Field) = {}
 	
 	
 	def canEquals(other:Any) = {other.isInstanceOf[BlindAttackAI]}

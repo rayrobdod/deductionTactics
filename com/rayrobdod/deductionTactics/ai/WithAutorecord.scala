@@ -12,6 +12,7 @@ import com.rayrobdod.boardGame.{RectangularField => Field}
  * @version 03 Jul 2012 - renamed from HumanAutorecordAI to SwingInterfaceWithAutorecord
  * @version 09 Jul 2012 - renaming from SwingInterfaceWithAutorecord to WithAutorecord; making a decorator
  * @version 2012 Nov 30 - modifying toString to include the base
+ * @version 2013 Aug 07 - ripples from rewriting Player
  */
 final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 {
@@ -28,11 +29,12 @@ final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 		
 		// setup recorders
 		player.tokens.otherTokens.flatten.foreach{(token:MirrorToken) =>
-			token.reactions += new StandardObserveAttacks(token)
+			token.addDamageAttackedReaction(new StandardObserveAttacks(token, player.tokens))
+			token.addStatusAttackedReaction(new StandardObserveAttacks(token, player.tokens))
 			
 			val movement = new StandardObserveMovement(token)
-			token.reactions += movement
-			player.reactions += movement
+			token.addMoveReaction(movement)
+			player.addStartTurnReaction(movement)
 		}
 	}
 	

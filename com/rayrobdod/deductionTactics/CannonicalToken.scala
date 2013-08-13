@@ -1,19 +1,18 @@
 package com.rayrobdod.deductionTactics
 
-import scala.swing.event.Event
-import scala.swing.Reactions.Reaction
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.Status
 import BodyTypes.{Value => BodyType}
 import Directions.Direction
 import com.rayrobdod.boardGame.{Space => BoardGameSpace,
-		Token => BoardGameToken, RectangularSpace, StartOfTurn,
-		EndOfTurn, Moved, PhysicalStrikeCost, TokenMovementCost}
+		Token => BoardGameToken, RectangularSpace,
+		PhysicalStrikeCost, TokenMovementCost}
 import java.util.concurrent.ThreadLocalRandom.{current => Random}
 import LoggerInitializer.{cannonicalTokenLogger => Logger,
 			cannonicalTokenMovementLogger => MovementLogger}
 import java.util.logging.Level
+import scala.collection.mutable.Buffer
 
 /**
  * A token on the board
@@ -38,11 +37,10 @@ import java.util.logging.Level
 			implementation to Directions.pathDirections and Directions.Direction.weaknessMultiplier 
  * @version 01 Aug 2012 - Status Act will now send a Died event if applicable
  * @version 01 Aug 2012 - TurnStartReaction will no longer respond if unit is supposed to be dead
+ * @version 2013 Aug 07 - complete rewrite to get rid of Actor stuff
  */
-class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
+final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 {
-	type Space = RectangularSpace
-	
 	private var _currentHitpoints:Int = maximumHitpoints
 	def currentHitpoints:Int = _currentHitpoints
 	
@@ -54,253 +52,83 @@ class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 	
 	private var _canMoveThisTurn:Int = 0
 	def canMoveThisTurn = _canMoveThisTurn
+	
 	private var _canAttackThisTurn:Boolean = false
 	def canAttackThisTurn = _canAttackThisTurn
 	
-	
-	override def toString() = "CannonicalToken{tokenClass:" + tokenClass + ";}"
-	
-	/** add to all enemy tokens */
-	class BeAttackedReaction(myMirror:Token) extends Reaction
-	{
-		override def apply(e:Event) = {e match {
-			// first item must be "this" if Reaction contract is being upheld
-			case AttackForDamage(_, elem:Element, kind:Weaponkind, from:BoardGameSpace) =>
-			{
-				Logger.entering("com.rayrobdod.deductionTactics.CannonicalToken.BeAttackedReacion",
-						"apply", e)
-				
-				val multiplier = tokenClass.weakWeapon(kind).get *
-					(if (currentStatus == tokenClass.weakStatus) {2} else {1}) *
-					(directionMultiplier(currentSpace, from)) *
-					(tokenClass.atkElement.get.damageModifier(elem));
-					
-				val damageDone = (if (multiplier > 8) {320} else {baseDamage * multiplier}).intValue
-				
-				_currentHitpoints = _currentHitpoints - damageDone
-				
-				if (_currentHitpoints <= 0) {CannonicalToken.this ! Died()}
-			}
-			case AttackForStatus(_, stat:Status, from:BoardGameSpace) =>
-			{
-				if (_currentStatus == None)
-				{
-					_currentStatus = Some(stat)
-					_currentStatusTurnsLeft = 3
-				}
-			}
-		}}
-		
-		override def isDefinedAt(e:Event) = {e match {
-			case AttackForDamage(target:Token ,_,_,_) => (target == myMirror /* || target == CannonicalToken.this */)
-			case AttackForStatus(target:Token ,_,_) => (target == myMirror /* || target == CannonicalToken.this */)
-			case _ => false
-		}}
-		
-		override def toString = CannonicalToken.this.toString + ".BeAttackedReaction"
-		
-		def directionMultiplier(hisSpace:BoardGameSpace, mySpace:BoardGameSpace) = {
-			
-			import Directions.pathDirections
-			
-			val path = pathDirections(hisSpace, mySpace)
-			val weakDir = CannonicalToken.this.tokenClass.weakDirection.get
-			
-			weakDir.weaknessMultiplier(path)
-		}
-	}
-	
-	/** add to owner Player */
-	object TurnStartReaction extends Reaction
-	{
-		override def apply(e:Event) = {e match {
-			case StartOfTurn => {
-				_currentStatusTurnsLeft = _currentStatusTurnsLeft - 1
-				if (_currentStatusTurnsLeft <= 0) {_currentStatus = None}
-				
-				_canMoveThisTurn = tokenClass.speed.get
-				_canAttackThisTurn = true
-			}
-			case EndOfTurn => {
-				_canMoveThisTurn = 0
-				_canAttackThisTurn = false
-			}
-			case _ => {}
-		}}
-		override def isDefinedAt(e:Event) = {e match {
-			case StartOfTurn => currentHitpoints > 0 // do not react if dead
-			case EndOfTurn => true
-			case _ => false
-		}}
-		override def toString = CannonicalToken.this.toString + ".TurnStartReaction"
-	}
-	
-	/** add to owner player */
-	object AttackReaction extends Reaction
-	{
-		override def apply(e:Event) = {
-			// attacker is this, due to isDefinedAt
-			val target = e match {
-				case RequestAttackForDamage(_, target:Token) => {target}
-				case RequestAttackForStatus(_, target:Token) => {target}
-			}
-			
-			if (canAttackThisTurn)
-			if (CannonicalToken.this.currentSpace.spacesWithin(tokenClass.range.get, CannonicalToken.this, PhysicalStrikeCost).contains(target.currentSpace))
-			{
-				CannonicalToken.this ! (e match {
-					case RequestAttackForDamage(_, _) => {
-						AttackForDamage(target, tokenClass.atkElement.get, tokenClass.atkWeapon.get, currentSpace)
-					}
-					case RequestAttackForStatus(_, _) => {
-						AttackForStatus(target, tokenClass.atkStatus.get, currentSpace)
-					}
-				})
-				
-				_canAttackThisTurn = false
-			}
-		}
-		
-		override def isDefinedAt(e:Event) = {e match {
-			case RequestAttackForDamage(attacker:CannonicalToken, _) => (attacker == CannonicalToken.this)
-			case RequestAttackForStatus(attacker:CannonicalToken, _) => (attacker == CannonicalToken.this)
-			case _ => false
-		}}
-		override def toString = CannonicalToken.this.toString + ".AttackReaction"
-	}
-	
-	/**
-	 * This is an object that is expected to be waited on. After a move
-	 * request, this will be notified when the token things the current
-	 * space should be stable.
-	 */
-	val movementEndedLock:Object = new Object(){}
-	/** add to Player */
-	object MoveReaction extends Reaction
-	{
-		def apply(event:Event) { event match {
-			case RequestMove(_, movedTo:Space) => 
-				processAMoveRequest(movedTo)
-		}}
-		
-		override def isDefinedAt(e:Event) = {e match {
-			case RequestMove(attacker:CannonicalToken, _) => (attacker == CannonicalToken.this)
-			case _ => false
-		}}
-		
-		override def toString = CannonicalToken.this.toString + ".MoveReaction"
-	}
-	
-	this.reactions += RecursiveMoveReaction
-	/** add to self */
-	private object RecursiveMoveReaction extends Reaction
-	{
-		def apply(event:Event) { event match {
-			case RecursiveRequestMove(movedTo:Space) => 
-				processAMoveRequest(movedTo)
-		}}
-		
-		override def isDefinedAt(e:Event) = {e match {
-			case RecursiveRequestMove(_) => true
-			case _ => false
-		}}
-		
-		override def toString = CannonicalToken.this.toString + ".RecursiveMoveReaction"
-	}
-	
-	//
-	private case class RecursiveRequestMove(movedTo:Space) extends Event
-	
-	/**
-	 * MoveReaction and RecursiveMoveReaction are sent to different places and respond to different things,
-	 * both act in the exact same way.
-	 */
-	private def processAMoveRequest(movedTo:Space)
-	{
-		val messageLevel = Level.FINE
-		MovementLogger.entering("com.rayrobdod.deductionTactics.CannonicalToken",
-				"processAMoveRequest", movedTo)
-		
-		var headLogMessage =
-		if (MovementLogger.isLoggable(messageLevel))
-			this + ": " + canMoveThisTurn
-		else
-			""
-				
-		if (currentSpace == null)
-		{
-			MovementLogger.log(messageLevel, headLogMessage + "; initial move")
-			
-			CannonicalToken.this ! Moved(movedTo, true)
-			movementEndedLock.synchronized {movementEndedLock.notifyAll}
-		}
-		else if (canMoveThisTurn > 0)
-		{
-			if (currentSpace == movedTo)
-			{
-				MovementLogger.log(messageLevel, headLogMessage + "; is at movedTo")
-				movementEndedLock.synchronized {movementEndedLock.notifyAll}
-			}
-			else if (currentSpace.adjacentSpaces.exists{_ == movedTo})
-			{
+	def requestMoveTo(movedTo:BoardGameSpace):Unit = {
+		if (this.currentSpace == null) {
+			this.currentSpace_=(movedTo, true)
+		} else if (canMoveThisTurn > 0) {
+			if (currentSpace == movedTo) {
+				// nothing to do
+			} else if (currentSpace.adjacentSpaces.exists{_ == movedTo}) {
 				val movementCost = movedTo.typeOfSpace.cost(CannonicalToken.this, TokenMovementCost)
 				
-				MovementLogger.log(messageLevel, headLogMessage + " - " + movementCost + "; adjacent movedTo")
-				
-				if (movementCost <= _canMoveThisTurn)
-				{
-					CannonicalToken.this ! Moved(movedTo, true)
-					_canMoveThisTurn = _canMoveThisTurn - movementCost
+				if (movementCost <= _canMoveThisTurn) {
+					this._canMoveThisTurn = this._canMoveThisTurn - movementCost 
+					this.currentSpace_=(movedTo, true)
 				}
-				movementEndedLock.synchronized {movementEndedLock.notifyAll}
-			}
-			else
-			{
+			} else {
 				val path = currentSpace.pathTo(movedTo, CannonicalToken.this, TokenMovementCost)
 				val adjacentMoveTo = path(1)
 				val movementCost = adjacentMoveTo.typeOfSpace.cost(CannonicalToken.this, TokenMovementCost)
 				
-				MovementLogger.log(messageLevel, headLogMessage + " - " + movementCost + "; non-adjacent movedTo")
-				MovementLogger.log(Level.FINER, path.toString)
-				
-				if (movementCost <= _canMoveThisTurn)
-				{
-					CannonicalToken.this ! Moved(adjacentMoveTo, true)
+				if (movementCost <= _canMoveThisTurn) {
 					_canMoveThisTurn = _canMoveThisTurn - movementCost
+					this.currentSpace_=(adjacentMoveTo, false)
 					
-					CannonicalToken.this ! RecursiveRequestMove(movedTo)
-				}
-				else {
+					this.requestMoveTo(movedTo)
+				} else {
 					// can't move to desired space, so give up
-					movementEndedLock.synchronized {movementEndedLock.notifyAll}
 				}
 			}
-		}
-		else
-		{
-			MovementLogger.log(messageLevel, headLogMessage + "; can't move")
-			movementEndedLock.synchronized {movementEndedLock.notifyAll}
+		} else {
+			// also done
 		}
 	}
 	
+	
+	override def toString() = "CannonicalToken{tokenClass:" + tokenClass + ";}"
+	
+	
+	/** add to owner Player */
+	object TurnStartReaction extends Player.StartTurnReactionType {
+		def apply():Unit = {
+			_currentStatusTurnsLeft = _currentStatusTurnsLeft - 1
+			if (_currentStatusTurnsLeft <= 0) {_currentStatus = None}
+			
+			_canMoveThisTurn = tokenClass.speed.get
+			_canAttackThisTurn = true
+		}
+	}
+	/** add to owner Player */
+	object TurnEndReaction extends Player.EndTurnReactionType {
+		def apply():Unit = {
+			_canMoveThisTurn = 0
+			_canAttackThisTurn = false
+		}
+	}
+	
+	
+	
 	/** Add to player */
-	class StatusAct(allTokens:ListOfTokens) extends Reaction
-	{
+	class StatusAct(allTokens:ListOfTokens) extends Player.StartTurnReactionType {
 		val moveToRandomSpace = {(s:BoardGameSpace, i:Int) =>
 			val possibleNext = s.adjacentSpaces.toSeq
 			val next = possibleNext(Random.nextInt(possibleNext.size))
 			
 			val tokenOnNext = allTokens.aliveTokens.flatten.find{_.currentSpace == next}
 			
-			CannonicalToken.this.MoveReaction(RequestMove(CannonicalToken.this, next))
+			CannonicalToken.this.requestMoveTo(next)
 			tokenOnNext.foreach{(x:Token) =>
-				CannonicalToken.this.AttackReaction(RequestAttackForDamage(CannonicalToken.this, x))
+				CannonicalToken.this.tryAttackDamage(x)
 			}
 			
 			next
 		}
 		
-		override def apply(e:Event) =
+		override def apply() =
 		{
 			currentStatus match {
 				case None => {}
@@ -329,13 +157,61 @@ class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 				}
 			}
 			
-			if (_currentHitpoints <= 0) {CannonicalToken.this ! Died()}
+			if (_currentHitpoints <= 0) {CannonicalToken.this.triggerDiedReactions()}
 		}
 		
-		override def isDefinedAt(e:Event) = {e match {
-			case StartOfTurn => true
-			case _ => false
-		}}
 		override def toString = CannonicalToken.this.toString + ".StatusReaction"
+	}
+	
+	
+	/* * * * * * * ATTACKS * * * * * * */
+	
+	def beAttacked(elem:Element, kind:Weaponkind, from:BoardGameSpace) = {
+		Logger.entering("com.rayrobdod.deductionTactics.CannonicalToken",
+						"beAttacked", Array(elem, kind, from))
+		
+		val multiplier = tokenClass.weakWeapon(kind).get *
+				(if (currentStatus == tokenClass.weakStatus) {2} else {1}) *
+				(directionMultiplier(currentSpace, from)) *
+				(tokenClass.atkElement.get.damageModifier(elem));
+				
+		val damageDone = (if (multiplier > 8) {320} else {baseDamage * multiplier}).intValue
+		
+		_currentHitpoints = _currentHitpoints - damageDone
+		
+		this.triggerDamageAttackedReactions(elem,kind,from)
+		this.triggerUpdateReactions
+		if (_currentHitpoints <= 0) {CannonicalToken.this.triggerDiedReactions()}
+	}
+	def beAttacked(status:Status, from:BoardGameSpace) = {
+		if (_currentStatus == None) {
+			_currentStatus = Some(status)
+			_currentStatusTurnsLeft = 3
+		}
+		this.triggerStatusAttackedReactions(status,from)
+		this.triggerUpdateReactions
+	}
+	def tryAttackDamage(target:Token) {
+		if (this.currentSpace.distanceTo(target.currentSpace, this, PhysicalStrikeCost) <= this.tokenClass.range.get) {
+			target.beAttacked(this.tokenClass.atkElement.get, this.tokenClass.atkWeapon.get, this.currentSpace)
+			this.triggerUpdateReactions
+			this._canAttackThisTurn = false
+		}
+	}
+	def tryAttackStatus(target:Token) {
+		if (this.currentSpace.distanceTo(target.currentSpace, this, PhysicalStrikeCost) <= this.tokenClass.range.get) {
+			target.beAttacked(this.tokenClass.atkStatus.get, this.currentSpace)
+			this.triggerUpdateReactions
+			this._canAttackThisTurn = false
+		}
+	}
+	
+	private def directionMultiplier(hisSpace:BoardGameSpace, mySpace:BoardGameSpace) = {
+		import Directions.pathDirections
+		
+		val path = pathDirections(hisSpace, mySpace)
+		val weakDir = CannonicalToken.this.tokenClass.weakDirection.get
+		
+		weakDir.weaknessMultiplier(path)
 	}
 }

@@ -100,6 +100,7 @@ object WeaponMultiplerSetterChooserFrameMaker
  * @version 12 Jun 2012 - no longer extends ChooserFrameMaker; creates a new Model
 			each mouse click rather than using the same model each time
  * @version 12 Jun 2012 - now sets Name and Icon as well as the other things it used to set
+ * @version 2013 Aug 06 - no longer set icons in token class
  */
 class ClassSynchonizerFrameMaker(
 			tokenClass:SuspicionsTokenClass,
@@ -122,7 +123,6 @@ class ClassSynchonizerFrameMaker(
 					new TokenClassMatcher(tokenClass)).apply(e.getFirstIndex)
 			
 			tokenClass.name = selected.name
-			tokenClass.icon = Option(selected.icon)
 			
 			tokenClass.body = selected.body
 			tokenClass.atkElement = selected.atkElement

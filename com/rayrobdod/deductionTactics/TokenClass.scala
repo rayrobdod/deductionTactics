@@ -25,14 +25,12 @@ import com.rayrobdod.swing.NameAndIcon
 			to Map[Weaponkind, Option[Float]]
  * @version 08 Aug 2012 - without adding any members, now extends NameAndIcon
  * @version 2013 Jun 23 - implementing toString
+ * @version 2013 Aug 06 - removing icon; no longer extends NameAndIcon
  */
-trait TokenClass extends NameAndIcon
+trait TokenClass
 {
 	/** A class's name */
 	def name:String
-	/** An icon representing this class */
-	@deprecated("Getting rid of icons in model data", "2013 Jun 12")
-	def icon:Icon
 	
 	/** A class's bodytype. Currently doesn't affect anything */
 	def body:Option[BodyType]

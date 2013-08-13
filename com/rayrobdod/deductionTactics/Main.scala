@@ -5,11 +5,10 @@ import swingView._
 import java.awt.BorderLayout
 import java.awt.BorderLayout.{SOUTH => borderSouth, NORTH => borderNorth}
 import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
-import scala.swing.Swing.ActionListener
 import scala.collection.immutable.Seq
 import javax.swing.{JFrame, JButton, JPanel, JCheckBox, BorderFactory}
-import java.awt.event.ActionEvent
-import com.rayrobdod.boardGame.{Moved, RectangularField}
+import java.awt.event.{ActionEvent, ActionListener}
+import com.rayrobdod.boardGame.{RectangularField}
 
 
 /**
@@ -25,6 +24,8 @@ import com.rayrobdod.boardGame.{Moved, RectangularField}
  * @version 28 Nov 2012 - adding map-selection abilities
  * @version 13 Jan 2013 - limit number of tokens to number of availiable spaces.
  * @version 14 Jun 2013 - Giving the initial frame a menu bar
+ * @version 2013 Aug 07 - ripples from rewriting Player
+ * @version 2013 Aug 07 - removing scala.swing stuff
  */
 object Main extends App
 {
@@ -60,14 +61,16 @@ object Main extends App
 			}
 		}
 		
-		okButton.addActionListener(ActionListener{(e:ActionEvent) =>
-			aiChooserFrame.setVisible(false)
-			new Thread(new Runnable{
-				def run = buildTeams(
-						aiChooser.getAIs,
-						Maps.getMap(mapChooser.mapList.getSelectedIndex),
-						Maps.startingPositions(mapChooser.mapList.getSelectedIndex, mapChooser.numPlayersList.getSelectedValue))
-			}, "build teams").start()
+		okButton.addActionListener(new ActionListener{
+			def actionPerformed(e:ActionEvent) = {
+				aiChooserFrame.setVisible(false)
+				new Thread(new Runnable{
+					def run = buildTeams(
+							aiChooser.getAIs,
+							Maps.getMap(mapChooser.mapList.getSelectedIndex),
+							Maps.startingPositions(mapChooser.mapList.getSelectedIndex, mapChooser.numPlayersList.getSelectedValue))
+				}, "build teams").start()
+			}
 		})
 		
 		aiChooserFrame.pack()
@@ -90,42 +93,38 @@ object Main extends App
 		).tupled}
 		val allTokens = (canonTokens ++ mirrorTokens).flatten
 		
-		val players = playerListOfTokens.map(new Player(_))
-		ais.zip(players).foreach({(ai:PlayerAI, player:Player) =>
-			ai.initialize(player, field)
+		val players = playerListOfTokens.zip(ais).map({new Player(_, _)}.tupled)
+		players.foreach({(player:Player) =>
+			player.ai.initialize(player, field)
 			//   Breaks a lock or something I DON'T KNOW LEAVE ME ALONE
 			//player.reactions.+=(ai)
-		}.tupled)
+		})
 		
-		canonTokens.flatten.zip(mirrorTokens.flatten).foreach({(hisCannon:CannonicalToken, hisMirror:MirrorToken) => {
-			canonTokens.flatten.foreach{(mine:CannonicalToken) => {
+		/* canonTokens.flatten.zip(mirrorTokens.flatten).foreach({(hisCannon:CannonicalToken, hisMirror:MirrorToken) =>
+			canonTokens.flatten.foreach{(mine:CannonicalToken) =>
 				mine.reactions.+=(new hisCannon.BeAttackedReaction(hisMirror))
-			}}
-		}}.tupled)
+			}
+		}.tupled) */
 	
 		players.zip(canonTokens).foreach({(p:Player, ts:Seq[CannonicalToken]) => {
 			ts.foreach{(t:CannonicalToken) => {
-				p.reactions.+=(t.TurnStartReaction)
-				p.reactions.+=(t.AttackReaction)
-				p.reactions.+=(t.MoveReaction)
-				p.reactions.+=(new t.StatusAct(p.tokens))
+				p.addStartTurnReaction(t.TurnStartReaction)
+				p.addStartTurnReaction(new t.StatusAct(p.tokens))
 			}}
 		}}.tupled)
 		canonTokens.foreach{(seq:Seq[CannonicalToken]) => {
 			UnitAwareSpaceClass.tokens.tokens = UnitAwareSpaceClass.tokens.tokens :+ seq;
 		}}
 		allTokens.foreach{(x:Token) => {
-			x.reactions += new UnselectOtherTokens(x,allTokens) 
+			x.addSelectedReaction(new UnselectOtherTokens(x,allTokens)) 
 		}}
 		
 		canonTokens.zip(tokenPositions).map(
 			{(x:Seq[CannonicalToken], y:Seq[(Int, Int)]) => x.zip(y)}.tupled
 		).flatten.foreach({(t:CannonicalToken, p:(Int,Int)) => 
-			t ! Moved(field.space(p._1, p._2), true)
+			t.requestMoveTo(field.space(p._1, p._2))
 		}.tupled)
 		
-		allTokens.foreach{_.start()}
-		players.foreach{_.start()}
 		
 		// pray that the tokens have moved by the time this sleep is over
 		// This seems to solve a null pointer exception in the PlayerAI
@@ -133,6 +132,6 @@ object Main extends App
 		
 		
 		// run, meaning this returns when PlayerTurnCycler returns
-		new PlayerTurnCycler(players.zip(ais)).run()
+		new PlayerTurnCycler(players).run()
 	}
 }

@@ -25,6 +25,7 @@ import javax.swing.Icon
  * @version 12 Jun 2012 - changed name from val to var, and implementing a icon_= function
  * @version 28 Jun 2012 - implementing hashCode and equals
  * @version 2013 Jun 17 - turning the equals method into a match statement
+ * @version 2013 Aug 06 - removing icon
  * @todo Make observable
  * 
  */
@@ -43,9 +44,6 @@ class SuspicionsTokenClass extends TokenClass
 	var weakDirection:Option[Direction] = None
 	
 	var name = "???"
-	private var setIcon:Option[Icon] = None
-	def icon_=(icon:Option[Icon]) {setIcon = icon}
-	def icon = setIcon.getOrElse(generateGenericIcon(this))
 	
 	override def hashCode:Int = {
 		body.hashCode +

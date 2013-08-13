@@ -1,16 +1,13 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-//import com.rayrobdod.deductionTactics.{PlayerAI, Player,
-//		CannonicalTokenClass, Token, Attack, RequestMove}
-import com.rayrobdod.boardGame.{EndOfTurn, Space, RectangularSpace,
+import com.rayrobdod.boardGame.{Space, RectangularSpace,
 		PhysicalStrikeCost, TokenMovementCost}
 import com.rayrobdod.boardGame.{RectangularField => Field}
 import com.rayrobdod.deductionTactics.Statuses.Sleep
 import com.rayrobdod.deductionTactics.PlayerAI.teamSize
 import scala.collection.immutable.Set
 import LoggerInitializer.{sleepAbuserAILogger => Logger}
-//import scala.collection.mutable.PriorityQueue
 import scala.math.Ordering
 import scala.util.Random
 
@@ -25,6 +22,7 @@ import scala.util.Random
  * @version 28 Apr 2012 - gutting in hopes of complete rewrite
  * @version 28 Apr 2012 - adding speedRangeOf and attackRangeOf
  * @version 30 May 2012 - moved speedRangeOf and attackRangeOf to the package object
+ * @version 2013 Aug 07 - ripples from rewriting Player
  */
 class SleepAbuserAI extends PlayerAI
 {
@@ -55,8 +53,6 @@ class SleepAbuserAI extends PlayerAI
 				retreatFromEnemy(player, myToken, enemyAttackRange)
 			}
 		}
-		
-		player ! EndOfTurn
 	}
 	
 	def buildTeam = {
@@ -67,11 +63,12 @@ class SleepAbuserAI extends PlayerAI
 	
 	def initialize(player:Player, field:Field) = {
 		player.tokens.otherTokens.flatten.foreach{(token:MirrorToken) =>
-			token.reactions += new StandardObserveAttacks(token)
+			token.addDamageAttackedReaction(new StandardObserveAttacks(token, player.tokens))
+			token.addStatusAttackedReaction(new StandardObserveAttacks(token, player.tokens))
 			
 			val movement = new StandardObserveMovement(token)
-			token.reactions += movement
-			player.reactions += movement
+			token.addMoveReaction(movement)
+			player.addStartTurnReaction(movement)
 		}
 	}
 	
@@ -142,10 +139,8 @@ class SleepAbuserAI extends PlayerAI
 			}
 		}
 		
-		myToken.movementEndedLock.synchronized {
-			player ! RequestMove(myToken, moveTo)
-			myToken.movementEndedLock.wait
-		}
+		myToken.requestMoveTo(moveTo)
+		
 	}
 	
 	/**  a subroutine of the takeTurn method */
@@ -171,13 +166,10 @@ class SleepAbuserAI extends PlayerAI
 				"; distance from self: " +
 				myToken.currentSpace.distanceTo(moveTo, myToken, TokenMovementCost))
 		
-		myToken.movementEndedLock.synchronized {
-			player ! RequestMove(myToken, moveTo)
-			myToken.movementEndedLock.wait
-		}
+		myToken.requestMoveTo(moveTo)
 		if (target.currentStatus == None)
-			player ! RequestAttackForStatus(myToken, target)
+			myToken.tryAttackStatus(target)
 		else
-			player ! RequestAttackForDamage(myToken, target)
+			myToken.tryAttackDamage(target)
 	}
 }

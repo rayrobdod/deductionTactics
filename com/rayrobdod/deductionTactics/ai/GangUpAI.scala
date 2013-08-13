@@ -2,8 +2,8 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import Statuses.Status
-import com.rayrobdod.boardGame.{EndOfTurn, Space, TokenMovementCost}
-import com.rayrobdod.boardGame.{RectangularField => Field}
+import com.rayrobdod.boardGame.{TokenMovementCost,
+			RectangularField => Field, Space}
 import scala.collection.mutable.{Map => MMap}
 import LoggerInitializer.{blindAttackAILogger => Logger}
 import java.util.logging.Level
@@ -14,6 +14,7 @@ import java.util.logging.Level
  * 
  * @author Raymond Dodge
  * @version 30 Jul 2012
+ * @version 2013 Aug 07 - ripples from rewriting Player
  */
 class GangUpAI extends PlayerAI
 {
@@ -39,18 +40,16 @@ class GangUpAI extends PlayerAI
 		while(continue) {
 			continue = moveATokenToASpace(adjacentSpaces.toSet, player)
 		}
-		myTokens.foreach{(myToken:CannonicalToken) => player ! RequestMove(myToken, currentTarget.currentSpace)}
+		myTokens.foreach{(myToken:CannonicalToken) => myToken.requestMoveTo(currentTarget.currentSpace)}
 		
 		// attack selected token
 		myTokens.foreach{(myToken:CannonicalToken) =>
 			if (currentTarget.currentStatus == None &&
 						shouldUseStatus(myToken.tokenClass.atkStatus.get))
-				player ! RequestAttackForStatus(myToken, currentTarget)
+				myToken.tryAttackStatus(currentTarget)
 			else
-				player ! RequestAttackForDamage(myToken, currentTarget)
+				myToken.tryAttackDamage(currentTarget)
 		}
-		
-		player ! EndOfTurn
 	}
 	
 	/** True if a token should use a status on a token */
@@ -77,14 +76,14 @@ class GangUpAI extends PlayerAI
 		if (spacesAndTokensCanReach.exists{_._2.size == 1})
 		{
 			spacesAndTokensCanReach.filter{_._2.size == 1}.foreach({(s:Space, ts:Seq[CannonicalToken]) =>
-				player ! RequestMove(ts.head, s)
+				ts.head.requestMoveTo(s)
 			}.tupled)
 			return true
 		}
 		else
 		{
 			spacesAndTokensCanReach.foreach({(s:Space, ts:Seq[CannonicalToken]) =>
-				player ! RequestMove(ts.head, s)
+				ts.head.requestMoveTo(s)
 			}.tupled)
 			return true
 		}

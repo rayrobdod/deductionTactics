@@ -6,7 +6,6 @@ import Statuses.Status
 import BodyTypes.{Value => BodyType}
 import Directions.Direction
 
-import javax.swing.Icon
 import scala.collection.Seq
 import scala.collection.immutable.{Map, Seq => ISeq}
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
@@ -31,11 +30,11 @@ import scala.collection.JavaConversions.mapAsJavaMap
  * @version 05 Jun 2012 - changing weakWeapon from Some[Map[Weaponkind, Float]]
 			to Map[Weaponkind, Some[Float]]
  * @version 03 Jul 2012 - adding method toJSONObject
+ * @version 2013 Aug 06 - removing icon
  */
 trait CannonicalTokenClass extends TokenClass
 {
 	def name:String
-	def icon:Icon
 	
 	def body:Some[BodyType]
 	def atkElement:Some[Element]
@@ -77,10 +76,10 @@ trait CannonicalTokenClass extends TokenClass
  * directly in the constructor 
  * @author Raymond Dodge
  * @version 03 Jul 2012 - adding method toJSONObject
+ * @version 2013 Aug 06 - removing icon
  */
 final class CannonicalTokenClassBlunt(
 	override val name:String,
-	override val icon:Icon,
 	
 	override val body:Some[BodyType],
 	override val atkElement:Some[Element],
@@ -109,10 +108,11 @@ final class CannonicalTokenClassBlunt(
 			as well as making futher use of Scala Collection's functional interface.
  * @version 14 Jun 2013 - Closing jsonReader
  * @version 2013 Jun 23 - using CannonicalTokenClassParseListener and friends instead of CannonicalTokenClassFromMap
+ * @version 2013 Aug 06 - adding suport fot the binary token class format
  */
 object CannonicalTokenClass
 {
-	private val SERVICE = "com.rayrobdod.deductionTactics.TokenClass"
+	val SERVICE = "com.rayrobdod.deductionTactics.TokenClass"
 	
 	val allKnown:ISeq[CannonicalTokenClass] =
 	{
@@ -122,36 +122,28 @@ object CannonicalTokenClass
 		
 		val a:Seq[Path] = new ResourcesServiceLoader(SERVICE).toSeq
 		
-		
-		// I can't tell which one is faster, but I think this one uses less memory 
-		// also, this one has more classes and is probably larger in code size than the other one
-		val b:Seq[Seq[CannonicalTokenClass]] = a.map{(jsonPath:Path) => 
-			val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
+		// Binary version
+		val b:Seq[Seq[CannonicalTokenClass]] = a.map{(jsonPath:Path) =>
+			if (jsonPath.toString.endsWith(".rrd-dt-tokenClass")) {
 			
-			val l = new ToScalaCollection(CannonicalTokenClassDecoder)
-			JSONParser.parse(l, jsonReader)
-			jsonReader.close()
-			l.resultSeq
+				val is = Files.newInputStream(jsonPath)
+				val dis = new java.io.DataInputStream(is)
+				
+				val count = dis.readShort()
+				
+				(1 to count).map{(a) =>
+					new CannonicalTokenClassFromBinary(dis)
+				}
+			} else { // assume JSON
+				val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
+			
+				val l = new ToScalaCollection(CannonicalTokenClassDecoder)
+				JSONParser.parse(l, jsonReader)
+				jsonReader.close()
+				l.resultSeq
+			}
 		}
 		val e = b.flatten
-		
-		
-		/*
-		val b:Seq[Seq[Any]] = a.map{(jsonPath:Path) => 
-			val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
-			
-			val l = new ToScalaCollection(ToScalaCollectionJSONDecoder)
-			JSONParser.parse(l, jsonReader)
-			jsonReader.close()
-			l.resultSeq
-		}
-		val c:Seq[Any] = b.flatten
-		val d:Seq[Map[String,Any]] = c.map{_ match{
-			case x:Map[_, _] => x.map{(i:(Any, Any)) => (i._1.toString, i._2)}
-		}}
-		val e:Seq[CannonicalTokenClass] = d.map{
-			new CannonicalTokenClassFromMap(_)
-		} */
 		
 		
 		ISeq.empty ++ e

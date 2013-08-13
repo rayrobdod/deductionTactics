@@ -5,17 +5,21 @@ import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.BodyTypes.{Value => BodyType}
 import com.rayrobdod.deductionTactics.Directions.Direction
+import com.rayrobdod.deductionTactics.swingView.{
+		TokenClassNameToIconFromJson, TokenClassNameToIconFromBinary}
 
 import java.awt.Dimension
 import javax.swing.{ImageIcon, Icon}
 import java.awt.Image.{SCALE_SMOOTH => imageScaleSmooth}
 
 import java.net.URL
+import java.nio.file.{Path, Files}
 import javax.imageio.ImageIO
 import com.kitfox.svg.app.beans.SVGIcon
 import com.rayrobdod.swing.NameAndIcon
 
 import scala.collection.mutable.{Map => MMap}
+import scala.collection.immutable.{Map => IMap}
 
 
 package object swingView
@@ -192,6 +196,30 @@ package object swingView
 	}
 	
 	
+	
+	/**
+	 * @version 2013 Aug 06
+	 */
+	val tokenClassNameToIcon:Map[String, Icon] =
+	{
+		import scala.collection.JavaConversions.iterableAsScalaIterable
+		import com.rayrobdod.util.services.ResourcesServiceLoader
+		
+		val a:Seq[Path] = new ResourcesServiceLoader(CannonicalTokenClass.SERVICE).toSeq
+		
+		// Binary version
+		val b:Seq[Map[String, Icon]] = a.map{(jsonPath:Path) =>
+			if (jsonPath.toString.endsWith(".rrd-dt-tokenClass")) {
+			
+				new TokenClassNameToIconFromBinary(Seq(jsonPath)).map
+			} else { // assume JSON
+				new TokenClassNameToIconFromJson(Seq(jsonPath)).map
+			}
+		}
+		val e = b.foldLeft(IMap.empty[String, Icon]){_ ++ _}
+		
+		e
+	}
 	
 	
 	

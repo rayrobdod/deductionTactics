@@ -1,8 +1,7 @@
 package com.rayrobdod.deductionTactics.swingView
 
-import com.rayrobdod.deductionTactics.{CannonicalToken, RequestMove,
-		Player, RequestAttackForDamage}
-import com.rayrobdod.boardGame.{Space, BeSelected,
+import com.rayrobdod.deductionTactics.{CannonicalToken, Player}
+import com.rayrobdod.boardGame.{Space,
 		PhysicalStrikeCost, TokenMovementCost}
 import java.awt.event.{MouseAdapter, MouseEvent}
 import com.rayrobdod.deductionTactics.ai.attackRangeOf
@@ -16,6 +15,7 @@ import com.rayrobdod.deductionTactics.ai.attackRangeOf
  * @version 30 May 2012 - allowing for long-range attacks without running out of movment
  * @version 01 Jun 2012 - Now only resonds to BUTTON1 mouse clicks.
  * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
+ * @version 2013 Aug 07 - ripples from rewriting BoardGameToken
  */
 class MoveTokenMouseListener(owner:Player, space:Space, attackType:SellectAttackTypePanel) extends MouseAdapter
 {
@@ -27,23 +27,18 @@ class MoveTokenMouseListener(owner:Player, space:Space, attackType:SellectAttack
 			if (!tokenOnThisSpace.isDefined || activeToken.currentSpace.distanceTo(
 					space, activeToken, PhysicalStrikeCost) > activeToken.tokenClass.range.get)
 			{
-				activeToken.movementEndedLock.synchronized {
-					owner ! RequestMove(activeToken, space)
-					activeToken.movementEndedLock.wait
-				}
+				activeToken.requestMoveTo(space)
 			}
 			
-			tokenOnThisSpace.foreach{owner ! attackType.requestAttackForType(activeToken, _)}
+			tokenOnThisSpace.foreach{attackType.requestAttackForType(activeToken, _)}
 		}
 	}
 	
 	private var activeToken = owner.tokens.myTokens.head
 	
 	owner.tokens.myTokens.foreach{(token:CannonicalToken) =>
-		token.reactions += {
-			case BeSelected(isSelected) => {
-				if (isSelected) activeToken = token
-			}
+		token.addSelectedReaction{(isSelected) =>
+			if (isSelected) activeToken = token
 		}
 	}
 }

@@ -3,6 +3,16 @@
 Wishlist: Token Animations, Persistent preferences, Flying units,
 		change AIs to use builder model, Better AIs
 
+=== Major ===
+* No longer uses scala.swing or scala.actors.
+
+=== 
+* Adding Interface as example of broken encapsulation:
+		RepeatAttackCheater
+* Adding AIDecorator: WithConsoleEventPrinting
+* Disabling Console and Networking interfaces
+
+
 == a.4.1 ==
 === Minor ===
 * Adding Interface: ConsoleInterface_CFN

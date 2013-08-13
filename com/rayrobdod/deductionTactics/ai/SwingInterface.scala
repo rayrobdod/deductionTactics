@@ -2,14 +2,12 @@ package com.rayrobdod.deductionTactics.ai
 
 import scala.collection.immutable.Seq
 import scala.collection.mutable.{Map => MMap}
-import com.rayrobdod.boardGame.{StartOfTurn, EndOfTurn, Moved, Space}
-import com.rayrobdod.deductionTactics.{PlayerAI, Player, Token, RequestMove, Victory}
+import com.rayrobdod.boardGame.{Space}
+import com.rayrobdod.deductionTactics.{PlayerAI, Player, Token}
 import java.awt.event.{ActionListener, ActionEvent}
 import javax.swing.{JButton, JFrame, JPanel, JLabel, JList}
 import java.awt.BorderLayout
 import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace}
-import scala.swing.Reactions.Reaction
-import scala.swing.event.Event
 
 import com.rayrobdod.deductionTactics.swingView.{
 			BoardGamePanel,
@@ -41,14 +39,17 @@ import com.rayrobdod.deductionTactics.swingView.{
  * @version 03 Jul 2012 - renamed from HumanAI to SwingInterface
  * @version 04 Aug 2012 - replacing an annonymous inner class with an instance of InputFrame
  * @version 04 Aug 2012 - failed attempt to make a victory display
+ * @version 2013 Aug 07 - ripples from rewriting Player
  */
 sealed class SwingInterface extends PlayerAI
 {
-	val playerButtons = MMap[Player, JButton]() 
+	val playerButtons = MMap[Player, JButton]()
+	val endOfTurnLock = new Object();
 	
-	def takeTurn(player:Player)
-	{
+	def takeTurn(player:Player) {
 		playerButtons(player).setEnabled(true)
+		
+		endOfTurnLock.synchronized( endOfTurnLock.wait() );
 	}
 	
 	def initialize(player:Player, field:Field)
@@ -60,8 +61,12 @@ sealed class SwingInterface extends PlayerAI
 		frame.getContentPane add panel
 		
 		val attackTypeSelector = new SellectAttackTypePanel()
-
-		tokens.tokens.flatten.foreach{(x:Token) => x.reactions += new HighlightMovableSpacesReaction(x, panel, player.tokens)}
+		
+		tokens.tokens.flatten.foreach{(x:Token) =>
+			val reaction = new HighlightMovableSpacesReaction(x, panel, player.tokens);
+			x.addSelectedReaction(reaction)
+			x.addMoveReaction(reaction)
+		}
 		panel.centerpiece.spaceLabelMap.foreach({(s:RectangularSpace, c:JLabel) => 
 			c.addMouseListener(new SelectTokenOnSpaceMouseListener(s, player.tokens))
 			c.addMouseListener(new MoveTokenMouseListener(player, s, attackTypeSelector))
@@ -69,29 +74,21 @@ sealed class SwingInterface extends PlayerAI
 		
 		val endOfTurnButton = new JButton("End Turn")
 		playerButtons += ((player, endOfTurnButton))
-		endOfTurnButton.addActionListener(scala.swing.Swing.ActionListener{(e:ActionEvent) =>
-			endOfTurnButton.setEnabled(false)
-			player ! EndOfTurn
+		endOfTurnButton.addActionListener(new ActionListener{
+			def actionPerformed(e:ActionEvent) = {
+				endOfTurnButton.setEnabled(false)
+				endOfTurnLock.synchronized( endOfTurnLock.notifyAll() );
+			}
 		})
 		
-		player.reactions += new Reaction(){
-			def apply(e:Event) = {e match {
-				case Victory => {
-					// TODO: make work
-					val label = new JLabel("Victor!")
-					
-					panel.centerpiece add label
-					label.setLocation(200, 200)
-					label.setFont(label.getFont.deriveFont(24f))
-					panel.centerpiece.repaint()
-				}
-				case _ => {}
-			}}
+		player.addVictoryReaction{() =>
+			// TODO: make work
+			val label = new JLabel("Victor!")
 			
-			def isDefinedAt(e:Event) = {e match {
-				case Victory => true
-				case _ => false
-			}}
+			panel.centerpiece add label
+			label.setLocation(200, 200)
+			label.setFont(label.getFont.deriveFont(24f))
+			panel.centerpiece.repaint()
 		}
 		
 		val southPanel = new JPanel()

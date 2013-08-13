@@ -1,10 +1,6 @@
 package com.rayrobdod.deductionTactics
 package consoleView
 
-import com.rayrobdod.deductionTactics.{AttackForDamage, AttackForStatus, Died}
-import com.rayrobdod.boardGame.{Moved, Space}
-import scala.swing.event.Event
-import scala.swing.Reactions.Reaction
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Directions.Direction

@@ -9,6 +9,7 @@ import com.rayrobdod.deductionTactics.TokenClass
  * @version 08 Aug 2012
  * @version 14 Aug 2012 - moving inner object TokenClassPanelTypeSelector to 
  * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
+ * @version 2013 Aug 08 - uses package.tokenClassNameToIcon and package.generateGenericIcon instead of token.icon
  */
 class TokenClassPanelTypeSelector(modend:AllKnownTokenClassesComponent) extends JPanel
 {
@@ -27,7 +28,9 @@ class TokenClassPanelTypeSelector(modend:AllKnownTokenClassesComponent) extends 
 	
 	val fullFunction = {(x:TokenClass) => new TokenClassPanel(x)}
 	val noWeaponWeakFunction = {(x:TokenClass) => {val y = new TokenClassPanel(x); y.remove(y.weaponWeakPanel); y}}
-	val nameAndIconFunction = {(x:TokenClass) => new JLabel(x.name, x.icon, SwingConstants.LEFT)}
+	val nameAndIconFunction = {(x:TokenClass) => new JLabel(x.name, {
+			tokenClassNameToIcon.getOrElse(x.name, generateGenericIcon(x))
+	}, SwingConstants.LEFT)}
 	
 	full.addActionListener{new ChangeTokenClassView(fullFunction)}
 	noWeaponWeak.addActionListener{new ChangeTokenClassView(noWeaponWeakFunction)}

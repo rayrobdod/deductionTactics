@@ -5,9 +5,7 @@ import Weaponkinds.Weaponkind
 import Statuses.Status
 import BodyTypes.{Value => BodyType}
 import Directions.Direction
-import scala.swing.event.Event
-import scala.swing.Reactions.Reaction
-import com.rayrobdod.boardGame.Moved
+import com.rayrobdod.boardGame.{Token => BoardGameToken, Space}
 
 /**
  * @author Raymond Dodge
@@ -20,8 +18,9 @@ import com.rayrobdod.boardGame.Moved
  * @version 06 Apr 2012 - renamed SendDamageToParentReaction to MirrorParentMove
  * @version 08 Apr 2012 - adding response to AttackFor* back to MirrorParentMove. StandardObserveAttacks did use it.
  * @version 08 Apr 2012 - adding response to Died to MirrorParentMove.
+ * @version 2013 Aug 07 - ripples from rewriting BoardGameToken
  */
-class MirrorToken(parent:Token) extends Token
+final class MirrorToken(parent:Token) extends Token
 {
 	def currentHitpoints = parent.currentHitpoints
 	def currentStatus = parent.currentStatus
@@ -32,21 +31,39 @@ class MirrorToken(parent:Token) extends Token
 	private val tokenSuspicions = new SuspicionsTokenClass
 	def tokenClass = tokenSuspicions
 	
+	parent.addMoveReaction(MirrorMoveReaction)
+	private object MirrorMoveReaction extends BoardGameToken.MoveReactionType {
+		def apply(s:Space, b:Boolean):Unit = {
+			MirrorToken.this.currentSpace_=(s, b)
+		}
+	}
 	
-	parent.reactions += this.MirrorParentMove
-	/** add to parent CannonicalToken */
-	object MirrorParentMove extends Reaction
-	{
-		override def apply(e:Event) = {MirrorToken.this ! e}
-		
-		override def isDefinedAt(e:Event) = {e match {
-			case e:Moved => true
-			case e:AttackForStatus => true
-			case e:AttackForDamage => true
-			case e:Died => true
-			case _  => false
-		}}
+	parent.addDiedReaction(MirrorDiedReaction)
+	private object MirrorDiedReaction extends Function0[Unit] {
+		def apply():Unit = MirrorToken.this.triggerDiedReactions
+	}
+	
+	parent.addUpdateReaction(MirrorUpdateReaction)
+	private object MirrorUpdateReaction extends Function0[Unit] {
+		def apply():Unit = MirrorToken.this.triggerUpdateReactions
+	}
+	
+	parent.addDamageAttackedReaction(MirrorDamageAttackReaction)
+	private object MirrorDamageAttackReaction extends Token.DamageAttackedReactionType {
+		def apply(a:Element, b:Weaponkind, c:Space):Unit = MirrorToken.this.triggerDamageAttackedReactions(a,b,c)
+	}
+	
+	parent.addStatusAttackedReaction(MirrorStatusAttackReaction)
+	private object MirrorStatusAttackReaction extends Token.StatusAttackedReactionType {
+		def apply(a:Status, b:Space):Unit = MirrorToken.this.triggerStatusAttackedReactions(a,b)
 	}
 	
 	
+	
+	def beAttacked(elem:Element, kind:Weaponkind, from:Space) = {
+		parent.beAttacked(elem, kind, from)
+	}
+	def beAttacked(status:Status, from:Space) = {
+		parent.beAttacked(status, from)
+	}
 }
