@@ -1,15 +1,28 @@
 package com.rayrobdod.deductionTactics
 
 import com.rayrobdod.boardGame.{SpaceClassConstructor, SpaceClass => BoardGameSpaceClass,
-		NoLandOnAction, NoPassOverAction, RectangularSpaceConstructor,
-		UniformMovementCost, Token => BoardGameToken, TypeOfCost, TokenMovementCost}
+		Token => BoardGameToken, TypeOfCost}
+import com.rayrobdod.boardGame.{NoLandOnAction, NoPassOverAction, UniformMovementCost}
+import com.rayrobdod.boardGame.{TokenMovementCost, PhysicalStrikeCost, MagicalStrikeCost}
 import scala.collection.immutable.{Seq => ISeq}
+
+/*
+ *        Class Name        | Move            | Attack
+ * -------------------------+-----------------+---------
+ *    PassibleSpaceClass    | Yes             | Yes
+ *    UnitAwareSpaceClass   | If not occupied | Yes
+ *   ImpassibleSpaceClass   | No              | No
+ * AttackableOnlySpaceClass | No              | Yes
+ *    NoStandOnSpaceClass   | If Flying       | Yes
+ */
+
 
 /**
  * @author Raymond Dodge
  * @version 13 Jan 2012 - destropying Space - replacing with SpaceClass
+ * @version 14 Jul 2012 - renaming from SpaceClass to PassibleSpaceClass
  */
-class SpaceClass extends BoardGameSpaceClass
+class PassibleSpaceClass extends BoardGameSpaceClass
 		with NoLandOnAction
 		with NoPassOverAction
 		with UniformMovementCost
@@ -18,11 +31,13 @@ class SpaceClass extends BoardGameSpaceClass
  * A constructor and deconstructor of SpaceClasses
  * @author Raymond Dodge
  * @version 13 Jan 2012
+ * @version 14 Jul 2012 - renaming from SpaceClass to PassibleSpaceClass
+ * @version 19 Jul 2012 - fixing lack of name update
  */
-object SpaceClass extends SpaceClassConstructor
+object PassibleSpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[SpaceClass]}
-	val apply = new SpaceClass()
+	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[PassibleSpaceClass]}
+	val apply = new PassibleSpaceClass()
 }
 
 /**
@@ -36,18 +51,17 @@ class UnitAwareSpaceClass(tokens:ListOfTokens) extends BoardGameSpaceClass
 		with NoLandOnAction
 		with NoPassOverAction
 {
+	private def isOccupied:Boolean = {
+		val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.
+				find{_.currentSpace.typeOfSpace == this}
+		
+		!tokenOnThis.isEmpty
+	}
+	
 	override def cost(tokenMoving:BoardGameToken, costType:TypeOfCost) = {
 		costType match {
 			case TokenMovementCost => {
-			
-				val tokenOnThis:Option[Token] = tokens.
-						aliveTokens.
-						flatten.
-						find{_.currentSpace.typeOfSpace == this}
-				
-				if (tokenOnThis == None) { 1 }
-			//	else if (tokenOnThis == Some(tokenMoving)) { 1 }
-				else { 1000 }
+				if (this.isOccupied) {1000} else {1}
 			}
 			case _ => 1
 		}
@@ -88,6 +102,65 @@ class ImpassibleSpaceClass extends BoardGameSpaceClass
  * @version 20 Mar 2012
  */
 object ImpassibleSpaceClass extends SpaceClassConstructor
+{
+	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[ImpassibleSpaceClass]}
+	def apply = new ImpassibleSpaceClass
+}
+
+/**
+ * A SpaceClass that is impossible to move through but is possible to attack through
+ * @author Raymond Dodge
+ * @version 14 Jul 2012
+ */
+class AttackableOnlySpaceClass extends BoardGameSpaceClass
+		with NoLandOnAction
+		with NoPassOverAction
+{
+	override def cost(tokenMoving:BoardGameToken, costType:TypeOfCost) = {
+		costType match {
+			case PhysicalStrikeCost => 1
+			case MagicalStrikeCost => 1
+			case _ => 1000
+		}
+	}
+}
+
+/**
+ * A constructor and deconstructor for AttackableOnlySpaceClass
+ * @author Raymond Dodge
+ * @version 14 Jul 2012
+ */
+object AttackableOnlySpaceClass extends SpaceClassConstructor
+{
+	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[ImpassibleSpaceClass]}
+	def apply = new ImpassibleSpaceClass
+}
+
+/**
+ * A SpaceClass that cannot be stood on
+ * @author Raymond Dodge
+ * @version 14 Jul 2012
+ */
+class NoStandOnSpaceClass extends BoardGameSpaceClass
+		with NoLandOnAction
+		with NoPassOverAction
+{
+	def unitIsFlying(token:BoardGameToken) = false;
+	
+	override def cost(tokenMoving:BoardGameToken, costType:TypeOfCost) = {
+		costType match {
+			case TokenMovementCost => if (unitIsFlying(tokenMoving)) {1} else {1000}
+			case _ => 1
+		}
+	}
+}
+
+/**
+ * A constructor and deconstructor for NoStandOnSpaceClass
+ * @author Raymond Dodge
+ * @version 14 Jul 2012
+ */
+object NoStandOnSpaceClass extends SpaceClassConstructor
 {
 	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[ImpassibleSpaceClass]}
 	def apply = new ImpassibleSpaceClass

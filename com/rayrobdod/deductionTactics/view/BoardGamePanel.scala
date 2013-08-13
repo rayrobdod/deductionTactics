@@ -33,14 +33,14 @@ import com.rayrobdod.boardGame.view.{TokenComponent => BGTokenComponent}
  * @version 14 Feb 2012 - playerTokenLists are now JPanels, not JLists.
  * @version 21 Mar 2012 - removed paramter from Died since it no longer exists
  * @version 30 May 2012 - making so that prefered size does not ignore the ability of things to scroll
+ * @version 24 Jul 2012 - removing an unused code from fieldComp
+ * @version 24 Jul 2012 - moving the centerpiece's layout to the Options
  */
 class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JPanel
 {
 	setLayout(new BorderLayout)
 	
 	val fieldComp = {
-		val tilesheetInfoURL = this.getClass().getResource("/com/rayrobdod/tilemaps/GrassyField/info.json")
-//		val tilesheetInfo = new JSONTilesheet(tilesheetInfoURL)
 		val tilesheetInfo = Options.currentTilesheet
 		
 		new FieldComponent(tilesheetInfo,field)
@@ -48,12 +48,9 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 		
 	val centerpiece = 
 	{
-		import com.rayrobdod.swing.layouts.{MoveToLayout,
-				MoveToInstantLayout, MoveToGradualLayout2,
-				MoveToGradualLayout, SequentialMoveToLayout
-		}
+		import com.rayrobdod.swing.layouts.MoveToLayout
 
-		val layout:MoveToLayout = new MoveToGradualLayout(15)
+		val layout:MoveToLayout = Options.movementLayout
 		val panel = new JPanel(layout)
 		
 		val tokenComponents = tokens.tokens.flatMap{_.map{(t:Token) =>

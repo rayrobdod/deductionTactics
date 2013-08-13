@@ -1,27 +1,40 @@
 ﻿deductionTactics
 
-== a.3.0==
-* Decorators can be applied to PlayerAIs
+== a.3.1 ==
+‣ Adding tokenclasses
+‣ Adding tokenclass icons
+‣ Adding Base AI  -  GangUpAI
+
+‣ Fixed the About Dialog, which broke due to moved image resources
+‣ WithArbitraryTeam's frame now uses a JFormattedTextBox instead of a JTextBox
+		it's now impossible to enter an invalid value and attempt to parse it
+‣ Making movement speed a public option
+‣ Making sure that when units die, they stay dead: Status effects can kill a
+		unit, and units will not be able to move or attack when dead.
+
+
+== a.3.0 ==
+‣ Decorators can be applied to PlayerAIs
 	‣ Turning SwingInterfaceWithAutorecord base into WithAutorecord decorator
 	‣ Turning SwingInterfaceWithNetworkServer base into WithNetworkServer decorator
 	‣ Replacing hardcoded Viewport option into WithSwingViewport decorator
 	‣ Adding WithRandomTeam decorator
 	‣ Adding WithArbitraryTeam decorator
 
-* Moving icons from /sprites/** to /com/rayrobdod/deductionTactics/tokenClasses/**
-* Tokenclass maps can now have their "weakDirection" key set to "Rand"
+‣ Moving icons from /sprites/** to /com/rayrobdod/deductionTactics/tokenClasses/**
+‣ Tokenclass maps can now have their "weakDirection" key set to "Rand"
 	which is changed to a real Direction at run time deterministically.
 	Thus, removing the PHP scripts whose only purpose was to do this at compile time.
 
 
 
 == a.2.3 ==
-* Renaming com.rayrobdod.deductionTactics.ai.HumanAI to
+‣ Renaming com.rayrobdod.deductionTactics.ai.HumanAI to
 		com.rayrobdod.deductionTactics.ai.SwingInterface
-* Renaming com.rayrobdod.deductionTactics.ai.HumanAutorecordAI to
+‣ Renaming com.rayrobdod.deductionTactics.ai.HumanAutorecordAI to
 		com.rayrobdod.deductionTactics.ai.SwingInterfaceWithAutorecord
-* Adding PlayerAI: NetworkClient
-* Adding PlayerAI: SwingInterfaceWithNetworkServer
+‣ Adding PlayerAI: NetworkClient
+‣ Adding PlayerAI: SwingInterfaceWithNetworkServer
 
 
 
@@ -48,13 +61,14 @@
 ‣ Additional class icons provided
 
 
+
 == a.2.0 ==
 
 === Major level ===
 ==== Model Change ====
 ‣ Turning unit classes into a service
   ‣ no longer stored in the file unitClasses/basic.json
-  ‣ built-in classes resides in com/rayrobdod/deductionTactics/tokenClasses/*.json,
+  ‣ built-in classes resides in com/rayrobdod/deductionTactics/tokenClasses/‣.json,
         but see service for extending
 
 === Minor level ===

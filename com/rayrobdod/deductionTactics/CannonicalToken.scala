@@ -36,6 +36,8 @@ import java.util.logging.Level
  * @version 04 Jun 2012 - adding an effect for Status.Heal to the StatusAct object
  * @version 27 Jun 2012 - moving the majority of CannonicalToken.BeAttackedReaction.directionMultiplier's
 			implementation to Directions.pathDirections and Directions.Direction.weaknessMultiplier 
+ * @version 01 Aug 2012 - Status Act will now send a Died event if applicable
+ * @version 01 Aug 2012 - TurnStartReaction will no longer respond if unit is supposed to be dead
  */
 class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 {
@@ -126,7 +128,7 @@ class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 			case _ => {}
 		}}
 		override def isDefinedAt(e:Event) = {e match {
-			case StartOfTurn => true
+			case StartOfTurn => currentHitpoints > 0 // do not react if dead
 			case EndOfTurn => true
 			case _ => false
 		}}
@@ -166,27 +168,6 @@ class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 		}}
 		override def toString = CannonicalToken.this.toString + ".AttackReaction"
 	}
-	
-	/* ???
-	reactions.+=(this.DieReaction)
-	object DieReaction extends Reaction
-	{
-		override def apply(e:Event) = {e match {
-			case Died() =>
-			{
-				reactions -= TurnStartReaction
-				reactions -= AttackReaction
-				// other stuff, maybe
-				}
-			}
-			case _ => {}
-		}}
-		
-		override def isDefinedAt(e:Event) = {e match {
-			case Died(x) => x == CannonicalToken.this
-			case _ => false
-		}}
-	} */
 	
 	/**
 	 * This is an object that is expected to be waited on. After a move
@@ -319,32 +300,37 @@ class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 			next
 		}
 		
-		override def apply(e:Event) = {currentStatus match {
-			case None => {}
-			case Some(Statuses.Sleep) => {
-				_canMoveThisTurn = 0
+		override def apply(e:Event) =
+		{
+			currentStatus match {
+				case None => {}
+				case Some(Statuses.Sleep) => {
+					_canMoveThisTurn = 0
+				}
+				case Some(Statuses.Snake) => {
+					_canMoveThisTurn = 1
+					_currentHitpoints = _currentHitpoints - baseDamage
+				}
+				case Some(Statuses.Blind) => {
+					_canAttackThisTurn = false
+				}
+				case Some(Statuses.Burn) => {
+					_currentHitpoints = _currentHitpoints - (2 * baseDamage)
+				}
+				case Some(Statuses.Confuse) => {
+					(1 to 3).foldLeft(currentSpace)(moveToRandomSpace)
+				}
+				case Some(Statuses.Neuro) => {
+					(1 to 1).foldLeft(currentSpace)(moveToRandomSpace)
+					_currentHitpoints = _currentHitpoints - baseDamage
+				}
+				case Some(Statuses.Heal) => {
+					_currentHitpoints = _currentHitpoints + (baseDamage)
+				}
 			}
-			case Some(Statuses.Snake) => {
-				_canMoveThisTurn = 1
-				_currentHitpoints = _currentHitpoints - baseDamage
-			}
-			case Some(Statuses.Blind) => {
-				_canAttackThisTurn = false
-			}
-			case Some(Statuses.Burn) => {
-				_currentHitpoints = _currentHitpoints - (2 * baseDamage)
-			}
-			case Some(Statuses.Confuse) => {
-				(1 to 3).foldLeft(currentSpace)(moveToRandomSpace)
-			}
-			case Some(Statuses.Neuro) => {
-				(1 to 1).foldLeft(currentSpace)(moveToRandomSpace)
-				_currentHitpoints = _currentHitpoints - baseDamage
-			}
-			case Some(Statuses.Heal) => {
-				_currentHitpoints = _currentHitpoints + (baseDamage)
-			}
-		}}
+			
+			if (_currentHitpoints <= 0) {CannonicalToken.this ! Died()}
+		}
 		
 		override def isDefinedAt(e:Event) = {e match {
 			case StartOfTurn => true

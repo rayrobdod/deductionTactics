@@ -24,6 +24,8 @@ import javax.swing.Icon
 			to Map[Weaponkind, Option[Float]]
  * @version 12 Jun 2012 - changed name from val to var, and implementing a icon_= function
  * @version 28 Jus 2012 - implementing hashCode and equals
+ * @todo Make observable
+ * 
  */
 class SuspicionsTokenClass extends TokenClass
 {
@@ -75,9 +77,4 @@ class SuspicionsTokenClass extends TokenClass
 		}
 		else false
 	}
-}
-
-object SuspicionsTokenClass {
-	// seemingly unused
-	val unknownIcon = loadIcon(this.getClass().getResource("/sprites/Gray shirt.png"))
 }

@@ -3,7 +3,7 @@ package ai
 
 import scala.util.Random
 import com.rayrobdod.boardGame.{RectangularField => Field}
-import javax.swing.{JButton, JFrame, JPanel, JLabel, JList, JTextField}
+import javax.swing.{JButton, JFrame, JPanel, JLabel, JList, JFormattedTextField}
 import java.awt.event.{ActionListener, ActionEvent}
 import java.awt.BorderLayout
 
@@ -14,6 +14,7 @@ import java.awt.BorderLayout
  * @author Raymond Dodge
  * @version 09 Jul 2012
  * @version 12 Jul 2012 - giving seedBox a default value; changed initialize to base.initialize
+ * @version 24 Jul 2012 - changing seedBox from being a JTextField to a JFormattedTextField
  */
 final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 {
@@ -26,7 +27,9 @@ final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 	def buildTeam = {
 		
 		val buildingLock = new Object()
-		val seedBox = new JTextField(Random.nextInt.toString, 10)
+		
+		val seedBox = new JFormattedTextField(java.text.NumberFormat.getIntegerInstance())
+			seedBox.setValue(Random.nextInt)
 		val okButton = new JButton("OK")
 		
 		val frame = new JFrame() {
@@ -40,7 +43,10 @@ final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 		
 		okButton.addActionListener(new ActionListener {
 			override def actionPerformed(e:ActionEvent) = {
-				buildingLock.synchronized { buildingLock.notifyAll }
+				seedBox.commitEdit()
+				if (seedBox.isEditValid()) {
+					buildingLock.synchronized { buildingLock.notifyAll }
+				}
 			}
 		})
 		
@@ -51,7 +57,15 @@ final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 		}
 		
 		frame.setVisible(false)
-		ai.randomTeam(new Random(Integer.parseInt(seedBox.getText)))
+		ai.randomTeam(new Random(somethingToLong(seedBox.getValue)))
+	}
+	
+	def somethingToLong(a:Any):Long = a match {
+		case x:Long => x
+		case x:Int => x
+		case x:Double => x.longValue
+		case x:String => java.lang.Long.parseLong(x)
+		case _ => java.lang.Long.parseLong(a.toString)
 	}
 	
 	

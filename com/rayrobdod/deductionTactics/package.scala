@@ -32,10 +32,12 @@ import scala.collection.mutable.{Map => MMap}
  * @version 20 Apr 2012 - modifying the location of a few resources
  * @version 03 Jun 2012 - Adding VERSION variable
  * @version 28 Jun 2012 - adding a cache to generateGenericIcon
+ * @version 14 Jul 2012 - moving a resource from /com/rayrobdod/tilemaps/Supermarket/letterMapping.json
+ 			to /com/rayrobdod/deductionTactics/letterMapping.json
  */
 package object deductionTactics
 {
-	val VERSION = "a.3.0"
+	val VERSION = "a.3.1"
 	private val ICON_DIMENSION = 32
 	
 	/**
@@ -75,7 +77,7 @@ package object deductionTactics
 	}
 	
 	def generateField:RectangularField = {
-		val letterToNameMapReader = new InputStreamReader(this.getClass().getResourceAsStream("/com/rayrobdod/tilemaps/Supermarket/letterMapping.json"))
+		val letterToNameMapReader = new InputStreamReader(this.getClass().getResourceAsStream("/com/rayrobdod/deductionTactics/letterMapping.json"))
 		val letterToNameMap:Map[String,String] = {
 			val listener = new ToSeqJSONParseListener()
 			JSONParser.parse(listener, letterToNameMapReader)
@@ -105,7 +107,8 @@ package object deductionTactics
 		}
 		else
 		{
-			val fileName = tokenClass.atkWeapon.map{_.genericTokenClassFile}.getOrElse("/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/Gray shirt.png")
+			val fileName = tokenClass.atkWeapon.map{_.genericTokenClassFile}.getOrElse(
+					"/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/Gray shirt.png")
 			//System.out.println(fileName)
 			val base = ImageIO.read(this.getClass().getResource(fileName))
 			

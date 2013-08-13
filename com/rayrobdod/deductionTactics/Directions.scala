@@ -20,6 +20,7 @@ import LoggerInitializer.{cannonicalTokenLogger => Logger}
  * @version 27 Jun 2012 - moving the majority of CannonicalToken.BeAttackedReaction.directionMultiplier's
 			implementation to Directions.pathDirections and Directions.Direction.weaknessMultiplier
  * @version 10 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
+ * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
  */
 object Directions
 {
@@ -82,8 +83,18 @@ object Directions
 	val Down  = new Direction(3, "Down",  (th:RectangularSpace) => { th.down  })
 	
 	def values = Seq[Direction](Left, Up, Right, Down)
-	def withName(s:String) = values.find{_.name equalsIgnoreCase s}.get
 	def apply(x:Int) = values(x) // values.find{_.id == x}.get
+	
+	def withName(s:String) = {
+		try {
+			values.find{_.name equalsIgnoreCase s}.get
+		} catch {
+			case x:NoSuchElementException => 
+				val y = new NoSuchElementException("No element with name: "+ s)
+				y.initCause(x)
+				throw y
+		}
+	}
 	
 	/**
 	 * The directions one would move to go from fromSpace to toSpace

@@ -27,9 +27,11 @@
 		foreach($elements as $element)
 		foreach($weapons as $weapon)
 		{
+			$name =  $element['unit'] . ' ' . $weapon['unit'];
+			
 			echo('
 	{
-		"name":"'. $element['unit'] . ' ' . $weapon['unit'] . '",
+		"name":"' . $name . '",
 		"element":"' . $element['name'] . '",
 		"atkWeapon":"' . $weapon['name'] . '",
 		"atkStatus":"'. $element['canInflict'] . '",
@@ -38,7 +40,15 @@
 		"body":"Human",
 		"weakWeapon":' . $weapon['weakWeapon'] . ',
 		"weakStatus":"' . $weapon['weakStatus'] . '",
-		"weakDirection":"' . $directions[rand(0,3)] . '"
+		"weakDirection":"Rand'); // . $directions[rand(0,3)]);
+		
+			if (file_exists('basic/' . $name . '.png'))
+			{
+				echo('",
+		"icon":"/com/rayrobdod/deductionTactics/tokenClasses/basic/' . $name . '.png'); 
+			}
+			
+			echo ('"
 	},');
 		}
 	?>

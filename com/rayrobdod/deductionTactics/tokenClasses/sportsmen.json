@@ -23,7 +23,7 @@
 		"weakWeapon":{"blade":1,"blunt":2,"spear":.5,"whip":1.5,"powder":.75},
 		"weakStatus":"Blind",
 		"weakDirection":"Rand",
-		"iconc":""
+		"icon":"/com/rayrobdod/deductionTactics/tokenClasses/sportsmen/Cardinals Pitcher.png"
 	},
 	{
 		"name":"Batter",

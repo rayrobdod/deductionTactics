@@ -18,10 +18,12 @@ import com.rayrobdod.deductionTactics.LoggerInitializer.{elementsLogger => logge
  * @version 27 Feb 2012 - adding Element.color
  * @version 15 Apr 2012 - moving icons
  * @version 11 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
+ * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
+ * @version 30 Jul 2012 - Element never obeyed the transetivity requirement of Ordered, so it no longer implements that class
  */
 object Elements
 {
-	trait Element extends Ordered[Element] with NameAndIcon
+	trait Element extends NameAndIcon
 	{
 		def id:Int
 		def name:String
@@ -66,6 +68,16 @@ object Elements
 	val Sound:Element = new ElementImpl(4, "Sound", new Color(0,255,0))
 	
 	def values = Seq[Element](Light, Electric, Fire, Frost, Sound)
-	def withName(s:String) = values.find{_.name equalsIgnoreCase s}.get
 	def apply(x:Int) = values(x) //.find{_.id == x}.get
+	
+	def withName(s:String) = {
+		try {
+			values.find{_.name equalsIgnoreCase s}.get
+		} catch {
+			case x:NoSuchElementException => 
+				val y = new NoSuchElementException("No element with name: "+ s)
+				y.initCause(x)
+				throw y
+		}
+	}
 }

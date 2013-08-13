@@ -25,6 +25,7 @@ import java.util.logging.Level
  * @version 21 Mar 2012 - modified reactions for new event model
  * @version 05 Apr 2012 - adding TokenCosts to Space and SpaceClass methods that now require them
  * @version 08 Apr 2012 - changed initialize to use new StandardObserveAttacks and StandardObserveMovement
+ * @version 30 Jul 2012 - doesn't use any info from initialize, so removing its implementation
  */
 class BlindAttackAI extends PlayerAI
 {
@@ -62,7 +63,7 @@ class BlindAttackAI extends PlayerAI
 		player ! EndOfTurn
 	}
 	
-	def initialize(player:Player, field:Field) = {
+	def initialize(player:Player, field:Field) = { /*
 		player.tokens.otherTokens.flatten.foreach{(token:MirrorToken) =>
 			token.reactions += new StandardObserveAttacks(token)
 			
@@ -70,7 +71,7 @@ class BlindAttackAI extends PlayerAI
 			token.reactions += movement
 			player.reactions += movement
 		}
-	}
+	*/ }
 	
 	
 	def canEquals(other:Any) = {other.isInstanceOf[BlindAttackAI]}

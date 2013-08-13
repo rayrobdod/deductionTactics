@@ -6,5 +6,5 @@
 	"tileHeight":32,
 	
 	"rules":"PrimaryColorTiles_Monotile.json",
-	"classMap":"letterMapping.json"
+	"classMap":"../../deductionTactics/letterMapping.json"
 }

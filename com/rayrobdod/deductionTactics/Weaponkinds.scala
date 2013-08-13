@@ -17,6 +17,7 @@ import com.rayrobdod.swing.NameAndIcon
  * @version 03 Jun 2012 - adding Powderkind
  * @version 09 Jul 2012 - moving tokenClass icons and attackEffect icons
  * @version 10 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
+ * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
  */
 object Weaponkinds
 {
@@ -39,6 +40,16 @@ object Weaponkinds
 	val Powderkind= new Weaponkind(4, "Powderkind", "powderman")
 	
 	def values = Seq[Weaponkind](Bladekind, Bluntkind, Spearkind, Whipkind, Powderkind)
-	def withName(s:String) = values.find{_.name.equalsIgnoreCase(s + "kind")}.get
 	def apply(x:Int) = values(x) //.find{_.id == x}.get
+	
+	def withName(s:String) = {
+		try {
+			values.find{_.name.equalsIgnoreCase(s + "kind")}.get
+		} catch {
+			case x:NoSuchElementException => 
+				val y = new NoSuchElementException("No element with name: "+ s)
+				y.initCause(x)
+				throw y
+		}
+	}
 }

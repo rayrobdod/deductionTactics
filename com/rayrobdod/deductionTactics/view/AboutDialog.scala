@@ -20,7 +20,7 @@ class AboutDialog(
 				= Dialog.ModalityType.APPLICATION_MODAL)
 		extends JDialog(owner, "About", modality)
 {
-	val icon = new ImageIcon(ImageIO.read(this.getClass().getResourceAsStream("/sprites/generic/Gray shirt.png")))
+	val icon = new ImageIcon(ImageIO.read(this.getClass().getResourceAsStream("/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/Gray shirt.png")))
 	val appName = "Deduction Tactics"
 	val version = com.rayrobdod.deductionTactics.VERSION
 	val runningOn = "Using Java v" + System.getProperty("java.version")

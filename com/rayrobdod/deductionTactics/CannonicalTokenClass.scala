@@ -167,56 +167,35 @@ class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenCl
  * @version 19 Jan 2012 - renamed from TokenClass to CannonicalTokenClass
  * @version 04 Jun 2012 - making the tokens a service, instead of a fixed resource
  * @version 12 Jul 2012 - only making a new jar file system if there isn't already one
+ * @version 18 Jul 2012 - Changing to use com.rayrobdod.util.services.ResourcesServiceLoader,
+			as well as making futher use of Scala Collection's functional interface.
  */
 object CannonicalTokenClass
 {
-	//TODO: use stuff in com.rayrobdod.util.services
-	
 	private val SERVICE = "com.rayrobdod.deducitonTactics.TokenClass"
-	private val PREFIX = "META-INF/services/"
-	private val fullName = PREFIX + SERVICE
 	
-	private def listOfClassFileFiles = ClassLoader.getSystemResources(fullName)
-	private val listOfClassFiles = listOfClassFileFiles.map{(oneServiceFileURL:URL) =>
-		if (oneServiceFileURL.toString().startsWith("jar:"))
-		{
-			try {
-				val env = new java.util.HashMap[String, String]();
-				env.put("create", "true");
-				
-				FileSystems.newFileSystem(new java.net.URI(oneServiceFileURL.toString().split("!").apply(0)), env);
-			}
-			catch {
-				case e:java.nio.file.FileSystemAlreadyExistsException =>
-					{} // FileSystem exists, so it doesn't have to be made
-			}
-		}
-		
-		val oneServiceFilePath = Paths.get(oneServiceFileURL.toURI)
-		
-		Files.readAllLines(oneServiceFilePath, StandardCharsets.UTF_8)
-	}.flatten
-	
-	private def turnOneFileIntoASeqOfClasses(location:String) =
+	val allKnown:ISeq[CannonicalTokenClass] =
 	{
-		val reader:InputStreamReader = new InputStreamReader(
-				this.getClass.getResourceAsStream(location))
+		import scala.collection.JavaConversions.iterableAsScalaIterable
+		import com.rayrobdod.util.services.ResourcesServiceLoader
+		import java.nio.charset.StandardCharsets.UTF_8
 		
-		val listener2 = new ToSeqJSONParseListener()
-		JSONParser.parse(listener2, reader)
-		val jsonObjectSeq:Seq[Any] = listener2.result
-		
-		val jsonMapSeq = jsonObjectSeq.map{_ match{
-//			case x:Map[String, _] => x
+		val a:Seq[Path] = new ResourcesServiceLoader(SERVICE).toSeq
+		val b:Seq[Seq[Any]] = a.map{(jsonPath:Path) => 
+			val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
+			
+			val l = new ToSeqJSONParseListener()
+			JSONParser.parse(l, jsonReader)
+			l.result
+		}
+		val c:Seq[Any] = b.flatten
+		val d:Seq[Map[String,Any]] = c.map{_ match{
 			case x:Map[_, _] => x.map{(i:(Any, Any)) => (i._1.toString, i._2)}
 		}}
-		
-		jsonMapSeq.map{new CannonicalTokenClassFromMap(_)}
-	}
-	
-	lazy val allKnown:ISeq[CannonicalTokenClass] =
-	{
-		ISeq.empty ++ listOfClassFiles.map{turnOneFileIntoASeqOfClasses(_)}.flatten
+		val e:Seq[CannonicalTokenClass] = d.map{
+			new CannonicalTokenClassFromMap(_)
+		}
+		ISeq.empty ++ e
 	}
 	
 	import javax.swing.{AbstractListModel, ListModel}

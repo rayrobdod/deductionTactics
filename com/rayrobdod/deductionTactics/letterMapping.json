@@ -1,6 +1,6 @@
 {
 	" " : "com.rayrobdod.deductionTactics.UnitAwareSpaceClass",
-	"," : "Something you can attack through or fly over, but not walk through",
+	"." : "com.rayrobdod.deductionTactics.NoStandOnSpaceClass",
 	"|" : "com.rayrobdod.deductionTactics.ImpassibleSpaceClass",
-	":" : "Something atack throughable, but not move thorughable"
+	":" : "com.rayrobdod.deductionTactics.AttackableOnlySpaceClass"
 }

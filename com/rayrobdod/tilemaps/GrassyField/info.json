@@ -6,5 +6,5 @@
 	"tileHeight":32,
 	
 	"rules":"tiles.json",
-	"classMap":"letterMapping.json"
+	"classMap":"../../deductionTactics/letterMapping.json"
 }

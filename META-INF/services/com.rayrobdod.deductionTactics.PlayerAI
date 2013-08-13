@@ -4,6 +4,7 @@ com.rayrobdod.deductionTactics.ai.SwingInterface
 # Computer opponents
 com.rayrobdod.deductionTactics.ai.BlindAttackAI
 com.rayrobdod.deductionTactics.ai.SleepAbuserAI
+com.rayrobdod.deductionTactics.ai.GangUpAI
 
 # A network client that recieves commands over the net
 com.rayrobdod.deductionTactics.ai.NetworkClient

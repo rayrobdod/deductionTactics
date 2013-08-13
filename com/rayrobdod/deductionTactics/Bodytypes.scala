@@ -6,9 +6,10 @@ package com.rayrobdod.deductionTactics
  * @version 21 Aug 2011
  * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
 			to com.rayrobdod.deductionTactics
- * 
+ * @version 29 Jul 2012 - adding Avian as a value
  */
 object BodyTypes extends Enumeration
 {
 	val Humanoid = Value("Human")
+	val Avian = Value("Avian")
 }

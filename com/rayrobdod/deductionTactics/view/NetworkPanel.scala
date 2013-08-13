@@ -6,6 +6,8 @@ import java.net.{Socket, ServerSocket, InetAddress}
 import java.awt.event.{ActionListener, ActionEvent}
 import java.util.concurrent.ThreadFactory
 
+// TODO: make JTextFields into JFormattedTextFields
+
 /**
  * @author Raymond Dodge
  * @version 2012 Jul 03

@@ -26,6 +26,7 @@ import scala.swing.event.Event
  * @version 05 Jul 2012
  * @version 09 Jul 2012 - renaming from SwingInterfaceWithNetworkServer to WithNetworkServer; making a decorator
  * @version 12 Jul 2012 - fixing issue where this didn't send tokens to clients, due to not setting myTokens
+ * @version 19 Jul 2012 - corecting equals with new class name
  */
 class WithNetworkServer(base:PlayerAI) extends PlayerAI
 {
@@ -109,10 +110,10 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[SwingInterfaceWithNetworkServer]}
+	def canEquals(other:Any) = {other.isInstanceOf[WithNetworkServer]}
 	override def equals(other:Any) = {
 		// no instance variables to test
-		this.canEquals(other) && other.asInstanceOf[SwingInterfaceWithNetworkServer].canEquals(this)
+		this.canEquals(other) && other.asInstanceOf[WithNetworkServer].canEquals(this)
 	}
 	// arbitrary number (17)
 	override def hashCode = 21
