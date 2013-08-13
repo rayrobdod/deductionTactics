@@ -7,7 +7,7 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
 import scala.parallel.Future
 import com.rayrobdod.util.services.{ResourcesServiceLoader, Services}
 import com.rayrobdod.commaSeparatedValues.parser.{CSVParser, ToSeqSeqCSVParseListener, CSVPatterns}
-import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToSeqJSONParseListener
+import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import com.rayrobdod.boardGame.RectangularField
 import com.rayrobdod.boardGame.mapValuesFromObjectNameToSpaceClassConstructor
@@ -21,6 +21,8 @@ import java.nio.charset.StandardCharsets.UTF_8
  * 
  * @version 28 Nov 2012
  * @version 22 Dec 2012 - making metadata a thing, and making the entry point a file rather than a string
+ * @version 2013 Jun 16 - allowing startSpaces to be inlined
+ * @version 2013 Jun 23 - responding to changes in JSON module; mostly ToSeqJSONParseListener → ToScalaCollection
  */
 // metadata
 // starting locations
@@ -37,13 +39,14 @@ object Maps
 		ISeq.empty ++ new ResourcesServiceLoader(SERVICE);
 	}
 	
-	private def getMetadata(index:Int):Map[String, String] = {
+	private def getMetadata(index:Int):Map[String, Any] = {
 		val metadataPath = Maps.paths(index)
-		val metadataReader = Files.newBufferedReader(metadataPath, UTF_8);
-		val metadataMap:Map[String,String] = {
-			val listener = new ToSeqJSONParseListener()
-			JSONParser.parse(listener, metadataReader)
-			listener.resultMap.mapValues{_.toString}
+		val metadataMap:Map[String,Any] = {
+			val reader = Files.newBufferedReader(metadataPath, UTF_8);
+			val listener = ToScalaCollection()
+			JSONParser.parse(listener, reader)
+			reader.close()
+			listener.resultMap
 		}
 		
 		metadataMap
@@ -53,12 +56,13 @@ object Maps
 		val metadataPath = Maps.paths(index)
 		val metadataMap = getMetadata(index)
 		
-		val letterToSpaceClassConsPath = metadataPath.getParent.resolve(metadataMap("classMap"))
-		val letterToSpaceClassConsReader = Files.newBufferedReader(letterToSpaceClassConsPath, UTF_8)
 		val letterToSpaceClassConsMap:Map[String,SpaceClassConstructor] = {
-			val listener = new ToSeqJSONParseListener()
-			JSONParser.parse(listener, letterToSpaceClassConsReader)
+			val path = metadataPath.getParent.resolve(metadataMap("classMap").toString)
+			val reader = Files.newBufferedReader(path, UTF_8)
+			val listener = ToScalaCollection()
+			JSONParser.parse(listener, reader)
 			val letterToClassNameMap = listener.resultMap.mapValues{_.toString}
+			reader.close()
 			
 			letterToClassNameMap.mapValues{(objectName:String) => 
 				val clazz = Class.forName(objectName + "$")
@@ -68,7 +72,7 @@ object Maps
 			}
 		}
 		
-		val layoutPath = metadataPath.getParent.resolve(metadataMap("layout"))
+		val layoutPath = metadataPath.getParent.resolve(metadataMap("layout").toString)
 		val layoutReader = Files.newBufferedReader(layoutPath, UTF_8)
 		val layoutTable:ISeq[ISeq[SpaceClassConstructor]] = {
 			val listener = new ToSeqSeqCSVParseListener()
@@ -77,6 +81,7 @@ object Maps
 			
 			letterTable.map{_.map{letterToSpaceClassConsMap}}
 		}
+		layoutReader.close()
 		
 		RectangularField.applySCC(layoutTable)
 	}
@@ -85,13 +90,20 @@ object Maps
 		val metadataPath = Maps.paths(index)
 		val metadataMap = getMetadata(index)
 		
-		val startSpacePath = metadataPath.getParent.resolve(metadataMap("deductionTactics::startSpaces"))
-		val startSpaceReader = Files.newBufferedReader(startSpacePath, UTF_8)
-		val startSpaceMap:Map[String,Any] = {
-			val listener = new ToSeqJSONParseListener()
-			JSONParser.parse(listener, startSpaceReader)
-			listener.resultMap
+		val startSpaceValue = metadataMap("deductionTactics::startSpaces")
+		val startSpaceMap:Map[String,Any] = startSpaceValue match {
+			case x:Map[_,_] => x.map{x => ((x._1.toString, x._2))}
+			case _ => {
+				val startSpacePath = metadataPath.getParent.resolve(startSpaceValue.toString)
+				val startSpaceReader = Files.newBufferedReader(startSpacePath, UTF_8)
+				
+				val listener = ToScalaCollection()
+				JSONParser.parse(listener, startSpaceReader)
+				startSpaceReader.close()
+				listener.resultMap
+			}
 		}
+		
 		startSpaceMap.keySet.map{ Integer.parseInt(_) }
 	}
 	
@@ -107,12 +119,22 @@ object Maps
 		val metadataPath = Maps.paths(index)
 		val metadataMap = getMetadata(index)
 		
-		val startSpacePath = metadataPath.getParent.resolve(metadataMap("deductionTactics::startSpaces"))
-		val startSpaceReader = Files.newBufferedReader(startSpacePath, UTF_8)
+		val startSpaceValue = metadataMap("deductionTactics::startSpaces")
+		val startSpaceMapRaw:Map[String,Any] = startSpaceValue match {
+			case x:Map[_,_] => x.map{x => ((x._1.toString, x._2))}
+			case _ => {
+				val startSpacePath = metadataPath.getParent.resolve(startSpaceValue.toString)
+				val startSpaceReader = Files.newBufferedReader(startSpacePath, UTF_8)
+				
+				val listener = ToScalaCollection()
+				JSONParser.parse(listener, startSpaceReader)
+				startSpaceReader.close()
+				listener.resultMap
+			}
+		}
+		
 		val startSpaceMap:Map[String,ISeq[ISeq[(Int, Int)]]] = {
-			val listener = new ToSeqJSONParseListener()
-			JSONParser.parse(listener, startSpaceReader)
-			listener.resultMap.mapValues{_ match {
+			startSpaceMapRaw.mapValues{_ match {
 				case x:ISeq[_] => x.map{_ match {
 					case y:ISeq[_] => y.map{_ match {
 						case ISeq(i:Any, j:Any) => {

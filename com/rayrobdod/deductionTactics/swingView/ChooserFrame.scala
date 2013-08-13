@@ -10,7 +10,7 @@ import javax.swing.{ListModel, ListCellRenderer, DefaultListCellRenderer, Abstra
 
 import com.rayrobdod.swing.RangeListModel
 import com.rayrobdod.swing.ScalaSeqListModel
-import com.rayrobdod.swing.{NameAndIconCellRenderer, NameAndIcon, NullReplaceListCellRenderer}
+import com.rayrobdod.swing.{NameAndIconCellRenderer, NameAndIcon, NullReplaceListCellRenderer, MapToNameAndIconCellRenderer}
 
 import java.lang.{Float => JavaFloat}
 
@@ -24,13 +24,14 @@ import java.lang.{Float => JavaFloat}
 		decorator: [[com.rayrobdod.swing.NullReplaceListCellRenderer]]
  * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  */
-class NameAndIconSetterChooserFrameMaker[A <: NameAndIcon](
+class NameAndIconSetterChooserFrameMaker[A](
 			listOfItems:Seq[A],
 			setter:Function1[Option[A],Any],
-			panel:JPanel
-	) extends ChooserFrameMaker[A](
+			panel:JPanel )(
+			implicit converter:(A) => NameAndIcon
+) extends ChooserFrameMaker[A](
 			new ScalaSeqListModel[A](listOfItems),
-			new NullReplaceListCellRenderer[NameAndIcon](new NameAndIconCellRenderer, UnsetNameAndIcon),
+			new MapToNameAndIconCellRenderer[A]()(converter),
 			new ListSelectionListener() {
 				override def valueChanged(e:ListSelectionEvent)
 				{
@@ -39,12 +40,6 @@ class NameAndIconSetterChooserFrameMaker[A <: NameAndIcon](
 				}
 			}
 	)
-
-object UnsetNameAndIcon extends NameAndIcon
-{
-	val name = "Unset"
-	val icon = TokenClassPanel.unknownIcon
-}
 
 /** 
  * @author Raymond Dodge

@@ -8,9 +8,6 @@ import Weaponkinds.Weaponkind
 import Directions.Direction
 import Statuses.Status
 
-// so that ant doesn't recompile this file
-class EventsToken
-
 /**
  * A unit is attacking a target to deal damage. 
  * @author Raymond Dodge

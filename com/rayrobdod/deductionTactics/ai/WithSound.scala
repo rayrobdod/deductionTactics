@@ -55,7 +55,7 @@ object WithSound
 			case AttackForDamage(_, element, kind, _) => {
 				// TODO: sound depends on how hard the hit was?
 				// TODO: sound depends on element and kind of attack
-				// TODO: give some units a unique attack sound
+				// TODO: give some units a unique attack sound (very ?)
 				
 				val fileName = PREFIX + "Hits/Hit.wav"
 				val file = this.getClass().getResource(fileName)

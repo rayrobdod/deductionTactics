@@ -1,1 +1,14 @@
-{ "name":"Light Forest (Stephen \"Redshrike\" Challener)",  "tiles":"light_forest-transparent.png", "tileWidth":32, "tileHeight":32,  "rules":"Forest.json", "classMap":"../../deductionTactics/letterMapping.json",  "license":"CC-BY", "by":"Stephen \"Redshrike\" Challener", "url":"http://opengameart.org/content/32x32-and-16x16-rpg-tiles-forest-and-some-interior-tiles" }
+{
+	"name":"Light Forest (Stephen \"Redshrike\" Challener)",
+	
+	"tiles":"light_forest-transparent.png",
+	"tileWidth":32,
+	"tileHeight":32,
+	
+	"rules":"Forest.json",
+	"classMap":"../../deductionTactics/letterMapping.json",
+	
+	"license":"CC-BY",
+	"by":"Stephen \"Redshrike\" Challener",
+	"url":"http://opengameart.org/content/32x32-and-16x16-rpg-tiles-forest-and-some-interior-tiles"
+}

@@ -1,0 +1,73 @@
+
+/*
+
+"C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\rc" -I "C:\Program Files\Microsoft SDKs\Windows\v7.1\Include" -I "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include"  deductionTactics.rc
+
+ */
+
+
+
+
+// http://msdn.microsoft.com/en-us/library/windows/desktop/aa381058(v=vs.85).aspx
+/////////////////////////////////////////////////////////////////////////////
+
+#include <Winver.h>
+
+#define VERSION "a.4.1\0"
+#define VERSION_MANIFEST 0,10,4,1
+
+
+1 VERSIONINFO
+		FILEVERSION   VERSION_MANIFEST
+		FILETYPE      VFT_DLL
+		FILEFLAGSMASK VS_FF_PRERELEASE
+		FILEFLAGS     VS_FF_PRERELEASE
+{
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName",      "Raymond Dodge"
+            VALUE "FileDescription",  "Game Definition File"
+            VALUE "FileVersion",      VERSION
+            VALUE "InternalName",     "Whee!"
+            VALUE "LegalCopyright",   "Whee!"
+            VALUE "LegalTrademarks1", "Whee!"
+            VALUE "LegalTrademarks2", "Whee!"
+            VALUE "OriginalFilename", "GDF"
+            VALUE "ProductName",      "Deduction Tactics"
+            VALUE "ProductVersion",   VERSION
+        END
+    END
+
+}
+
+
+
+// http://msdn.microsoft.com/en-us/library/windows/desktop/ee417680(v=vs.85).aspx
+/////////////////////////////////////////////////////////////////////////////
+
+//#include <resource.h>
+#include <gameux.h>
+
+#define APSTUDIO_READONLY_SYMBOLS
+//#include <afxres.h>
+#undef APSTUDIO_READONLY_SYMBOLS
+
+
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+#ifdef _WIN32
+
+LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
+
+#endif
+#pragma code_page(1252)
+#endif //_WIN32
+
+ID_GDF_XML        DATA    "deductionTactics.gdf"
+ID_GDF_THUMBNAIL  DATA    "C:\\Users\\Raymond\\Pictures\\Tilemaps\\Template32.png"
+
+//#endif    // Neutral resources
+

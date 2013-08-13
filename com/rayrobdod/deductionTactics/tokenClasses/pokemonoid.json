@@ -1,1 +1,40 @@
-[{ "name":"Magenta Lion", "commnent":"Entei; Qilin", "element":"Fire", "atkWeapon":"Powder", "atkStatus":"Burn", "range":1, "speed":5, "body":"Gerbillinae", "weakWeapon":{"blade":1.25,"blunt":.5,"spear":1.5,"whip":1,"powder":2}, "weakStatus":"Blind", "weakDirection":"Rand", "iconc":""  },{ "name":"Yellow Tiger", "commnent":"Raikou; Raiju", "element":"Electric", "atkWeapon":"Powder", "atkStatus":"Neuro", "range":1, "speed":5, "body":"Gerbillinae", "weakWeapon":{"blade":1.25,"blunt":.5,"spear":1.5,"whip":1,"powder":2}, "weakStatus":"Blind", "weakDirection":"Rand", "iconc":""  },{ "name":"Cyan Leopard", "commnent":"Suicune; ???", "element":"Frost", "atkWeapon":"Powder", "atkStatus":"Sleep", "range":1, "speed":5, "body":"Gerbillinae", "weakWeapon":{"blade":1.25,"blunt":.5,"spear":1.5,"whip":1,"powder":2}, "weakStatus":"Blind", "weakDirection":"Rand", "iconc":"" }] 
+[{
+	"name":"Magenta Lion",
+	"commnent":"Entei; Qilin; Magma Lion",
+	"element":"Fire",
+	"atkWeapon":"Powder",
+	"atkStatus":"Burn",
+	"range":1,
+	"speed":5,
+	"body":"Gerbillinae",
+	"weakWeapon":{"blade":1.25,"blunt":.5,"spear":1.5,"whip":1,"powder":2},
+	"weakStatus":"Blind",
+	"weakDirection":"DontCare",
+	"iconc":"" 
+},{
+	"name":"Yellow Tiger",
+	"commnent":"Raikou; Raiju; ???",
+	"element":"Electric",
+	"atkWeapon":"Powder",
+	"atkStatus":"Neuro",
+	"range":1,
+	"speed":5,
+	"body":"Gerbillinae",
+	"weakWeapon":{"blade":1.25,"blunt":.5,"spear":1.5,"whip":1,"powder":2},
+	"weakStatus":"Blind",
+	"weakDirection":"DontCare",
+	"iconc":"" 
+},{
+	"name":"Cyan Leopard",
+	"commnent":"Suicune; ???; Snow Leopard",
+	"element":"Frost",
+	"atkWeapon":"Powder",
+	"atkStatus":"Sleep",
+	"range":1,
+	"speed":5,
+	"body":"Gerbillinae",
+	"weakWeapon":{"blade":1.25,"blunt":.5,"spear":1.5,"whip":1,"powder":2},
+	"weakStatus":"Blind",
+	"weakDirection":"DontCare",
+	"iconc":""
+}] 

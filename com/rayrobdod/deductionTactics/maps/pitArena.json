@@ -1,1 +1,8 @@
-{ "name": "Pit Arena",  "deductionTactics::startSpaces":"pitArena-startSpaces.json", "layout":"pitArena-layout.csv",  "classMap":"../letterMapping.json" } 
+{
+	"name": "Pit Arena",
+	
+	"deductionTactics::startSpaces":"pitArena-startSpaces.json",
+	"layout":"pitArena-layout.csv",
+	
+	"classMap":"../letterMapping.json"
+}

@@ -1,6 +1,6 @@
 package com.rayrobdod.deductionTactics.test
 
-import com.rayrobdod.deductionTactics.view.{AllKnownTokenClassesComponent, TokenClassPanelTypeSelector}
+import com.rayrobdod.deductionTactics.swingView.{AllKnownTokenClassesComponent, TokenClassPanelTypeSelector}
 import javax.swing.{JFrame, JScrollPane}
 import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever}

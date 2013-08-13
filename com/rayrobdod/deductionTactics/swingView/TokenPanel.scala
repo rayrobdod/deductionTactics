@@ -13,6 +13,7 @@ import com.rayrobdod.deductionTactics.Token
 import javax.swing.{JList, ListCellRenderer}
 import com.rayrobdod.boardGame.{BeSelected, StartOfTurn, EndOfTurn}
 import com.rayrobdod.deductionTactics.{AttackForDamage, AttackForStatus}
+import com.rayrobdod.swing.{GridBagConstraintsFactory}
 
 import scala.swing.Reactions.Reaction
 import scala.swing.event.Event
@@ -29,26 +30,30 @@ import java.awt.event.{MouseAdapter, MouseEvent}
  * @version 06 Apr 2012 - Somehow managed to break UpdateAct such that it only works for enemy tokens, not your own.
  * @version 03 Aug 2012 - If the corresponding token is selected, the panel will request itself to be visible.
  * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
+ * @version 29 Jan 2013 - Using the new class: com.rayrobdod.swing.GridBagConstraintsFactory
+ * @version 2013 Jun 14 - using makeIconFor instead of per-class icon properties
  */
 class TokenPanel(val token:Token) extends JPanel
 {
+	private val ICON_SIZE = 32
+	
 	setLayout(new GridBagLayout)
 	
 	val tokenClass = new TokenClassPanel(token.tokenClass)
 	val hitpoints = new JLabel(token.currentHitpoints + " / " + token.maximumHitpoints) 
-	val status = new JLabel(token.currentStatus.map{_.icon}.getOrElse(TokenClassPanel.unknownIcon))
+	val status = new JLabel( makeIconFor(token.currentStatus, ICON_SIZE) )
 	val statusTurnsLeft = new JLabel("" + token.currentStatusTurnsLeft)
 	
-	val statusRow = new JPanel(){
-		add(hitpoints)
-		add(status)
-		add(statusTurnsLeft)
-		setBackground(null)
-	}
+	val statusRow = new JPanel()
+	statusRow.add(hitpoints)
+	statusRow.add(status)
+	statusRow.add(statusTurnsLeft)
+	statusRow.setBackground(null)
+	
 	tokenClass.setBackground(null)
 	
-	add(statusRow, new GridBagConstraints() {gridwidth = GridBagConstraints.REMAINDER})
-	add(tokenClass, new GridBagConstraints() {gridwidth = GridBagConstraints.REMAINDER})
+	add(statusRow, GridBagConstraintsFactory( gridwidth = GridBagConstraints.REMAINDER ))
+	add(tokenClass, GridBagConstraintsFactory( gridwidth = GridBagConstraints.REMAINDER ))
 	
 	token.reactions += UpdateAct
 	/** add to all tokens and players */
@@ -59,7 +64,7 @@ class TokenPanel(val token:Token) extends JPanel
 		override def apply(e:Event) =
 		{
 			hitpoints.setText(token.currentHitpoints + " / " + token.maximumHitpoints)
-			status.setIcon(token.currentStatus.map{_.icon}.getOrElse(TokenClassPanel.unknownIcon))
+			status.setIcon( makeIconFor(token.currentStatus, ICON_SIZE) )
 			statusTurnsLeft.setText("" + token.currentStatusTurnsLeft)
 			
 			
@@ -88,7 +93,7 @@ class TokenPanel(val token:Token) extends JPanel
 			case BeSelected(x) => {
 				TokenPanel.this.setBackground(if (x) {
 					new java.awt.Color(184, 207, 229)
-				}else{null})
+				} else {null})
 				
 				if (x) {
 					TokenPanel.this.scrollRectToVisible(

@@ -20,17 +20,14 @@ import com.rayrobdod.deductionTactics.LoggerInitializer.{elementsLogger => logge
  * @version 11 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
  * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
  * @version 30 Jul 2012 - Element never obeyed the transetivity requirement of Ordered, so it no longer implements that class
+ * @version 2013 Jun 13 - Element is now a class rather than a trait with a single implementor
+ * @version 2013 Jun 14 - Element no longer extends NameAndIcon; removing icon method
  
  * @todo: extract the swing and awt stuff (Icon and Color) and put it someplace else 
  */
-object Elements
-{
-	trait Element extends NameAndIcon
-	{
-		def id:Int
-		def name:String
-		def color:Color
-		
+object Elements {
+	
+	final class Element(val id:Int, val name:String, val color:Color) {
 		def damageModifier(other:Element):Float = {
 			((((other.id - this.id) % 5) + 5) % 5) match {
 				case 0 => 1f
@@ -49,25 +46,14 @@ object Elements
 			else {0}
 		}
 		
-		lazy val icon:Icon = {
-			val PREFIX = "/com/rayrobdod/glyphs/elements/"
-			val file = PREFIX + name.toLowerCase + ".svg"
-			
-			logger.finer(file);
-			
-			loadIcon(this.getClass().getResource(file))
-		}
-		
 		override def toString = "com.rayrobdod.deductionTactics.Elements." + name
 	}
 	
-	private class ElementImpl(override val id:Int, override val name:String, override val color:Color) extends Element
-	
-	val Light:Element = new ElementImpl(0, "Light", new Color(253,253,187))
-	val Electric:Element = new ElementImpl(1, "Electric", Color.yellow)
-	val Fire:Element = new ElementImpl(2, "Fire", Color.red)
-	val Frost:Element = new ElementImpl(3, "Frost", new Color(170,170,255))
-	val Sound:Element = new ElementImpl(4, "Sound", new Color(0,255,0))
+	val Light:Element    = new Element(0, "Light",    new Color(253,253,187))
+	val Electric:Element = new Element(1, "Electric", Color.yellow)
+	val Fire:Element     = new Element(2, "Fire",     Color.red)
+	val Frost:Element    = new Element(3, "Frost",    new Color(170,170,255))
+	val Sound:Element    = new Element(4, "Sound",    new Color(0,255,0))
 	
 	def values = Seq[Element](Light, Electric, Fire, Frost, Sound)
 	def apply(x:Int) = values(x) //.find{_.id == x}.get

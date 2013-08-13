@@ -1,0 +1,47 @@
+# -libraryjars 'C:\Program Files (x86)\Java\jdk1.7.0_07\jre\lib\rt.jar'
+
+-dontskipnonpubliclibraryclassmembers
+-dontoptimize
+-dontobfuscate
+-dontwarn scala.**,com.kitfox.svg.app.ant.SVGToImageAntTask
+
+
+-keep class com.rayrobdod.deductionTactics.swingView.FieldChessTilesheet
+-keep class com.rayrobdod.deductionTactics.swingView.FieldChessTilesheet$
+
+-keepclassmembers class com.rayrobdod.deductionTactics.ai.* extends com.rayrobdod.deductionTactics.PlayerAI {
+	public <init>();
+	public <init>(com.rayrobdod.deductionTactics.PlayerAI);
+}
+-keep class com.rayrobdod.deductionTactics.ai.* extends com.rayrobdod.deductionTactics.PlayerAI
+
+# SpaceClasses that Deduction Tactics uses
+-keep class com.rayrobdod.deductionTactics.* extends com.rayrobdod.boardGame.SpaceClass
+
+# SpaceClassConstructors that Deduction Tactics uses
+-keep class com.rayrobdod.deductionTactics.* extends com.rayrobdod.boardGame.SpaceClassConstructor
+
+-keep,allowshrinking class com.rayrobdod.deductionTactics.PlayerAI
+
+# keep objects' MODULE$s
+-keepclassmembers,allowshrinking class * {
+    *** MODULE$;
+}
+
+# Keep - Applications. Keep all application classes, along with their 'main'
+# methods.
+-keepclasseswithmembers public class com.rayrobdod.deductionTactics.main.Main {
+    public static void main(java.lang.String[]);
+}
+
+# Also keep - Enumerations. Keep the special static methods that are required in
+# enumeration classes.
+-keepclassmembers enum  * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+# Keep names - Native method names. Keep all native class/method names.
+-keepclasseswithmembers,allowshrinking class * {
+    native <methods>;
+}

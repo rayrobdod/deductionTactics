@@ -10,9 +10,8 @@ import java.awt.event.{ActionListener, ActionEvent}
 import java.io.{InputStreamReader}
 import java.net.URL
 import com.rayrobdod.commaSeparatedValues.parser.{CSVParser, ToSeqSeqCSVParseListener, CSVPatterns}
-import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToSeqJSONParseListener
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
-import com.rayrobdod.boardGame.RectangularField
+import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
 import com.rayrobdod.boardGame.mapValuesFromObjectNameToSpaceClassConstructor
 import com.rayrobdod.boardGame.swingView.FieldComponent
 import com.rayrobdod.deductionTactics._

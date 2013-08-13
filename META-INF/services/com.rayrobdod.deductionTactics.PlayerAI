@@ -1,6 +1,7 @@
 # Interfaces the player can use
 com.rayrobdod.deductionTactics.ai.SwingInterface
 com.rayrobdod.deductionTactics.ai.ConsoleInterface
+com.rayrobdod.deductionTactics.ai.ConsoleInterface_CFN
 
 # Computer opponents
 com.rayrobdod.deductionTactics.ai.BlindAttackAI

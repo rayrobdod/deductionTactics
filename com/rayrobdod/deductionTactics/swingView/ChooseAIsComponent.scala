@@ -1,14 +1,15 @@
 package com.rayrobdod.deductionTactics.swingView
 
 import scala.collection.immutable.Seq
-import javax.swing.{JPanel, BoxLayout, JList, AbstractListModel, JScrollPane, ListSelectionModel}
+import javax.swing.{JPanel, BoxLayout, JList, AbstractListModel, JScrollPane, ListSelectionModel, JLabel}
 import javax.swing.BoxLayout.{X_AXIS => boxXAxis}
 import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
-		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever}
+		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
+		HORIZONTAL_SCROLLBAR_AS_NEEDED => scrollHorizontalAsNeeded}
 import com.rayrobdod.deductionTactics.PlayerAI
-import java.awt.GridLayout
-import com.rayrobdod.swing.ScalaSeqListModel
+import java.awt.{GridLayout, GridBagConstraints, GridBagLayout, Component, Insets}
+import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 
 /**
  * @author Raymond Dodge
@@ -19,6 +20,8 @@ import com.rayrobdod.swing.ScalaSeqListModel
  * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  * @version 28 Nov 2012 - Using ScalaSeqListModel intead of custom objects
  * @version 28 Nov 2012 - Making number of players changable
+ * @version 19 Jan 2013 - using ++ to remove foreach invocations.
+ * @version 28-29 Jan 2013 - Adding JLabels and changing layout from Grid to GridBag.
  */
 class ChooseAIsComponent extends JPanel
 {
@@ -30,11 +33,29 @@ class ChooseAIsComponent extends JPanel
 	def players_=(x:Int) = {
 		_players = x
 		
-		aiListsScrollPane.foreach{this.remove(_)}
-		aiListsScrollPane.take(x).foreach{this.add(_)}
-		aiDListsScrollPane.foreach{this.remove(_)}
-		aiDListsScrollPane.take(x).foreach{this.add(_)}
-		this.setLayout(new GridLayout(2, x))
+		this.removeAll()
+		this.add(
+			new JLabel("Players:"),
+			GridBagConstraintsFactory( gridy = 0, gridx = 0, anchor = GridBagConstraints.FIRST_LINE_START)
+		)
+		this.add(
+			new JLabel("<html>Primary<br/>(choose one)</html>"),
+			GridBagConstraintsFactory( gridy = 1, gridx = 0, ipadx = 3)
+		)
+		this.add(
+			new JLabel("<html>Addends<br/>(choose many)</html>"),
+			GridBagConstraintsFactory( gridy = 2, gridx = 0, ipadx = 3)
+		)
+		(1 to x).foreach{(y:Int) => this.add(
+				new JLabel("Player " + y),
+				GridBagConstraintsFactory(gridy = 0, gridx = y)
+		)}
+		(aiListsScrollPane.take(x).zipWithIndex).foreach({(c:Component, i:Int) => this.add(c,
+				GridBagConstraintsFactory(weightx = 1d, weighty = 1d, gridy = 1, gridx = i+1, fill = GridBagConstraints.BOTH, insets = new Insets(2,6,2,6) )
+		)}.tupled)
+		(aiDListsScrollPane.take(x).zipWithIndex).foreach({(c:Component, i:Int) => this.add(c,
+				GridBagConstraintsFactory(weightx = 1d, weighty = 1d, gridy = 2, gridx = i+1, fill = GridBagConstraints.BOTH, insets = new Insets(2,6,2,6) )
+		)}.tupled)
 	}
 	
 	val aiLists:Seq[JList[PlayerAI]] = Seq.fill(maxPlayers){
@@ -45,10 +66,10 @@ class ChooseAIsComponent extends JPanel
 	val aiDLists:Seq[JList[Class[_ <: PlayerAI]]] = Seq.fill(maxPlayers){new JList[Class[_ <: PlayerAI]](new ScalaSeqListModel(PlayerAI.decoratorServiceSeq))}
 	
 	val aiListsScrollPane = aiLists.map{(list:JList[PlayerAI]) =>
-			new JScrollPane(list, scrollVerticalAsNeeded, scrollHorizontalNever)
+			new JScrollPane(list, scrollVerticalAsNeeded, scrollHorizontalAsNeeded)
 	}
 	val aiDListsScrollPane = aiDLists.map{(list:JList[Class[_ <: PlayerAI]]) =>
-			new JScrollPane(list, scrollVerticalAsNeeded, scrollHorizontalNever)
+			new JScrollPane(list, scrollVerticalAsNeeded, scrollHorizontalAsNeeded)
 	}
 	aiLists.foreach{_.setSelectedIndex(0)}
 	
@@ -82,6 +103,7 @@ class ChooseAIsComponent extends JPanel
 		}.tupled).take(players);
 	}
 	
+	this.setLayout(new GridBagLayout())
 	this.players = 2;
 }
 

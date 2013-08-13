@@ -50,4 +50,9 @@ private[deductionTactics] object LoggerInitializer
 	networkClientLogger.addHandler(finerConsoleHander)
 	networkClientLogger.setLevel(Level.FINER)
 	
+	val observeMovementLogger = Logger.getLogger(
+			"com.rayrobdod.deductionTactics.ai.StandardObserveMovement")
+	networkClientLogger.addHandler(finerConsoleHander)
+	networkClientLogger.setLevel(Level.FINER)
+	
 }

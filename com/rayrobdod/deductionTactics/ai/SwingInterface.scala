@@ -69,7 +69,7 @@ sealed class SwingInterface extends PlayerAI
 		
 		val endOfTurnButton = new JButton("End Turn")
 		playerButtons += ((player, endOfTurnButton))
-		endOfTurnButton.addActionListener(scala.swing.Swing.ActionListener{(e:ActionEvent) => 
+		endOfTurnButton.addActionListener(scala.swing.Swing.ActionListener{(e:ActionEvent) =>
 			endOfTurnButton.setEnabled(false)
 			player ! EndOfTurn
 		})

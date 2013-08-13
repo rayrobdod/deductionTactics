@@ -1,4 +1,6 @@
 package com.rayrobdod.deductionTactics
+// http://en.wikipedia.org/wiki/Blackboard_system
+
 
 import scala.util.Random
 import scala.collection.immutable.Seq
@@ -8,6 +10,9 @@ import com.rayrobdod.deductionTactics.PlayerAI.teamSize
 import com.rayrobdod.boardGame.{Moved, StartOfTurn,
 		PhysicalStrikeCost, Space, TokenMovementCost}
 import com.rayrobdod.deductionTactics.Statuses.Sleep
+import com.rayrobdod.deductionTactics.LoggerInitializer.{
+				observeMovementLogger => somLogger}
+import scala.runtime.{AbstractFunction1 => Function1}
 
 /**
  * @author Raymond Dodge
@@ -17,6 +22,8 @@ import com.rayrobdod.deductionTactics.Statuses.Sleep
  * @version 08 Apr 2012 - StandardObserveAttacks now is one-per-token and uses the Token as a parameter rather than an entire Token List
  * @version 08 Apr 2012 - StandardObserveAttacks now observes range too.
  * @version 30 May 2012 - moved speedRangeOf and attackRangeOf from SleepAbuserAI
+ * @version 2013 Jan 18 - adding logging to StandardObserveMovement
+ * @version 2013 Jan 18 - speedRangeOf and attackRangeOf now contains no overlap in functionality
  */
 package object ai
 {
@@ -41,7 +48,7 @@ package object ai
 	 * 
 	 * Might only need one per player. Add to enemy mirror tokens.
 	 */
-	class StandardObserveAttacks(attacker:MirrorToken) extends Reaction
+	class StandardObserveAttacks(attacker:MirrorToken) extends Function1[Event, Unit] with Reaction
 	{
 		attacker.reactions += this;
 		
@@ -87,18 +94,20 @@ package object ai
 	 * 
 	 * One per enemy token. Parameter is that token. Add to that token and at least one player.
 	 */
-	class StandardObserveMovement(token:MirrorToken) extends Reaction
+	class StandardObserveMovement(token:MirrorToken) extends Function1[Event, Unit] with Reaction
 	{
 		private var countThisTurn = 0;
 		
 		override def apply(e:Event) = {e match {
 			case x:Moved => {
 				countThisTurn = countThisTurn + 1
+				somLogger.finer("Incremented token's movement");
 			}
 			case StartOfTurn => {
 				if (countThisTurn > token.tokenClass.speed.getOrElse(0))
 				{
 					token.tokenClass.speed = Some(countThisTurn)
+					somLogger.fine("Recording token's movement: " + countThisTurn);
 				}
 				countThisTurn = 0;
 			}
@@ -122,12 +131,9 @@ package object ai
 	{
 		def apply(token:Token) =
 		{
-			val startSpace = token.currentSpace
+			val speedSpaces = moveRangeOf(token)
 			
-			val tokenSpeed = if (token.currentStatus != Some(Sleep)) {token.tokenClass.speed.getOrElse(0)} else {0}
 			val tokenRange = token.tokenClass.range.getOrElse(0)
-			
-			val speedSpaces = token.currentSpace.spacesWithin(tokenSpeed, token, TokenMovementCost).toSet
 			val rangeSpaces = speedSpaces.map{_.spacesWithin(tokenRange, token, PhysicalStrikeCost)}.flatten
 			
 			rangeSpaces
@@ -141,11 +147,8 @@ package object ai
 		{
 			val startSpace = token.currentSpace
 			
-			val tokenSpeed = if (token.currentStatus != Some(Sleep)) {token.tokenClass.speed.getOrElse(0)} else {0}
-			val tokenRange = token.tokenClass.range.getOrElse(0)
-			
+			val tokenSpeed = token.tokenClass.speed.filter{(x:Int) => token.currentStatus.exists{_ == Sleep}}.getOrElse(0)
 			val speedSpaces = token.currentSpace.spacesWithin(tokenSpeed, token, TokenMovementCost).toSet
-			//val rangeSpaces = speedSpaces.map{_.spacesWithin(tokenRange, token, PhysicalStrikeCost)}.flatten
 			
 			speedSpaces
 		}

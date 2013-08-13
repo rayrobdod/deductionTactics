@@ -5,13 +5,9 @@ import Weaponkinds.Weaponkind
 import Statuses.Status
 import BodyTypes.{Value => BodyType}
 import Directions.Direction
+
 import javax.swing.Icon
-import scala.collection.Seq
-import scala.collection.immutable.{Map, Seq => ISeq}
-import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToSeqJSONParseListener
-import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
-import java.io.{StringReader, InputStreamReader}
-import scala.collection.JavaConversions.mapAsScalaMap
+import scala.collection.immutable.{Map}
 import com.rayrobdod.swing.NameAndIcon
 
 /**
@@ -28,12 +24,14 @@ import com.rayrobdod.swing.NameAndIcon
  * @version 05 Jun 2012 - changing weakWeapon from Option[Map[Weaponkind, Float]]
 			to Map[Weaponkind, Option[Float]]
  * @version 08 Aug 2012 - without adding any members, now extends NameAndIcon
+ * @version 2013 Jun 23 - implementing toString
  */
 trait TokenClass extends NameAndIcon
 {
 	/** A class's name */
 	def name:String
 	/** An icon representing this class */
+	@deprecated("Getting rid of icons in model data", "2013 Jun 12")
 	def icon:Icon
 	
 	/** A class's bodytype. Currently doesn't affect anything */
@@ -56,4 +54,20 @@ trait TokenClass extends NameAndIcon
 	def weakWeapon:Map[Weaponkind,Option[Float]]
 	/** When a unit is attacked while suffering this status, the attack is strongest */
 	def weakStatus:Option[Status]
+	
+	override def toString = {
+		this.getClass.getName + " " +
+			"{ name: " + name +
+			"; icon: ..." +
+			"; body: " + body +
+			"; atkElement: " + atkElement +
+			"; atkWeapon: " + atkWeapon +
+			"; atkStatus: " + atkStatus +
+			"; range: " + range +
+			"; speed: " + speed +
+			"; weakDirection: " + weakDirection +
+			"; weakWeapon: " + weakWeapon +
+			"; weakStatus: " + weakStatus +
+			" }";
+	}
 }

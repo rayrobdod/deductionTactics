@@ -1,1 +1,8 @@
-{ "name": "Empty Field",  "deductionTactics::startSpaces":"emptyField-startSpaces.json", "layout":"emptyField-layout.csv",  "classMap":"../letterMapping.json" } 
+{
+	"name": "Empty Field",
+	
+	"deductionTactics::startSpaces":"emptyField-startSpaces.json",
+	"layout":"emptyField-layout.csv",
+	
+	"classMap":"../letterMapping.json"
+}

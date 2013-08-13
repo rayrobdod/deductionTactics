@@ -4,13 +4,14 @@ package consoleView
 import com.rayrobdod.boardGame.{RectangularField, Space, SpaceClass,
 		SpaceClassConstructor, mapValuesFromObjectNameToSpaceClassConstructor}
 import java.io.InputStreamReader
-import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToSeqJSONParseListener
+import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 
 /**
  * 
  * @author Raymond Dodge
  * @version 10 Aug 2012
+ * @version 2013 Jun 23 - responding to changes in ToScalaCollection
  * @todo use the selected token and print out its range
  */
 class BoardPrinter(tokens:ListOfTokens, val field:RectangularField)
@@ -21,7 +22,7 @@ class BoardPrinter(tokens:ListOfTokens, val field:RectangularField)
 	val spaceClassConsToLetters:Map[SpaceClassConstructor, Char] = {
 		val letterToNameMapReader = new InputStreamReader(this.getClass().getResourceAsStream("/com/rayrobdod/deductionTactics/letterMapping.json"))
 		val letterToNameMap:Map[String,String] = {
-			val listener = new ToSeqJSONParseListener()
+			val listener = ToScalaCollection()
 			JSONParser.parse(listener, letterToNameMapReader)
 			listener.resultMap.mapValues{_.toString}
 		}

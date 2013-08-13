@@ -12,11 +12,12 @@ import scala.swing.Reactions.Reaction
 import scala.swing.event.Event
 
 import com.rayrobdod.deductionTactics.consoleView.{
-		CommandParser,
+			CommandParser,
 			InfoPrinter,
 			BoardPrinter,
 			TokenEventPrinter
 }
+import com.rayrobdod.deductionTactics.ai.ConsoleInterface.prompt
 
 /**
  *
@@ -35,8 +36,8 @@ final class ConsoleInterface extends PlayerAI
 		// artifical delays so that prompt is printed after other information
 		// I do not know how to make this lock-based.
 		Thread.sleep(100);
-		out.print("\n> ");
-		var line = in.nextLine();
+		out print prompt;
+		var line = in.nextLine().trim;
 		
 		while (line != "END TURN") {
 			if (line == "EXIT") {System.exit(0);}
@@ -49,8 +50,8 @@ final class ConsoleInterface extends PlayerAI
 			}
 			
 			Thread.sleep(100);
-			out.print("\n> ");
-			line = in.nextLine();
+			out print prompt;
+			line = in.nextLine().trim;
 		}
 		
 		player ! EndOfTurn;
@@ -62,15 +63,8 @@ final class ConsoleInterface extends PlayerAI
 		player.reactions += new InfoPrinter(player.tokens, field)
 		
 		val boardPrinter = new BoardPrinter(player.tokens, field)
-		player.reactions += new Reaction {
-			def apply(e:Event) = {boardPrinter.printField()}
-			
-			def isDefinedAt(e:Event) = {e match {
-				case StartOfTurn => true
-				case EndOfTurn => true
-				case _ => false
-			}}
-		}
+		player.reactions += new ConsoleInterface.PrintFieldAtTurnEnds(boardPrinter)
+		
 		player.tokens.tokens.flatten.foreach{(token:Token) =>
 			token.reactions += new TokenEventPrinter(token, player.tokens)
 		}
@@ -90,4 +84,19 @@ final class ConsoleInterface extends PlayerAI
 	override def hashCode = 13
 	
 	override def toString = this.getClass.getName
+}
+
+object ConsoleInterface {
+	final class PrintFieldAtTurnEnds(boardPrinter:BoardPrinter) extends Reaction{
+		
+		def apply(e:Event) = {boardPrinter.printField()}
+		
+		def isDefinedAt(e:Event) = {e match {
+			case StartOfTurn => true
+			case EndOfTurn => true
+			case _ => false
+		}}
+	}
+	
+	final val prompt = "\n> ";
 }

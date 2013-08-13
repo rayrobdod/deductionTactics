@@ -40,7 +40,6 @@ object MirrorTokenListRenderer extends ListCellRenderer[Token]
 						x.tokenClass.range_=_, returnValue))
 						
 				returnValue.tokenClass.weakRow.setBackground(list.getSelectionForeground)
-
 			}
 			case _ => {}
 		}

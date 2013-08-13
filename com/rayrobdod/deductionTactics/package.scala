@@ -12,7 +12,7 @@ import deductionTactics.Elements.Element
 import scala.collection.mutable.{Map => MMap}
 
 /**
- * An enumeration for the elements
+ * classes for DeductionTactics
  * @author Raymond Dodge
  * @version 22 Aug 2011
  * @version 13 Jan 2012 - moved from net.verizon.rayrobdod
@@ -31,9 +31,11 @@ import scala.collection.mutable.{Map => MMap}
  */
 package object deductionTactics
 {
+	/** Returns a formatted version number for this package based on a found MANIFEST.MF */
 	def VERSION = {
 		val v = java.lang.Package.getPackage("com.rayrobdod.deductionTactics").getImplementationVersion();
 		
+		// Manifest doesn't like alpha chars in version numbers
 		if (v != null) {
 			if (v.take(8) == "000.010.")
 				"a" + v.drop(7);
@@ -43,14 +45,17 @@ package object deductionTactics
 				v;
 		} else "Unversioned";
 	}
+	
 	def TITLE = "Deduction Tactics" //java.lang.Package.getPackage("com.rayrobdod.deductionTactics").getImplementationTitle();
 		
+	@deprecated("Getting rid of icons in model data", "2013 Jun 12")
 	private val ICON_DIMENSION = 32
 	
 	// Icon loading
 	/**
 	 * Turns an SVG file at the given URL into an icon
 	 */
+	@deprecated("Getting rid of icons in model data", "2013 Jun 12")
 	def loadSVGIcon(url:URL):Icon =
 	{
 		import scala.swing.Swing.pair2Dimension
@@ -68,6 +73,7 @@ package object deductionTactics
 	 * Turns an PNG file at the given URL into an icon
 	 * @todo use a reader and reader options
 	 */
+	@deprecated("Getting rid of icons in model data", "2013 Jun 12")
 	def loadPNGIcon(url:URL):ImageIcon =
 	{
 		val image = ImageIO.read(url)
@@ -80,6 +86,7 @@ package object deductionTactics
 	 * Turns an file at the given URL into an icon, based on the url's last
 	 * filetype extension
 	 */
+	@deprecated("Getting rid of icons in model data", "2013 Jun 12")
 	def loadIcon(url:URL):Icon = 
 	{
 		url.getPath.split('.').last match
@@ -89,10 +96,12 @@ package object deductionTactics
 		}
 	}
 	
+	@deprecated("Getting rid of icons in model data", "2013 Jun 12")
 	private[this] val genericIconCache = MMap.empty[TokenClass, ImageIcon]
 	/**
 	 * Creates an undetailed icon which matches some of the traits of the TokenClass
 	 */
+	@deprecated("Getting rid of icons in model data", "2013 Jun 12")
 	def generateGenericIcon(tokenClass:TokenClass) =
 	{
 		if (genericIconCache.contains(tokenClass))

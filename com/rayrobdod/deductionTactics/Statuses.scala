@@ -19,16 +19,12 @@ import com.rayrobdod.swing.NameAndIcon
  * @version 04 Jun 2012 - adding toString to Status
  * @version 10 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
  * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
+ * @version 2013 Jun 14 - Status no longer extends NameAndIcon; removing icon method
  */
-object Statuses
-{
-	class Status(val id:Int, val name:String) extends NameAndIcon
-	{
-		lazy val icon:Icon = {
-			loadIcon(this.getClass().getResource("/com/rayrobdod/glyphs/status/" + name.toLowerCase + ".svg"))
-		}
-		
-		override def toString = "com.rayrobdod.deductionTactics.Elements." + name
+object Statuses {
+	/** Might as well be an Enumeration value at this point */
+	class Status(val id:Int, val name:String) {
+		override def toString = "com.rayrobdod.deductionTactics.Statuses." + name
 	}
 	
 	/** no move */

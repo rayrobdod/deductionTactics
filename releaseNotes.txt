@@ -1,5 +1,39 @@
 ﻿deductionTactics
 
+Wishlist: Token Animations, Persistent preferences, Flying units,
+		change AIs to use builder model, Better AIs
+
+== a.4.1 ==
+=== Minor ===
+* Adding Interface: ConsoleInterface_CFN
+* Turning the GrassyFieldChess tileset into a precompiled class because
+  A: it's low-enough quality to be possible
+  B: as a workaround for incredibly slow scripting.
+* The AI and Map choosing components have labels now along with changed appearance.
+
+=== Fix ===
+* ai NetworkClient will now respond to a "RequestAttackForStatus" with a
+		Status attack, rather than a damage attack.
+* Main will now properly truncate the list of selected tokens to the availiable
+		slots for tokens
+* Doesn't consume excessive amounts of CPU at all times from contant repaints…
+		… again …
+
+=== Impelemntation detail ===
+* Icons are no longer held in Enumeration classes
+* Tokenclasses use "DontCare" instead of "Rand" to specify the choose-for-me
+		condition. 
+* Map starting spaces can now be provided inline
+
+=== Data Level ===
+* Adding Map: Tournament Bracket, Trimap
+* Adding image for class: Medic
+* Adding classes: Magenta Lion, Yellow Tiger, Cyan Leopard, Runner, Volleyball hitter
+
+=== Dependencies ===
+* svgSalamander updated from `October 2010` to `January 2013`.
+* scala updated from `2.9.1` to `2.9.3`.
+
 == a.4.0 ==
 === Major level ===
 * "How to make dungeons pretty" 2.0

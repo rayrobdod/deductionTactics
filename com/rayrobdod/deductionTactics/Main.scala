@@ -7,10 +7,9 @@ import java.awt.BorderLayout.{SOUTH => borderSouth, NORTH => borderNorth}
 import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
 import scala.swing.Swing.ActionListener
 import scala.collection.immutable.Seq
-import javax.swing.{JFrame, JButton, JPanel, JCheckBox}
+import javax.swing.{JFrame, JButton, JPanel, JCheckBox, BorderFactory}
 import java.awt.event.ActionEvent
-import com.rayrobdod.boardGame.{Moved}
-import com.rayrobdod.boardGame.RectangularField
+import com.rayrobdod.boardGame.{Moved, RectangularField}
 
 
 /**
@@ -24,6 +23,8 @@ import com.rayrobdod.boardGame.RectangularField
  * @version 12 Jul 2012 - removing viewpoint choosers, since PlayerAI decorators can do that now
  * @version 04 Aug 2012 - putting the PlayerAI.initialize(player,field) inside a loop
  * @version 28 Nov 2012 - adding map-selection abilities
+ * @version 13 Jan 2013 - limit number of tokens to number of availiable spaces.
+ * @version 14 Jun 2013 - Giving the initial frame a menu bar
  */
 object Main extends App
 {
@@ -35,6 +36,8 @@ object Main extends App
 		val aiChooser = new ChooseAIsComponent()
 		val mapChooser = new ChooseMapComponent()
 		
+		aiChooser.setBorder(BorderFactory.createMatteBorder(3,0,0,0,java.awt.Color.BLACK))
+		
 		val aiChooserFrame = new JFrame("Choose PlayerTypes")
 		aiChooserFrame.getContentPane.add({
 			val returnValue = new JPanel(new BorderLayout)
@@ -44,6 +47,7 @@ object Main extends App
 		})
 		aiChooserFrame.getContentPane.add(okButton, borderSouth)
 		aiChooserFrame.getRootPane.setDefaultButton(okButton);
+		aiChooserFrame.setJMenuBar(new swingView.MenuBar)
 
 		
 		mapChooser.numPlayersList.addListSelectionListener(AiChooserCountChanger)
@@ -73,6 +77,8 @@ object Main extends App
 	private def buildTeams(ais:Seq[PlayerAI], field:RectangularField, tokenPositions:Seq[Seq[(Int, Int)]]) =
 	{
 		val tokenClasses = ais.map{_.buildTeam}
+				// limit number of tokens to number of availiable spaces.
+				.zip(tokenPositions).map({(x:Seq[CannonicalTokenClass],y:Seq[_]) => x.take(y.size)}.tupled)
 		val canonTokens = tokenClasses.map{_.map{new CannonicalToken(_)}}
 		val mirrorTokens = canonTokens.map{_.map{new MirrorToken(_)}}
 		
@@ -87,7 +93,7 @@ object Main extends App
 		val players = playerListOfTokens.map(new Player(_))
 		ais.zip(players).foreach({(ai:PlayerAI, player:Player) =>
 			ai.initialize(player, field)
-			// Breaks a lock or something I DON'T KNOW LEAVE ME ALONE
+			//   Breaks a lock or something I DON'T KNOW LEAVE ME ALONE
 			//player.reactions.+=(ai)
 		}.tupled)
 		
@@ -124,6 +130,7 @@ object Main extends App
 		// pray that the tokens have moved by the time this sleep is over
 		// This seems to solve a null pointer exception in the PlayerAI
 		Thread.sleep(1000)
+		
 		
 		// run, meaning this returns when PlayerTurnCycler returns
 		new PlayerTurnCycler(players.zip(ais)).run()

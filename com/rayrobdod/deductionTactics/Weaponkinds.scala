@@ -18,19 +18,20 @@ import com.rayrobdod.swing.NameAndIcon
  * @version 09 Jul 2012 - moving tokenClass icons and attackEffect icons
  * @version 10 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
  * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
+ * @version 2013 Jun 14 - Weaponkind no longer extends NameAndIcon; removing icon method
+ * @version 2013 Jun 23 - implemented Weaponkind.toString
  */
 object Weaponkinds
 {
-	class Weaponkind(val id:Int, val name:String, val classType:String) extends NameAndIcon
+	class Weaponkind(val id:Int, val name:String, val classType:String)
 	{
-		lazy val icon:Icon = {
-			loadIcon(this.getClass().getResource("/com/rayrobdod/glyphs/weapon/" +
-					name.toLowerCase.dropRight(4) + ".svg"))
-		}
-		
 		// TODO: figure out relative URLs.
+		@deprecated("Getting rid of icons in model data", "2013 Jun 12")
 		val genericTokenClassFile = "/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/" + classType + ".png"
+		@deprecated("Getting rid of icons in model data", "2013 Jun 12")
 		val attackEffectFile = "/com/rayrobdod/deductionTactics/tokenClasses/sprites/effects/" + name + " strike.png"
+		
+		override def toString = "com.rayrobdod.deductionTactics.Weaponkinds." + name
 	}
 	
 	val Bladekind = new Weaponkind(0, "Bladekind", "swordsman")

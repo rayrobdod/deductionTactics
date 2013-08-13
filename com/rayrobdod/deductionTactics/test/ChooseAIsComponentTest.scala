@@ -14,6 +14,6 @@ object ChooseAIsComponentTest extends App
 	val frame:JFrame = new JFrame()
 	frame.getContentPane.add(new ChooseAIsComponent())
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-	frame.setSize(400,200)
+	frame.pack()
 	frame.setVisible(true)
 }

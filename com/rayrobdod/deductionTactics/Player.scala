@@ -25,8 +25,7 @@ import com.rayrobdod.util.services.ClassServiceLoader
  */
 final class Player(val tokens:PlayerListOfTokens) extends Actor
 {
-	override def act()
-	{
+	override def act() {
 		loop { react {
 			case x:Event => reactions(x)
 		}}
@@ -89,14 +88,14 @@ abstract class PlayerAI extends Reactions.Reaction
 	 */
 	def initialize(player:Player, field:Field):Any
 	
-	final override def apply(e:Event) = {e match {
+	final override def apply(e:Event) = e match {
 		case DoAI(x) => this.takeTurn(x)
 		case _ => {}
-	}}
-	final override def isDefinedAt(e:Event) = {e match {
+	}
+	final override def isDefinedAt(e:Event) = e match {
 		case DoAI(_) => true
 		case _ => false
-	}}
+	}
 }
 
 /**

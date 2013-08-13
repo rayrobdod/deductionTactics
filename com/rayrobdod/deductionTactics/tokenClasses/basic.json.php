@@ -29,27 +29,26 @@
 		{
 			$name =  $element['unit'] . ' ' . $weapon['unit'];
 			
-			echo('
-	{
-		"name":"' . $name . '",
-		"element":"' . $element['name'] . '",
-		"atkWeapon":"' . $weapon['name'] . '",
-		"atkStatus":"'. $element['canInflict'] . '",
-		"range":1,
-		"speed":3,
-		"body":"Human",
-		"weakWeapon":' . $weapon['weakWeapon'] . ',
-		"weakStatus":"' . $weapon['weakStatus'] . '",
-		"weakDirection":"Rand'); // . $directions[rand(0,3)]);
-		
+			echo('{
+	"name":"' . $name . '",
+	"element":"' . $element['name'] . '",
+	"atkWeapon":"' . $weapon['name'] . '",
+	"atkStatus":"'. $element['canInflict'] . '",
+	"range":1,
+	"speed":3,
+	"body":"Human",
+	"weakWeapon":' . $weapon['weakWeapon'] . ',
+	"weakStatus":"' . $weapon['weakStatus'] . '",
+	"weakDirection":"DontCare'); // . $directions[rand(0,3)]);
+	
 			if (file_exists('basic/' . $name . '.png'))
 			{
 				echo('",
-		"icon":"/com/rayrobdod/deductionTactics/tokenClasses/basic/' . $name . '.png'); 
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/basic/' . $name . '.png'); 
 			}
 			
 			echo ('"
-	},');
+},');
 		}
 	?>
 	

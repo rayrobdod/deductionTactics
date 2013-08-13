@@ -9,8 +9,8 @@ import scala.collection.immutable.Map
 import javax.swing.Icon
 
 /**
- * A class that mirrors [[com.rayrobdod.deductionTactics.CannonicalTokenClass]] but with all methods being mutable and the
- * slight possiblity of any of the items being [[scala.None]]
+ * A class that mirrors [[com.rayrobdod.deductionTactics.CannonicalTokenClass]] but with all methods
+ * being mutable and the slight possiblity of any of the items being [[scala.None]]
  * 
  * @author Raymond Dodge
  * @version 21 Aug 2011
@@ -23,7 +23,8 @@ import javax.swing.Icon
  * @version 05 Jun 2012 - changing weakWeapon from Option[Map[Weaponkind, Float]]
 			to Map[Weaponkind, Option[Float]]
  * @version 12 Jun 2012 - changed name from val to var, and implementing a icon_= function
- * @version 28 Jus 2012 - implementing hashCode and equals
+ * @version 28 Jun 2012 - implementing hashCode and equals
+ * @version 2013 Jun 17 - turning the equals method into a match statement
  * @todo Make observable
  * 
  */
@@ -59,11 +60,9 @@ class SuspicionsTokenClass extends TokenClass
 		name.hashCode
 	}
 	def canEquals(other:Any) = {other.isInstanceOf[SuspicionsTokenClass]}
-	override def equals(other:Any) = {
-		if (this.canEquals(other) && other.asInstanceOf[SuspicionsTokenClass].canEquals(this))
-		{
-			val other2 = other.asInstanceOf[SuspicionsTokenClass]
-			
+	override def equals(other:Any) = other match {
+		case other2:SuspicionsTokenClass => {
+			this.canEquals(other2) && other2.canEquals(this) &&
 			this.body == other2.body &&
 			this.atkElement == other2.atkElement &&
 			this.atkWeapon == other2.atkWeapon &&
@@ -75,6 +74,6 @@ class SuspicionsTokenClass extends TokenClass
 			this.weakDirection == other2.weakDirection &&
 			this.name == other2.name
 		}
-		else false
+		case _ => false
 	}
 }

@@ -11,7 +11,7 @@ import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace, End
 import java.net.{Socket, ServerSocket, InetAddress}
 import java.io.{BufferedReader, InputStreamReader, OutputStreamWriter}
 import java.util.Scanner
-import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToSeqJSONParseListener
+import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import com.rayrobdod.deductionTactics.LoggerInitializer.{networkClientLogger => Logger}
 import com.rayrobdod.commonFunctionNotation.Parser.{parse => cfnParse}
@@ -28,6 +28,8 @@ import scala.parallel.Future
  * @version 09 Aug 2012 - Instead of collecting values in a MSet in a range's foreach function,
  			using the same range's map function instead
  * @version 10 Aug 2012 - removing instance variables in exchange for `TokenClassWithHiddenData`
+ * @version 26 Dec 2012 - the status attack function had RequestAttackForDamage changed to RequestAttackForStatus
+ * @version 2013 Jun 23 - responding to rename of ToScalaCollection
  */
 class NetworkClient extends PlayerAI
 {
@@ -71,7 +73,7 @@ class NetworkClient extends PlayerAI
 		
 		{
 			val in = new Scanner(socket.getInputStream)
-			val jsonListener = new ToSeqJSONParseListener()
+			val jsonListener = ToScalaCollection()
 			val count = Integer.parseInt(in.nextLine().trim())
 			Logger.finer("Got a count: " + count)
 			
@@ -91,15 +93,7 @@ class NetworkClient extends PlayerAI
 			case x:TokenClassWithHiddenData => (( x.field(), x.in ))
 		}
 		
-		val functions = Map(
-			"EndOfTurn" -> {() => EndOfTurn},
-			"MyTokens" -> {(i:Int) => player.tokens.myTokens(i)},
-			"OtherTokens" -> {(team:Int,i:Int) => player.tokens.otherTokens(team)(i)},
-			"Field" -> {(x:Int,y:Int) => field.space(x,y)},
-			"RequestMove" -> {(t:CannonicalToken, s:Space) => RequestMove(t,s)},
-			"RequestAttackForDamage" -> {(m:CannonicalToken, o:MirrorToken) => RequestAttackForDamage(m,o)},
-			"RequestAttackForStatus" -> {(m:CannonicalToken, o:MirrorToken) => RequestAttackForDamage(m,o)}
-		)
+		val functions = NetworkClient.cfnFunctions(field, player);
 		
 		// I could do this with Streams, but I'd rather a more real-time observation
 		// stream.takeWhile{_ != EndOfTurn}.foreach{player ! _}
@@ -183,4 +177,16 @@ class NetworkClient extends PlayerAI
 			!(_apply == None)
 		}}
 	}
+}
+
+object NetworkClient {
+	def cfnFunctions(field:Field, player:Player) = Map(
+		"EndOfTurn" -> {() => EndOfTurn},
+		"MyTokens" -> {(i:Int) => player.tokens.myTokens(i)},
+		"OtherTokens" -> {(team:Int,i:Int) => player.tokens.otherTokens(team)(i)},
+		"Field" -> {(x:Int,y:Int) => field.space(x,y)},
+		"RequestMove" -> {(t:CannonicalToken, s:Space) => RequestMove(t,s)},
+		"RequestAttackForDamage" -> {(m:CannonicalToken, o:MirrorToken) => RequestAttackForDamage(m,o)},
+		"RequestAttackForStatus" -> {(m:CannonicalToken, o:MirrorToken) => RequestAttackForStatus(m,o)}
+	)
 }

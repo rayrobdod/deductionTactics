@@ -23,12 +23,11 @@ class ShowHumanSuspicionsPanelMouseListener(list:JList[Token]) extends MouseAdap
 				case x:MirrorToken => {
 			
 					val panel = new HumanSuspicionsPanel(x.tokenClass)
-					val frame:JDialog = new JDialog() {
-						getContentPane add panel
-						setTitle("")
-						pack()
-						setVisible(true)
-					}
+					val frame:JDialog = new JDialog()
+					frame.getContentPane add panel
+					frame.setTitle("")
+					frame.pack()
+					frame.setVisible(true)
 				}
 				case _ => {}
 			}

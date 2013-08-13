@@ -17,17 +17,17 @@ class ElementPentagonReminderComponent extends JPanel
 	setLayout(new GridLayout(2,11))
 	
 	Elements.values.foreach{(x:Element) => 
-		add(new JLabel(x.icon, SwingConstants.CENTER))
+		add(new JLabel(makeIconFor(x), SwingConstants.CENTER))
 		add(new JLabel("<<", SwingConstants.CENTER))
 	}
-	add(new JLabel(Elements.values.head.icon))
+	add(new JLabel(makeIconFor(Elements.values.head)))
 	
 	import Elements._
 	private val elementList = Seq[Element](Light, Fire, Sound, Electric, Frost)
 	
 	elementList.foreach{(x:Element) => 
-		add(new JLabel(x.icon, SwingConstants.CENTER))
+		add(new JLabel(makeIconFor(x), SwingConstants.CENTER))
 		add(new JLabel("<", SwingConstants.CENTER))
 	}
-	add(new JLabel(elementList.head.icon))
+	add(new JLabel(makeIconFor(elementList.head)))
 }

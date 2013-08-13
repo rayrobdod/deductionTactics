@@ -21,12 +21,12 @@ import LoggerInitializer.{cannonicalTokenLogger => Logger}
 			implementation to Directions.pathDirections and Directions.Direction.weaknessMultiplier
  * @version 10 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
  * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
+ * @version 2013 Jun 14 - Direction no longer extends NameAndIcon; removing icon method
  */
 object Directions
 {
 	class Direction(val id:Int, val name:String,
 			val function:Function1[RectangularSpace,Option[BoardGameSpace]])
-			extends NameAndIcon
 	{
 		def spaceIs(th:RectangularSpace, other:BoardGameSpace):Boolean =
 		{
@@ -38,10 +38,6 @@ object Directions
 							spaceIs(th, mid.asInstanceOf[RectangularSpace])
 				else false
 			}.getOrElse(false)
-		}
-		
-		lazy val icon:Icon = {
-			loadIcon(this.getClass().getResource("/com/rayrobdod/glyphs/direction/" + name.toLowerCase + ".svg"))
 		}
 		
 		/**
