@@ -1,5 +1,13 @@
 ﻿deductionTactics
 
+== a.2.2 ==
+‣ Allowing observation of computer-vs-computer games
+‣ Giving a few dialogs default buttons
+‣ No longer eats CPU while idle (Added cache to generated generic images)
+‣ Class filters when working with numbers treat number as a lower bound, not an equality 
+
+
+
 == a.2.1 ==
 ==== Interface Change ====
 ‣ Possibility of animated Tilesheets (not that any of them are)

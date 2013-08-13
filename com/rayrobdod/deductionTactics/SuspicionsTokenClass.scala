@@ -23,6 +23,7 @@ import javax.swing.Icon
  * @version 05 Jun 2012 - changing weakWeapon from Option[Map[Weaponkind, Float]]
 			to Map[Weaponkind, Option[Float]]
  * @version 12 Jun 2012 - changed name from val to var, and implementing a icon_= function
+ * @version 28 Jus 2012 - implementing hashCode and equals
  */
 class SuspicionsTokenClass extends TokenClass
 {
@@ -42,6 +43,38 @@ class SuspicionsTokenClass extends TokenClass
 	private var setIcon:Option[Icon] = None
 	def icon_=(icon:Option[Icon]) {setIcon = icon}
 	def icon = setIcon.getOrElse(generateGenericIcon(this))
+	
+	override def hashCode:Int = {
+		body.hashCode +
+		atkElement.hashCode +
+		atkWeapon.hashCode +
+		atkStatus.hashCode +
+		range.hashCode +
+		speed.hashCode +
+		weakWeapon.hashCode +
+		weakStatus.hashCode +
+		weakDirection.hashCode +
+		name.hashCode
+	}
+	def canEquals(other:Any) = {other.isInstanceOf[SuspicionsTokenClass]}
+	override def equals(other:Any) = {
+		if (this.canEquals(other) && other.asInstanceOf[SuspicionsTokenClass].canEquals(this))
+		{
+			val other2 = other.asInstanceOf[SuspicionsTokenClass]
+			
+			this.body == other2.body &&
+			this.atkElement == other2.atkElement &&
+			this.atkWeapon == other2.atkWeapon &&
+			this.atkStatus == other2.atkStatus &&
+			this.range == other2.range &&
+			this.speed == other2.speed &&
+			this.weakWeapon == other2.weakWeapon &&
+			this.weakStatus == other2.weakStatus &&
+			this.weakDirection == other2.weakDirection &&
+			this.name == other2.name
+		}
+		else false
+	}
 }
 
 object SuspicionsTokenClass {

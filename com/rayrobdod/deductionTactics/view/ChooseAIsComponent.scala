@@ -12,7 +12,7 @@ import com.rayrobdod.deductionTactics.PlayerAI
  * @author Raymond Dodge
  * @version 23 Aug 2011
  * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics.view
-			to com.rayrobdod.deductionTactics.view
+			to com.rayrobdod.deductionTactics.viewz
  */
 class ChooseAIsComponent extends JPanel
 {

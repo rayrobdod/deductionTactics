@@ -91,6 +91,7 @@ sealed class HumanAI extends PlayerAI
 			setTitle("Choose Team")
 			setSize(400, 600)
 			setVisible(true)
+			getRootPane.setDefaultButton(okButton)
 		}
 		
 		okButton.addActionListener(new ActionListener {

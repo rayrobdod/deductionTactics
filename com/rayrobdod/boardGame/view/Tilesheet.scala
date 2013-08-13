@@ -3,7 +3,7 @@ package com.rayrobdod.boardGame.view
 import com.rayrobdod.boardGame.{RectangularField, SpaceClassConstructor}
 import scala.util.Random
 import scala.parallel.Future
-import java.io.{File,StringReader, Reader}
+import java.io.{File, StringReader, Reader}
 import java.awt.{Image, Color}
 import com.rayrobdod.util.BlitzAnimImage
 import java.net.URL
@@ -45,17 +45,21 @@ trait Tilesheet
  * @version 29 May 2012 - added function this(java.io.Reader, java.net.URL)
  * @version 30 May 2012 - removed function this(java.io.Reader, java.net.URL)
  * @version 30 May 2012 - changing a FileReader based approach to a Files.newBufferedreader based approach
+ * @version 24 Jun 2012 - closing a few opened Readers
+ * @version 25 Jun 2012 - there is no point to mapReader being public, so it is no longer public.
+ 		Also, making map public - incase the map includes more information than the tilesheet knows what to do with.
  * @param jsonURL the URL of the JSONFile to read and turn into a tilesheet
  */
 class JSONTilesheet(jsonURL:URL) extends Tilesheet
 {
 	private implicit def urlToUri(url:URL) = url.toURI
 	
-	val mapReader = Files.newBufferedReader(Paths.get(jsonURL.toURI), UTF_8)
-	
-	private val map:Map[String,Any] = {
+	val map:Map[String,Any] = {
+		val mapReader = Files.newBufferedReader(Paths.get(jsonURL.toURI), UTF_8)
+		
 		val listener = new ToSeqJSONParseListener()
 		JSONParser.parse(listener, mapReader)
+		mapReader.close()
 		listener.resultMap
 	}
 	
@@ -80,10 +84,10 @@ class JSONTilesheet(jsonURL:URL) extends Tilesheet
 		
 		val listener = new ToSeqJSONParseListener()
 		JSONParser.parse(listener, classMapReader)
+		classMapReader.close()
 		val classNames = listener.resultMap.mapValues{_.toString}
 		
 		classNames.mapValues{this.sterilizeSpaceClassConstructorName(_)}
-		
 	}
 	
 	override val rules:Seq[RectangularVisualizationRule] = 
@@ -93,6 +97,7 @@ class JSONTilesheet(jsonURL:URL) extends Tilesheet
 		
 		val listener = new ToSeqJSONParseListener()
 		JSONParser.parse(listener, rulesReader)
+		rulesReader.close()
 		
 		val rulesJSON:Seq[Map[_,_]] = listener.result.map{_ match {
 				case x:scala.collection.Map[_,_] => Map.empty ++ x

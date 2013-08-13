@@ -1,9 +1,11 @@
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.{RectangularSpace, Space => BoardGameSpace}
+import com.rayrobdod.boardGame.{RectangularSpace, Space => BoardGameSpace,
+			PhysicalStrikeCost}
 import scala.collection.immutable.{Seq, Set}
 import javax.swing.Icon
 import com.rayrobdod.swing.NameAndIcon
+import LoggerInitializer.{cannonicalTokenLogger => Logger}
 
 /**
  * An enumeration of directions
@@ -15,6 +17,8 @@ import com.rayrobdod.swing.NameAndIcon
  * @version 02 Feb 2012 - subtrait Direction now extends NameAndIcon
  * @version 15 Apr 2012 - moving icons
  * @version 24 Apr 2012 - implementing Directions.Direction.toString
+ * @version 27 Jun 2012 - moving the majority of CannonicalToken.BeAttackedReaction.directionMultiplier's
+			implementation to Directions.pathDirections and Directions.Direction.weaknessMultiplier 
  */
 object Directions
 {
@@ -38,6 +42,33 @@ object Directions
 			loadIcon(this.getClass().getResource("/com/rayrobdod/glyphs/direction/" + name.toLowerCase + ".svg"))
 		}
 		
+		/**
+		 * The multiplier when being attacked from the pathDirections when
+		 * a unit is weak to this direction
+		 */
+		def weaknessMultiplier(pathDirections:Seq[Direction]):Float = {
+			val weakDir = this
+			val strngDir = Directions((weakDir.id + 2) % 4)
+			val othogDir1 = Directions((weakDir.id + 1) % 4)
+			val othogDir2 = Directions((weakDir.id + 3) % 4)
+			
+			val parelCount = pathDirections.count(_ == weakDir) -
+					pathDirections.count(_ == strngDir)
+			val orthoCount = pathDirections.count(_ == othogDir1) -
+					pathDirections.count(_ == othogDir2)
+			
+			import java.lang.Math.{atan2, PI, abs}		
+			val theta = abs(atan2(orthoCount, parelCount))
+			
+			Logger.finer("(" + pathDirections.count(_ == weakDir) + " - " + pathDirections.count(_ == strngDir)
+					+ "," + pathDirections.count(_ == othogDir1) + " + " + pathDirections.count(_ == othogDir2) + ")")
+			Logger.finer(weakDir + ": (" + parelCount + "," + orthoCount
+					+ ") => theta=" + theta)
+			;
+			val scaler = {(x:Double) => (1 * x * x ) + (.5 *  x) + .5}
+			scaler(1 - (theta / PI)).floatValue
+		}
+		
 		override def toString = "com.rayrobdod.deductionTactics.Directions." + name
 	}
 	
@@ -49,4 +80,28 @@ object Directions
 	def values = Seq[Direction](Left, Up, Right, Down)
 	def withName(s:String) = values.find{_.name equalsIgnoreCase s}.get
 	def apply(x:Int) = values.find{_.id == x}.get
+	
+	/**
+	 * The directions one would move to go from fromSpace to toSpace
+	 */
+	def pathDirections(fromSpace:BoardGameSpace, toSpace:BoardGameSpace):Seq[Direction] =
+	{
+		val path:Seq[BoardGameSpace] = fromSpace.pathTo(toSpace, null, PhysicalStrikeCost)
+		
+		val pathDirections = path.zip(path.head +: path).map({(next:BoardGameSpace, curr:BoardGameSpace) =>
+			curr match {
+				case currRect:RectangularSpace => {
+					val candidates = Directions.values.map{
+							_.function(currRect)}.zip(Directions.values).toMap
+					
+					candidates.getOrElse(Some(next), null)
+				}
+				case _ => null
+			}
+		}.tupled)
+		
+		Logger.finer(pathDirections.toString)
+		
+		return pathDirections;
+	}
 }

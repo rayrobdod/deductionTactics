@@ -19,6 +19,7 @@ import java.io.InputStreamReader
 
 
 import deductionTactics.Elements.Element
+import scala.collection.mutable.{Map => MMap}
 
 /**
  * An enumeration for the elements
@@ -30,10 +31,11 @@ import deductionTactics.Elements.Element
  * @version 15 Apr 2012 - figured out salamander's SVGICon, so loadSVGIcon works now
  * @version 20 Apr 2012 - modifying the location of a few resources
  * @version 03 Jun 2012 - Adding VERSION variable
+ * @version 28 Jun 2012 - adding a cache to generateGenericIcon
  */
 package object deductionTactics
 {
-	val VERSION = "a.2.1"
+	val VERSION = "a.2.2"
 	private val ICON_DIMENSION = 32
 	
 	/**
@@ -93,22 +95,33 @@ package object deductionTactics
 		RectangularField.applySCC(fieldSpaceClassConsTable)
 	}
 	
+	private[this] val genericIconCache = MMap.empty[TokenClass, ImageIcon]
+	
 	def generateGenericIcon(tokenClass:TokenClass) =
 	{
-		val fileName = tokenClass.atkWeapon.map{_.genericTokenClassFile}.getOrElse("/sprites/generic/Gray shirt.png")
-		//System.out.println(fileName)
-		val base = ImageIO.read(this.getClass().getResource(fileName))
-		
-		tokenClass.atkElement.foreach{(elem:Element) => {
-			(0 until base.getWidth).foreach{(x:Int) => {
-				(0 until base.getHeight).foreach{(y:Int) => {
-					if (base.getRGB(x,y) == 0xFF949494) {base.setRGB(x,y,elem.color.brighter.getRGB)}
-					if (base.getRGB(x,y) == 0xFF7F7F7F) {base.setRGB(x,y,elem.color.getRGB)}
-					if (base.getRGB(x,y) == 0xFF747474) {base.setRGB(x,y,elem.color.darker.getRGB)}
+		if (genericIconCache.contains(tokenClass))
+		{
+			genericIconCache(tokenClass)
+		}
+		else
+		{
+			val fileName = tokenClass.atkWeapon.map{_.genericTokenClassFile}.getOrElse("/sprites/generic/Gray shirt.png")
+			//System.out.println(fileName)
+			val base = ImageIO.read(this.getClass().getResource(fileName))
+			
+			tokenClass.atkElement.foreach{(elem:Element) => {
+				(0 until base.getWidth).foreach{(x:Int) => {
+					(0 until base.getHeight).foreach{(y:Int) => {
+						if (base.getRGB(x,y) == 0xFF949494) {base.setRGB(x,y,elem.color.brighter.getRGB)}
+						if (base.getRGB(x,y) == 0xFF7F7F7F) {base.setRGB(x,y,elem.color.getRGB)}
+						if (base.getRGB(x,y) == 0xFF747474) {base.setRGB(x,y,elem.color.darker.getRGB)}
+					}}
 				}}
 			}}
-		}}
-		
-		new ImageIcon(base)
+			
+			val returnValue = new ImageIcon(base)
+			genericIconCache += ((tokenClass, returnValue))
+			returnValue
+		}
 	}
 }

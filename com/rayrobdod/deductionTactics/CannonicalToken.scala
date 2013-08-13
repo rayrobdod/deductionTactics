@@ -34,6 +34,8 @@ import java.util.logging.Level
  * @version 05 Apr 2012 - {@link BoardGameSpaceClass}.movementCost -> BoardGameSpaceClass.cost and adding {@link TypeOfCost}s to those that now need it in {@link BoardGameSpace}
  * @version 24 Apr 2012 - trying to implement the damage direction multiplier
  * @version 04 Jun 2012 - adding an effect for Status.Heal to the StatusAct object
+ * @version 27 Jun 2012 - moving the majority of CannonicalToken.BeAttackedReaction.directionMultiplier's
+			implementation to Directions.pathDirections and Directions.Direction.weaknessMultiplier 
  */
 class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 {
@@ -96,42 +98,13 @@ class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 		override def toString = CannonicalToken.this.toString + ".BeAttackedReaction"
 		
 		def directionMultiplier(hisSpace:BoardGameSpace, mySpace:BoardGameSpace) = {
-			val path:Seq[BoardGameSpace] = hisSpace.pathTo(mySpace, null, PhysicalStrikeCost)
 			
-			val directionOfPath = path.zip(path.head +: path).map({(next:BoardGameSpace, curr:BoardGameSpace) =>
-				curr match {
-					case currRect:RectangularSpace => {
-						val candidates = Directions.values.map{
-								_.function(currRect)}.zip(Directions.values).toMap
-						
-						candidates.getOrElse(Some(next), null)
-					}
-					case _ => null
-				}
-			}.tupled)
+			import Directions.pathDirections
 			
-			Logger.finer(directionOfPath.toString)
-			
+			val path = pathDirections(hisSpace, mySpace)
 			val weakDir = CannonicalToken.this.tokenClass.weakDirection.get
-			val strngDir = Directions((weakDir.id + 2) % 4)
-			val othogDir1 = Directions((weakDir.id + 1) % 4)
-			val othogDir2 = Directions((weakDir.id + 3) % 4)
 			
-			val parelCount = directionOfPath.count(_ == weakDir) -
-					directionOfPath.count(_ == strngDir)
-			val orthoCount = directionOfPath.count(_ == othogDir1) -
-					directionOfPath.count(_ == othogDir2)
-			
-			import java.lang.Math.{atan2, PI, abs}		
-			val theta = abs(atan2(orthoCount, parelCount))
-			
-			Logger.finer("(" + directionOfPath.count(_ == weakDir) + " - " + directionOfPath.count(_ == strngDir)
-					+ "," + directionOfPath.count(_ == othogDir1) + " + " + directionOfPath.count(_ == othogDir2) + ")")
-			Logger.finer(weakDir + ": (" + parelCount + "," + orthoCount
-					+ ") => theta=" + theta)
-			;
-			val scaler = {(x:Double) => (1 * x * x ) + (.5 *  x) + .5}
-			scaler(1 - (theta / PI))
+			weakDir.weaknessMultiplier(path)
 		}
 	}
 	

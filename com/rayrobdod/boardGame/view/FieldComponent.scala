@@ -19,14 +19,17 @@ import com.rayrobdod.animation.{AnimationIcon, ImageFrameAnimation}
  * @version 15 Dec 2011 - moved from {@code net.verizon.rayrobdod.boardGame.view} to {@code com.rayrobdod.boardGame.view}
  * @version 11 Jun 2012 - due to RectangularVisualizationRule.image being an icon now, no longer turning it into an icon before putting it in a JLabel
  * @version 11 Jun 2012 - adding attempt to recognise an animation as one, and adding a frame change listener if it is an animation
+ * @version 24 Jun 2012 - adding rng as an optional paramter to the constructor, which defults to scala.util.Random$ 
  */
-class FieldComponent(tilesheet:Tilesheet, field:RectangularField) extends JComponent
+class FieldComponent(tilesheet:Tilesheet, field:RectangularField, rng:Random) extends JComponent
 {
+	def this(tilesheet:Tilesheet, field:RectangularField) = this(tilesheet, field, Random);
+	
 	val points:Seq[Seq[Point]] = field.spaces.indices.map{(x:Int) => field.spaces(x).indices.map{(y:Int) => new Point(x,y)}}
 	val flatPoints:Seq[Point] = points.flatten
 	
 	val rules:Seq[RectangularVisualizationRule] = flatPoints.map{(p:Point) =>
-		tilesheet.rules.filter{_.matches(field, p.x, p.y, Random)}.max(VisualizationRulePriorityOrdering)
+		tilesheet.rules.filter{_.matches(field, p.x, p.y, rng)}.max(VisualizationRulePriorityOrdering)
 	}
 	
 	val spaces:Seq[RectangularSpace] = flatPoints.map{(p:Point) => field.space(p.x, p.y)}
@@ -37,9 +40,9 @@ class FieldComponent(tilesheet:Tilesheet, field:RectangularField) extends JCompo
 		animIcon.addRepaintOnNextFrameListener(x)
 	}
 	// TODO: stop threads at some point
-	val threads:Seq[Threads] = labels.map{_.getIcon}.distinct.filter{_.isInstanceOf[AnimationIcon]}.map{
+	val threads:Seq[Thread] = labels.map{_.getIcon}.distinct.filter{_.isInstanceOf[AnimationIcon]}.map{
 				_.asInstanceOf[AnimationIcon]}.map{(x:AnimationIcon) =>
-		returnValue = new Thread(x.animation, "AnimationIcon animator")
+		val returnValue = new Thread(x.animation, "AnimationIcon animator")
 		returnValue.setDaemon(true)
 		returnValue.start()
 		returnValue

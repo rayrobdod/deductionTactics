@@ -30,6 +30,11 @@ private[deductionTactics] object LoggerInitializer
 	sleepAbuserAILogger.addHandler(finerConsoleHander)
 	sleepAbuserAILogger.setLevel(Level.WARNING)
 	
+	val findWeaknessAILogger = Logger.getLogger(
+			"com.rayrobdod.deductionTactics.ai.FindWeaknessAI")
+	findWeaknessAILogger.addHandler(finerConsoleHander)
+	findWeaknessAILogger.setLevel(Level.WARNING)
+	
 	val elementsLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.Elements")
 	elementsLogger.addHandler(finerConsoleHander)
