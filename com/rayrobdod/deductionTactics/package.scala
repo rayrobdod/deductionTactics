@@ -35,7 +35,7 @@ import scala.collection.mutable.{Map => MMap}
  */
 package object deductionTactics
 {
-	val VERSION = "a.2.2"
+	val VERSION = "a.2.3"
 	private val ICON_DIMENSION = 32
 	
 	/**

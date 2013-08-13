@@ -27,7 +27,7 @@ case class RequestAttackForStatus(val attacker:CannonicalToken, val target:Token
  * @author Raymond Dodge
  * @version 20 Mar 2012
  */
-case class RequestMove(val attacker:CannonicalToken, val to:BoardGameSpace /* ,tokens:ListOfTokens */) extends Event
+case class RequestMove(val attacker:CannonicalToken, val to:BoardGameSpace) extends Event
 
 // StartOfTurn and EndOfTurn are in com.rayrobdod.boardGame
 

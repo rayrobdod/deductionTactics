@@ -35,8 +35,9 @@ import com.rayrobdod.deductionTactics.view.{
  * @version 06 Apr 2012 - incorporating SellectAttackTypePanel into initialization;
 			now can choose between status and damage attacks.
  * @version 30 May 2012 - now repaints frame after modifying it
+ * @version 03 Jul 2012 - renamed from HumanAI to SwingInterface
  */
-sealed class HumanAI extends PlayerAI
+sealed class SwingInterface extends PlayerAI
 {
 	val playerButtons = MMap[Player, JButton]() 
 	
@@ -109,10 +110,10 @@ sealed class HumanAI extends PlayerAI
 	// hopefully, animations will work eventually and that will
 	// inform a player of what's going on.
 	
-	def canEquals(other:Any) = {other.isInstanceOf[HumanAI]}
+	def canEquals(other:Any) = {other.isInstanceOf[SwingInterface]}
 	override def equals(other:Any) = {
 		// no instance variables to test
-		this.canEquals(other) && other.asInstanceOf[HumanAI].canEquals(this)
+		this.canEquals(other) && other.asInstanceOf[SwingInterface].canEquals(this)
 	}
 	// arbitrary number (17)
 	override def hashCode = 13
@@ -128,4 +129,4 @@ sealed class HumanAI extends PlayerAI
  * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
 			to com.rayrobdod.deductionTactics.ai
  */
-object HumanAI extends HumanAI
+object HumanAI extends SwingInterface

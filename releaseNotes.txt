@@ -1,5 +1,13 @@
 ﻿deductionTactics
 
+== a.2.3 ==
+* Renaming com.rayrobdod.deductionTactics.ai.HumanAI to
+		com.rayrobdod.deductionTactics.ai.SwingInterface
+* Renaming com.rayrobdod.deductionTactics.ai.HumanAutorecordAI to
+		com.rayrobdod.deductionTactics.ai.SwingInterfaceWithAutorecord
+* Adding PlayerAI: NetworkClient
+* Adding PlayerAI: SwingInterfaceWithNetworkServer
+
 == a.2.2 ==
 ‣ Allowing observation of computer-vs-computer games
 ‣ Giving a few dialogs default buttons

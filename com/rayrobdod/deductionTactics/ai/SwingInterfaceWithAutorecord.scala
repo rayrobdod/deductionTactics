@@ -11,8 +11,9 @@ import javax.swing.{JButton}
  *
  * @author Raymond Dodge
  * @version ???
+ * @version 03 Jul 2012 - renamed from HumanAutorecordAI to SwingInterfaceWithAutorecord
  */
-class HumanAutorecordAI extends PlayerAI
+class SwingInterfaceWithAutorecord extends PlayerAI
 {
 	val playerButtons = MMap[Player, JButton]()
 	
@@ -24,7 +25,7 @@ class HumanAutorecordAI extends PlayerAI
 	def initialize(player:Player, field:Field)
 	{
 		// set up interface
-		val interface = new HumanAI;
+		val interface = new SwingInterface;
 		interface.initialize(player, field)
 		playerButtons ++= interface.playerButtons
 		
@@ -42,10 +43,10 @@ class HumanAutorecordAI extends PlayerAI
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[HumanAutorecordAI]}
+	def canEquals(other:Any) = {other.isInstanceOf[SwingInterfaceWithAutorecord]}
 	override def equals(other:Any) = {
 		// no instance variables to test
-		this.canEquals(other) && other.asInstanceOf[HumanAutorecordAI].canEquals(this)
+		this.canEquals(other) && other.asInstanceOf[SwingInterfaceWithAutorecord].canEquals(this)
 	}
 	// arbitrary number (17)
 	override def hashCode = 21

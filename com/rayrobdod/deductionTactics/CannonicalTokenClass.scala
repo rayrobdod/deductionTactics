@@ -17,6 +17,9 @@ import scala.collection.JavaConversions.enumerationAsScalaIterator
 import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths, FileSystems}
+import com.rayrobdod.javaScriptObjectNotation.javaCollection.JSONObject
+import com.rayrobdod.javaScriptObjectNotation.JSONString
+import scala.collection.JavaConversions.mapAsJavaMap
 
 /**
  * A supposed-to-be-immutable trait defining a token's class
@@ -25,6 +28,7 @@ import java.nio.file.{Files, Path, Paths, FileSystems}
  * @version 24 Mar 2012 - implementing toString that only uses the name
  * @version 05 Jun 2012 - changing weakWeapon from Some[Map[Weaponkind, Float]]
 			to Map[Weaponkind, Some[Float]]
+ * @version 03 Jul 2012 - adding method toJSONObject
  */
 trait CannonicalTokenClass extends TokenClass
 {
@@ -43,6 +47,26 @@ trait CannonicalTokenClass extends TokenClass
 	def weakStatus:Some[Status]
 	
 	override def toString = "CannonicalTokenClass{name:" + name + ";}"
+	
+	def toJSONObject:JSONObject = {
+		
+		implicit def stringToJSONString(s:String) = {JSONString.generateParsed(s)}
+		
+		val returnValue = new JSONObject
+		returnValue.put("name", name)
+		returnValue.put("body", body.get.toString)
+		returnValue.put("element", atkElement.get.name)
+		returnValue.put("atkWeapon", atkWeapon.get.name)
+		returnValue.put("atkStatus", atkStatus.get.name)
+		returnValue.put("range", range.get)
+		returnValue.put("speed", speed.get)
+		returnValue.put("weakDirection", weakDirection.get.name)
+		returnValue.put("weakWeapon", new JSONObject(mapAsJavaMap(
+			weakWeapon.map({(x:Weaponkind, y:Some[Float]) => ((JSONString.generateParsed(x.name), y.get))}.tupled)
+		)))
+		returnValue.put("weakStatus", weakStatus.get.name)
+		returnValue
+	}
 }
 
 /**
@@ -58,6 +82,7 @@ trait CannonicalTokenClass extends TokenClass
  * @version 24 Mar 2012 - made the generic toWhatever functions private
  * @version 05 Jun 2012 - changing weakWeapon from Option[Map[Weaponkind, Float]]
 			to Map[Weaponkind, Option[Float]]
+ * @version 03 Jul 2012 - adding method toJSONObject
  */
 class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenClass
 {
@@ -80,6 +105,17 @@ class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenCl
 		else
 			generateGenericIcon(this)
 	}
+	
+	override def toJSONObject = new JSONObject(mapAsJavaMap(
+			map.map({(x:String, y:Any) => 
+				y match {
+					case z:Map[_, _] => ((JSONString.generateParsed(x), mapAsJavaMap(z)))
+					case _ => ((JSONString.generateParsed(x), y))
+				}
+			}.tupled)
+	))
+	
+	
 	
 	private def toInt(any:Any):Int = {any match {
 		case x:Int => x

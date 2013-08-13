@@ -1,4 +1,6 @@
-com.rayrobdod.deductionTactics.ai.HumanAI
-com.rayrobdod.deductionTactics.ai.HumanAutorecordAI
+com.rayrobdod.deductionTactics.ai.SwingInterface
+com.rayrobdod.deductionTactics.ai.SwingInterfaceWithAutorecord
+com.rayrobdod.deductionTactics.ai.SwingInterfaceWithNetworkServer
 com.rayrobdod.deductionTactics.ai.BlindAttackAI
 com.rayrobdod.deductionTactics.ai.SleepAbuserAI
+com.rayrobdod.deductionTactics.ai.NetworkClient
