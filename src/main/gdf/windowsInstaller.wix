@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Name="Deduction Tactics" Id="YOURGUID-86C7-4D14-AEC0-86416A69ABDE"
+			UpgradeCode="YOURGUID-7349-453F-94F6-BCB5110BA4FD"
+		Language="1033" Codepage="1252" Version="000.010.5.0" Manufacturer="Raymond Dodge">
+		
+		<Package Id="*" Keywords="Installer" Description="DeductionTactics Installer"
+			Comments="Foobar is a registered trademark of Acme Ltd." Manufacturer="Raymond Dodge"
+			InstallerVersion="100" Languages="1033" Compressed="yes" SummaryCodepage="1252" />
+		
+		<UIRef Id="WixUI_Mondo" />
+		
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder" Name="PFiles">
+				<Directory Id="Acme" Name="rayrobdod">
+					<Directory Id="INSTALLDIR" Name="Deduction Tactics">
+						<Component Id="MainExecutable" Guid="YOURGUID-83F1-4F22-985B-FDB3C8ABD471">
+							<File Id="MainJar" Name="FoobarAppl10.exe" Source="FoobarAppl10.exe" KeyPath="yes">
+						</Component>
+					
+						<Component Id="GameDefFile" >
+						</Component>
+					</Directory>
+				</Directory>
+			</Directory>
+		</Directory>
+		
+		<Feature Id="Complete" Level="1" Title="Deduction Tactics"
+					Description=""
+					Display="Expand" ConfigurableDirectory='INSTALLDIR'>
+			<Feature Id="MainExecutableFeature" Level="1" Title="Program"
+						Description="The program" Display="Expand">
+				<ComponentRef Id="MainExecutable" />
+			</Feature>
+			<Feature Id="GameDefFileFeature" Level="3" Title="Game Explorer Entry"
+						Description="Show this game in the Game Explorer" Display="Expand">
+				<ComponentRef Id="GameDefFile" />
+		</Feature>
+	</Product>
+</Wix>
