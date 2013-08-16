@@ -132,6 +132,8 @@ class CannonicalTokenClassParseListener extends JSONParseListener {
 		}
 		
 		key.foreach{ (x:String) =>
+			System.out.println(x)
+			
 			try {
 				x match {
 					case "name" => builder.nameOpt = Some(value)

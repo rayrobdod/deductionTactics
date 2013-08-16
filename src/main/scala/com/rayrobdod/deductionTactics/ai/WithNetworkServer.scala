@@ -7,13 +7,10 @@ import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace, Spa
 				Token => BoardGameToken}
 import com.rayrobdod.deductionTactics.swingView.{NetworkServerSetupPanel, InputFrame}
 import com.rayrobdod.deductionTactics.LoggerInitializer.{networkServerLogger => Logger}
-import java.awt.BorderLayout
 import java.awt.event.{ActionListener, ActionEvent}
 import java.net.{Socket, ServerSocket, InetAddress}
 import java.io.{OutputStreamWriter}
-import javax.swing.{JButton, JFrame, JPanel, JLabel, JList}
 import scala.collection.immutable.Seq
-import scala.collection.mutable.{Map => MMap}
 import java.nio.charset.StandardCharsets.UTF_8
 
 /**
@@ -88,9 +85,10 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		
 		
 		output.write( '[' )
-		returnValue.foreach({ (tclass:CannonicalTokenClass) =>
-			output.write( tokenClassToJSON(tclass) )
-		})
+		returnValue.zipWithIndex.foreach({(tclass:CannonicalTokenClass, index:Int) =>
+			if (index != 0) output.write(',')
+			output.write(tokenClassToJSON(tclass))
+		}.tupled)
 		output.write( "]\n" )
 		output.flush()
 		

@@ -1,5 +1,7 @@
 package com.rayrobdod.deductionTactics.meta
 
+import com.rayrobdod.deductionTactics.tokenClassToJSON
+
 import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
@@ -36,11 +38,10 @@ object CompileTokenClassesToJson // extends scala.App
 		val writer = Files.newBufferedWriter(outPath, UTF_8);
 		writer.write('[')
 		
-		classes.map{
-			writer.write(deductionTactics.tokenClassToJSON(_))
-			writer.write(",\n")
-			
-		}
+		classes.zipWithIndex.foreach({(tclass:TokenClass, index:Int) =>
+			if (index != 0) writer.write(',')
+			writer.write( tokenClassToJSON(tclass) )
+		}.tupled)
 		
 		writer.write(']');
 		writer.close();

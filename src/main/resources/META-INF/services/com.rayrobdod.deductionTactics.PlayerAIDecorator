@@ -2,7 +2,7 @@
 com.rayrobdod.deductionTactics.ai.WithAutorecord
 
 # isn't this a 'user interface stuff'
-com.rayrobdod.deductionTactics.ai.WithNetworkServer
+#com.rayrobdod.deductionTactics.ai.WithNetworkServer
 
 ### Team Choosing algorythm overrides
 com.rayrobdod.deductionTactics.ai.WithRandomTeam
