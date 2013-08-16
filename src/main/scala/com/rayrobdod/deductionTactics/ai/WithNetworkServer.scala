@@ -61,7 +61,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 			token.addTryStatusAttackedReaction(new PrintRequestStatusAttack(index2))
 			token.addMoveReaction(new PrintMove(index2))
 		}.tupled)
-		output.write( ']' )
+		output.write( "]\n" )
 	}
 	
 	def buildTeam() = {
@@ -136,7 +136,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 				output.write(tokenIndex)
 				output.write("),Field")
 				output.write(field.get.spaces.twoDIndexOf(s).toString)
-				output.write("\n")
+				output.write(")\n")
 			}
 		}
 	}
@@ -148,7 +148,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 				output.write(tokenIndex)
 				output.write("),OtherTokens")
 				output.write(player.get.tokens.otherTokens.twoDIndexOf(target2).toString)
-				output.write("\n")
+				output.write(")\n")
 			}
 		}
 	}
@@ -160,7 +160,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 				output.write(tokenIndex)
 				output.write("),OtherTokens")
 				output.write(player.get.tokens.otherTokens.twoDIndexOf(target2).toString)
-				output.write("\n")
+				output.write(")\n")
 			}
 		}
 	}
