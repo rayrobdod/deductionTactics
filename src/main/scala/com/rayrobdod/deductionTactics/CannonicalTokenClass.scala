@@ -137,7 +137,7 @@ object CannonicalTokenClass
 				}
 			} else { // assume JSON
 				val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
-			
+				
 				val l = new ToScalaCollection(CannonicalTokenClassDecoder)
 				JSONParser.parse(l, jsonReader)
 				jsonReader.close()
