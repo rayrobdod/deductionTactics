@@ -49,9 +49,15 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 		val abPath = n.getAbsolutePath().replace('\\', '/')
 		(
 			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/ansiEscape/SpacePrinter.scala") ||
+			(abPath endsWith "com/rayrobdod/testing/ParserTest.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithNetworkServer.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/NetworkClient.scala") ||
-			(abPath endsWith "com/rayrobdod/testing/ParserTest.scala")
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface_CFN.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/FieldPotentialAI.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithConsoleViewport.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/CommandParser.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/TokenEventPrinter.scala")
 		)
 	}
 }
