@@ -36,45 +36,10 @@ object CompileTokenClassesToJson // extends scala.App
 		val writer = Files.newBufferedWriter(outPath, UTF_8);
 		writer.write('[')
 		
-		classes.map{(tclass:CannonicalTokenClass) =>
-			writer.write("{\"name\":\"");
-			writer.write(tclass.name);
+		classes.map{
+			writer.write(deductionTactics.tokenClassToJSON(_))
+			writer.write(",\n")
 			
-			writer.write("\",\"element\":\"");
-			writer.write(tclass.atkElement.get.name);
-			
-			writer.write("\",\"atkWeapon\":\"");
-			writer.write(tclass.atkWeapon.get.name.dropRight(4));
-			
-			writer.write("\",\"atkStatus\":\"");
-			writer.write(tclass.atkStatus.get.name)
-			
-			writer.write("\",\"body\":\"");
-			// writer.write(tclass.body.get.name)
-			writer.write("Human");
-			
-			writer.write("\",\"range\":");
-			writer.write(tclass.range.get.toString)
-			
-			writer.write(",\"speed\":");
-			writer.write(tclass.speed.get.toString)
-			
-			writer.write(",\"weakStatus\":\"");
-			writer.write(tclass.weakStatus.get.name)
-			
-			writer.write("\",\"weakDirection\":\"");
-			writer.write(tclass.weakDirection.get.name)
-			
-			writer.write("\",\"weakWeapon\":{");
-			val weakWeapon = tclass.weakWeapon.foldLeft(new java.lang.StringBuilder){(a,b) => 
-				a.append(",\"")
-				a.append(b._1.name.dropRight(4))
-				a.append("\":")
-				a.append(b._2.get)
-			}.toString.tail
-			writer.write(weakWeapon)
-			
-			writer.write("},\n");
 		}
 		
 		writer.write(']');

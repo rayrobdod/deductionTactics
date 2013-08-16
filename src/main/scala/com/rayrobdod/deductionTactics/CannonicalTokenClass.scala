@@ -47,29 +47,8 @@ trait CannonicalTokenClass extends TokenClass
 	def weakWeapon:Map[Weaponkind,Some[Float]]
 	def weakStatus:Some[Status]
 	
-	override def toString = "CannonicalTokenClass{name:" + name + ";}"
+	override def toString = "CannonicalTokenClass{name:" + name + "; ...}"
 	
-	// TODO: remove dependency on JSONObject
-	// You know what? remove this method at all.
-	def toJSONObject:JSONObject = {
-		
-		implicit def stringToJSONString(s:String) = {JSONString.generateParsed(s)}
-		
-		val returnValue = new JSONObject
-		returnValue.put("name", name)
-		returnValue.put("body", body.get.toString)
-		returnValue.put("element", atkElement.get.name)
-		returnValue.put("atkWeapon", atkWeapon.get.name)
-		returnValue.put("atkStatus", atkStatus.get.name)
-		returnValue.put("range", range.get)
-		returnValue.put("speed", speed.get)
-		returnValue.put("weakDirection", weakDirection.get.name)
-		returnValue.put("weakWeapon", new JSONObject(mapAsJavaMap(
-			weakWeapon.map({(x:Weaponkind, y:Some[Float]) => ((JSONString.generateParsed(x.name), y.get))}.tupled)
-		)))
-		returnValue.put("weakStatus", weakStatus.get.name)
-		returnValue
-	}
 }
 
 /**

@@ -58,14 +58,6 @@ class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenCl
 	override def weakWeapon = asWeakWeaponMap(map("weakWeapon")).mapValues{Some(_)}
 	override def weakStatus = Some(Statuses.withName(map("weakStatus").toString))
 	
-	override def toJSONObject = new JSONObject(mapAsJavaMap(
-			map.map({(x:String, y:Any) => 
-				y match {
-					case z:Map[_, _] => ((JSONString.generateParsed(x), mapAsJavaMap(z)))
-					case _ => ((JSONString.generateParsed(x), y))
-				}
-			}.tupled)
-	))
 	
 	
 	

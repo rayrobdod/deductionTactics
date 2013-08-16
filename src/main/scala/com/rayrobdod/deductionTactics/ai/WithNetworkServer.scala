@@ -1,6 +1,7 @@
 package com.rayrobdod.deductionTactics
 package ai
 
+import com.rayrobdod.deductionTactics.tokenClassToJSON
 import com.rayrobdod.util.MultiForwardWriter
 import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace, Space,
 				Token => BoardGameToken}
@@ -52,7 +53,6 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		this.player = Some(player);
 		this.field  = Some(field);
 		
-		output.write( '[' )
 		player.tokens.myTokens.zipWithIndex.foreach({ (token:CannonicalToken, index:Int) =>
 			val index2 = index.toString;
 			
@@ -60,7 +60,6 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 			token.addTryStatusAttackedReaction(new PrintRequestStatusAttack(index2))
 			token.addMoveReaction(new PrintMove(index2))
 		}.tupled)
-		output.write( "]\n" )
 	}
 	
 	def buildTeam() = {
@@ -89,10 +88,11 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		
 		
 		output.write( '[' )
-		returnValue.foreach({ (token:CannonicalTokenClass) =>
-			output.write( token.toJSONObject.toString )
+		returnValue.foreach({ (tclass:CannonicalTokenClass) =>
+			output.write( tokenClassToJSON(tclass) )
 		})
 		output.write( "]\n" )
+		output.flush()
 		
 		returnValue
 	}
@@ -139,10 +139,10 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 	
 		private implicit def twoDSeq[A](x:Seq[Seq[A]]) = new TwoDSeq(x)
 		
-		private class TwoDSeq[A](haystack:Seq[Seq[A]])
-		{
-			def twoDIndexOf(needle:A):Tuple2[Int,Int] =
-			{
+		private class TwoDSeq[A](haystack:Seq[Seq[A]]) {
+			
+			def twoDIndexOf(needle:A):Tuple2[Int,Int] = {
+				
 				val ys = haystack.map{_.indexOf(needle)}
 				val pairs = ys.zipWithIndex.filter({(y:Int, x:Int) => y != -1}.tupled)
 				

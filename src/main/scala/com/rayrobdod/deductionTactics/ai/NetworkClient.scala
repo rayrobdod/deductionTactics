@@ -21,8 +21,8 @@ import com.rayrobdod.commonFunctionNotation.Parser.{parse => cfnParse}
  * @version 03 Jul 2012
  * @version 05 Jul 2012
  * @version 12 Jul 2012 - minor notify-before-lock condition fixed
- * @version 03 Aug 2012 - replacing an annonymous inner class with an instance of InputFrame
- * @version 09 Aug 2012 - changed a line of logging to show the recived tokenclass
+ * @version 03 Aug 2012 - replacing an anonymous inner class with an instance of InputFrame
+ * @version 09 Aug 2012 - changed a line of logging to show the received tokenclass
  * @version 09 Aug 2012 - Instead of collecting values in a MSet in a range's foreach function,
  			using the same range's map function instead
  * @version 10 Aug 2012 - removing instance variables in exchange for `TokenClassWithHiddenData`
@@ -78,6 +78,7 @@ class NetworkClient extends PlayerAI
 			val in = socket.getInputStream
 			val inR = new InputStreamReader(in)
 			
+			
 			val l = new ToScalaCollection(CannonicalTokenClassDecoder)
 			JSONParser.parse(l, inR)
 			
@@ -113,7 +114,7 @@ class NetworkClient extends PlayerAI
 			}
 		} while (nextCommand != NetworkClient.EndOfTurn);
 		
-		Logger.fine("Ending recieveing of commands")
+		Logger.fine("Ending receiving of commands")
 	}
 	
 	/** do nothing */
@@ -128,11 +129,6 @@ class NetworkClient extends PlayerAI
 	override def hashCode = 19
 	
 	override def toString = this.getClass.getName
-	
-	
-	
-	
-	
 }
 
 object NetworkClient {
