@@ -54,7 +54,6 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		
 		output.write( '[' )
 		player.tokens.myTokens.zipWithIndex.foreach({ (token:CannonicalToken, index:Int) =>
-			output.write( token.tokenClass.toJSONObject.toString )
 			val index2 = index.toString;
 			
 			token.addTryDamageAttackedReaction(new PrintRequestDamageAttack(index2))
@@ -86,8 +85,14 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		}
 		
 		val server = new StartServer(network.mySocket)
-		new Thread(server, "WithNetworkServer")
+		new Thread(server, "WithNetworkServer").start()
 		
+		
+		output.write( '[' )
+		returnValue.foreach({ (token:CannonicalTokenClass) =>
+			output.write( token.toJSONObject.toString )
+		})
+		output.write( "]\n" )
 		
 		returnValue
 	}
@@ -105,12 +110,29 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 	class StartServer(socket:ServerSocket) extends Runnable {
 		
 		def run() = while (true) {
-				val child:Socket = socket.accept
+			val child:Socket = socket.accept
+			
+			val childOutStream = child.getOutputStream;
+			val childWriter = new OutputStreamWriter(childOutStream, UTF_8)
+			val childInStream = child.getInputStream;
+			val childReader = new java.util.Scanner(childInStream, UTF_8.toString)
+			
+			var line:String = "";
+			do {
+				line = childReader.nextLine()
 				
-				val childStream = child.getOutputStream;
-				val childWriter = new OutputStreamWriter(childStream, UTF_8)
-				
-				WithNetworkServer.this.output.addForward(childWriter)
+				Logger.fine("Recieved a " + line)
+				if (line == "Ping") {
+					childWriter.write("PingBack\n")
+				}
+				if (line == "Ready") {
+					childWriter.write("Ready\n")
+				}
+				childWriter.flush()
+			} while (line != "TokenClasses")
+			
+			
+			WithNetworkServer.this.output.addForward(childWriter)
 		}
 	}
 	
