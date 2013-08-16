@@ -73,12 +73,13 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 			returnValue2
 		}
 		
-		new StartServer(network.mySocket)
+		val server = new StartServer(network.mySocket)
 		returnValue.foreach{ x:CannonicalTokenClass => 
 			output.write( '[' )
 			output.write( x.toJSONObject.toString )
 			output.append( ']' )
 		}
+		new Thread(server, "WithNetworkServer")
 		
 		
 		returnValue
@@ -136,41 +137,27 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		}
 	}
 	
-	final class PrintRequestDamageAttack(tokenIndex:String) extends Token.RequestDamageAttackType {
-		def apply(target:MirrorToken):Unit = {
-			output.write("RequestAttackForDamage(MyTokens(")
-			output.write(tokenIndex)
-			output.write("),OtherTokens")
-			output.write(player.get.tokens.otherTokens.twoDIndexOf(target).toString)
-			output.write("\n")
-		}
-	}
-	
-	final class PrintRequestStatusAttack(tokenIndex:String) extends Token.RequestStatusAttackType {
-		def apply(target:MirrorToken):Unit = {
-			output.write("RequestAttackForStatus(MyTokens(")
-			output.write(tokenIndex)
-			output.write("),OtherTokens")
-			output.write(player.get.tokens.otherTokens.twoDIndexOf(target).toString)
-			output.write("\n")
-		}
-	}
-	
-	
-	object threadFactory extends ThreadFactory
-	{
-		var count = 0;
-		
-		override def newThread(r:Runnable) =
-		{
-			val t = new Thread(r);
-			t.setDaemon(false)
-			
-			this.synchronized{
-				count = count + 1
-				t.setName("NetworkServer-"+count)
+	final class PrintRequestDamageAttack(tokenIndex:String) extends CannonicalToken.RequestAttackType {
+		def apply(target:Token):Unit = target match {
+			case target2:MirrorToken => {
+				output.write("RequestAttackForDamage(MyTokens(")
+				output.write(tokenIndex)
+				output.write("),OtherTokens")
+				output.write(player.get.tokens.otherTokens.twoDIndexOf(target).toString)
+				output.write("\n")
 			}
-			t
+		}
+	}
+	
+	final class PrintRequestStatusAttack(tokenIndex:String) extends CannonicalToken.RequestAttackType {
+		def apply(target:Token):Unit = target match {
+			case target2:MirrorToken => {
+				output.write("RequestAttackForStatus(MyTokens(")
+				output.write(tokenIndex)
+				output.write("),OtherTokens")
+				output.write(player.get.tokens.otherTokens.twoDIndexOf(target).toString)
+				output.write("\n")
+			}
 		}
 	}
 }

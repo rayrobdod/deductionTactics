@@ -92,6 +92,8 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 	override def toString() = "CannonicalToken{tokenClass:" + tokenClass + ";}"
 	
 	
+	/* * * * * * * Player Event Listeners * * * * * * */
+	
 	/** add to owner Player */
 	object TurnStartReaction extends Player.StartTurnReactionType {
 		def apply():Unit = {
@@ -109,10 +111,7 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 			_canAttackThisTurn = false
 		}
 	}
-	
-	
-	
-	/** Add to player */
+	/** add to owner Player */
 	class StatusAct(allTokens:ListOfTokens) extends Player.StartTurnReactionType {
 		val moveToRandomSpace = {(s:BoardGameSpace, i:Int) =>
 			val possibleNext = s.adjacentSpaces.toSeq
@@ -191,11 +190,13 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 		this.triggerStatusAttackedReactions(status,from)
 		this.triggerUpdateReactions
 	}
+	
 	def tryAttackDamage(target:Token) {
 		if (this.currentSpace.distanceTo(target.currentSpace, this, PhysicalStrikeCost) <= this.tokenClass.range.get) {
 			target.beAttacked(this.tokenClass.atkElement.get, this.tokenClass.atkWeapon.get, this.currentSpace)
 			this.triggerUpdateReactions
 			this._canAttackThisTurn = false
+			tryDamageAttackedReactions.foreach{c => c(target)}
 		}
 	}
 	def tryAttackStatus(target:Token) {
@@ -203,8 +204,16 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 			target.beAttacked(this.tokenClass.atkStatus.get, this.currentSpace)
 			this.triggerUpdateReactions
 			this._canAttackThisTurn = false
+			tryStatusAttackedReactions.foreach{c => c(target)}
 		}
 	}
+	
+	private val tryDamageAttackedReactions:Buffer[CannonicalToken.RequestAttackType] = Buffer.empty;
+	def addTryDamageAttackedReaction(a:CannonicalToken.RequestAttackType) = {tryDamageAttackedReactions += a}
+
+	private val tryStatusAttackedReactions:Buffer[CannonicalToken.RequestAttackType] = Buffer.empty;
+	def addTryStatusAttackedReaction(a:CannonicalToken.RequestAttackType) = {tryStatusAttackedReactions += a}
+
 	
 	private def directionMultiplier(hisSpace:BoardGameSpace, mySpace:BoardGameSpace) = {
 		import Directions.pathDirections
@@ -214,4 +223,9 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 		
 		weakDir.weaknessMultiplier(path)
 	}
+}
+
+
+object CannonicalToken {
+	type RequestAttackType = Function1[Token, Unit]
 }
