@@ -1,7 +1,9 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace, Space}
+import com.rayrobdod.util.MultiForwardWriter
+import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace, Space,
+				Token => BoardGameToken}
 import com.rayrobdod.deductionTactics.swingView.{NetworkServerSetupPanel, InputFrame}
 import com.rayrobdod.deductionTactics.LoggerInitializer.{networkServerLogger => Logger}
 import java.awt.BorderLayout
@@ -13,6 +15,7 @@ import javax.swing.{JButton, JFrame, JPanel, JLabel, JList}
 import scala.collection.immutable.Seq
 import scala.collection.mutable.{Map => MMap}
 import scala.parallel.Future
+import java.nio.charset.StandardCharsets.UTF_8
 
 /**
  * A decorator that sets up a bunch of sockets which broadcast that player's
@@ -28,22 +31,19 @@ import scala.parallel.Future
  * @version 09 Aug 2012 - removing instance variables in exchange for `TokenClassWithHiddenData`
  * @version 2012 Nov 30 - modifying toString to include the base
  * @version 2013 Aug 08 - removing certain parenthesis that Scala 2.11 doesn't like
+ * @version 2013 Aug 16 - complete rewrite
  */
-class WithNetworkServer(base:PlayerAI) extends PlayerAI
-{
-	/** For when something will exist eventually but not at the time of calling. */
-	type Future[A] = Function0[A]
+class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 	
-	
-	var output:Option[java.io.PrintStream] = Some(System.out)
+	val output:MultiForwardWriter = new MultiForwardWriter()
 	var player:Option[Player] = None
 	var field:Option[Field]   = None
 	
 	/** Forwards action to base */
 	def takeTurn(player:Player):Unit = {
 		base.takeTurn(player)
-		output.get.println("EndOfTurn")
-		output.get.flush();
+		output.write("EndOfTurn\n")
+		output.flush();
 	}
 	
 	def initialize(player:Player, field:Field):Unit = {
@@ -56,7 +56,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 		val buildingLock = new Object()
 		val network = new NetworkServerSetupPanel()
 		
-		buildingLock.synchronized {
+		val returnValue = buildingLock.synchronized {
 			// TODO: figure out how to combine into one frame
 			val frame = new InputFrame("Network Server", network, new ActionListener {
 				override def actionPerformed(e:ActionEvent) = {
@@ -66,144 +66,50 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 			
 			frame.setVisible(true)
 			
-			val returnValue = base.buildTeam
+			val returnValue2 = base.buildTeam
 			buildingLock.wait
 			
 			frame.setVisible(false)
+			returnValue2
 		}
 		
-		val server = {
-			val socket = network.mySocket
-			Logger.fine(socket.toString)
-			new StartServer(socket, returnValue)
+		new StartServer(network.mySocket)
+		returnValue.foreach{ x:CannonicalTokenClass => 
+			output.write( '[' )
+			output.write( x.toJSONObject.toString )
+			output.append( ']' )
 		}
 		
-		threadFactory.newThread(server).start()
+		
+		returnValue
 	}
 	
 	
+	// default equals - only if same instance.
 	
-	def canEquals(other:Any) = {other.isInstanceOf[WithNetworkServer]}
-	override def equals(other:Any) = {
-		// TODO: test instance variables
-		this.canEquals(other) && other.asInstanceOf[WithNetworkServer].canEquals(this)
-	}
 	// arbitrary number (17)
 	override def hashCode = 21
 	
 	override def toString = base.toString + " with " + this.getClass.getName
 	
-	class StartServer(socket:ServerSocket, myTokenClasses:Seq[CannonicalTokenClass]) extends Runnable {
-		val player = new Future[Player]
-		val field = new Future[Field]
-		
+	
+	
+	class StartServer(socket:ServerSocket) extends Runnable {
 		
 		def run() = {
 			while (true)
 			{
-				val child = socket.accept
-				val thread = RunServerThreadFactory.newThread(
-						new RunServer(child, player, field, myTokenClasses))
-				Logger.finer("Started a Server Thread: " + thread.getName())
-				thread.start()
-			}
-		}
-		
-		object RunServerThreadFactory extends ThreadFactory {
-			private var _count = 0
-			private def count( ) = {
-				_count = _count + 1
-				_count
-			}
-		
-			def newThread(r:Runnable):Thread = {
-				val returnValue = new Thread(r);
-				returnValue.setName(Thread.currentThread.getName
-						+ ".RunServer-" + count())
-				returnValue.setDaemon(false)
-				returnValue
+				val child:Socket = socket.accept
+				
+				val childStream = child.getOutputStream;
+				val childWriter = new OutputStreamWriter(childStream, UTF_8)
+				
+				WithNetworkServer.this.output.addForward(childWriter)
 			}
 		}
 	}
 	
-	class RunServer(
-			child:Socket,
-			player:Future[Player],
-			field:Future[Field],
-			myTokenClasses:Seq[CannonicalTokenClass]
-	) extends Runnable {
-		val in = new BufferedReader(new InputStreamReader(child.getInputStream))
-		val out = child.getOutputStream()
-		
-		def run() = {
-			Logger.finer("Waiting for command")
-
-			val firstLine = in.readLine().trim()
-			if (firstLine == "Ping")
-			{
-				Logger.finer("Got a Ping; Sending a PingBack")
-				out.write("PingBack".getBytes)
-			}
-			else if (firstLine == "Ready")
-			{
-				Logger.finer("Got a Ready; Sending a Ready")
-				out.write("Ready\n".getBytes)
-				
-				Logger.finer("Waiting for TokenClasses")
-				while (in.readLine().trim() != "TokenClasses") {}
-				Logger.finer("Got TokenClasses")
-				
-				out.write(myTokenClasses.length.toString.getBytes)
-				out.write('\n')
-				Logger.finer("Sent: " + myTokenClasses.length.toString)
-				myTokenClasses.foreach{(tc:CannonicalTokenClass) =>
-					out.write(tc.toJSONObject.getUnparsed.toString.getBytes)
-					out.write('\n')
-					Logger.finer("Sent TokenClass: " + tc.toJSONObject.toString)
-				}
-				out.flush()
-				
-				player.reactions += new SendCommandsToNetworkReaction(out, player, field)
-				while (true)
-				{
-					Thread.sleep(1000000)
-				}
-			}
-			else
-			{
-				Logger.info("Got a an unknown: " + firstLine)
-				out.write("Unknown Command".getBytes)
-			}
-			
-			in.close()
-			child.close()
-		}
-	}
 	
-	class SendCommandsToNetworkReaction(
-			out:OutputStream, player:Future[Player], field:Future[Field]
-	) extends Reaction {
-		def apply(e:Event)
-		{
-			val writen = convertToCFN(e)
-			
-			out.write( writen.getBytes(UTF_8) )
-			out.write('\n')
-			out.flush()
-			Logger.finer("Writing: " + writen)
-		}
-		
-		def isDefinedAt(e:Event) = {e match {
-			case EndOfTurn => true
-			case x:RequestMove => true
-			case x:RequestAttackForDamage => true
-			case x:RequestAttackForStatus => true
-			case _ => false
-		}}
-		
-		
-		
-		
 		private implicit def twoDSeq[A](x:Seq[Seq[A]]) = new TwoDSeq(x)
 		
 		private class TwoDSeq[A](haystack:Seq[Seq[A]])
@@ -216,24 +122,37 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 				if (pairs.isEmpty) {(-1, -1)} else {pairs.head.swap}
 			}
 		}
-		
-		def convertToCFN(e:Object):String = e match{
-			case x:CannonicalToken =>
-					"MyTokens(" + player.tokens.myTokens.indexOf(x) + ")"
-			case x:MirrorToken =>
-					"OtherTokens" + player.tokens.otherTokens.twoDIndexOf(x)
-			case x:RectangularSpace =>
-					"Field" + field().spaces.twoDIndexOf(x)
-			case RequestMove(t:CannonicalToken, s:Space) =>
-					"RequestMove(" + convertToCFN(t) + "," + convertToCFN(s) + ")"
-			case RequestAttackForDamage(m:CannonicalToken, o:MirrorToken) =>
-					"RequestAttackForDamage(" + convertToCFN(m) + "," + convertToCFN(o) + ")"
-			case RequestAttackForStatus(m:CannonicalToken, o:MirrorToken) =>
-					"RequestAttackForStatus(" + convertToCFN(m) + "," + convertToCFN(o) + ")"
-			case _ => {
-					Logger.warning("Unexpected object: " + e.toString)
-					""
+	
+	
+	final class PrintMove(tokenIndex:String) extends BoardGameToken.MoveReactionType {
+		def apply(space:Space, landedOn:Boolean):Unit = space match {
+			case s:RectangularSpace => {
+				output.write("RequestMove(MyTokens(")
+				output.write(tokenIndex)
+				output.write("),Field")
+				output.write(field.get.spaces.twoDIndexOf(s).toString)
+				output.write("\n")
 			}
+		}
+	}
+	
+	final class PrintRequestDamageAttack(tokenIndex:String) extends Token.RequestDamageAttackType {
+		def apply(target:MirrorToken):Unit = {
+			output.write("RequestAttackForDamage(MyTokens(")
+			output.write(tokenIndex)
+			output.write("),OtherTokens")
+			output.write(player.get.tokens.otherTokens.twoDIndexOf(target).toString)
+			output.write("\n")
+		}
+	}
+	
+	final class PrintRequestStatusAttack(tokenIndex:String) extends Token.RequestStatusAttackType {
+		def apply(target:MirrorToken):Unit = {
+			output.write("RequestAttackForStatus(MyTokens(")
+			output.write(tokenIndex)
+			output.write("),OtherTokens")
+			output.write(player.get.tokens.otherTokens.twoDIndexOf(target).toString)
+			output.write("\n")
 		}
 	}
 	

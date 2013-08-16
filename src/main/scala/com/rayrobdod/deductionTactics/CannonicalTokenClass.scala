@@ -50,6 +50,7 @@ trait CannonicalTokenClass extends TokenClass
 	override def toString = "CannonicalTokenClass{name:" + name + ";}"
 	
 	// TODO: remove dependency on JSONObject
+	// You know what? remove this method at all.
 	def toJSONObject:JSONObject = {
 		
 		implicit def stringToJSONString(s:String) = {JSONString.generateParsed(s)}
