@@ -16,11 +16,11 @@ mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
 
 target := new File("C:/Users/Raymond/AppData/Local/Temp/build/DeductionTactics/")
 
+libraryDependencies += ("com.rayrobdod" %% "utilities" % "1.0.0")
+
 libraryDependencies += ("com.rayrobdod" %% "json" % "1.0.0-SNAPSHOT")
 
-libraryDependencies += ("com.rayrobdod" %% "csv" % "1.0.0-SNAPSHOT")
-
-libraryDependencies += ("com.rayrobdod" %% "utilities" % "1.0.0-SNAPSHOT")
+libraryDependencies += ("com.rayrobdod" %% "csv" % "1.0.0")
 
 libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "1.0.0-SNAPSHOT")
 

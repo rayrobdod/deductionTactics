@@ -1,7 +1,7 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace, EndOfTurn, Space}
+import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace, Space}
 import com.rayrobdod.deductionTactics.swingView.{NetworkServerSetupPanel, InputFrame}
 import com.rayrobdod.deductionTactics.LoggerInitializer.{networkServerLogger => Logger}
 import java.awt.BorderLayout
@@ -12,8 +12,6 @@ import java.util.concurrent.ThreadFactory
 import javax.swing.{JButton, JFrame, JPanel, JLabel, JList}
 import scala.collection.immutable.Seq
 import scala.collection.mutable.{Map => MMap}
-import scala.swing.Reactions.Reaction
-import scala.swing.event.Event
 import scala.parallel.Future
 
 /**
@@ -33,24 +31,28 @@ import scala.parallel.Future
  */
 class WithNetworkServer(base:PlayerAI) extends PlayerAI
 {
-	var output:Option[Writer] = None
+	/** For when something will exist eventually but not at the time of calling. */
+	type Future[A] = Function0[A]
+	
+	
+	var output:Option[java.io.PrintStream] = Some(System.out)
 	var player:Option[Player] = None
 	var field:Option[Field]   = None
 	
 	/** Forwards action to base */
 	def takeTurn(player:Player):Unit = {
 		base.takeTurn(player)
-		output.write("EndOfTurn\n")
-		output.flush();
+		output.get.println("EndOfTurn")
+		output.get.flush();
 	}
 	
 	def initialize(player:Player, field:Field):Unit = {
 		base.initialize(player, field)
-		this.player = player;
-		this.field = field;
+		this.player = Some(player);
+		this.field  = Some(field);
 	}
 	
-	def buildTeam = {
+	def buildTeam() = {
 		val buildingLock = new Object()
 		val network = new NetworkServerSetupPanel()
 		
@@ -66,6 +68,8 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 			
 			val returnValue = base.buildTeam
 			buildingLock.wait
+			
+			frame.setVisible(false)
 		}
 		
 		val server = {
@@ -75,8 +79,6 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 		}
 		
 		threadFactory.newThread(server).start()
-		
-		frame.setVisible(false)
 	}
 	
 	
@@ -92,8 +94,8 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 	override def toString = base.toString + " with " + this.getClass.getName
 	
 	class StartServer(socket:ServerSocket, myTokenClasses:Seq[CannonicalTokenClass]) extends Runnable {
-		val player = new SetFuture[Player]
-		val field = new SetFuture[Field]
+		val player = new Future[Player]
+		val field = new Future[Field]
 		
 		
 		def run() = {
@@ -126,8 +128,8 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 	
 	class RunServer(
 			child:Socket,
-			player:SetFuture[Player],
-			field:SetFuture[Field],
+			player:Future[Player],
+			field:Future[Field],
 			myTokenClasses:Seq[CannonicalTokenClass]
 	) extends Runnable {
 		val in = new BufferedReader(new InputStreamReader(child.getInputStream))
@@ -179,7 +181,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 	}
 	
 	class SendCommandsToNetworkReaction(
-			out:OutputStream, player:SetFuture[Player], field:SetFuture[Field]
+			out:OutputStream, player:Future[Player], field:Future[Field]
 	) extends Reaction {
 		def apply(e:Event)
 		{
@@ -215,8 +217,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 			}
 		}
 		
-		def convertToCFN(e:Object):String = {e match{
-			case EndOfTurn => "EndOfTurn"
+		def convertToCFN(e:Object):String = e match{
 			case x:CannonicalToken =>
 					"MyTokens(" + player.tokens.myTokens.indexOf(x) + ")"
 			case x:MirrorToken =>
@@ -233,7 +234,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI
 					Logger.warning("Unexpected object: " + e.toString)
 					""
 			}
-		}}
+		}
 	}
 	
 	

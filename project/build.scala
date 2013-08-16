@@ -2,7 +2,7 @@ import sbt._
 import Keys._
 import java.util.zip.{ZipInputStream, ZipOutputStream, ZipEntry}
 
-object ImageManipulatorBuild extends Build {
+object DeductionTacticsBuild extends Build {
 	
 	val websitePath = SettingKey[File]("website-path", "A staging area for setting up website publish things")
 	val websitePathSetting = websitePath <<= crossTarget(new File(_, "website"))
@@ -129,29 +129,29 @@ Content-Encoding: pack200-gzip; q=1"""
 				(version:String, base:File, proguardType:String, srcFrom:File, binPack:Seq[File],
 				binGzip:Seq[File], proPack:Seq[File], proGzip:Seq[File], srcFromGzip:Seq[File]) =>
 		
-		val srcJar = new File(base, "imageManipulator-"+version+"-orig-src.jar")
+		val srcJar = new File(base, "deductionTactics-"+version+"-orig-src.jar.identity")
 		IO.copyFile(srcFrom, srcJar)
-		val srcGzip = new File(base, "imageManipulator-"+version+"-orig-src.jar.gz")
+		val srcGzip = new File(base, "deductionTactics-"+version+"-orig-src.jar.gzip")
 		IO.copyFile(srcFromGzip(1), srcGzip)
-		val origFullJar = new File(base, "imageManipulator-"+version+"-orig-full.jar.identity")
+		val origFullJar = new File(base, "deductionTactics-"+version+"-orig-full.jar.identity")
 		IO.copyFile(binPack(2), origFullJar)
-		val origFullGzip = new File(base, "imageManipulator-"+version+"-orig-full.jar.gz")
+		val origFullGzip = new File(base, "deductionTactics-"+version+"-orig-full.jar.gzip")
 		IO.copyFile(binGzip(1), origFullGzip)
-		val origFullPack = new File(base, "imageManipulator-"+version+"-orig-full.jar.pack.gz")
+		val origFullPack = new File(base, "deductionTactics-"+version+"-orig-full.jar.pack.gzip")
 		IO.copyFile(binPack(1), origFullPack)
-		val fullMiniJar = new File(base, "imageManipulator-"+version+"-full-"+proguardType+".jar.identity")
+		val fullMiniJar = new File(base, "deductionTactics-"+version+"-full-"+proguardType+".jar.identity")
 		IO.copyFile(proPack(2), fullMiniJar)
-		val fullMiniGzip = new File(base, "imageManipulator-"+version+"-full-"+proguardType+".jar.gz")
+		val fullMiniGzip = new File(base, "deductionTactics-"+version+"-full-"+proguardType+".jar.gzip")
 		IO.copyFile(proGzip(1), fullMiniGzip)
-		val fullMiniPack = new File(base, "imageManipulator-"+version+"-full-"+proguardType+".jar.pack.gz")
+		val fullMiniPack = new File(base, "deductionTactics-"+version+"-full-"+proguardType+".jar.pack.gzip")
 		IO.copyFile(proPack(1), fullMiniPack)
 		
-		val origFullVar = new File(base, "imageManipulator-"+version+"-orig-full.jar.var")
+		val origFullVar = new File(base, "deductionTactics-"+version+"-orig-full.jar.var")
 		val origFullVarWriter = new java.io.FileWriter(origFullVar)
 		origFullVarWriter.write(varFileContents("orig-full"))
 		origFullVarWriter.close()
 		
-		val fullMiniVar = new File(base, "imageManipulator-"+version+"-full-"+proguardType+".jar.var")
+		val fullMiniVar = new File(base, "deductionTactics-"+version+"-full-"+proguardType+".jar.var")
 		val fullMiniVarWriter = new java.io.FileWriter(fullMiniVar)
 		fullMiniVarWriter.write(varFileContents("full-"+proguardType))
 		fullMiniVarWriter.close()
@@ -163,7 +163,7 @@ Content-Encoding: pack200-gzip; q=1"""
 	
 	
 	lazy val root = Project(
-			id = "imageManipulator",
+			id = "deductionTactics",
 			base = file("."),
 			settings = Defaults.defaultSettings ++ Seq(websitePathSetting, 
 					proguardTypeSetting, packageBinPackTask, packageBinGzipTask,
