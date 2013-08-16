@@ -9,12 +9,10 @@ import com.rayrobdod.deductionTactics.LoggerInitializer.{networkServerLogger => 
 import java.awt.BorderLayout
 import java.awt.event.{ActionListener, ActionEvent}
 import java.net.{Socket, ServerSocket, InetAddress}
-import java.io.{BufferedReader, InputStreamReader, OutputStreamWriter, OutputStream}
-import java.util.concurrent.ThreadFactory
+import java.io.{OutputStreamWriter}
 import javax.swing.{JButton, JFrame, JPanel, JLabel, JList}
 import scala.collection.immutable.Seq
 import scala.collection.mutable.{Map => MMap}
-import scala.parallel.Future
 import java.nio.charset.StandardCharsets.UTF_8
 
 /**
@@ -39,6 +37,9 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 	var player:Option[Player] = None
 	var field:Option[Field]   = None
 	
+	// debugging
+	output.addForward(new OutputStreamWriter(System.out))
+	
 	/** Forwards action to base */
 	def takeTurn(player:Player):Unit = {
 		base.takeTurn(player)
@@ -50,6 +51,17 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		base.initialize(player, field)
 		this.player = Some(player);
 		this.field  = Some(field);
+		
+		output.write( '[' )
+		player.tokens.myTokens.zipWithIndex.foreach({ (token:CannonicalToken, index:Int) =>
+			output.write( token.tokenClass.toJSONObject.toString )
+			val index2 = index.toString;
+			
+			token.addTryDamageAttackedReaction(new PrintRequestDamageAttack(index2))
+			token.addTryStatusAttackedReaction(new PrintRequestStatusAttack(index2))
+			token.addMoveReaction(new PrintMove(index2))
+		}.tupled)
+		output.write( ']' )
 	}
 	
 	def buildTeam() = {
@@ -74,11 +86,6 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		}
 		
 		val server = new StartServer(network.mySocket)
-		returnValue.foreach{ x:CannonicalTokenClass => 
-			output.write( '[' )
-			output.write( x.toJSONObject.toString )
-			output.append( ']' )
-		}
 		new Thread(server, "WithNetworkServer")
 		
 		
@@ -97,16 +104,13 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 	
 	class StartServer(socket:ServerSocket) extends Runnable {
 		
-		def run() = {
-			while (true)
-			{
+		def run() = while (true) {
 				val child:Socket = socket.accept
 				
 				val childStream = child.getOutputStream;
 				val childWriter = new OutputStreamWriter(childStream, UTF_8)
 				
 				WithNetworkServer.this.output.addForward(childWriter)
-			}
 		}
 	}
 	
@@ -143,7 +147,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 				output.write("RequestAttackForDamage(MyTokens(")
 				output.write(tokenIndex)
 				output.write("),OtherTokens")
-				output.write(player.get.tokens.otherTokens.twoDIndexOf(target).toString)
+				output.write(player.get.tokens.otherTokens.twoDIndexOf(target2).toString)
 				output.write("\n")
 			}
 		}
@@ -155,7 +159,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 				output.write("RequestAttackForStatus(MyTokens(")
 				output.write(tokenIndex)
 				output.write("),OtherTokens")
-				output.write(player.get.tokens.otherTokens.twoDIndexOf(target).toString)
+				output.write(player.get.tokens.otherTokens.twoDIndexOf(target2).toString)
 				output.write("\n")
 			}
 		}

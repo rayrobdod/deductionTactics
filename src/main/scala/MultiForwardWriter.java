@@ -51,6 +51,7 @@ public class MultiForwardWriter extends Writer {
 	public void addForward(Writer w) throws IOException {
 		synchronized(this) {
 			w.write(history.toString());
+			w.flush();
 			forwardTo.add(w);
 		}
 	}
