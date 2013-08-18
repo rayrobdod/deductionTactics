@@ -8,7 +8,7 @@ version := "a.5.0-SNAPSHOT"
 
 scalaVersion := "2.9.3"
 
-crossScalaVersions ++= Seq("2.9.1", "2.9.2", "2.10.0", "2.11.0-M4")
+crossScalaVersions ++= Seq("2.9.1", "2.9.2", "2.10.2", "2.11.0-M4")
 
 exportJars := true
 
@@ -73,8 +73,16 @@ excludeFilter in unmanagedResources in Compile := new FileFilter{
 	}
 }
 
-mappings in (Compile, packageBin) <<= (mappings in (Compile, packageBin), compileTokensInput) map { (maps, tokenSrc) =>
-	maps.filter{x:(Tuple2[File, String]) => !tokenSrc.contains(x._1)}
+// Token compiling
+excludeFilter in unmanagedResources in Compile <<= (excludeFilter in unmanagedResources in Compile, compileTokensInput) apply {(previous, tokenSrc) =>
+	previous || new FileFilter{
+		def accept(n:File) = tokenSrc.contains(n)
+	}
+}
+
+mappings in (Compile, packageSrc) <++= (compileTokensInput) map { (tokenSrc) =>
+	// Not resilient to change
+	tokenSrc.map{x => ((x, "com/rayrobdod/deductionTactics/tokenClasses/" + x.getName )) }
 }
 
 resourceGenerators in Compile <+= compileTokens.task
