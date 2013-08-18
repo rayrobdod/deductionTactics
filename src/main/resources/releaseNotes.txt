@@ -6,7 +6,7 @@ Wishlist: Token Animations, Persistent preferences, Flying units,
 === Major ===
 * No longer uses scala.swing or scala.actors.
 
-=== 
+=== Minor ===
 * Adding Interface as example of broken encapsulation:
 		RepeatAttackCheater
 * Adding AIDecorator: WithConsoleEventPrinting

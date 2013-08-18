@@ -67,7 +67,8 @@ excludeFilter in unmanagedResources in Compile := new FileFilter{
 	def accept(n:File) = {
 		val abPath = n.getAbsolutePath().replace('\\', '/')
 		(
-		  (abPath contains "/Hits/") && !((abPath endsWith "/Hits/Hit.wav") || (abPath endsWith "/Hits/license.txt"))
+		  (abPath contains "/Hits/") && !((abPath endsWith "/Hits/Hit.wav") || (abPath endsWith "/Hits/license.txt")) ||
+		  (abPath endsWith "deductionTacticsCombined.svg"))
 		)
 	}
 }
