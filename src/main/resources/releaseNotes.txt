@@ -12,6 +12,10 @@ Wishlist: Token Animations, Persistent preferences, Flying units,
 * Adding AIDecorator: WithConsoleEventPrinting
 * Disabling Console and Networking interfaces
 
+=== Data Level ===
+* Modifying image: Kestrel - which isn't actually used anywhere...
+* Adding classes: Pheonix, Owl (with image), Pigeon (with image)
+
 
 == a.4.1 ==
 === Minor ===

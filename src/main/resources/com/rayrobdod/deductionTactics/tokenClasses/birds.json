@@ -21,7 +21,7 @@
 	"weakWeapon":{"blade":1,"blunt":2,"spear":.75,"whip":1.5,"powder":.5},
 	"weakStatus":"Blind",
 	"weakDirection":"DontCare",
-	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Peregrine Falcon.png" 
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Peregrine Falcon.png"
 },{
 	"name":"Penguin",
 	"element":"Frost",
@@ -34,7 +34,7 @@
 	"weakWeapon":{"blade":1,"blunt":1.5,"spear":.75,"whip":2,"powder":.5},
 	"weakStatus":"Confuse",
 	"weakDirection":"DontCare",
-	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Magellanic Penguin.png" 
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Magellanic Penguin.png"
 },{
 	"name":"Turkey",
 	"element":"Light",
@@ -46,7 +46,7 @@
 	"weakWeapon":{"blade":1,"blunt":2,"spear":.75,"whip":1.5,"powder":.5},
 	"weakStatus":"Burn",
 	"weakDirection":"DontCare",
-	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Wild Turkey.png" 
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Wild Turkey.png"
 },{
 	"name":"Bluebird",
 	"element":"Sound",
@@ -59,7 +59,7 @@
 	"weakWeapon":{"blade":1,"blunt":1.5,"spear":.75,"whip":2,"powder":.5},
 	"weakStatus":"Confuse",
 	"weakDirection":"DontCare",
-	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Eastern Bluebird.png" 
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Eastern Bluebird.png"
 },{
 	"name":"Cardinal",
 	"element":"Sound",
@@ -72,7 +72,7 @@
 	"weakWeapon":{"blade":1,"blunt":2,"spear":.75,"whip":1.5,"powder":.5},
 	"weakStatus":"Sleep",
 	"weakDirection":"DontCare",
-	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Northern Cardinal.png" 
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Northern Cardinal.png"
 },{
 	"name":"Crow",
 	"comment":"and/or raven",
@@ -85,7 +85,7 @@
 	"weakWeapon":{"blade":1.5,"blunt":2,"spear":1,"whip":.75,"powder":.5},
 	"weakStatus":"Neuro",
 	"weakDirection":"DontCare",
-	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Northwestern Crow.png" 
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Northwestern Crow.png"
 },{
 	"name":"Parrot",
 	"element":"Sound",
@@ -97,7 +97,7 @@
 	"weakWeapon":{"blade":1.5,"blunt":2,"spear":1,"whip":1.5,"powder":.5},
 	"weakStatus":"Confuse",
 	"weakDirection":"DontCare",
-	"iconc":"" 
+	"iconc":""
 },{
 	"name":"Thunderbird",
 	"comment":"Fictional: Native American mythology",
@@ -112,4 +112,44 @@
 	"comment":"Thunderbolts come from eyes, apparently",
 	"weakDirection":"DontCare",
 	"iconc":""
-}] 
+},{
+	"name":"Pigeon",
+	"element":"Fire",
+	"comment": "According to Wikipedia, Passenger Pigeons were apparently a major cause of Forest Fires",
+	"comment": "Also, they commonly suffered from migrating too early",
+	"comment": "Also also, in this game, Fire << Frost",
+	"atkWeapon":"Powder",
+	"atkStatus":"Confuse",
+	"range":1,
+	"speed":4,
+	"body":"Avian",
+	"weakWeapon":{"blade":1.5,"blunt":.5,"spear":.75,"whip":1,"powder":2},
+	"weakStatus":"Sleep",
+	"weakDirection":"DontCare",
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Passenger Pigeon.png"
+},{
+	"name":"Owl",
+	"element":"Sound",
+	"atkWeapon":"Spear",
+	"atkStatus":"Sleep",
+	"range":1,
+	"speed":3,
+	"body":"Avian",
+	"weakWeapon":{"blade":1,"blunt":1.5,"spear":.5,"whip":.75,"powder":2},
+	"weakStatus":"Sleep",
+	"weakDirection":"DontCare",
+	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Barn Owl.png"
+},{
+	"name":"Phoenix",
+	"element":"Fire",
+	"atkWeapon":"Spear",
+	"atkStatus":"Blind",
+	"comment":"Nope. No Harry Potter reference here.",
+	"range":1,
+	"speed":3,
+	"body":"Avian",
+	"weakWeapon":{"blade":1.5,"blunt":1,"spear":.5,"whip":2,"powder":.5},
+	"weakStatus":"Sleep",
+	"weakDirection":"DontCare",
+	"iconc":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Barn Owl.png"
+}]
