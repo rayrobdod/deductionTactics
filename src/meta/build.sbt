@@ -2,11 +2,13 @@ name := "Deduction Tactics Meta"
 
 organization := "com.rayrobdod"
 
-sbtPlugin := true
-
 organizationHomepage := Some(new URL("http://rayrobdod.name/"))
 
 version := "a.5.0-SNAPSHOT"
+
+scalaVersion := "2.9.3"
+
+crossScalaVersions ++= Seq("2.9.1", "2.9.2", "2.10.0", "2.11.0-M4")
 
 target := new File("C:/Users/Raymond/AppData/Local/Temp/build/DeductionTacticsMeta/")
 
