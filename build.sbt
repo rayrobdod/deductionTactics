@@ -27,11 +27,11 @@ libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "1.0.0-SNAPSHO
 
 
 packageOptions in (Compile, packageBin) <+= (scalaVersion, sourceDirectory).map{(scalaVersion:String, srcDir:File) =>
-    val manifest = new java.util.jar.Manifest(new java.io.FileInputStream(srcDir + "/main/MANIFEST.MF"))
-    //
-    manifest.getAttributes("scala/").putValue("Implementation-Version", scalaVersion)
-    //
-    Package.JarManifest( manifest )
+	val manifest = new java.util.jar.Manifest(new java.io.FileInputStream(srcDir + "/main/MANIFEST.MF"))
+	//
+	manifest.getAttributes("scala/").putValue("Implementation-Version", scalaVersion)
+	//
+	Package.JarManifest( manifest )
 }
 
 
@@ -41,7 +41,7 @@ javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked")
 scalacOptions ++= Seq("-unchecked", "-deprecation" )
 
 scalacOptions <++= scalaVersion.map{(sv:String) =>
-  if (sv.take(3) == "2.1") {Seq("-feature")} else {Nil}
+	if (sv.take(3) == "2.1") {Seq("-feature")} else {Nil}
 }
 
 excludeFilter in unmanagedSources in Compile := new FileFilter{
@@ -67,12 +67,17 @@ excludeFilter in unmanagedResources in Compile := new FileFilter{
 	def accept(n:File) = {
 		val abPath = n.getAbsolutePath().replace('\\', '/')
 		(
-		  (abPath contains "/Hits/") && !((abPath endsWith "/Hits/Hit.wav") || (abPath endsWith "/Hits/license.txt")) ||
-		  (abPath endsWith "deductionTacticsCombined.svg"))
+			((abPath contains "/Hits/") && !((abPath endsWith "/Hits/Hit.wav") || (abPath endsWith "/Hits/license.txt"))) ||
+			(abPath endsWith "deductionTacticsCombined.svg")
 		)
 	}
 }
 
+mappings in (Compile, packageBin) <<= (mappings in (Compile, packageBin), compileTokensInput) map { (maps, tokenSrc) =>
+	maps.filter{x:(Tuple2[File, String]) => !tokenSrc.contains(x._1)}
+}
+
+resourceGenerators in Compile <+= compileTokens.task
 
 
 // proguard
@@ -83,9 +88,9 @@ proguardType := "mini"
 ProguardKeys.options in Proguard <+= (baseDirectory in Compile, proguardType).map{"-include '"+_+"/"+_+".proguard'"}
 
 ProguardKeys.inputFilter in Proguard := { file =>
-  if (file.name.startsWith("deduction-tactics")) {
-    None
-  } else {
-    Some("**.class")
-  }
+	if (file.name.startsWith("deduction-tactics")) {
+		None
+	} else {
+		Some("**.class")
+	}
 }

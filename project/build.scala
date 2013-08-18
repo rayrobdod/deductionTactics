@@ -164,7 +164,7 @@ Content-Encoding: pack200-gzip; q=1"""
 	
 	// configuration points, like the built in `version`, `libraryDependencies`, or `compile`
     // by implementing Plugin, these are automatically imported in a user's `build.sbt`
-    val compileTokens = TaskKey[Unit]("token-compile")
+    val compileTokens = TaskKey[Seq[File]]("token-compile")
     val compileTokensInput = SettingKey[Seq[File]]("token-in")
     val compileTokensOutput = SettingKey[File]("token-outdir")
     
@@ -178,16 +178,17 @@ Content-Encoding: pack200-gzip; q=1"""
         		def accept(x:File) = x.toString.endsWith(".json")
         	})
         },
-        compileTokensOutput <<= resourceManaged apply { x =>
-        	new File(x, tokensPackage + "baseSet.rrd-dt-tokenClass")
+        compileTokensOutput <<= (managedResourceDirectories in Compile) apply { x =>
+        	new File(x.head, tokensPackage + "baseSet.rrd-dt-tokenClass")
         },
         compileTokens <<= (compileTokensInput, compileTokensOutput) map { (in, out) =>
         	val in2 = in.map{_.toPath}
         	val out2 = out.toPath
         	
         	java.nio.file.Files.createDirectories(out2.getParent())
-        	
         	CompileTokenClassesToBinary.compile(in2, out2)
+        	
+        	Seq(out2.toFile)
         }
     )
 	

@@ -148,7 +148,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Avian",
-	"weakWeapon":{"blade":1.5,"blunt":1,"spear":.5,"whip":2,"powder":.5},
+	"weakWeapon":{"blade":1.5,"blunt":1,"spear":.75,"whip":2,"powder":.5},
 	"weakStatus":"Sleep",
 	"weakDirection":"DontCare",
 	"iconc":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Barn Owl.png"

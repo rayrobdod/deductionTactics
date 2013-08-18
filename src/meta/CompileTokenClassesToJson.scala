@@ -38,7 +38,7 @@ object CompileTokenClassesToJson // extends scala.App
 		val writer = Files.newBufferedWriter(outPath, UTF_8);
 		writer.write('[')
 		
-		classes.zipWithIndex.foreach({(tclass:TokenClass, index:Int) =>
+		classes.zipWithIndex.foreach({(tclass:CannonicalTokenClass, index:Int) =>
 			if (index != 0) writer.write(',')
 			writer.write( tokenClassToJSON(tclass) )
 		}.tupled)

@@ -3,7 +3,7 @@
 Wishlist: Token Animations, Persistent preferences, Flying units,
 		change AIs to use builder model, Better AIs
 
-=== Major ===
+=== Major / Breaking ===
 * No longer uses scala.swing or scala.actors.
 
 === Minor ===
@@ -11,6 +11,7 @@ Wishlist: Token Animations, Persistent preferences, Flying units,
 		RepeatAttackCheater
 * Adding AIDecorator: WithConsoleEventPrinting
 * Disabling Console and Networking interfaces
+* Changing weaponWeaknesses for Umbrella Swordsman
 
 === Data Level ===
 * Modifying image: Kestrel - which isn't actually used anywhere...

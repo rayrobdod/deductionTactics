@@ -30,7 +30,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":1.5,"blunt":.5,"spear":2 ,"whip":.75,"powder":.5},
+	"weakWeapon":{"blade":1.5,"blunt":1,"spear":2 ,"whip":.75,"powder":.5},
 	"weakStatus":"Blind",
 	"weakDirection":"Down",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Umbrellaswordsman.png" 
