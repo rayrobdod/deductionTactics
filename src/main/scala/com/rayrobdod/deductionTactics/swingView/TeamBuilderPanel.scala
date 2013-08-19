@@ -25,76 +25,64 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
 			but the allTokenClassesList is variable width 
  * @version 05 Jun 2012 - setting allTokenClassesList's visibleRowCount to 10
  * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
+ * @version 2013 Aug 19 - reducing number of anonymous inner classes
  */
 class TeamBuilderPanel extends JPanel
 {
 	private val currentSelectionModel = new DefaultListModel[CannonicalTokenClass]()
 	def currentSelection:Seq[CannonicalTokenClass] = (Seq.empty ++ currentSelectionModel.toArray).asInstanceOf[Seq[CannonicalTokenClass]]
 	
-	val currentSelectionList = new JList[CannonicalTokenClass](currentSelectionModel){
-		setCellRenderer(TokenClassListRenderer)
-		setBackground(null)
-		setPrototypeCellValue(CannonicalTokenClass.allKnown.head)
-	}
-	val allTokenClassesList = new JList(CannonicalTokenClass.allKnownListModel){
-		setCellRenderer(TokenClassListRenderer)
-		setBackground(null)
-		setLayoutOrientation(JList.VERTICAL_WRAP)
-		setVisibleRowCount(10)
-	}
+	val currentSelectionList = new JList[CannonicalTokenClass](currentSelectionModel)
+	currentSelectionList.setCellRenderer(TokenClassListRenderer)
+	currentSelectionList.setBackground(null)
+	currentSelectionList.setPrototypeCellValue(CannonicalTokenClass.allKnown.head)
 	
-	val addButton = new JButton("←") {
-		this.addActionListener(new ActionListener(){
-			override def actionPerformed(e:ActionEvent) = {
-				allTokenClassesList.getSelectedValuesList.foreach{
-					currentSelectionModel.addElement(_)
-				}
-			}
-		})
-	}
-	val removeButton = new JButton("→") {
-		addActionListener(new ActionListener(){
-			override def actionPerformed(e:ActionEvent) = {
-				currentSelectionList.getSelectedValuesList.foreach{
-					currentSelectionModel.removeElement(_)
-				}
-			}
-		})
-	}
-	val removeAllButton = new JButton("clear") {
-		addActionListener(new ActionListener(){
-			override def actionPerformed(e:ActionEvent) = {
-				currentSelectionModel.removeAllElements()
-			}
-		})
-	}
+	val allTokenClassesList = new JList(CannonicalTokenClass.allKnownListModel)
+	allTokenClassesList.setCellRenderer(TokenClassListRenderer)
+	allTokenClassesList.setBackground(null)
+	allTokenClassesList.setLayoutOrientation(JList.VERTICAL_WRAP)
+	allTokenClassesList.setVisibleRowCount(10)
 	
-/*	setLayout(new BoxLayout(this, boxXAxis))
-	add(new JScrollPane(currentSelectionList,
-			scrollVerticalAlways, scrollHorizontalNever), BorderLayout.WEST)
-	add(new JPanel() {
-		add(new JPanel() {
-			setLayout(new BoxLayout(this, boxYAxis))
-			add(addButton)
-			add(removeButton)
-			add(removeAllButton)
-		})
+	val addButton = new JButton("←")
+	addButton.addActionListener(new ActionListener(){
+		override def actionPerformed(e:ActionEvent) = {
+			allTokenClassesList.getSelectedValuesList.foreach{
+				currentSelectionModel.addElement(_)
+			}
+		}
 	})
-	add(new JScrollPane(allTokenClassesList,
-			scrollVerticalAlways, scrollHorizontalAlways), BorderLayout.EAST)
-*/
+	val removeButton = new JButton("→")
+	removeButton.addActionListener(new ActionListener(){
+		override def actionPerformed(e:ActionEvent) = {
+			currentSelectionList.getSelectedValuesList.foreach{
+				currentSelectionModel.removeElement(_)
+			}
+		}
+	})
+	val removeAllButton = new JButton("clear")
+	removeAllButton.addActionListener(new ActionListener(){
+		override def actionPerformed(e:ActionEvent) = {
+			currentSelectionModel.removeAllElements()
+		}
+	})
+	
 	setLayout(new BorderLayout)
-	add(new JPanel(new BorderLayout){
-		add(new JScrollPane(currentSelectionList,
+	add({
+		val a = new JPanel(new BorderLayout);
+		a.add(new JScrollPane(currentSelectionList,
 				scrollVerticalAlways, scrollHorizontalNever), BorderLayout.WEST)
-		add(new JPanel() {
-			add(new JPanel() {
-				setLayout(new BoxLayout(this, boxYAxis))
-				add(addButton)
-				add(removeButton)
-				add(removeAllButton)
+		a.add({val b = new JPanel();
+			b.add({
+				val c = new JPanel();
+				c.setLayout(new BoxLayout(c, boxYAxis))
+				c.add(addButton)
+				c.add(removeButton)
+				c.add(removeAllButton)
+				c;
 			})
+			b;
 		})
+		a;
 	}, BorderLayout.WEST)
 	add(new JScrollPane(allTokenClassesList,
 			scrollVerticalAlways, scrollHorizontalAlways), BorderLayout.CENTER)
@@ -114,6 +102,7 @@ object TokenClassListRenderer extends ListCellRenderer[TokenClass]
 			isSelected:Boolean, cellHasFocus:Boolean) =
 	{
 		val returnValue = new TokenClassPanel(value)
+		returnValue.doLayout()
 		if (isSelected)
 		{
 			returnValue.setBackground(list.getSelectionBackground)

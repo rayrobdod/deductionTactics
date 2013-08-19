@@ -38,16 +38,16 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 {
 	private val ICON_SIZE = 32
 	
-	val icon = new JLabel//(tokenClass.icon)
-	val name = new JLabel//(tokenClass.name)
-	val range = new JLabel//("Range: " + tokenClass.range.getOrElse("?"))
-	val speed = new JLabel//("Speed: " + tokenClass.speed.getOrElse("?"))
-	val atkWeapon = new JLabel//( makeIconFor(tokenClass.atkWeapon, ICON_SIZE) )
-	val atkElement = new JLabel//( makeIconFor(tokenClass.atkElement, ICON_SIZE) )
-	val atkStatus = new JLabel//( makeIconFor(tokenClass.atkStatus, ICON_SIZE) )
-	val weakWeapon = new JLabel//(getWeakWeaponIcon())
-	val weakStatus = new JLabel//( makeIconFor(tokenClass.weakStatus, ICON_SIZE) )
-	val weakDirection = new JLabel//( makeIconFor(tokenClass.weakDirection, ICON_SIZE) )
+	val icon = new JLabel
+	val name = new JLabel
+	val range = new JLabel
+	val speed = new JLabel
+	val atkWeapon = new JLabel
+	val atkElement = new JLabel
+	val atkStatus = new JLabel
+	val weakWeapon = new JLabel
+	val weakStatus = new JLabel
+	val weakDirection = new JLabel
 	
 	val atkRow = new JPanel()
 	atkRow.add(atkElement)

@@ -67,18 +67,18 @@ class TokenPanel(val token:Token) extends JPanel
 	{
 		override def apply(x:Boolean):Unit = {
 			
-				TokenPanel.this.setBackground(if (x) {
-					new java.awt.Color(184, 207, 229)
-				} else {null})
+			TokenPanel.this.setBackground(if (x) {
+				new java.awt.Color(184, 207, 229)
+			} else {null})
 				
-				if (x) {
-					TokenPanel.this.scrollRectToVisible(
-						new java.awt.Rectangle(
-							new java.awt.Point(0,0),
-							TokenPanel.this.getSize()
-						)
+			if (x) {
+				TokenPanel.this.scrollRectToVisible(
+					new java.awt.Rectangle(
+						new java.awt.Point(0,0),
+						TokenPanel.this.getSize()
 					)
-				}
+				)
+			}
 			
 		}
 	}

@@ -30,19 +30,19 @@ import com.rayrobdod.swing.NameAndIcon
 class HumanSuspicionsPanel(tokenClass:SuspicionsTokenClass) extends TokenClassPanel(tokenClass)
 {
 	this.atkElement.addMouseListener(new NameAndIconSetterChooserFrameMaker[Element](
-			null +: Elements.values, new FuntionThenRevalidate(tokenClass.atkElement_=_), this))
+			null +: Elements.values, new FunctionThenRevalidate(tokenClass.atkElement_=_), this))
 	this.atkWeapon.addMouseListener(new NameAndIconSetterChooserFrameMaker[Weaponkind](
-			null +: Weaponkinds.values, new FuntionThenRevalidate(tokenClass.atkWeapon_=_), this))
+			null +: Weaponkinds.values, new FunctionThenRevalidate(tokenClass.atkWeapon_=_), this))
 	this.atkStatus.addMouseListener(new NameAndIconSetterChooserFrameMaker[Status](
-			null +: Statuses.values, new FuntionThenRevalidate(tokenClass.atkStatus_=_), this))
+			null +: Statuses.values, new FunctionThenRevalidate(tokenClass.atkStatus_=_), this))
 	this.weakStatus.addMouseListener(new NameAndIconSetterChooserFrameMaker[Status](
-			null +: Statuses.values, new FuntionThenRevalidate(tokenClass.weakStatus_=_), this))
+			null +: Statuses.values, new FunctionThenRevalidate(tokenClass.weakStatus_=_), this))
 	this.weakDirection.addMouseListener(new NameAndIconSetterChooserFrameMaker[Direction](
-			null +: Directions.values, new FuntionThenRevalidate(tokenClass.weakDirection_=_), this))
+			null +: Directions.values, new FunctionThenRevalidate(tokenClass.weakDirection_=_), this))
 	this.speed.addMouseListener(new IntSetterChooserFrameMaker(
-			new FuntionThenRevalidate(tokenClass.speed_=_), this))
+			new FunctionThenRevalidate(tokenClass.speed_=_), this))
 	this.range.addMouseListener(new IntSetterChooserFrameMaker(
-			new FuntionThenRevalidate(tokenClass.range_=_), this))
+			new FunctionThenRevalidate(tokenClass.range_=_), this))
 	
 	this.weaponWeakPanel.addends.zip(Weaponkinds.values).foreach(
 		{(bar:JProgressBar, weapon:Weaponkind) =>
@@ -53,7 +53,7 @@ class HumanSuspicionsPanel(tokenClass:SuspicionsTokenClass) extends TokenClassPa
 	this.name.addMouseListener(new ClassSynchonizerFrameMaker(
 			tokenClass, this))
 	
-	class FuntionThenRevalidate[A](fun:Function1[A,Any]) extends Function1[A,Any] {
+	class FunctionThenRevalidate[A](fun:Function1[A,Any]) extends Function1[A,Any] {
 		def apply(a:A) {
 			fun(a)
 			HumanSuspicionsPanel.this.revalidate()

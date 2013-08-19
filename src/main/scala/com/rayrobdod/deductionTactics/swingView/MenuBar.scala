@@ -21,95 +21,95 @@ import java.awt.BorderLayout.{NORTH, SOUTH}
  * @version 14 Aug 2012 - modifying the "View Classes…" frame to include a TokenClassPanelTypeSelector
  * @version 19 Nov 2012 - modifying the "Filter Classes…" frame's title
  * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
+ * @version 2013 Aug 19 - reducing number of anonymous inner classes
  */
 class MenuBar() extends JMenuBar
 {
-	this.add(new JMenu("Game"){
-		setMnemonic('g')
+	this.add({ val a = new JMenu("Game")
+		a.setMnemonic('g')
 		
-		add(new MyMenuItem("New Game", 'n', new ActionListener{
+		a.add(new MyMenuItem("New Game", 'n', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				com.rayrobdod.deductionTactics.main.Main.startNewGame
 			}
 		}))
 		
-		addSeparator()
+		a.addSeparator()
 		
-		add(new MyMenuItem("Options…", 'o', new ActionListener{
+		a.add(new MyMenuItem("Options…", 'o', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				val dialog:JDialog = new OptionsDialog(getWindowAncestor(MenuBar.this))
 				dialog.setVisible(true)
 			}
 		}))
 		
-		addSeparator()
+		a.addSeparator()
 		
-		add(new com.rayrobdod.swing.ExitMenuItem)
-			
+		a.add(new com.rayrobdod.swing.ExitMenuItem)
 		
+		a;
 	})
 	
-	this.add(new JMenu("Help"){
-		setMnemonic('h')
+	this.add({ val a = new JMenu("Help")
+		a.setMnemonic('h')
 		
-		add(new MyMenuItem("View Classes…", 'c', new ActionListener{
-				def actionPerformed(e:ActionEvent) = {
-					val classesComp = new AllKnownTokenClassesComponent()
-					val classesPane = new JScrollPane(classesComp,
-									scrollVerticalAsNeeded, scrollHorizontalNever)
+		a.add(new MyMenuItem("View Classes…", 'c', new ActionListener{
+			def actionPerformed(e:ActionEvent) = {
+				val classesComp = new AllKnownTokenClassesComponent()
+				val classesPane = new JScrollPane(classesComp,
+								scrollVerticalAsNeeded, scrollHorizontalNever)
+				
+				val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
+				frame.add(classesPane)
+				frame.add(new TokenClassPanelTypeSelector(classesComp), SOUTH)
+				frame.setTitle("Known Classes - Deduction Tactics")
+				frame.pack()
+				frame.setVisible(true)
+			}
+		}))
+		
+		a.add(new MyMenuItem("Filter Classes…", 'f', new ActionListener{
+			def actionPerformed(e:ActionEvent) = {
+				val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
+				
+				val display = new FilterKnownTokenClassesComponent()
+				frame.add(new JScrollPane(display,
+						scrollVerticalAsNeeded, scrollHorizontalNever))
 					
-					val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
-					frame.add(classesPane)
-					frame.add(new TokenClassPanelTypeSelector(classesComp), SOUTH)
-					frame.setTitle("Known Classes - Deduction Tactics")
-					frame.pack()
-					frame.setVisible(true)
-				}
-			})
-		)
-		add(new MyMenuItem("Filter Classes…", 'f', new ActionListener{
-				def actionPerformed(e:ActionEvent) = {
-					val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this)) {
-						val display = new FilterKnownTokenClassesComponent()
-						add(new JScrollPane(display,
-							scrollVerticalAsNeeded, scrollHorizontalNever))
-						
-						val filterClass = new SuspicionsTokenClass
-						add(new HumanSuspicionsPanel(filterClass), NORTH)
-						
-						addFocusListener(new FocusAdapter(){
-							override def focusGained(e:FocusEvent) {
-								display.filter(filterClass)
-							}
-						})
+				val filterClass = new SuspicionsTokenClass
+				frame.add(new HumanSuspicionsPanel(filterClass), NORTH)
+					
+				frame.addFocusListener(new FocusAdapter(){
+					override def focusGained(e:FocusEvent) {
+						display.filter(filterClass)
 					}
-					frame.setTitle("Filter Classes - Deduction Tactics")
-					frame.setSize(250,600)
-					frame.setVisible(true)
-				}
-			})
-		)
-		add(new MyMenuItem("View Elements…", 'e', new ActionListener{
-				def actionPerformed(e:ActionEvent) = {
-					val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this)) {
-						add(new ElementPentagonReminderComponent)
-					}
-					frame.setTitle("Element Pentagon - Deduction Tactics")
-					frame.pack()
-					frame.setVisible(true)
-				}
-			})
-		)
+				})
+				frame.setTitle("Filter Classes - Deduction Tactics")
+				frame.setSize(250,600)
+				frame.setVisible(true)
+			}
+		}))
 		
-		addSeparator() 
+		a.add(new MyMenuItem("View Elements…", 'e', new ActionListener{
+			def actionPerformed(e:ActionEvent) = {
+				val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
+				frame.add(new ElementPentagonReminderComponent)
+				frame.setTitle("Element Pentagon - Deduction Tactics")
+				frame.pack()
+				frame.setVisible(true)
+			}
+		}))
 		
-		add(new MyMenuItem("About…", 'a', new ActionListener{
-				def actionPerformed(e:ActionEvent) = {
-					val dialog:JDialog = new AboutDialog(getWindowAncestor(MenuBar.this))
-					dialog.setVisible(true)
-				}
-			})
-		)
+		a.addSeparator() 
+		
+		a.add(new MyMenuItem("About…", 'a', new ActionListener{
+			def actionPerformed(e:ActionEvent) = {
+				val dialog:JDialog = new AboutDialog(getWindowAncestor(MenuBar.this))
+				dialog.setVisible(true)
+			}
+		}))
+		
+		a;
 	})
 	
 	private class MyMenuItem(title:String, mnemonic:Char, action:ActionListener)

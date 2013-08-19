@@ -55,13 +55,14 @@ object DeductionTacticsBuild extends Build {
 		val outFile = new File(inFile.toString + ".pack")
 		val outGzipFile = new File(outFile.toString + ".gz")
 		val repackedFile = new File(inFile.toString + ".repack")
+		val shouldStripStr = if (true) {STRIP} else {PASS}
 		//
-		packer.properties.put(UNKNOWN_ATTRIBUTE, STRIP);
+		packer.properties.put(UNKNOWN_ATTRIBUTE, shouldStripStr);
 		packer.properties.put(EFFORT, "9");
 		packer.properties.put(MODIFICATION_TIME, LATEST);
-		packer.properties.put(CODE_ATTRIBUTE_PFX+"LineNumberTable",    STRIP);
-		packer.properties.put(CODE_ATTRIBUTE_PFX+"LocalVariableTable", STRIP);
-		packer.properties.put(CLASS_ATTRIBUTE_PFX+"SourceFile",        STRIP);
+		packer.properties.put(CODE_ATTRIBUTE_PFX+"LineNumberTable",    shouldStripStr);
+		packer.properties.put(CODE_ATTRIBUTE_PFX+"LocalVariableTable", shouldStripStr);
+		packer.properties.put(CLASS_ATTRIBUTE_PFX+"SourceFile",        shouldStripStr);
 		//
 		// only bother doing the action if stuff changed recently
 		if (inFile.lastModified() > outFile.lastModified()) {
