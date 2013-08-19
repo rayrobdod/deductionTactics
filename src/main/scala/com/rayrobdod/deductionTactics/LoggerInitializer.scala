@@ -48,11 +48,16 @@ private[deductionTactics] object LoggerInitializer
 	val networkClientLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.NetworkClient")
 	networkClientLogger.addHandler(finerConsoleHander)
-	networkClientLogger.setLevel(Level.FINER)
+	networkClientLogger.setLevel(Level.WARNING)
 	
 	val observeMovementLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.StandardObserveMovement")
 	networkClientLogger.addHandler(finerConsoleHander)
-	networkClientLogger.setLevel(Level.FINER)
+	networkClientLogger.setLevel(Level.WARNING)
+	
+	val tokenClassDecoderLogger = Logger.getLogger(
+			"com.rayrobdod.deductionTactics.CannonicalTokenClassDecoder")
+	networkClientLogger.addHandler(finerConsoleHander)
+	networkClientLogger.setLevel(Level.WARNING)
 	
 }

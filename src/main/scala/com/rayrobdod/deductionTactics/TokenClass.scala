@@ -56,7 +56,6 @@ trait TokenClass
 	override def toString = {
 		this.getClass.getName + " " +
 			"{ name: " + name +
-			"; icon: ..." +
 			"; body: " + body +
 			"; atkElement: " + atkElement +
 			"; atkWeapon: " + atkWeapon +

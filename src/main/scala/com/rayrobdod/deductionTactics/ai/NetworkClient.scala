@@ -76,14 +76,16 @@ class NetworkClient extends PlayerAI
 		
 		{
 			val in = socket.getInputStream
-			val inR = new InputStreamReader(in)
+			val inS = new Scanner(in)
 			
+			val count = inS.nextInt
+			inS.nextLine // get rid of \n after count
+			val resultSeq = (1 to count).map{(x:Int) =>
+				CannonicalTokenClassDecoder.decode(inS.nextLine())
+			}
 			
-			val l = new ToScalaCollection(CannonicalTokenClassDecoder)
-			JSONParser.parse(l, inR)
-			
-			NetworkClient.this.input = Some(new Scanner(in))
-			l.resultSeq
+			NetworkClient.this.input = Some(inS)
+			resultSeq
 		}
 	}
 	

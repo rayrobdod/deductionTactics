@@ -10,12 +10,14 @@ Wishlist: Token Animations, Persistent preferences, Flying units,
 * Adding Interface as example of broken encapsulation:
 		RepeatAttackCheater
 * Adding AIDecorator: WithConsoleEventPrinting
-* Disabling Console and Networking interfaces
-* Changing weaponWeaknesses for Umbrella Swordsman
+* Disabling Console interfaces
+* Adding support for a binary format (the json format still works)
 
 === Data Level ===
 * Modifying image: Kestrel - which isn't actually used anywhere...
 * Adding classes: Pheonix, Owl (with image), Pigeon (with image)
+* Changing weaponWeaknesses for Umbrella Swordsman
+* Using said binary format
 
 
 == a.4.1 ==

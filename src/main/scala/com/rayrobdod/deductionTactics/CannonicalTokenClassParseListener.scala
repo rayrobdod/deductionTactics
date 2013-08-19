@@ -21,7 +21,7 @@ import java.net.URL
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Path, Paths, FileSystems}
 import scala.collection.JavaConversions.mapAsJavaMap
-
+import LoggerInitializer.{tokenClassDecoderLogger => Logger}
 
 
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONDecoder
@@ -70,6 +70,9 @@ class CannonicalTokenClassBuilder extends TokenClass {
 	 */
 	def build():CannonicalTokenClass = {
 		try {
+			// B*CKING DELAYED EXECUTION
+			weakWeapon.values.foreach{_.get}
+			
 			new CannonicalTokenClassBlunt (
 				CannonicalTokenClassBuilder.this.name,
 				Some(CannonicalTokenClassBuilder.this.body.get),
@@ -79,7 +82,7 @@ class CannonicalTokenClassBuilder extends TokenClass {
 				Some(CannonicalTokenClassBuilder.this.range.get),
 				Some(CannonicalTokenClassBuilder.this.speed.get),
 				Some(CannonicalTokenClassBuilder.this.weakDirection.getOrElse(arbitraryDirection)),
-				weakWeapon.mapValues{x => Some(x.get)},
+				CannonicalTokenClassBuilder.this.weakWeapon.mapValues{x => Some(x.get)},
 				Some(CannonicalTokenClassBuilder.this.weakStatus.get)
 			)
 		} catch {
@@ -99,6 +102,7 @@ class CannonicalTokenClassBuilder extends TokenClass {
 object CannonicalTokenClassDecoder extends JSONDecoder[CannonicalTokenClass] {
 	override def decode(s:String):CannonicalTokenClass = {
 		val l = new CannonicalTokenClassParseListener
+		Logger.finer(s)
 		JSONParser.parse(l, s)
 		l.result
 	}

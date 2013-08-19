@@ -81,7 +81,7 @@ package object deductionTactics
 		}.toString.tail
 		writer.write(weakWeapon)
 		
-		writer.write("}");
+		writer.write("}}");
 		
 		writer.toString();
 	}

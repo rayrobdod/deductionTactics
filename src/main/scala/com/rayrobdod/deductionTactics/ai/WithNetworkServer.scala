@@ -84,12 +84,12 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		new Thread(server, "WithNetworkServer").start()
 		
 		
-		output.write( '[' )
+		output.write( returnValue.length.toString )
+		output.write( '\n' )
 		returnValue.zipWithIndex.foreach({(tclass:CannonicalTokenClass, index:Int) =>
-			if (index != 0) output.write(',')
 			output.write(tokenClassToJSON(tclass))
+			output.write('\n')
 		}.tupled)
-		output.write( "]\n" )
 		output.flush()
 		
 		returnValue
@@ -107,46 +107,48 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 	
 	class StartServer(socket:ServerSocket) extends Runnable {
 		
+		Logger.fine(socket.getLocalPort.toString)
+			
 		def run() = while (true) {
 			val child:Socket = socket.accept
 			
-			val childOutStream = child.getOutputStream;
-			val childWriter = new OutputStreamWriter(childOutStream, UTF_8)
-			val childInStream = child.getInputStream;
-			val childReader = new java.util.Scanner(childInStream, UTF_8.toString)
-			
-			var line:String = "";
-			do {
-				line = childReader.nextLine()
+			new Thread(new Runnable() { def run = {
+				val childOutStream = child.getOutputStream;
+				val childWriter = new OutputStreamWriter(childOutStream, UTF_8)
+				val childInStream = child.getInputStream;
+				val childReader = new java.util.Scanner(childInStream, UTF_8.toString)
 				
-				Logger.fine("Recieved a " + line)
-				if (line == "Ping") {
-					childWriter.write("PingBack\n")
-				}
-				if (line == "Ready") {
-					childWriter.write("Ready\n")
-				}
-				childWriter.flush()
-			} while (line != "TokenClasses")
-			
-			
-			WithNetworkServer.this.output.addForward(childWriter)
+				var line:String = "";
+				do {
+					line = childReader.nextLine()
+					
+					Logger.fine("Recieved a " + line)
+					if (line == "Ping") {
+						childWriter.write("PingBack\n")
+					}
+					if (line == "Ready") {
+						childWriter.write("Ready\n")
+					}
+					childWriter.flush()
+				} while (line != "TokenClasses")
+				
+				
+				WithNetworkServer.this.output.addForward(childWriter)
+			}}, "WithNetworkServer-child").start()
 		}
 	}
 	
 	
-		private implicit def twoDSeq[A](x:Seq[Seq[A]]) = new TwoDSeq(x)
-		
-		private class TwoDSeq[A](haystack:Seq[Seq[A]]) {
+	private implicit def twoDSeq[A](x:Seq[Seq[A]]) = new TwoDSeq(x)
+	
+	private class TwoDSeq[A](haystack:Seq[Seq[A]]) {
+		def twoDIndexOf(needle:A):Tuple2[Int,Int] = {
+			val ys = haystack.map{_.indexOf(needle)}
+			val pairs = ys.zipWithIndex.filter({(y:Int, x:Int) => y != -1}.tupled)
 			
-			def twoDIndexOf(needle:A):Tuple2[Int,Int] = {
-				
-				val ys = haystack.map{_.indexOf(needle)}
-				val pairs = ys.zipWithIndex.filter({(y:Int, x:Int) => y != -1}.tupled)
-				
-				if (pairs.isEmpty) {(-1, -1)} else {pairs.head.swap}
-			}
+			if (pairs.isEmpty) {(-1, -1)} else {pairs.head}
 		}
+	}
 	
 	
 	final class PrintMove(tokenIndex:String) extends BoardGameToken.MoveReactionType {

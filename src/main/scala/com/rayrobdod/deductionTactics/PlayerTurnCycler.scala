@@ -18,10 +18,8 @@ class PlayerTurnCycler(val players:Seq[Player], var timeBetweenTurns:Int = 500) 
 		var i:Int = 0
 		while(gameContinues)
 		{
-//			System.out.println(i)
 			players(i).takeTurn()
 			i = remainingPlayers.filter{_>i}.headOption.getOrElse{remainingPlayers.head}
-//			System.out.println(i)
 			
 			gameContinues = remainingPlayers.size > 1
 		}
