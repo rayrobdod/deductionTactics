@@ -1,9 +1,6 @@
 package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.{Seq, Set}
-import javax.swing.Icon
-import com.rayrobdod.swing.NameAndIcon
-import java.awt.Color
 import com.rayrobdod.deductionTactics.LoggerInitializer.{elementsLogger => logger}
 
 /**
@@ -22,12 +19,12 @@ import com.rayrobdod.deductionTactics.LoggerInitializer.{elementsLogger => logge
  * @version 30 Jul 2012 - Element never obeyed the transetivity requirement of Ordered, so it no longer implements that class
  * @version 2013 Jun 13 - Element is now a class rather than a trait with a single implementor
  * @version 2013 Jun 14 - Element no longer extends NameAndIcon; removing icon method
+ * @version 2013 Aug 19 - Element no longer contains a color
  
- * @todo: extract the swing and awt stuff (Icon and Color) and put it someplace else 
  */
 object Elements {
 	
-	final class Element(val id:Int, val name:String, val color:Color) {
+	final class Element(val id:Int, val name:String) {
 		def damageModifier(other:Element):Float = {
 			((((other.id - this.id) % 5) + 5) % 5) match {
 				case 0 => 1f
@@ -49,11 +46,11 @@ object Elements {
 		override def toString = "com.rayrobdod.deductionTactics.Elements." + name
 	}
 	
-	val Light:Element    = new Element(0, "Light",    new Color(253,253,187))
-	val Electric:Element = new Element(1, "Electric", Color.yellow)
-	val Fire:Element     = new Element(2, "Fire",     Color.red)
-	val Frost:Element    = new Element(3, "Frost",    new Color(170,170,255))
-	val Sound:Element    = new Element(4, "Sound",    new Color(0,255,0))
+	val Light:Element    = new Element(0, "Light"   )
+	val Electric:Element = new Element(1, "Electric")
+	val Fire:Element     = new Element(2, "Fire"    )
+	val Frost:Element    = new Element(3, "Frost"   )
+	val Sound:Element    = new Element(4, "Sound"   )
 	
 	def values = Seq[Element](Light, Electric, Fire, Frost, Sound)
 	def apply(x:Int) = values(x) //.find{_.id == x}.get

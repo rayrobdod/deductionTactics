@@ -6,9 +6,7 @@ import Statuses.Status
 import BodyTypes.{Value => BodyType}
 import Directions.Direction
 
-import javax.swing.Icon
 import scala.collection.immutable.{Map}
-import com.rayrobdod.swing.NameAndIcon
 
 /**
  * A description of the attributes of a unit.

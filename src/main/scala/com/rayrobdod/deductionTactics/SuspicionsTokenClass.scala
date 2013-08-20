@@ -6,7 +6,6 @@ import Statuses.Status
 import BodyTypes.{Value => BodyType}
 import Directions.Direction
 import scala.collection.immutable.Map
-import javax.swing.Icon
 
 /**
  * A class that mirrors [[com.rayrobdod.deductionTactics.CannonicalTokenClass]] but with all methods

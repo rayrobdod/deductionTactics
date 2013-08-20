@@ -1,8 +1,6 @@
 package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.{Seq, Set}
-import javax.swing.{ImageIcon, Icon}
-import com.rayrobdod.swing.NameAndIcon
 
 /**
  * An enumeration for the weaponkinds
@@ -20,17 +18,12 @@ import com.rayrobdod.swing.NameAndIcon
  * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
  * @version 2013 Jun 14 - Weaponkind no longer extends NameAndIcon; removing icon method
  * @version 2013 Jun 23 - implemented Weaponkind.toString
+ * @version 2013 Aug 19 - removing deprecated genericTokenClassFile and attackEffectFile
  */
 object Weaponkinds
 {
 	class Weaponkind(val id:Int, val name:String, val classType:String)
 	{
-		// TODO: figure out relative URLs.
-		@deprecated("Getting rid of icons in model data", "2013 Jun 12")
-		val genericTokenClassFile = "/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/" + classType + ".png"
-		@deprecated("Getting rid of icons in model data", "2013 Jun 12")
-		val attackEffectFile = "/com/rayrobdod/deductionTactics/tokenClasses/sprites/effects/" + name + " strike.png"
-		
 		override def toString = "com.rayrobdod.deductionTactics.Weaponkinds." + name
 	}
 	

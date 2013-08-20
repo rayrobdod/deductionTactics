@@ -69,12 +69,12 @@ class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout,
 		
 		def apply(elem:Element, kind:Weaponkind, space:Space):Unit =
 		{
-			val effectFile = this.getClass().getResource(kind.attackEffectFile)
+			val effectFile = this.getClass().getResource(attackEffectFile(kind))
 			val effectImage = ImageIO.read(effectFile)
 			
 			(0 until effectImage.getWidth).foreach{(x:Int) => 
 				(0 until effectImage.getHeight).foreach{(y:Int) => 
-					if (effectImage.getRGB(x,y) == 0xFFFFFFFF) {effectImage.setRGB(x,y,elem.color.getRGB)}
+					if (effectImage.getRGB(x,y) == 0xFFFFFFFF) {effectImage.setRGB(x,y,elementToColor(elem).getRGB)}
 				}
 			}
 			

@@ -6,9 +6,10 @@ import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.BodyTypes.{Value => BodyType}
 import com.rayrobdod.deductionTactics.Directions.Direction
 import com.rayrobdod.deductionTactics.swingView.{
-		TokenClassNameToIconFromJson, TokenClassNameToIconFromBinary}
+		TokenClassNameToIconFromJson, TokenClassNameToIconFromBinary
+}
 
-import java.awt.Dimension
+import java.awt.{Dimension, Color}
 import javax.swing.{ImageIcon, Icon}
 import java.awt.Image.{SCALE_SMOOTH => imageScaleSmooth}
 
@@ -176,16 +177,16 @@ package object swingView
 	 */
 	def generateGenericIcon(tokenClass:TokenClass) =
 	{
-		val fileName = tokenClass.atkWeapon.map{_.genericTokenClassFile}.getOrElse(
+		val fileName = tokenClass.atkWeapon.map{genericTokenClassFile(_)}.getOrElse(
 				"/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/Gray shirt.png")
 		val base = ImageIO.read(this.getClass().getResource(fileName))
 		
 		tokenClass.atkElement.foreach{(elem:Element) => 
 			(0 until base.getWidth).foreach{(x:Int) => 
 				(0 until base.getHeight).foreach{(y:Int) => 
-					if (base.getRGB(x,y) == 0xFF949494) {base.setRGB(x,y,elem.color.brighter.getRGB)}
-					if (base.getRGB(x,y) == 0xFF7F7F7F) {base.setRGB(x,y,elem.color.getRGB)}
-					if (base.getRGB(x,y) == 0xFF747474) {base.setRGB(x,y,elem.color.darker.getRGB)}
+					if (base.getRGB(x,y) == 0xFF949494) {base.setRGB(x,y,elementToColor(elem).brighter.getRGB)}
+					if (base.getRGB(x,y) == 0xFF7F7F7F) {base.setRGB(x,y,elementToColor(elem).getRGB)}
+					if (base.getRGB(x,y) == 0xFF747474) {base.setRGB(x,y,elementToColor(elem).darker.getRGB)}
 				}
 			}
 		}
@@ -220,6 +221,24 @@ package object swingView
 		
 		e
 	}
+	
+	
+	
+	def elementToColor(e:Element):Color = e match {
+		case Elements.Light    => new Color(253,253,187)
+		case Elements.Electric => Color.yellow
+		case Elements.Fire     => Color.red
+		case Elements.Frost    => new Color(170,170,255)
+		case Elements.Sound    => new Color(0,255,0)
+		case _                 => Color.gray
+	}
+	def genericTokenClassFile(k:Weaponkind):String = {
+		"/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/" + k.classType + ".png"
+	}
+	def attackEffectFile(k:Weaponkind):String = {
+		"/com/rayrobdod/deductionTactics/tokenClasses/sprites/effects/" + k.name + " strike.png"
+	}
+	
 	
 	
 	

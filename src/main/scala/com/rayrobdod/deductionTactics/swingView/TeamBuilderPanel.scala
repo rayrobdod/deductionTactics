@@ -15,7 +15,7 @@ import javax.swing.BoxLayout.{Y_AXIS => boxYAxis, X_AXIS => boxXAxis}
 import java.awt.BorderLayout
 import java.awt.event.{ActionListener, ActionEvent}
 import com.rayrobdod.deductionTactics.{PlayerAI, TokenClass, CannonicalTokenClass}
-import com.rayrobdod.swing.MapToNameAndIconCellRenderer
+import com.rayrobdod.swing.{MapToNameAndIconCellRenderer, ScalaSeqListModel}
 import scala.collection.immutable.Seq
 import scala.collection.JavaConversions.iterableAsScalaIterable
 
@@ -43,7 +43,7 @@ class TeamBuilderPanel extends JPanel
 	currentSelectionList.setBackground(null)
 	currentSelectionList.setPrototypeCellValue(CannonicalTokenClass.allKnown.head)
 	
-	val allTokenClassesList = new JList(CannonicalTokenClass.allKnownListModel)
+	val allTokenClassesList = new JList(new ScalaSeqListModel(CannonicalTokenClass.allKnown))
 	allTokenClassesList.setCellRenderer(FullTokenClassListRenderer)
 	allTokenClassesList.setBackground(null)
 	allTokenClassesList.setLayoutOrientation(JList.VERTICAL_WRAP)

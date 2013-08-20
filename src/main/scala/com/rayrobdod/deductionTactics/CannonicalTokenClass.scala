@@ -128,14 +128,4 @@ object CannonicalTokenClass
 		
 		ISeq.empty ++ e
 	}
-	
-	import javax.swing.{AbstractListModel, ListModel}
-	private object AllKnownListModel extends AbstractListModel[CannonicalTokenClass]
-	{
-		def getElementAt(index:Int) = allKnown(index)
-		def getSize = allKnown.size
-	}
-	
-	val allKnownListModel:ListModel[CannonicalTokenClass] = AllKnownListModel
-	
 }

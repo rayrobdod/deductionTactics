@@ -14,6 +14,11 @@ trait ListOfTokens {
 }
 
 object ListOfTokens {
+	
+	/**
+	 * Determines whether a Token counts as alive.
+	 * @version 25 Jan 2012
+	 */
 	object aliveFilter extends Function1[Token,Boolean] {
 		def apply(x:Token):Boolean = x.currentHitpoints > 0
 	}

@@ -1,8 +1,6 @@
 package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.{Seq, Set}
-import javax.swing.{ImageIcon, Icon}
-import com.rayrobdod.swing.NameAndIcon
 
 /**
  * An enumeration for the statuses

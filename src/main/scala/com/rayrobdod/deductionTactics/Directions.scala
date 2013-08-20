@@ -3,8 +3,6 @@ package com.rayrobdod.deductionTactics
 import com.rayrobdod.boardGame.{RectangularSpace, Space => BoardGameSpace,
 			PhysicalStrikeCost}
 import scala.collection.immutable.{Seq, Set}
-import javax.swing.Icon
-import com.rayrobdod.swing.NameAndIcon
 import LoggerInitializer.{cannonicalTokenLogger => Logger}
 
 /**

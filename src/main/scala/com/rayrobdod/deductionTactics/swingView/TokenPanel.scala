@@ -109,6 +109,7 @@ object TokenListRenderer extends ListCellRenderer[Token]
 			isSelected:Boolean, cellHasFocus:Boolean) =
 	{
 		val returnValue = new TokenPanel(value)
+		returnValue.tokenClass.doLayout()
 		if (isSelected)
 		{
 			returnValue.setBackground(list.getSelectionBackground)
