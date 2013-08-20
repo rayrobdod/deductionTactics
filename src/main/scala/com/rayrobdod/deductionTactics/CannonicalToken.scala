@@ -195,7 +195,7 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 	}
 	
 	def tryAttackDamage(target:Token) {
-		if (this.currentSpace.distanceTo(target.currentSpace, this, PhysicalStrikeCost) <= this.tokenClass.range.get) {
+		if (this.canAttackThisTurn && this.currentSpace.distanceTo(target.currentSpace, this, PhysicalStrikeCost) <= this.tokenClass.range.get) {
 			target.beAttacked(this.tokenClass.atkElement.get, this.tokenClass.atkWeapon.get, this.currentSpace)
 			this.triggerUpdateReactions
 			this._canAttackThisTurn = false
@@ -203,7 +203,7 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 		}
 	}
 	def tryAttackStatus(target:Token) {
-		if (this.currentSpace.distanceTo(target.currentSpace, this, PhysicalStrikeCost) <= this.tokenClass.range.get) {
+		if (this.canAttackThisTurn && this.currentSpace.distanceTo(target.currentSpace, this, PhysicalStrikeCost) <= this.tokenClass.range.get) {
 			target.beAttacked(this.tokenClass.atkStatus.get, this.currentSpace)
 			this.triggerUpdateReactions
 			this._canAttackThisTurn = false
