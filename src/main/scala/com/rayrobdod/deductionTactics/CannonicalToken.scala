@@ -100,8 +100,10 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 			_currentStatusTurnsLeft = _currentStatusTurnsLeft - 1
 			if (_currentStatusTurnsLeft <= 0) {_currentStatus = None}
 			
-			_canMoveThisTurn = tokenClass.speed.get
-			_canAttackThisTurn = true
+			if (_currentHitpoints > 0) {
+				_canMoveThisTurn = tokenClass.speed.get
+				_canAttackThisTurn = true
+			}
 		}
 	}
 	/** add to owner Player */

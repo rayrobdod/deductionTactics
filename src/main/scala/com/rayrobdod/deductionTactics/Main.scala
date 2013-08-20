@@ -109,6 +109,7 @@ object Main extends App
 		players.zip(canonTokens).foreach({(p:Player, ts:Seq[CannonicalToken]) => {
 			ts.foreach{(t:CannonicalToken) => {
 				p.addStartTurnReaction(t.TurnStartReaction)
+				p.addEndTurnReaction(t.TurnEndReaction)
 				p.addStartTurnReaction(new t.StatusAct(p.tokens))
 			}}
 		}}.tupled)
