@@ -98,6 +98,8 @@ ProguardKeys.options in Proguard <+= (baseDirectory in Compile, proguardType).ma
 ProguardKeys.inputFilter in Proguard := { file =>
 	if (file.name.startsWith("deduction-tactics")) {
 		None
+	} else if (file.name.startsWith("rt")) {
+		Some("**.class;java.**;javax.**")
 	} else {
 		Some("**.class")
 	}
