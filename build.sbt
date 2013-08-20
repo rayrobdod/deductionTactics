@@ -41,7 +41,7 @@ javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked")
 scalacOptions ++= Seq("-unchecked", "-deprecation" )
 
 scalacOptions <++= scalaVersion.map{(sv:String) =>
-	if (sv.take(3) == "2.1") {Seq("-feature")} else {Nil}
+	if (sv.take(3) == "2.1") {Seq("-feature", "-language:implicitConversions")} else {Nil}
 }
 
 excludeFilter in unmanagedSources in Compile := new FileFilter{

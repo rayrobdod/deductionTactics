@@ -107,10 +107,9 @@ class ClassSynchonizerFrameMaker(
 			panel:JPanel
 	) extends MouseAdapter
 {
-	override def mouseClicked(e:MouseEvent) {
+	override def mouseClicked(e:MouseEvent):Unit = {
 		val returnValue = new ChooserFrame[TokenClass](model, TokenClassListRenderer, result)
 		returnValue.setLocationRelativeTo(e.getComponent)
-		returnValue
 	}
 	
 	def model = new ScalaSeqListModel[TokenClass]( CannonicalTokenClass.allKnown.filter(
@@ -147,10 +146,9 @@ class ClassSynchonizerFrameMaker(
 class ChooserFrameMaker[A](model:ListModel[A],
 			renderer:ListCellRenderer[_ >: A],
 			result:ListSelectionListener) extends MouseAdapter {
-	override def mouseClicked(e:MouseEvent) {
+	override def mouseClicked(e:MouseEvent):Unit = {
 		val returnValue = new ChooserFrame[A](model, renderer, result)
 		returnValue.setLocationRelativeTo(e.getComponent)
-		returnValue
 	}
 }
 

@@ -223,8 +223,6 @@ package object swingView
 	
 	
 	
-	// TMP until I can safely turn [[com.rayrobdod.swing.NameAndIcon]]
-	// into a final class instead of a trait
 	final class MyNameAndIcon(val name:String, val icon:Icon) extends NameAndIcon
 	final val UnsetNameAndIcon:NameAndIcon = new MyNameAndIcon("Unset", unknownIcon())
 }

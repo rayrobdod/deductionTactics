@@ -154,6 +154,9 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 				case Some(Statuses.Heal) => {
 					_currentHitpoints = _currentHitpoints + (baseDamage)
 				}
+				case _ => {
+					throw new IllegalStateException("I do not know how to respond to a " + currentStatus)
+				}
 			}
 			
 			if (_currentHitpoints <= 0) {CannonicalToken.this.triggerDiedReactions()}
