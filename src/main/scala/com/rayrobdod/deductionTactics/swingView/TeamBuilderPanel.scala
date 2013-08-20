@@ -1,16 +1,21 @@
 package com.rayrobdod.deductionTactics.swingView
 
-import javax.swing.{JList, JPanel, JButton, BoxLayout, JScrollPane}
-import javax.swing.{AbstractListModel, ListCellRenderer, DefaultListModel}
+import javax.swing.{JList, JPanel, ButtonGroup, JButton, BoxLayout,
+		JScrollPane, JRadioButton, AbstractListModel, ListCellRenderer,
+		DefaultListModel
+}
 import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
-import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
+import javax.swing.ScrollPaneConstants.{
+		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
-		HORIZONTAL_SCROLLBAR_ALWAYS => scrollHorizontalAlways}
+		HORIZONTAL_SCROLLBAR_ALWAYS => scrollHorizontalAlways
+}
 import javax.swing.BoxLayout.{Y_AXIS => boxYAxis, X_AXIS => boxXAxis}
 import java.awt.BorderLayout
 import java.awt.event.{ActionListener, ActionEvent}
 import com.rayrobdod.deductionTactics.{PlayerAI, TokenClass, CannonicalTokenClass}
+import com.rayrobdod.swing.MapToNameAndIconCellRenderer
 import scala.collection.immutable.Seq
 import scala.collection.JavaConversions.iterableAsScalaIterable
 
@@ -26,6 +31,7 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
  * @version 05 Jun 2012 - setting allTokenClassesList's visibleRowCount to 10
  * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  * @version 2013 Aug 19 - reducing number of anonymous inner classes
+ * @version 2013 Aug 19 - Adding ability to change the lists' ListCellRenderer
  */
 class TeamBuilderPanel extends JPanel
 {
@@ -33,12 +39,12 @@ class TeamBuilderPanel extends JPanel
 	def currentSelection:Seq[CannonicalTokenClass] = (Seq.empty ++ currentSelectionModel.toArray).asInstanceOf[Seq[CannonicalTokenClass]]
 	
 	val currentSelectionList = new JList[CannonicalTokenClass](currentSelectionModel)
-	currentSelectionList.setCellRenderer(TokenClassListRenderer)
+	currentSelectionList.setCellRenderer(FullTokenClassListRenderer)
 	currentSelectionList.setBackground(null)
 	currentSelectionList.setPrototypeCellValue(CannonicalTokenClass.allKnown.head)
 	
 	val allTokenClassesList = new JList(CannonicalTokenClass.allKnownListModel)
-	allTokenClassesList.setCellRenderer(TokenClassListRenderer)
+	allTokenClassesList.setCellRenderer(FullTokenClassListRenderer)
 	allTokenClassesList.setBackground(null)
 	allTokenClassesList.setLayoutOrientation(JList.VERTICAL_WRAP)
 	allTokenClassesList.setVisibleRowCount(10)
@@ -65,6 +71,39 @@ class TeamBuilderPanel extends JPanel
 			currentSelectionModel.removeAllElements()
 		}
 	})
+	val fullStyle = new JRadioButton("Full", true)
+	fullStyle.addActionListener(new ActionListener(){
+		override def actionPerformed(e:ActionEvent) = {
+			allTokenClassesList.setCellRenderer(FullTokenClassListRenderer)
+			currentSelectionList.setCellRenderer(FullTokenClassListRenderer)
+			allTokenClassesList.setVisibleRowCount(10)
+		}
+	})
+	val noWeaponWeakStyle = new JRadioButton("Without Weapon Weakness", true)
+	noWeaponWeakStyle.addActionListener(new ActionListener(){
+		override def actionPerformed(e:ActionEvent) = {
+			allTokenClassesList.setCellRenderer(NoWeaponWeakTokenClassListRenderer)
+			currentSelectionList.setCellRenderer(NoWeaponWeakTokenClassListRenderer)
+			allTokenClassesList.setVisibleRowCount(10)
+		}
+	})
+	val nameAndIconStyle = new JRadioButton("Name and Icon", true)
+	nameAndIconStyle.addActionListener(new ActionListener(){
+		implicit def tokenClassToNameAndIcon(x:TokenClass) = {
+			new MyNameAndIcon(x.name,
+				tokenClassNameToIcon.getOrElse(x.name, generateGenericIcon(x))
+			)
+		}
+		override def actionPerformed(e:ActionEvent) = {
+			allTokenClassesList.setCellRenderer(new MapToNameAndIconCellRenderer[TokenClass])
+			currentSelectionList.setCellRenderer(new MapToNameAndIconCellRenderer[TokenClass])
+			allTokenClassesList.setVisibleRowCount(20)
+		}
+	})
+	private val styleGroup = new ButtonGroup()
+	styleGroup.add(fullStyle)
+	styleGroup.add(noWeaponWeakStyle)
+	styleGroup.add(nameAndIconStyle)
 	
 	setLayout(new BorderLayout)
 	add({
@@ -72,12 +111,21 @@ class TeamBuilderPanel extends JPanel
 		a.add(new JScrollPane(currentSelectionList,
 				scrollVerticalAlways, scrollHorizontalNever), BorderLayout.WEST)
 		a.add({val b = new JPanel();
+			b.setLayout(new BoxLayout(b, boxYAxis))
 			b.add({
 				val c = new JPanel();
 				c.setLayout(new BoxLayout(c, boxYAxis))
 				c.add(addButton)
 				c.add(removeButton)
 				c.add(removeAllButton)
+				c;
+			})
+			b.add({
+				val c = new JPanel();
+				c.setLayout(new BoxLayout(c, boxYAxis))
+				c.add(fullStyle)
+				c.add(noWeaponWeakStyle)
+				c.add(nameAndIconStyle)
 				c;
 			})
 			b;
@@ -95,19 +143,36 @@ class TeamBuilderPanel extends JPanel
 			to com.rayrobdod.deductionTactics.view
  * @version 06 Feb 2012 - made the thing's color the same as the list's prefered seleciton color
  * @version 11 Feb 2012 - renamed from TokenClassListRender to TokenClassListRenderer
+ * @version 2013 Aug 19 - renamed from TokenClassListRenderer to FullTokenClassListRenderer
  */
-object TokenClassListRenderer extends ListCellRenderer[TokenClass]
+object FullTokenClassListRenderer extends ListCellRenderer[TokenClass]
 {
 	def getListCellRendererComponent(list:JList[_ <: TokenClass], value:TokenClass, index:Int,
 			isSelected:Boolean, cellHasFocus:Boolean) =
 	{
 		val returnValue = new TokenClassPanel(value)
 		returnValue.doLayout()
-		if (isSelected)
-		{
+		if (isSelected) {
 			returnValue.setBackground(list.getSelectionBackground)
-//			returnValue.atkRow.setBackground(list.getSelectionBackground)
-//			returnValue.weakRow.setBackground(list.getSelectionBackground)
+		}
+		returnValue
+	}
+}
+
+/**
+ * @author Raymond Dodge
+ * @version 2013 Aug 19 - Copeid and modified from FullTokenClassListRenderer
+ */
+object NoWeaponWeakTokenClassListRenderer extends ListCellRenderer[TokenClass]
+{
+	def getListCellRendererComponent(list:JList[_ <: TokenClass], value:TokenClass, index:Int,
+			isSelected:Boolean, cellHasFocus:Boolean) =
+	{
+		val returnValue = new TokenClassPanel(value)
+		returnValue.remove(returnValue.weaponWeakPanel)
+		returnValue.doLayout()
+		if (isSelected) {
+			returnValue.setBackground(list.getSelectionBackground)
 		}
 		returnValue
 	}

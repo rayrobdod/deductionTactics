@@ -12,12 +12,13 @@ Wishlist: Token Animations, Persistent preferences, Flying units,
 * Adding AIDecorator: WithConsoleEventPrinting
 * Disabling Console interfaces
 * Adding support for a binary format (the json format still works)
+* Adding ability to change ListCellRenderers in Swing token-Choosing component
 
 === Data Level ===
 * Modifying image: Kestrel - which isn't actually used anywhere...
 * Adding classes: Pheonix, Owl (with image), Pigeon (with image)
 * Changing weaponWeaknesses for Umbrella Swordsman
-* Using said binary format
+* Using said binary format for token classes
 
 
 == a.4.1 ==

@@ -108,7 +108,7 @@ class ClassSynchonizerFrameMaker(
 	) extends MouseAdapter
 {
 	override def mouseClicked(e:MouseEvent):Unit = {
-		val returnValue = new ChooserFrame[TokenClass](model, TokenClassListRenderer, result)
+		val returnValue = new ChooserFrame[TokenClass](model, FullTokenClassListRenderer, result)
 		returnValue.setLocationRelativeTo(e.getComponent)
 	}
 	
