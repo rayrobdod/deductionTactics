@@ -56,7 +56,7 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 		val fieldComp = new FieldComponent(tilesheetInfo,field)
 		fieldComp.tokenLayer.setLayout(layout)
 		
-		val tokenComponents = tokens.tokens.flatMap{_.map{(t:Token) =>
+		val tokenComponents = tokens.tokens.flatten.map{(t:Token) =>
 //			val comp = new BGTokenComponent(t, fieldComp, layout, t.tokenClass.icon)
 			val comp = new DTTokenComponent(t, fieldComp, layout, tokens)
 			
@@ -69,7 +69,7 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 			}
 			
 			comp
-		}}
+		}
 		
 		tokenComponents.foreach{fieldComp.tokenLayer.add(_)}
 		

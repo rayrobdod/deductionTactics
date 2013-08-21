@@ -35,8 +35,8 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 	var player:Option[Player] = None
 	var field:Option[Field]   = None
 	
-	// debugging
-	output.addForward(new OutputStreamWriter(System.out))
+	// logging
+	// output.addForward(new OutputStreamWriter(System.out))
 	
 	/** Forwards action to base */
 	def takeTurn(player:Player):Unit = {
