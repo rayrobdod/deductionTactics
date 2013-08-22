@@ -31,9 +31,9 @@ import java.nio.charset.StandardCharsets.UTF_8
  */
 class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 	
-	val output:MultiForwardWriter = new MultiForwardWriter()
-	var player:Option[Player] = None
-	var field:Option[Field]   = None
+	private val output:MultiForwardWriter = new MultiForwardWriter()
+	private var player:Option[Player] = None
+	private var field:Option[Field]   = None
 	
 	// logging
 	// output.addForward(new OutputStreamWriter(System.out))
@@ -169,7 +169,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 				output.write("RequestAttackForDamage(MyTokens(")
 				output.write(tokenIndex)
 				output.write("),OtherTokens")
-				output.write(player.get.tokens.otherTokens.twoDIndexOf(target2).toString)
+				output.write(player.get.tokens.otherTokens.twoDIndexOf(target2).swap.toString)
 				output.write(")\n")
 			}
 		}
@@ -181,7 +181,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 				output.write("RequestAttackForStatus(MyTokens(")
 				output.write(tokenIndex)
 				output.write("),OtherTokens")
-				output.write(player.get.tokens.otherTokens.twoDIndexOf(target2).toString)
+				output.write(player.get.tokens.otherTokens.twoDIndexOf(target2).swap.toString)
 				output.write(")\n")
 			}
 		}

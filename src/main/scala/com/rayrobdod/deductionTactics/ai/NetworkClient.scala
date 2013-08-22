@@ -32,8 +32,8 @@ import com.rayrobdod.commonFunctionNotation.Parser.{parse => cfnParse}
  */
 class NetworkClient extends PlayerAI
 {
-	var field:Option[Field]   = None
-	var input:Option[Scanner] = None
+	private var field:Option[Field]   = None
+	private var input:Option[Scanner] = None
 	
 	
 	def buildTeam = {
