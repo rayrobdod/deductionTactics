@@ -63,6 +63,7 @@ object DeductionTacticsBuild extends Build {
 		packer.properties.put(CODE_ATTRIBUTE_PFX+"LineNumberTable",    shouldStripStr);
 		packer.properties.put(CODE_ATTRIBUTE_PFX+"LocalVariableTable", shouldStripStr);
 		packer.properties.put(CLASS_ATTRIBUTE_PFX+"SourceFile",        shouldStripStr);
+		packer.properties.put(CLASS_ATTRIBUTE_PFX+"ScalaSig",          "BBB");
 		//
 		// only bother doing the action if stuff changed recently
 		if (inFile.lastModified() > outFile.lastModified()) {

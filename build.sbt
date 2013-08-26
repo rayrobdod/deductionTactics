@@ -18,11 +18,11 @@ target := new File("C:/Users/Raymond/AppData/Local/Temp/build/DeductionTactics/"
 
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "1.0.0")
 
-libraryDependencies += ("com.rayrobdod" %% "json" % "1.0.0-SNAPSHOT")
+libraryDependencies += ("com.rayrobdod" %% "json" % "1.0.0")
 
 libraryDependencies += ("com.rayrobdod" %% "csv" % "1.0.0")
 
-libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "1.0.0-SNAPSHOT")
+libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "2.0.0-SNAPSHOT")
 
 
 
@@ -50,13 +50,12 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 		(
 			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/ansiEscape/SpacePrinter.scala") ||
 			(abPath contains "com/rayrobdod/deductionTactics/consoleView/") ||
-			(abPath endsWith "com/rayrobdod/testing/ParserTest.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface_CFN.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/FieldPotentialAI.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithConsoleViewport.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/ai/CommandParser.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/ai/TokenEventPrinter.scala")
+			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/TokenEventPrinter.scala")
 		)
 	}
 }
