@@ -37,7 +37,7 @@ class MoveTokenMouseListener(owner:Player, space:Space, attackType:SellectAttack
 	private var activeToken = owner.tokens.myTokens.head
 	
 	owner.tokens.myTokens.foreach{(token:CannonicalToken) =>
-		token.addSelectedReaction{(isSelected) =>
+		token.selectedReactions_+={(isSelected) =>
 			if (isSelected) activeToken = token
 		}
 	}

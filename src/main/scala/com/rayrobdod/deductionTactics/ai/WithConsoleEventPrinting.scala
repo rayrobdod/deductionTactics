@@ -27,13 +27,13 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 			import WithConsoleEventPrinting._
 			val name = "Token " + i
 			
-			t.addMoveReaction( new PrintMove(name) )
-			t.addSelectedReaction( new PrintBeSelected(name) )
+			t.moveReactions_+=( new PrintMove(name) )
+			t.selectedReactions_+=( new PrintBeSelected(name) )
 			
-			t.addDiedReaction( new PrintDied(name) )
-			t.addUpdateReaction( new PrintUpdate(name) )
-			t.addDamageAttackedReaction( new PrintDamageAttack(name) )
-			t.addStatusAttackedReaction( new PrintStatusAttack(name) )
+			t.diedReactions_+=( new PrintDied(name) )
+			t.updateReactions_+=( new PrintUpdate(name) )
+			t.beDamageAttackedReactions_+=( new PrintDamageAttack(name) )
+			t.beStatusAttackedReactions_+=( new PrintStatusAttack(name) )
 		}.tupled)
 	}
 	

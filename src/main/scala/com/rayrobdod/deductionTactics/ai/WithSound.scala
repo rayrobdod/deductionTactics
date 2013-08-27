@@ -27,7 +27,7 @@ final class WithSound(val base:PlayerAI) extends PlayerAI
 		base.initialize(player, field)
 		
 		player.tokens.tokens.flatten.foreach{
-				_.addDamageAttackedReaction(WithSound.AttackSoundReaction)
+				_.beDamageAttackedReactions_+=(WithSound.AttackSoundReaction)
 		}
 	}
 	

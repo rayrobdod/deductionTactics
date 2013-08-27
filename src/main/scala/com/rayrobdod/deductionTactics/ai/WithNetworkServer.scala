@@ -53,9 +53,9 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		player.tokens.myTokens.zipWithIndex.foreach({ (token:CannonicalToken, index:Int) =>
 			val index2 = index.toString;
 			
-			token.addTryDamageAttackedReaction(new PrintRequestDamageAttack(index2))
-			token.addTryStatusAttackedReaction(new PrintRequestStatusAttack(index2))
-			token.addMoveReaction(new PrintMove(index2))
+			token.tryDamageAttackedReactions_+=(new PrintRequestDamageAttack(index2))
+			token.tryStatusAttackedReactions_+=(new PrintRequestStatusAttack(index2))
+			token.moveReactions_+=(new PrintMove(index2))
 		}.tupled)
 	}
 	

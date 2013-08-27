@@ -51,7 +51,7 @@ class TokenPanel(val token:Token) extends JPanel
 	add(statusRow, GridBagConstraintsFactory( gridwidth = GridBagConstraints.REMAINDER ))
 	add(tokenClass, GridBagConstraintsFactory( gridwidth = GridBagConstraints.REMAINDER ))
 	
-	token.addUpdateReaction(UpdateAct)
+	token.updateReactions_+=(UpdateAct)
 	/** add to all tokens and players */
 	object UpdateAct extends Function0[Unit] {
 		override def apply():Unit = {
@@ -61,7 +61,7 @@ class TokenPanel(val token:Token) extends JPanel
 		}
 	}
 	
-	token.addSelectedReaction(SelectedAct)
+	token.selectedReactions_+=(SelectedAct)
 	/** Add to token */
 	object SelectedAct extends Function1[Boolean, Unit]
 	{

@@ -117,7 +117,7 @@ object Main extends App
 			UnitAwareSpaceClass.tokens.tokens = UnitAwareSpaceClass.tokens.tokens :+ seq;
 		}}
 		allTokens.foreach{(x:Token) => {
-			x.addSelectedReaction(new UnselectOtherTokens(x,allTokens)) 
+			x.selectedReactions_+=(new UnselectOtherTokens(x,allTokens)) 
 		}}
 		
 		canonTokens.zip(tokenPositions).map(

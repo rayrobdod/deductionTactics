@@ -63,11 +63,11 @@ class SleepAbuserAI extends PlayerAI
 	
 	def initialize(player:Player, field:Field) = {
 		player.tokens.otherTokens.flatten.foreach{(token:MirrorToken) =>
-			token.addDamageAttackedReaction(new StandardObserveAttacks(token, player.tokens))
-			token.addStatusAttackedReaction(new StandardObserveAttacks(token, player.tokens))
+			token.beDamageAttackedReactions_+=(new StandardObserveAttacks(token, player.tokens))
+			token.beStatusAttackedReactions_+=(new StandardObserveAttacks(token, player.tokens))
 			
 			val movement = new StandardObserveMovement(token)
-			token.addMoveReaction(movement)
+			token.moveReactions_+=(movement)
 			player.addStartTurnReaction(movement)
 		}
 	}

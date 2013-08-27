@@ -31,31 +31,31 @@ final class MirrorToken(parent:Token) extends Token
 	private val tokenSuspicions = new SuspicionsTokenClass
 	def tokenClass = tokenSuspicions
 	
-	parent.addMoveReaction(MirrorMoveReaction)
+	parent.moveReactions_+=(MirrorMoveReaction)
 	private object MirrorMoveReaction extends BoardGameToken.MoveReactionType {
 		def apply(s:Space, b:Boolean):Unit = {
 			MirrorToken.this.currentSpace_=(s, b)
 		}
 	}
 	
-	parent.addDiedReaction(MirrorDiedReaction)
+	parent.diedReactions_+=(MirrorDiedReaction)
 	private object MirrorDiedReaction extends Function0[Unit] {
 		def apply():Unit = MirrorToken.this.triggerDiedReactions
 	}
 	
-	parent.addUpdateReaction(MirrorUpdateReaction)
+	parent.updateReactions_+=(MirrorUpdateReaction)
 	private object MirrorUpdateReaction extends Function0[Unit] {
 		def apply():Unit = MirrorToken.this.triggerUpdateReactions
 	}
 	
-	parent.addDamageAttackedReaction(MirrorDamageAttackReaction)
+	parent.beDamageAttackedReactions_+=(MirrorDamageAttackReaction)
 	private object MirrorDamageAttackReaction extends Token.DamageAttackedReactionType {
-		def apply(a:Element, b:Weaponkind, c:Space):Unit = MirrorToken.this.triggerDamageAttackedReactions(a,b,c)
+		def apply(a:Element, b:Weaponkind, c:Space):Unit = MirrorToken.this.triggerBeDamageAttackedReactions(a,b,c)
 	}
 	
-	parent.addStatusAttackedReaction(MirrorStatusAttackReaction)
+	parent.beStatusAttackedReactions_+=(MirrorStatusAttackReaction)
 	private object MirrorStatusAttackReaction extends Token.StatusAttackedReactionType {
-		def apply(a:Status, b:Space):Unit = MirrorToken.this.triggerStatusAttackedReactions(a,b)
+		def apply(a:Status, b:Space):Unit = MirrorToken.this.triggerBeStatusAttackedReactions(a,b)
 	}
 	
 	

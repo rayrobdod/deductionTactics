@@ -40,20 +40,24 @@ trait Token extends BoardGameToken
 	
 	
 	private val diedReactions:Buffer[() => Unit] = Buffer.empty;
-	def addDiedReaction(a:() => Unit) = {diedReactions += a}
+	def diedReactions_+=(a:() => Unit) = {diedReactions += a}
+	def diedReactions_-=(a:() => Unit) = {diedReactions -= a}
 	protected def triggerDiedReactions() = {diedReactions.foreach{a => a()}}
 	
 	private val updateReactions:Buffer[() => Unit] = Buffer.empty;
-	def addUpdateReaction(a:() => Unit) = {updateReactions += a}
+	def updateReactions_+=(a:() => Unit) = {updateReactions += a}
+	def updateReactions_-=(a:() => Unit) = {updateReactions -= a}
 	protected def triggerUpdateReactions() = {updateReactions.foreach{a => a()}}
 	
 	private val beDamageAttackedReactions:Buffer[Token.DamageAttackedReactionType] = Buffer.empty;
-	def addDamageAttackedReaction(a:Token.DamageAttackedReactionType) = {beDamageAttackedReactions += a}
-	protected def triggerDamageAttackedReactions(b:Element, c:Weaponkind, d:Space) = {beDamageAttackedReactions.foreach{a => a(b,c,d)}}
+	def beDamageAttackedReactions_+=(a:Token.DamageAttackedReactionType) = {beDamageAttackedReactions += a}
+	def beDamageAttackedReactions_-=(a:Token.DamageAttackedReactionType) = {beDamageAttackedReactions -= a}
+	protected def triggerBeDamageAttackedReactions(b:Element, c:Weaponkind, d:Space) = {beDamageAttackedReactions.foreach{a => a(b,c,d)}}
 
 	private val beStatusAttackedReactions:Buffer[Token.StatusAttackedReactionType] = Buffer.empty;
-	def addStatusAttackedReaction(a:Token.StatusAttackedReactionType) = {beStatusAttackedReactions += a}
-	protected def triggerStatusAttackedReactions(a:Status, b:Space) = {beStatusAttackedReactions.foreach{c => c(a,b)}}
+	def beStatusAttackedReactions_+=(a:Token.StatusAttackedReactionType) = {beStatusAttackedReactions += a}
+	def beStatusAttackedReactions_-=(a:Token.StatusAttackedReactionType) = {beStatusAttackedReactions -= a}
+	protected def triggerBeStatusAttackedReactions(a:Status, b:Space) = {beStatusAttackedReactions.foreach{c => c(a,b)}}
 }
 
 object Token {

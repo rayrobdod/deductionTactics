@@ -46,7 +46,7 @@ class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout,
 	
 	
 	
-	token.addUpdateReaction(UpdateIconReaction)
+	token.updateReactions_+=(UpdateIconReaction)
 	object UpdateIconReaction extends Function0[Unit] {
 		override def apply():Unit = TokenComponent.this.setIcon(
 				tokenClassNameToIcon.getOrElse(token.tokenClass.name,
@@ -54,8 +54,8 @@ class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout,
 		)
 	}
 	
-	token.addDamageAttackedReaction(ShowDamageReaction)
-	token.addStatusAttackedReaction(ShowDamageReaction)
+	token.beDamageAttackedReactions_+=(ShowDamageReaction)
+	token.beStatusAttackedReactions_+=(ShowDamageReaction)
 	
 	object ShowDamageReaction extends Token.DamageAttackedReactionType
 			with Token.StatusAttackedReactionType with Runnable

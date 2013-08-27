@@ -60,7 +60,7 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 //			val comp = new BGTokenComponent(t, fieldComp, layout, t.tokenClass.icon)
 			val comp = new DTTokenComponent(t, fieldComp, layout, tokens)
 			
-			t.addDiedReaction(RemoveComponentUponDeathAct)
+			t.diedReactions_+=(RemoveComponentUponDeathAct)
 			object RemoveComponentUponDeathAct extends Function0[Unit] {
 				override def apply() = {
 						tokenLayer remove comp
@@ -96,7 +96,7 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 		
 		tokenPanels.foreach{(panel:TokenPanel) => 
 			tokens.tokens.flatten.foreach{(token:Token) =>
-				token.addUpdateReaction(panel.UpdateAct)
+				token.updateReactions_+=(panel.UpdateAct)
 			}
 		}
 		

@@ -64,8 +64,8 @@ sealed class SwingInterface extends PlayerAI
 		
 		tokens.tokens.flatten.foreach{(x:Token) =>
 			val reaction = new HighlightMovableSpacesReaction(x, panel, player.tokens);
-			x.addSelectedReaction(reaction)
-			x.addMoveReaction(reaction)
+			x.selectedReactions_+=(reaction)
+			x.moveReactions_+=(reaction)
 		}
 		panel.centerpiece.spaceLabelMap.foreach({(s:RectangularSpace, c:JLabel) => 
 			c.addMouseListener(new SelectTokenOnSpaceMouseListener(s, player.tokens))

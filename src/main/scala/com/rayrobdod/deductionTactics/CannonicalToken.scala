@@ -183,7 +183,7 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 		
 		_currentHitpoints = _currentHitpoints - damageDone
 		
-		this.triggerDamageAttackedReactions(elem,kind,from)
+		this.triggerBeDamageAttackedReactions(elem,kind,from)
 		this.triggerUpdateReactions
 		if (_currentHitpoints <= 0) {CannonicalToken.this.triggerDiedReactions()}
 	}
@@ -192,7 +192,7 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 			_currentStatus = Some(status)
 			_currentStatusTurnsLeft = 3
 		}
-		this.triggerStatusAttackedReactions(status,from)
+		this.triggerBeStatusAttackedReactions(status,from)
 		this.triggerUpdateReactions
 	}
 	
@@ -214,10 +214,12 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 	}
 	
 	private val tryDamageAttackedReactions:Buffer[CannonicalToken.RequestAttackType] = Buffer.empty;
-	def addTryDamageAttackedReaction(a:CannonicalToken.RequestAttackType) = {tryDamageAttackedReactions += a}
-
+	def tryDamageAttackedReactions_+=(a:CannonicalToken.RequestAttackType) = {tryDamageAttackedReactions += a}
+	def tryDamageAttackedReactions_-=(a:CannonicalToken.RequestAttackType) = {tryDamageAttackedReactions -= a}
+	
 	private val tryStatusAttackedReactions:Buffer[CannonicalToken.RequestAttackType] = Buffer.empty;
-	def addTryStatusAttackedReaction(a:CannonicalToken.RequestAttackType) = {tryStatusAttackedReactions += a}
+	def tryStatusAttackedReactions_+=(a:CannonicalToken.RequestAttackType) = {tryStatusAttackedReactions += a}
+	def tryStatusAttackedReactions_-=(a:CannonicalToken.RequestAttackType) = {tryStatusAttackedReactions -= a}
 
 	
 	private def directionMultiplier(hisSpace:BoardGameSpace, mySpace:BoardGameSpace) = {
