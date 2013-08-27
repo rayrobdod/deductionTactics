@@ -8,17 +8,8 @@ import Directions.Direction
 
 import scala.collection.Seq
 import scala.collection.immutable.{Map, Seq => ISeq}
-import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
-import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
-import java.io.{StringReader, InputStreamReader}
 import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.JavaConversions.asScalaBuffer
-import scala.collection.JavaConversions.enumerationAsScalaIterator
-import java.net.URL
-import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Path, Paths, FileSystems}
-import com.rayrobdod.javaScriptObjectNotation.JSONString
-import com.rayrobdod.javaScriptObjectNotation.javaCollection.JSONObject
 import scala.collection.JavaConversions.mapAsJavaMap
 
 /**

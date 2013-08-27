@@ -8,23 +8,18 @@ import Directions.Direction
 
 import scala.collection.Seq
 import scala.collection.immutable.{Map, Seq => ISeq}
+import com.rayrobdod.javaScriptObjectNotation.parser.JSONDecoder
+import com.rayrobdod.javaScriptObjectNotation.parser.JSONParseListener
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import com.rayrobdod.javaScriptObjectNotation.JSONString
-import com.rayrobdod.javaScriptObjectNotation.javaCollection.JSONObject
 import java.io.{StringReader, InputStreamReader}
 import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.JavaConversions.asScalaBuffer
-import scala.collection.JavaConversions.enumerationAsScalaIterator
-import java.net.URL
-import java.nio.charset.StandardCharsets
-import java.nio.file.{Files, Path, Paths, FileSystems}
 import scala.collection.JavaConversions.mapAsJavaMap
 import LoggerInitializer.{tokenClassDecoderLogger => Logger}
 
 
-import com.rayrobdod.javaScriptObjectNotation.parser.JSONDecoder
-import com.rayrobdod.javaScriptObjectNotation.parser.JSONParseListener
 
 /**
  * A builder for CannonicalTokenClasses.
