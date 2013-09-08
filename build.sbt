@@ -16,7 +16,7 @@ mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
 
 target := new File("C:/Users/Raymond/AppData/Local/Temp/build/DeductionTactics/")
 
-libraryDependencies += ("com.rayrobdod" %% "utilities" % "1.0.0")
+libraryDependencies += ("com.rayrobdod" %% "utilities" % "20130908")
 
 libraryDependencies += ("com.rayrobdod" %% "json" % "1.0.0")
 
