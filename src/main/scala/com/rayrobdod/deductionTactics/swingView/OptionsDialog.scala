@@ -1,6 +1,5 @@
 package com.rayrobdod.deductionTactics.swingView
 
-import com.rayrobdod.deductionTactics.Options
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet => Tilesheet}
 import java.awt.{Window, Dialog}
 import javax.swing.{JDialog, JList, JLabel, JTextField}
@@ -10,10 +9,7 @@ import java.awt.event.{ActionListener, ActionEvent}
 /**
  * An interface for setting options
  * @author Raymond Dodge
- * @version 29 May 2012 - only contains currentTilesheet
- * @version 24 Jul 2012 - adding movementSpeed
- * @version 28 Oct 2012 - changing imports from com.rayrobdod.boardGame.view to com.rayrobdod.boardGame.swingView
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
+ * @version a.5.0
  */
 class OptionsDialog(
 		owner:Window,
@@ -25,23 +21,22 @@ class OptionsDialog(
 	currentTilesheet.addListSelectionListener(new ListSelectionListener() {
 		override def valueChanged(e:ListSelectionEvent)
 		{
-			Options.currentTilesheet = currentTilesheet.getSelectedValue()
+			BoardGamePanel.currentTilesheet = currentTilesheet.getSelectedValue()
 		}
 	})
 	currentTilesheet.setCellRenderer(TilesheetListRenderer)
-	currentTilesheet.setSelectedValue(Options.currentTilesheet, true)
+	currentTilesheet.setSelectedValue(BoardGamePanel.currentTilesheet, true)
 	
 	val movementSpeed = new JTextField()
-	movementSpeed.setText(Options.movementSpeed.toString)
+	movementSpeed.setText(BoardGamePanel.movementSpeed.toString)
 	movementSpeed.addActionListener(new ActionListener(){
 		override def actionPerformed(e:ActionEvent)
 		{
-			Options.movementSpeed = Integer.parseInt(movementSpeed.getText)
+			BoardGamePanel.movementSpeed = Integer.parseInt(movementSpeed.getText)
 		}
 	})
 	
 	this.getContentPane.setLayout(new java.awt.FlowLayout())
-	this.getContentPane.add(new JLabel("TODO: make objects persistent"))
 	this.getContentPane.add(new JLabel("the tilesheet to use"))
 	this.getContentPane.add(currentTilesheet)
 	this.getContentPane.add(new JLabel("Tokens' movement speed (lower is faster)"))
