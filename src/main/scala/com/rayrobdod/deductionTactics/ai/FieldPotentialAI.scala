@@ -2,10 +2,10 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import com.rayrobdod.boardGame.{Space, TokenMovementCost, PhysicalStrikeCost}
-import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace => Space}
+import com.rayrobdod.boardGame.{RectangularField => Field}
 import scala.collection.immutable.{Map, Set, Seq}
 import scala.collection.mutable.{Map => MMap}
-import LoggerInitializer.{blindAttackAILogger => Logger}
+import LoggerInitializer.{fieldPotentialAiLogger => Logger}
 import java.util.logging.Level
 
 /**
@@ -13,7 +13,7 @@ import java.util.logging.Level
  * and then uses potential fields to determine how to attack and retreat.
  * @author Raymond Dodge
  */
-class FieldPotentialAI extends PlayerAI
+final class FieldPotentialAI extends PlayerAI
 {
 	def takeTurn(player:Player) {
 		player.tokens.aliveMyTokens.foreach{(myToken:CannonicalToken) =>
@@ -23,7 +23,8 @@ class FieldPotentialAI extends PlayerAI
 				val otherToken = player.tokens.aliveOtherTokens.flatten.map{(x:MirrorToken) =>
 					import PotentialFieldAI$FuzzyLogic.shouldEngage;
 					
-					((x, shouldEngage(myToken, x) ))
+					val a = shouldEngage(myToken, x);
+					((x, a))
 				}.maxBy{_._2}
 				
 				Some(otherToken).filter{_._2 > .2f}.map{_._1}
@@ -80,12 +81,25 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 	class Distance(self:CannonicalToken, other:MirrorToken) {
 		private val speed:Float = self.tokenClass.speed.get;
 		private val range:Float = self.tokenClass.range.get;
-		private val distance = self.currentSpace.distanceTo(other.currentSpace, self, TokenMovementCost);
+		// the '1000' is the cost for entering the token's current space. Technicalities.
+		private val distance = self.currentSpace.distanceTo(other.currentSpace, self, TokenMovementCost) - 999;
 		
-		val adjacent   = trapezoidalFunction(distance, -INF, -INF, 0, range);
-		val close      = trapezoidalFunction(distance, .5f, math.min(range + .5f, speed/2), speed/2, speed)
+		val adjacent   = trapezoidalFunction(distance, -INF, -INF, range, range + .1f);
+		val close      = trapezoidalFunction(distance, range, range, speed/2, speed)
 		val far        = trapezoidalFunction(distance, speed/2, speed, speed, speed+range)
 		val outOfRange = trapezoidalFunction(distance, speed, speed + range, INF, INF);
+		
+		override def toString() = {
+			"Distance[" +
+					  "speed: " + speed +
+					"; range: " + range +
+					"; distance: " + distance +
+					"; adjacent: " + adjacent +
+					"; close: " + close +
+					"; far: " + far +
+					"; outOfRange: " + outOfRange +
+			"]"
+		}
 	}
 	
 	class Advantage(selfT:CannonicalToken, otherT:MirrorToken) {
@@ -165,10 +179,10 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 	 * @pre max >= peakMax >= peakMin >= min
 	 */
 	def trapezoidalFunction(x:Float, min:Float, peakMin:Float, peakMax:Float, max:Float):Float = {
-		if (x < min) { 0 }
-		else if (x < peakMin) { (x - min) / (peakMin - min) }
-		else if (x < peakMax) { 1 }
-		else if (x < max) { (x - peakMax) / (max - peakMax) }
+		if (x <= min) { 0 }
+		else if (x <= peakMin) { (x - min) / (peakMin - min) }
+		else if (x <= peakMax) { 1 }
+		else if (x <= max) { (max - x) / (max - peakMax) }
 		else { 0 }
 	}
 	
@@ -195,6 +209,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 				advantage.unknown / 3
 		) - otherHealth.value;
 		
+		Logger.finer(distance.toString)
 		
 		/* Attack if is Adjacent or
 		 * is Close and slight confidence or
