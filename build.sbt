@@ -52,7 +52,6 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 			(abPath contains "com/rayrobdod/deductionTactics/consoleView/") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface_CFN.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/ai/FieldPotentialAI.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithConsoleViewport.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/TokenEventPrinter.scala")
