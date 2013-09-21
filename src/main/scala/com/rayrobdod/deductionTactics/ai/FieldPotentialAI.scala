@@ -155,7 +155,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 				m_unknown = m_unknown + 1;
 			}
 			
-			// Other things. including t
+			// Other things. including herd size, direction, status, 
 			
 			
 			(m_self / strength, m_opponent / strength, m_even / strength, m_unknown / strength);
@@ -190,6 +190,8 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 	
 	
 	def shouldEngage(selfT:CannonicalToken, otherT:MirrorToken):Float = {
+		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$FuzzyLogic", "shouldEngage")
+		
 		val distance = new Distance(selfT, otherT);
 		val advantage = new Advantage(selfT, otherT);
 		val selfHealth = new Health(selfT);
@@ -224,7 +226,8 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 }
 
 private[ai] object PotentialFieldAI$AttackField {
-	def apply(selfT:CannonicalToken, otherT:MirrorToken) = {
+	def apply(selfT:CannonicalToken, otherT:MirrorToken):Space = {
+		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$AttackField", "apply")
 		
 		val eligibleSpaces:Set[Space] = otherT.currentSpace.spacesWithin(
 				selfT.tokenClass.range.get, selfT, PhysicalStrikeCost
@@ -247,12 +250,18 @@ private[ai] object PotentialFieldAI$AttackField {
 			((space, c));
 		}
 		
+		if (Logger.isLoggable(Level.FINER)) {
+			val str = priorities.map{_._2}.foldLeft(""){(str, x) => str + x + ' '}
+			Logger.finer(str);
+		}
+		
 		priorities.maxBy{_._2}._1
 	}
 }
 
 private[ai] object PotentialFieldAI$RetreatField {
-	def apply(selfT:CannonicalToken, tokens:PlayerListOfTokens) = {
+	def apply(selfT:CannonicalToken, tokens:PlayerListOfTokens):Space = {
+		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$RetreatField", "apply")
 		
 		val eligibleSpaces:Set[Space] = selfT.currentSpace.spacesWithin(
 				selfT.canMoveThisTurn, selfT, TokenMovementCost
@@ -270,30 +279,50 @@ private[ai] object PotentialFieldAI$RetreatField {
 					else if (distance <= range + speed) {
 						12 - (((range + speed) - distance * 12) / (range + speed))
 					} else {
-						math.max(distance - range + speed, 0)
+						math.max(12 - (distance - range + speed), 0)
 					}
 				
 				(( space, pri ))
 			}
 		}
 		val prioritiesHerd:Seq[Set[(Space, Int)]] = tokens.aliveMyTokens.map{(otherT:CannonicalToken) =>
-			eligibleSpaces.map{(space:Space) => 
-				val distance = space.distanceTo(
-						otherT.currentSpace, selfT, TokenMovementCost);
-				//
-				val pri = distance match {
-					case 1 => 4
-					case 2 => 7
-					case 3 => 1
-					case _ => 0
+			if (otherT == selfT) {
+				Set.empty[(Space, Int)]
+			} else {
+				eligibleSpaces.map{(space:Space) => 
+					val distance = space.distanceTo(
+							otherT.currentSpace, selfT, TokenMovementCost) - 999;
+					//
+					val pri = distance match {
+						case 1 => 2
+						case 2 => 3
+						case 3 => 1
+						case _ => 0
+					}
+					
+					(( space, pri ))
 				}
-				
-				(( space, pri ))
 			}
 		}
 		
+		if (Logger.isLoggable(Level.FINEST)) {
+			val str1 = prioritiesEnemy.flatten.map{_._2}.foldLeft(""){(str, x) => str + x + ' '}
+			Logger.finer(str1);
+			
+			val str2 = prioritiesHerd.flatten.map{_._2}.foldLeft(""){(str, x) => str + x + ' '}
+			Logger.finer(str2);
+		}
+		
 		val priorities = (prioritiesEnemy ++ prioritiesHerd).foldLeft(Map.empty[Space, Int]){
-			(a:Map[Space, Int], b:Set[(Space, Int)]) => a ++ b
+			(a:Map[Space, Int], b:Set[(Space, Int)]) => b.foldLeft(a){
+				(y:Map[Space, Int], x:(Space, Int)) =>
+					y + (( x._1, a.getOrElse(x._1, 0) + x._2 ))
+			}
+		}
+		
+		if (Logger.isLoggable(Level.FINER)) {
+			val str = priorities.map{_._2}.foldLeft(""){(str, x) => str + x + ' '}
+			Logger.finer(str);
 		}
 		
 		priorities.maxBy{_._2}._1
