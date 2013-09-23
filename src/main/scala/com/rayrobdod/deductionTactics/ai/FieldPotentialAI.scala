@@ -27,6 +27,8 @@ final class FieldPotentialAI extends PlayerAI
 					((x, a))
 				}.maxBy{_._2}
 				
+				Logger.finer("PlayerAI will target someone: " + otherToken._2)
+				
 				Some(otherToken).filter{_._2 > .2f}.map{_._1}
 			}
 			
@@ -60,6 +62,32 @@ final class FieldPotentialAI extends PlayerAI
 			val movement = new StandardObserveMovement(token)
 			token.moveReactions_+=(movement)
 			player.addStartTurnReaction(movement)
+		}
+		
+		if (Logger.isLoggable(Level.FINER)) {
+			import java.awt.event.{WindowEvent, WindowAdapter}
+			import javax.swing.{JFrame, JLabel}
+			
+			val frame = new JFrame("PotentialFieldAI$RetreatField") 
+			frame.getContentPane.setLayout(
+				new java.awt.GridLayout(
+					field.spaces(0).size,
+					field.spaces.size
+				)
+			)
+			
+			val token = player.tokens.myTokens(0)
+			val labels = field.spaces.flatten.map{(x) => (x, new JLabel("XXXX"))}
+			
+			labels.foreach{(x) => frame.getContentPane.add(x._2)}
+			player.addStartTurnReaction{new Player.StartTurnReactionType() {
+				def apply() {
+					val c = PotentialFieldAI$RetreatField.priorities(token, player.tokens, field.spaces.size)
+					labels.foreach{(x) => x._2.setText(c.getOrElse(x._1, "X").toString)}
+				}
+			}}
+			frame.setVisible(true);
+			frame.pack();
 		}
 	}
 	
@@ -170,8 +198,8 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 		val weak        = trapezoidalFunction(hp, 16, 32, 64, 96)
 		val bloodied    = trapezoidalFunction(hp, -INF, -INF, 16, 32);
 		
-		
-		val value = bloodied * .25f + weak * .5f + strong * .75f + uninjured
+		private val sum = (uninjured + strong + weak + bloodied)
+		val value = (bloodied * .25f + weak * .5f + strong * .75f + uninjured) / sum
 	}
 	
 	/**
@@ -261,11 +289,19 @@ private[ai] object PotentialFieldAI$AttackField {
 
 private[ai] object PotentialFieldAI$RetreatField {
 	def apply(selfT:CannonicalToken, tokens:PlayerListOfTokens):Space = {
-		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$RetreatField", "apply")
+		priorities(selfT, tokens).maxBy{_._2}._1
+	}
+	
+	def priorities(selfT:CannonicalToken, tokens:PlayerListOfTokens):Map[Space, Int] = {
+		this.priorities(selfT, tokens, selfT.canMoveThisTurn)
+	}
+	
+	def priorities(selfT:CannonicalToken, tokens:PlayerListOfTokens, range:Int):Map[Space, Int] = {
+		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$RetreatField", "priorities")
 		
-		val eligibleSpaces:Set[Space] = selfT.currentSpace.spacesWithin(
-				selfT.canMoveThisTurn, selfT, TokenMovementCost
-		)
+		val eligibleSpaces:Set[Space] = Option(selfT.currentSpace).map{_.spacesWithin(
+				range, selfT, TokenMovementCost
+		)}.getOrElse( Set.empty )
 		
 		val prioritiesEnemy:Seq[Set[(Space, Int)]] = tokens.aliveOtherTokens.flatten.map{(otherT:MirrorToken) =>
 			eligibleSpaces.map{(space:Space) => 
@@ -276,10 +312,10 @@ private[ai] object PotentialFieldAI$RetreatField {
 				//
 				val pri =
 					if (distance <= range) { 0 }
-					else if (distance <= range + speed) {
-						12 - (((range + speed) - distance * 12) / (range + speed))
+					else if (distance <= range + speed + 1) {
+						10 - (((range + speed) - distance))
 					} else {
-						math.max(12 - (distance - range + speed), 0)
+						math.max(10 - (distance - range + speed), 0)
 					}
 				
 				(( space, pri ))
@@ -306,10 +342,10 @@ private[ai] object PotentialFieldAI$RetreatField {
 		}
 		
 		if (Logger.isLoggable(Level.FINEST)) {
-			val str1 = prioritiesEnemy.flatten.map{_._2}.foldLeft(""){(str, x) => str + x + ' '}
+			val str1 = prioritiesEnemy.flatten.map{_._2}.foldLeft("Enemy: "){(str, x) => str + x + ' '}
 			Logger.finer(str1);
 			
-			val str2 = prioritiesHerd.flatten.map{_._2}.foldLeft(""){(str, x) => str + x + ' '}
+			val str2 = prioritiesHerd.flatten.map{_._2}.foldLeft("Herd:  "){(str, x) => str + x + ' '}
 			Logger.finer(str2);
 		}
 		
@@ -325,6 +361,6 @@ private[ai] object PotentialFieldAI$RetreatField {
 			Logger.finer(str);
 		}
 		
-		priorities.maxBy{_._2}._1
+		priorities;
 	}
 }

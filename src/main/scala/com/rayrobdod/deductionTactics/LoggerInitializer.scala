@@ -63,6 +63,6 @@ private[deductionTactics] object LoggerInitializer
 	val fieldPotentialAiLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.FieldPotentialAI")
 	fieldPotentialAiLogger.addHandler(finerConsoleHander)
-	fieldPotentialAiLogger.setLevel(Level.WARNING)
+	fieldPotentialAiLogger.setLevel(Level.FINER)
 	
 }

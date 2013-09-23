@@ -10,6 +10,8 @@ import com.rayrobdod.util.services.ClassServiceLoader
 
 /**
  * A Deduction Tactics player
+ *
+ * This is more of a data structure. To control the Player, one would use a PlayerAI.
  * 
  * @author Raymond Dodge
  * @version 21 Aug 2011
@@ -53,9 +55,9 @@ object Player {
 
 
 /**
- * An abstract class that provides an interface for ais to play this game.
- * Because that was easiest, this is a Reaction.
- * 
+ * An abstract class that  Player will poll when it is taking a turn to
+ * determine how to act.
+ *  
  * @author Raymond Dodge
  * @version 21 Aug 2011
  * @version 23 Aug 2011 - added buildTeam, and nuked TeamBuilder class
@@ -66,6 +68,7 @@ object Player {
  * @version 27 Feb 2012 - adding observeStatusAttack
  * @version 20 Mar 2012 - modified reactions for new event model
  * @version 2013 Jun 07 - no longer implements scala.swing.Reactions.Reaction
+ * @todo trait instead of abstract class? Could it possibly hurt?
  */
 abstract class PlayerAI
 {

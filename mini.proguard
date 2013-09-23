@@ -4,6 +4,7 @@
 -dontoptimize
 -dontobfuscate
 -dontwarn scala.**,com.kitfox.svg.app.ant.SVGToImageAntTask
+-keepattributes SourceFile,LineNumberTable
 
 
 -keep class com.rayrobdod.deductionTactics.swingView.FieldChessTilesheet
