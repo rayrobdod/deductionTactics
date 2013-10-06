@@ -4,6 +4,11 @@ package consoleView
 import scala.collection.mutable.Buffer
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
 
+/**
+ * A console application that can let a user navigate a RectangularField
+ * @author Raymond Dodge
+ * @since 2013 Oct 06
+ */
 class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Runnable {
 	val out:java.io.PrintStream = System.out
 	val in:java.io.InputStream = System.in
@@ -12,13 +17,14 @@ class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Ru
 	private var selected:Option[Token] = None;
 	private var continue:Boolean = true;
 	
-	val PressUp    = 'w';
-	val PressLeft  = 'a';
-	val PressRight = 'd';
-	val PressDown  = 's';
-	val PressEsc   = 'e';
-	val PressQuit  = 'q';
-	val PressEnter = 'x';
+	private val PressUp     = 'w';
+	private val PressLeft   = 'a';
+	private val PressRight  = 'd';
+	private val PressDown   = 's';
+	private val PressNextTurn = 'e';
+	private val PressQuit   = 'q';
+	private val PressSelect = 'x';
+	private val PressTab    = 9;
 	
 	def run() {
 		out print controlCursorToTop
@@ -41,13 +47,13 @@ class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Ru
 			
 			val char = in.read(); 
 			
-			if (char == PressUp)    current = current.up.getOrElse(current).asInstanceOf[RectangularSpace]
-			if (char == PressLeft)  current = current.left.getOrElse(current).asInstanceOf[RectangularSpace]
-			if (char == PressDown)  current = current.down.getOrElse(current).asInstanceOf[RectangularSpace]
-			if (char == PressRight) current = current.right.getOrElse(current).asInstanceOf[RectangularSpace]
-			if (char == PressEsc)   endOfTurnReactions.foreach{x => x()}
-			if (char == PressEnter) tokenOnSpace.foreach{_.beSelected(true)}
-			if (char == PressQuit)  System.exit(0)
+			if (char == PressUp)     current = current.up.getOrElse(current).asInstanceOf[RectangularSpace]
+			if (char == PressLeft)   current = current.left.getOrElse(current).asInstanceOf[RectangularSpace]
+			if (char == PressDown)   current = current.down.getOrElse(current).asInstanceOf[RectangularSpace]
+			if (char == PressRight)  current = current.right.getOrElse(current).asInstanceOf[RectangularSpace]
+			if (char == PressNextTurn) endOfTurnReactions.foreach{x => x()}
+			if (char == PressSelect) tokenOnSpace.foreach{_.beSelected(true)}
+			if (char == PressQuit)   System.exit(0)
 			
 		}
 		

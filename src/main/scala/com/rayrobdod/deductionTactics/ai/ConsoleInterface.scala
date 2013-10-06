@@ -2,13 +2,12 @@ package com.rayrobdod.deductionTactics.ai
 
 import com.rayrobdod.deductionTactics.{PlayerAI, Player, Token}
 import com.rayrobdod.boardGame.{RectangularField => Field}
-
 import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
 
 /**
  *
  * @author Raymond Dodge
- * @version 2013 Oct 05 - Nuking
+ * @version 2013 Oct 05
  */
 final class ConsoleInterface extends PlayerAI
 {
