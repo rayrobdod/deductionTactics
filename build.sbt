@@ -8,13 +8,11 @@ version := "a.5.1-SNAPSHOT"
 
 scalaVersion := "2.9.3"
 
-crossScalaVersions ++= Seq("2.9.1", "2.9.2", "2.10.2", "2.11.0-M4")
+crossScalaVersions ++= Seq("2.9.1", "2.9.2", "2.9.3", "2.10.2", "2.11.0-M4")
 
 exportJars := true
 
 mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
-
-target := new File("C:/Users/Raymond/AppData/Local/Temp/build/DeductionTactics/")
 
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "20130908")
 
@@ -83,6 +81,7 @@ mappings in (Compile, packageSrc) <++= (compileTokensInput) map { (tokenSrc) =>
 	tokenSrc.map{x => ((x, "com/rayrobdod/deductionTactics/tokenClasses/" + x.getName )) }
 }
 
+// if some part of the circular dependency breaks down, remove this line
 resourceGenerators in Compile <+= compileTokens.task
 
 
