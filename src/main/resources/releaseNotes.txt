@@ -3,6 +3,13 @@
 Wishlist: Token Animations, Persistent preferences, Flying units,
 		change AIs to use builder model, Better AIs
 
+== a.5.1 ==
+Adding AI: field potential ai
+
+Allowing preferences to persist
+
+
+== a.5.0 ==
 === Major / Breaking ===
 * No longer uses scala.swing or scala.actors.
 
