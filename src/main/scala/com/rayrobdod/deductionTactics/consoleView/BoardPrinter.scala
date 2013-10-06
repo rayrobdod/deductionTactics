@@ -23,7 +23,7 @@ object BoardPrinter{
 	
 	def spaceStrings(tokens:ListOfTokens, field:RectangularField, cursor:Option[Space] = None, selected:Option[Token] = None):Seq[Seq[String]] = {
 		field.spaces.map{_.map{(space:Space) =>
-			val tokenOnSpace = tokens.tokens.flatten.filter{_.currentSpace == space}.headOption
+			val tokenOnSpace = tokens.aliveTokens.flatten.filter{_.currentSpace == space}.headOption
 			
 			val spaceClassColor = spaceToString(space.typeOfSpace)
 			val tokenString = tokenOnSpace.map{tokensToLetters(tokens)}.getOrElse{' '}
@@ -39,7 +39,7 @@ object BoardPrinter{
 	private val (tl, tr, bl, br, horiz, vert) = (',', '.', '`', '\'', '-', '|')
 
 	def apply(out:PrintStream, tokens:ListOfTokens, field:RectangularField, cursor:Option[Space] = None, selected:Option[Token] = None) {
-		val strings = spaceStrings(tokens, field, cursor)
+		val strings = spaceStrings(tokens, field, cursor, selected)
 		
 		strings.foreach{(line:Seq[String]) => 
 			line.foreach{ x => System.out.print( x ) }

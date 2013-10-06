@@ -39,7 +39,7 @@ class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Ru
 			(new SpaceInfoPrinter(tokens)).apply(current)
 			out println ""
 			
-			val tokenOnSpace = tokens.tokens.flatten.filter{_.currentSpace == current}.headOption
+			val tokenOnSpace = tokens.aliveTokens.flatten.filter{_.currentSpace == current}.headOption
 			tokenOnSpace.foreach{a => TokenPrinter(a); out.println()}
 			// print info about current space
 			
@@ -57,7 +57,7 @@ class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Ru
 			
 		}
 		
-		System.out.println("End of turn")
+		System.out.println("End of game")
 	}
 	
 	val endOfTurnReactions:Buffer[Function0[Any]] = Buffer.empty
@@ -71,9 +71,9 @@ class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Ru
 	
 	class SelectedListener(t:Token) extends Function1[Boolean, Unit] {
 		def apply(b:Boolean) {
-			if (b == true) {
+			if (b) {
 				selected = Some(t)
-			} else if (t == selected) {
+			} else if (selected.filter{t == _}.isDefined) {
 				selected = None
 			}
 		}
