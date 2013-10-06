@@ -28,4 +28,7 @@ package object consoleView
 		
 		return returnValue;
 	}
+	
+	val controlCursorToTop = "\u001B[1;1H"
+	val controlClearRest = "\u001B[J"
 }

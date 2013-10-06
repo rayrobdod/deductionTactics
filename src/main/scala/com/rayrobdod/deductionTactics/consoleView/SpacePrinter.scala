@@ -6,13 +6,12 @@ import scala.runtime.{AbstractFunction1 => Function1}
 
 /**
  * @author Raymond Dodge
- * @version 2012 Dec 20
+ * @since 2012 Dec 20
+ * @version 2013 Oct 06
  */
-class SpacePrinter(tokens:ListOfTokens) extends Function1[Space,Unit]
+class SpaceInfoPrinter(tokens:ListOfTokens) extends Function1[Space,Unit]
 {
 	private def out = System.out
-	private val tokensToLetters = consoleView.tokensToLetters(tokens)
-
 	
 	def apply(space:Space) = {
 		val tokenOnSpace = tokens.aliveTokens.flatten.find{_.currentSpace == space};
@@ -27,13 +26,5 @@ class SpacePrinter(tokens:ListOfTokens) extends Function1[Space,Unit]
 			case NoStandOnSpaceClass() => "Passible if Flying";
 			case _ => "Unknown"
 		})
-		
-		tokenOnSpace match {
-			case None => {}
-			case Some(t:Token) => {
-				out.print( "Token on this space: " )
-				out.print( tokensToLetters(t) )
-			}
-		}
 	}
 }

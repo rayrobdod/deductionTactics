@@ -28,7 +28,7 @@ object TokenClassPrinter extends Function1[TokenClass,Unit]
 		
 		out.print("Speed: ");
 		out.print(tokenClass.speed.getOrElse(0));
-		out.print(" Range: ");
+		out.print("  Range: ");
 		out.println(tokenClass.range.getOrElse(0));
 		
 		out.print("Attack:   ")
