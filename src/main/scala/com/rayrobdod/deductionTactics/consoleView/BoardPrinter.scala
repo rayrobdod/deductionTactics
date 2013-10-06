@@ -27,11 +27,11 @@ object BoardPrinter{
 			
 			val spaceClassColor = spaceToString(space.typeOfSpace)
 			val tokenString = tokenOnSpace.map{tokensToLetters(tokens)}.getOrElse{' '}
-			val cursorColor = cursor.filter{_ == space}.map{x => scala.Console.BLINK}.getOrElse("\033[25m") // blink off
-			val tokenColor = if (tokenOnSpace == selected && tokenOnSpace != None) {scala.Console.BOLD} else {"\033[21m"}
+			val cursorColor = cursor.filter{_ == space}.map{x => scala.Console.BLINK}.getOrElse("\u001b[25m") // blink off
+			val tokenColor = if (tokenOnSpace == selected && tokenOnSpace != None) {scala.Console.BOLD} else {"\u001b[21m"}
 			
 			cursorColor + spaceClassColor + tokenColor + tokenString
-		}}
+		} :+ "\n"}
 	}
 	
 	// I'd prefer to use the top line, but the consoles are ASCII only
@@ -41,10 +41,8 @@ object BoardPrinter{
 	def apply(out:PrintStream, tokens:ListOfTokens, field:RectangularField, cursor:Option[Space] = None, selected:Option[Token] = None) {
 		val strings = spaceStrings(tokens, field, cursor, selected)
 		
-		strings.foreach{(line:Seq[String]) => 
-			line.foreach{ x => System.out.print( x ) }
-			out.println( scala.Console.RESET )
-		}
+		strings.flatten.foreach{ x => System.out.print( x ) }
+		out.println( scala.Console.RESET )
 	}
 }
 

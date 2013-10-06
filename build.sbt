@@ -97,3 +97,11 @@ ProguardKeys.inputFilter in Proguard := { file =>
 		Some("**.class")
 	}
 }
+
+// anon-fun-reduce
+autoCompilerPlugins := true
+
+addCompilerPlugin("com.rayrobdod" %% "anon-fun-reduce" % "1.0.0")
+
+libraryDependencies += ("com.rayrobdod" %% "anon-fun-reduce" % "1.0.0")
+

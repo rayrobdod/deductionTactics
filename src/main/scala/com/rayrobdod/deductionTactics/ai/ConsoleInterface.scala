@@ -5,7 +5,9 @@ import com.rayrobdod.boardGame.{RectangularField => Field}
 import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
 
 /**
- *
+ * A PlayerAI for user interaction via console.
+ * 
+ * Requires ANSI escape codes to work. Is not reusable.
  * @author Raymond Dodge
  * @version 2013 Oct 05
  */

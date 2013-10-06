@@ -21,6 +21,7 @@ object TokenClassPrinter extends Function1[TokenClass,Unit]
 	private def out = System.out
 	private val elseString = "Unknown"
 	
+	val getName = {(x:{def name:String}) => x.name}
 	
 	
 	def apply(tokenClass:TokenClass) = {
@@ -32,18 +33,18 @@ object TokenClassPrinter extends Function1[TokenClass,Unit]
 		out.println(tokenClass.range.getOrElse(0));
 		
 		out.print("Attack:   ")
-		out.print(tokenClass.atkElement.map{_.name}.getOrElse{elseString});
+		out.print(tokenClass.atkElement.map{getName}.getOrElse{elseString});
 		out.print("; ");
-		out.print(tokenClass.atkWeapon.map{_.name}.getOrElse{elseString});
+		out.print(tokenClass.atkWeapon.map{getName}.getOrElse{elseString});
 		out.print("; ");
-		out.println(tokenClass.atkStatus.map{_.name}.getOrElse{elseString});
+		out.println(tokenClass.atkStatus.map{getName}.getOrElse{elseString});
 		
 		out.print("Weakness: ")
-		out.print(tokenClass.weakDirection.map{_.name}.getOrElse{elseString});
+		out.print(tokenClass.weakDirection.map{getName}.getOrElse{elseString});
 		out.print("; ");
 		out.print(getWeakWeapon(tokenClass));
 		out.print("; ");
-		out.println(tokenClass.weakStatus.map{_.name}.getOrElse{elseString});
+		out.println(tokenClass.weakStatus.map{getName}.getOrElse{elseString});
 	}
 	
 	private def getWeakWeapon(tokenClass:TokenClass) = {

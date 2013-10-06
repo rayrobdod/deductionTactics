@@ -40,7 +40,8 @@ class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Ru
 			out println ""
 			
 			val tokenOnSpace = tokens.aliveTokens.flatten.filter{_.currentSpace == current}.headOption
-			tokenOnSpace.foreach{a => TokenPrinter(a); out.println()}
+			tokenOnSpace.foreach{TokenPrinter}
+			out.println()
 			// print info about current space
 			
 			
@@ -52,9 +53,18 @@ class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Ru
 			if (char == PressDown)   current = current.down.getOrElse(current).asInstanceOf[RectangularSpace]
 			if (char == PressRight)  current = current.right.getOrElse(current).asInstanceOf[RectangularSpace]
 			if (char == PressNextTurn) endOfTurnReactions.foreach{x => x()}
-			if (char == PressSelect) tokenOnSpace.foreach{_.beSelected(true)}
 			if (char == PressQuit)   System.exit(0)
-			
+			if (char == PressSelect) { tokenOnSpace match {
+				case None => selected match {
+					case Some(x:CannonicalToken) => x.requestMoveTo(current)
+					case _ => {}
+				}
+				case Some(x:CannonicalToken) => x.beSelected(true)
+				case Some(other:MirrorToken) => selected match {
+					case Some(mine:CannonicalToken) => mine.tryAttackDamage(other)
+					case _ => {}
+				}
+			}}
 		}
 		
 		System.out.println("End of game")
