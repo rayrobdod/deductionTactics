@@ -90,9 +90,7 @@ class TeamBuilderPanel extends JPanel
 	val nameAndIconStyle = new JRadioButton("Name and Icon", true)
 	nameAndIconStyle.addActionListener(new ActionListener(){
 		implicit def tokenClassToNameAndIcon(x:TokenClass) = {
-			new MyNameAndIcon(x.name,
-				tokenClassNameToIcon.getOrElse(x.name, generateGenericIcon(x))
-			)
+			new MyNameAndIcon(x.name, tokenClassToIcon(x))
 		}
 		override def actionPerformed(e:ActionEvent) = {
 			allTokenClassesList.setCellRenderer(new MapToNameAndIconCellRenderer[TokenClass])

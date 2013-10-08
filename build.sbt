@@ -60,7 +60,8 @@ excludeFilter in unmanagedResources in Compile := new FileFilter{
 			((abPath contains "/Hits/") && !((abPath endsWith "/Hits/Hit.wav") || (abPath endsWith "/Hits/license.txt"))) ||
 			(abPath endsWith "deductionTacticsCombined.svg") ||
 			(abPath endsWith "tokenClasses/basic.json.php") ||
-			(abPath contains "tokenClasses/sportsmen/")
+			(abPath contains "tokenClasses/sportsmen/") ||
+			((abPath contains "deductionTactics/maps/") && (abPath endsWith ".png"))
 		)
 	}
 }
@@ -97,6 +98,12 @@ ProguardKeys.inputFilter in Proguard := { file =>
 		Some("**.class")
 	}
 }
+
+artifactPath in Proguard <<= (artifactPath in Proguard, proguardType, version).apply{(orig:File, level:String, version:String) =>
+	orig.getParentFile() / ("deductionTactics-" + version + "-full-" + level + ".jar")
+}
+
+javaOptions in (Proguard, ProguardKeys.proguard) += "-Xmx2G"
 
 // anon-fun-reduce
 autoCompilerPlugins := true

@@ -234,10 +234,13 @@ class ElementRestrictedSpaceClass(val element:Elements.Element) extends BoardGam
 	import NoStandOnSpaceClass.unitIsFlying
 	
 	override def cost(tokenMoving:BoardGameToken, costType:TypeOfCost) = {
-		tokenMoving match {case x:Token => costType match {
-			case TokenMovementCost => if (unitIsFlying(tokenMoving) || x.tokenClass.atkElement == someElement) {1} else {1000}
-			case _ => 1
-		}}
+		tokenMoving match {
+			case x:Token => costType match {
+				case TokenMovementCost => if (unitIsFlying(tokenMoving) || x.tokenClass.atkElement == someElement) {1} else {1000}
+				case _ => 1
+			}
+			case _ => 1000
+		}
 	}
 	
 	override def hashCode = 100 + element.hashCode;
