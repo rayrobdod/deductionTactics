@@ -9,45 +9,40 @@ import scala.collection.immutable.{Seq => ISeq}
 /*
  *        Class Name        | Move            | Attack
  * -------------------------+-----------------+---------
- *    PassibleSpaceClass    | Yes             |  Yes
- *    UnitAwareSpaceClass   | If not occupied |  Yes
- *   ImpassibleSpaceClass   | No              |  No
- * AttackableOnlySpaceClass | No              |  Yes
- *    NoStandOnSpaceClass   | If Flying       |  Yes
- * FireRestrictedSpaceClass | If Flying/Fire  |  Yes
- *    BurningSpaceClass     | IT BURNS!       |  Yes
+ *  FreePassageSpaceClass   | Yes             |  Yes
+ *   AllyPassageSpaceClass  | If no opponent  |  Yes
+ *    UniPassageSpaceClass  | If not occupied |  Yes
+ *   ImpassableSpaceClass   | No              |  No
+ *   AttackOnlySpaceClass   | No              |  Yes
+ *  FlyingPassageSpaceClass | If Flying       |  Yes
+ *   FirePassageSpaceClass  | If Flying/Fire  |  Yes
+ *     BurningSpaceClass    | IT BURNS!       |  Yes
  */
 
 
 /**
  * @author Raymond Dodge
- * @version 13 Jan 2012 - destropying Space - replacing with SpaceClass
- * @version 14 Jul 2012 - renaming from SpaceClass to PassibleSpaceClass
- * @version 2013 Mar 04 - implementing equals, canEqual and hashCode
  */
-class PassibleSpaceClass extends BoardGameSpaceClass
+class FreePassageSpaceClass extends BoardGameSpaceClass
 		with NoLandOnAction
 		with NoPassOverAction
 		with UniformMovementCost
 {
 	override def hashCode = 5;
-	def canEqual(x:Any) = {x.isInstanceOf[PassibleSpaceClass]}
+	def canEqual(x:Any) = {x.isInstanceOf[FreePassageSpaceClass]}
 	override def equals(x:Any) = {
-		this.canEqual(x) && x.asInstanceOf[PassibleSpaceClass].canEqual(this)
+		this.canEqual(x) && x.asInstanceOf[FreePassageSpaceClass].canEqual(this)
 	}
 }
 
 /**
  * A constructor and deconstructor of SpaceClasses
  * @author Raymond Dodge
- * @version 13 Jan 2012
- * @version 14 Jul 2012 - renaming from SpaceClass to PassibleSpaceClass
- * @version 19 Jul 2012 - fixing lack of name update
  */
-object PassibleSpaceClass extends SpaceClassConstructor
+object FreePassageSpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[PassibleSpaceClass]}
-	val apply = new PassibleSpaceClass()
+	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[FreePassageSpaceClass]}
+	val apply = new FreePassageSpaceClass()
 }
 
 /**
@@ -56,13 +51,61 @@ object PassibleSpaceClass extends SpaceClassConstructor
  *
  * @note every Space will need its own instance of this class
  * @author Raymond Dodge
- * @version 20 Mar 2012
- * @version 05 Apr 2012 - #movementCost(Token) => #cost(Token, TypeOfCost). Also, only TokenMovementCost gets inflated value 
- * @version 2013 Mar 04 - implementing equals, canEqual and hashCode
- * @version 2013 Jun 03 - unimplementing equals, canEqual and hashCode; when all instances are treated as equal, the UnitAwareSpaceClass
-			will only allow tokens on when no unit is on any UnitAwareSpaceClass
  */
-class UnitAwareSpaceClass(tokens:ListOfTokens) extends BoardGameSpaceClass
+class AllyPassageSpaceClass(tokens:ListOfTokens) extends BoardGameSpaceClass
+		with NoLandOnAction
+		with NoPassOverAction
+{
+	private def isOccupied(myToken:BoardGameToken):Boolean = {
+		val myTeam = tokens.tokens.zipWithIndex.find{_._1.contains(myToken)}.map{_._2}
+		val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.find{
+				_.currentSpace.typeOfSpace == this
+		}
+		val otherTeam = tokenOnThis.map{(other:Token) => 
+			tokens.tokens.zipWithIndex.find{_._1.contains(other)}.map{_._2}
+		}.flatten
+		
+		!myTeam.isEmpty && !otherTeam.isEmpty && otherTeam.head != myTeam.get
+	}
+	
+	override def cost(tokenMoving:BoardGameToken, costType:TypeOfCost) = {
+		costType match {
+			case TokenMovementCost => {
+				if (this.isOccupied(tokenMoving)) {1000} else {1}
+			}
+			case _ => 1
+		}
+	}
+	
+/*	override def hashCode = 4;
+	def canEqual(x:Any) = {x.isInstanceOf[AllyPassageSpaceClass]}
+	override def equals(x:Any) = {
+		this.canEqual(x) &&
+		x.asInstanceOf[AllyPassageSpaceClass].canEqual(this) &&
+//		x.asInstanceOf[AllyPassageSpaceClass].tokens == this.tokens
+		true
+	}
+*/
+}
+
+/**
+ * A constructor and deconstructor for AllyPassageSpaceClass
+ * @author Raymond Dodge
+ */
+object AllyPassageSpaceClass extends SpaceClassConstructor
+{
+	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[AllyPassageSpaceClass]}
+	def apply = new AllyPassageSpaceClass(UniPassageSpaceClass.tokens)
+}
+
+/**
+ * A Space that is easy to get onto if no other unit shares the space,
+ * but impossible to get onto if another unit is on the space
+ *
+ * @note every Space will need its own instance of this class
+ * @author Raymond Dodge
+ */
+class UniPassageSpaceClass(tokens:ListOfTokens) extends BoardGameSpaceClass
 		with NoLandOnAction
 		with NoPassOverAction
 {
@@ -83,35 +126,32 @@ class UnitAwareSpaceClass(tokens:ListOfTokens) extends BoardGameSpaceClass
 	}
 	
 /*	override def hashCode = 4;
-	def canEqual(x:Any) = {x.isInstanceOf[UnitAwareSpaceClass]}
+	def canEqual(x:Any) = {x.isInstanceOf[UniPassageSpaceClass]}
 	override def equals(x:Any) = {
 		this.canEqual(x) &&
-		x.asInstanceOf[UnitAwareSpaceClass].canEqual(this) &&
-//		x.asInstanceOf[UnitAwareSpaceClass].tokens == this.tokens
+		x.asInstanceOf[UniPassageSpaceClass].canEqual(this) &&
+//		x.asInstanceOf[UniPassageSpaceClass].tokens == this.tokens
 		true
 	}
 */
 }
 
 /**
- * A constructor and deconstructor for UnitAwareSpaceClasses
+ * A constructor and deconstructor for UniPassageSpaceClasses
  * @author Raymond Dodge
- * @version 20 Mar 2012
  */
-object UnitAwareSpaceClass extends SpaceClassConstructor
+object UniPassageSpaceClass extends SpaceClassConstructor
 {
 	/* change to the actual list of tokens */
 	var tokens:MutableListOfTokens = new MutableListOfTokens()
 	
-	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[UnitAwareSpaceClass]}
-	def apply = new UnitAwareSpaceClass(tokens)
+	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[UniPassageSpaceClass]}
+	def apply = new UniPassageSpaceClass(tokens)
 }
 
 /**
  * A SpaceClass that is impossible to move to or attack through
  * @author Raymond Dodge
- * @version 11 Jun 2012
- * @version 2013 Mar 04 - implementing equals, canEqual and hashCode
  */
 class ImpassibleSpaceClass extends BoardGameSpaceClass
 		with NoLandOnAction
@@ -131,7 +171,6 @@ class ImpassibleSpaceClass extends BoardGameSpaceClass
 /**
  * A constructor and deconstructor for ImpassibleSpaceClass
  * @author Raymond Dodge
- * @version 20 Mar 2012
  */
 object ImpassibleSpaceClass extends SpaceClassConstructor
 {
@@ -142,10 +181,8 @@ object ImpassibleSpaceClass extends SpaceClassConstructor
 /**
  * A SpaceClass that is impossible to move through but is possible to attack through
  * @author Raymond Dodge
- * @version 14 Jul 2012
- * @version 2013 Mar 04 - implementing equals, canEqual and hashCode
  */
-class AttackableOnlySpaceClass extends BoardGameSpaceClass
+class AttackOnlySpaceClass extends BoardGameSpaceClass
 		with NoLandOnAction
 		with NoPassOverAction
 {
@@ -158,36 +195,31 @@ class AttackableOnlySpaceClass extends BoardGameSpaceClass
 	}
 	
 	override def hashCode = 2;
-	def canEqual(x:Any) = {x.isInstanceOf[AttackableOnlySpaceClass]}
+	def canEqual(x:Any) = {x.isInstanceOf[AttackOnlySpaceClass]}
 	override def equals(x:Any) = {
-		this.canEqual(x) && x.asInstanceOf[AttackableOnlySpaceClass].canEqual(this)
+		this.canEqual(x) && x.asInstanceOf[AttackOnlySpaceClass].canEqual(this)
 	}
 }
 
 /**
- * A constructor and deconstructor for AttackableOnlySpaceClass
+ * A constructor and deconstructor for AttackOnlySpaceClass
  * @author Raymond Dodge
- * @version 14 Jul 2012
- * @version 18 Nov 2012 - unapply now checks for AttackableOnlySpaceClass, not ImpassibleSpaceClass
- * @version 19 Nov 2012 - apply now creates AttackableOnlySpaceClass, not ImpassibleSpaceClass
  */
-object AttackableOnlySpaceClass extends SpaceClassConstructor
+object AttackOnlySpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[AttackableOnlySpaceClass]}
-	def apply = new AttackableOnlySpaceClass
+	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[AttackOnlySpaceClass]}
+	def apply = new AttackOnlySpaceClass
 }
 
 /**
  * A SpaceClass that cannot be stood on
  * @author Raymond Dodge
- * @version 14 Jul 2012
- * @version 2013 Mar 04 - implementing equals, canEqual and hashCode
  */
-class NoStandOnSpaceClass extends BoardGameSpaceClass
+class FlyingPassageSpaceClass extends BoardGameSpaceClass
 		with NoLandOnAction
 		with NoPassOverAction
 {
-	import NoStandOnSpaceClass.unitIsFlying
+	import FlyingPassageSpaceClass.unitIsFlying
 	
 	override def cost(tokenMoving:BoardGameToken, costType:TypeOfCost) = {
 		costType match {
@@ -197,25 +229,22 @@ class NoStandOnSpaceClass extends BoardGameSpaceClass
 	}
 	
 	override def hashCode = 1;
-	def canEqual(x:Any) = {x.isInstanceOf[NoStandOnSpaceClass]}
+	def canEqual(x:Any) = {x.isInstanceOf[FlyingPassageSpaceClass]}
 	override def equals(x:Any) = {
-		this.canEqual(x) && x.asInstanceOf[NoStandOnSpaceClass].canEqual(this)
+		this.canEqual(x) && x.asInstanceOf[FlyingPassageSpaceClass].canEqual(this)
 	}
 }
 
 /**
- * A constructor and deconstructor for NoStandOnSpaceClass
+ * A constructor and deconstructor for FlyingPassageSpaceClass
  * @author Raymond Dodge
- * @version 14 Jul 2012
- * @version 18 Nov 2012 - unapply now checks for NoStandOnSpaceClass, not ImpassibleSpaceClass 
- * @version 19 Nov 2012 - unapply now creates NoStandOnSpaceClass, not ImpassibleSpaceClass 
  */
-object NoStandOnSpaceClass extends SpaceClassConstructor
+object FlyingPassageSpaceClass extends SpaceClassConstructor
 {
 	def unitIsFlying(token:BoardGameToken) = false;
 	
-	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[NoStandOnSpaceClass]}
-	def apply = new NoStandOnSpaceClass
+	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[FlyingPassageSpaceClass]}
+	def apply = new FlyingPassageSpaceClass
 }
 
 
@@ -223,7 +252,6 @@ object NoStandOnSpaceClass extends SpaceClassConstructor
 /**
  * A SpaceClass that cannot be stood on except by a particular element
  * @author Raymond Dodge
- * @version 2013 Jul 13
  */
 class ElementRestrictedSpaceClass(val element:Elements.Element) extends BoardGameSpaceClass
 		with NoLandOnAction
@@ -231,7 +259,7 @@ class ElementRestrictedSpaceClass(val element:Elements.Element) extends BoardGam
 {
 	private val someElement = Some(element)
 	
-	import NoStandOnSpaceClass.unitIsFlying
+	import FlyingPassageSpaceClass.unitIsFlying
 	
 	override def cost(tokenMoving:BoardGameToken, costType:TypeOfCost) = {
 		tokenMoving match {
@@ -254,9 +282,8 @@ class ElementRestrictedSpaceClass(val element:Elements.Element) extends BoardGam
 /**
  * A constructor and deconstructor of SpaceClasses
  * @author Raymond Dodge
- * @version 2013 Jul 13
  */
-object FireRestrictedSpaceClass extends SpaceClassConstructor
+object FirePassageSpaceClass extends SpaceClassConstructor
 {
 	def unapply(a:BoardGameSpaceClass) = {a.isInstanceOf[ElementRestrictedSpaceClass]}
 	val apply = new ElementRestrictedSpaceClass(Elements.Fire)

@@ -1,10 +1,12 @@
 {
-	" " : "com.rayrobdod.deductionTactics.UnitAwareSpaceClass",
-	"." : "com.rayrobdod.deductionTactics.NoStandOnSpaceClass",
+	" " : "com.rayrobdod.deductionTactics.UniPassageSpaceClass",
+	"alternate ' ' 1" : "com.rayrobdod.deductionTactics.AllyPassageSpaceClass",
+	"alternate ' ' 2" : "com.rayrobdod.deductionTactics.FreePassageSpaceClass",
+	"." : "com.rayrobdod.deductionTactics.FlyingPassageSpaceClass",
 	"|" : "com.rayrobdod.deductionTactics.ImpassibleSpaceClass",
-	":" : "com.rayrobdod.deductionTactics.AttackableOnlySpaceClass",
+	":" : "com.rayrobdod.deductionTactics.AttackOnlySpaceClass",
 	
 	
-	"f" : "com.rayrobdod.deductionTactics.FireRestrictedSpaceClass",
-	"w" : "com.rayrobdod.deductionTactics.NoStandOnSpaceClass"
+	"f" : "com.rayrobdod.deductionTactics.FirePassageSpaceClass",
+	"w" : "com.rayrobdod.deductionTactics.FlyingPassageSpaceClass"
 }

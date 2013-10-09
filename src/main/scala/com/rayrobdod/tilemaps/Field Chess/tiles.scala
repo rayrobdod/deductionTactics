@@ -33,21 +33,23 @@ object FieldChessTilesheet extends RectangularTilesheet
 			
 			if (useDarker) {
 				s match {
-					case PassibleSpaceClass() => grassDark
-					case UnitAwareSpaceClass() => grassDark
-					case ImpassibleSpaceClass() => rockDark
-					case AttackableOnlySpaceClass() => rockDark
-					case NoStandOnSpaceClass() => waterDark
-					case FireRestrictedSpaceClass() => lavaDark
+					case FreePassageSpaceClass()   => grassDark
+					case AllyPassageSpaceClass()   => grassDark
+					case UniPassageSpaceClass()    => grassDark
+					case ImpassibleSpaceClass()    => rockDark
+					case AttackOnlySpaceClass()    => rockDark
+					case FlyingPassageSpaceClass() => waterDark
+					case FirePassageSpaceClass()   => lavaDark
 				}
 			} else {
 				s match {
-					case PassibleSpaceClass() => grassLight
-					case UnitAwareSpaceClass() => grassLight
-					case ImpassibleSpaceClass() => rockLight
-					case AttackableOnlySpaceClass() => rockLight
-					case NoStandOnSpaceClass() => waterLight
-					case FireRestrictedSpaceClass() => lavaLight
+					case FreePassageSpaceClass()   => grassLight
+					case AllyPassageSpaceClass()   => grassLight
+					case UniPassageSpaceClass()    => grassLight
+					case ImpassibleSpaceClass()    => rockLight
+					case AttackOnlySpaceClass()    => rockLight
+					case FlyingPassageSpaceClass() => waterLight
+					case FirePassageSpaceClass()   => lavaLight
 				}
 			}
 	}

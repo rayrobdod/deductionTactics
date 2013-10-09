@@ -19,11 +19,13 @@ class SpaceInfoPrinter(tokens:ListOfTokens) extends Function1[Space,Unit]
 		
 		out.print("Type of space: ");
 		out.println( spaceClass match {
-			case PassibleSpaceClass() => "Passible";
-			case UnitAwareSpaceClass() => "Passible if not occupied";
-			case ImpassibleSpaceClass() => "Impassible";
-			case AttackableOnlySpaceClass() => "Impassable, but attackable";
-			case NoStandOnSpaceClass() => "Passible if Flying";
+			case FreePassageSpaceClass()   => "Passible";
+			case AllyPassageSpaceClass()   => "Passible if not occupied by enemy";
+			case UniPassageSpaceClass()    => "Passible if not occupied";
+			case ImpassibleSpaceClass()    => "Impassible";
+			case AttackOnlySpaceClass()    => "Impassable, but attackable";
+			case FlyingPassageSpaceClass() => "Passible if Flying";
+			case FirePassageSpaceClass()   => "Passible if Flying or Fire";
 			case _ => "Unknown"
 		})
 	}
