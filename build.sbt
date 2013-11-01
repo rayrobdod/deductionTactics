@@ -61,6 +61,7 @@ excludeFilter in unmanagedResources in Compile := new FileFilter{
 			(abPath endsWith "deductionTacticsCombined.svg") ||
 			(abPath endsWith "tokenClasses/basic.json.php") ||
 			(abPath contains "tokenClasses/sportsmen/") ||
+			(abPath contains "tilemaps/Field Chess") ||
 			((abPath contains "deductionTactics/maps/") && (abPath endsWith ".png"))
 		)
 	}
