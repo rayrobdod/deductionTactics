@@ -27,9 +27,13 @@ import com.rayrobdod.boardGame.swingView.RectangularTilesheet
 import com.rayrobdod.boardGame.{SpaceClass, Space}
 
 /**
+ * A basic tilesheet that is both visually simplistic and versitile.
+ * 
+ * Is a hard-coded thing instead of a resource thing because the resources
+ * were both slow and large, an the stylesheet is simple enough that it can
+ * be hard-coded relatively easily.
  * @author Raymond Dodge
- * @version 2013 Jan 19
- * @version 2013 Jan 26 - minor optimizations
+ * @since a.4.1
  */
 object FieldChessTilesheet extends RectangularTilesheet
 {

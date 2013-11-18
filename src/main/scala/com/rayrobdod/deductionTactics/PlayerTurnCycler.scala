@@ -20,10 +20,14 @@ package com.rayrobdod.deductionTactics
 import scala.collection.immutable.{Seq, Set, BitSet}
 
 /**
+ * Iterates through the players, handing out turns to each in turn.
+ * 
+ * This is a Runnable and does not create its own thread.
+ * @param players the players of the game
+ * @param timeBetweenTurns a delay between turns incase the turns are moving too quickly.
+ * 
  * @author Raymond Dodge
- * @version 2012 Apr 20
- * @version 2012 May 22 - adding a game ended condition (a player has run out of tokens)
- * @version 2012 Aug 04 - modified to work with more than two players; implementing remainingPlayers
+ * @version a.5.0
  */
 class PlayerTurnCycler(val players:Seq[Player], var timeBetweenTurns:Int = 500) extends Runnable
 {

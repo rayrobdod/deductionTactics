@@ -32,23 +32,7 @@ import scala.collection.JavaConversions.mapAsJavaMap
 /**
  * A Token Class that gets its values from a Map.
  * @author Raymond Dodge
- * @version 22 Aug 2011
- * @version 06 Oct 2011 - implemented icon
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 19 Jan 2012 - renamed from TokenClassFromMap to CannonicalTokenClassFromMap,
- 			and now extends CannonicalTokenClass instead of TokenClass
- * @version 29 Feb 2012 - icon uses #generateGenericIcon if there is no token specified
- * @version 24 Mar 2012 - made the generic toWhatever functions private
- * @version 05 Jun 2012 - changing weakWeapon from Option[Map[Weaponkind, Float]]
-			to Map[Weaponkind, Option[Float]]
- * @version 03 Jul 2012 - adding method toJSONObject
- * @version 09 Jul 2012 - renaming a few private methods from "toXXX" to "asXXX",
-			because they convert parameters, not the object
- * @version 09 Jul 2012 - if the map contains (weakDirection => "Rand"), an
-			arbitrary direction is chosen based on other attributes of the map. 
- * @version 15 Jun 2012 - Changing "Rand" to "DontCare" - is slightly more precise
- * @version 2013 Aug 06 - removing icon
+ * @version a.5.0
  */
 class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenClass
 {

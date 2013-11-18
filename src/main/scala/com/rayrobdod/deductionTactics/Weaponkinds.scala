@@ -20,26 +20,12 @@ package com.rayrobdod.deductionTactics
 import scala.collection.immutable.{Seq, Set}
 
 /**
- * An enumeration for the weaponkinds
+ * An enumeration of weaponkinds.
  * @author Raymond Dodge
- * @version 22 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 02 Feb 2012 - changed "filter{}.head" to "find{}.get"
- * @version 02 Feb 2012 - subtrait Weaponkind now extends NameAndIcon
- * @version 27 Feb 2011 - added fileImage
- * @version 15 Apr 2012 - moving glyph icons
- * @version 03 Jun 2012 - adding Powderkind
- * @version 09 Jul 2012 - moving tokenClass icons and attackEffect icons
- * @version 10 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
- * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
- * @version 2013 Jun 14 - Weaponkind no longer extends NameAndIcon; removing icon method
- * @version 2013 Jun 23 - implemented Weaponkind.toString
- * @version 2013 Aug 19 - removing deprecated genericTokenClassFile and attackEffectFile
  */
 object Weaponkinds
 {
-	class Weaponkind(val id:Int, val name:String, val classType:String)
+	final class Weaponkind(val id:Int, val name:String, val classType:String)
 	{
 		override def toString = "com.rayrobdod.deductionTactics.Weaponkinds." + name
 	}

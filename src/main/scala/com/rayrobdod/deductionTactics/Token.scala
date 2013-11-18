@@ -27,9 +27,7 @@ import com.rayrobdod.boardGame.{Space,
 /**
  * 
  * @author Raymond Dodge
- * @version 19 Jan 2012ish
- * @version 12 Feb 2012 - made the canmove/attackthisturn items visible
- * @version 2013 Aug 07 - ripples from rewriting BoardGameToken
+ * @version a.5.0 - removing actors dependency
  */
 trait Token extends BoardGameToken
 {

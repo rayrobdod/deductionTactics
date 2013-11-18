@@ -33,14 +33,7 @@ import scala.collection.immutable.{Map}
  * player's guess at what a unit is like.
  * 
  * @author Raymond Dodge
- * @version 21 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 05 Jun 2012 - changing weakWeapon from Option[Map[Weaponkind, Float]]
-			to Map[Weaponkind, Option[Float]]
- * @version 08 Aug 2012 - without adding any members, now extends NameAndIcon
- * @version 2013 Jun 23 - implementing toString
- * @version 2013 Aug 06 - removing icon; no longer extends NameAndIcon
+ * @version a.5.0 - removing icons
  */
 trait TokenClass
 {

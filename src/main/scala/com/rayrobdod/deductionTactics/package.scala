@@ -21,21 +21,6 @@ package com.rayrobdod
 /**
  * classes for DeductionTactics
  * @author Raymond Dodge
- * @version 22 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod
-			to com.rayrobdod
- * @version 27 Feb 2012 - started generateGenericIcon
- * @version 15 Apr 2012 - figured out salamander's SVGICon, so loadSVGIcon works now
- * @version 20 Apr 2012 - modifying the location of a few resources
- * @version 03 Jun 2012 - Adding VERSION variable
- * @version 28 Jun 2012 - adding a cache to generateGenericIcon
- * @version 14 Jul 2012 - moving a resource from /com/rayrobdod/tilemaps/Supermarket/letterMapping.json
- 			to /com/rayrobdod/deductionTactics/letterMapping.json
- * @version 19 Nov 2012 - adding parameter to generate field
- * @version 19 Nov 2012 - implementing placeUnits
- * @version 28 Nov 2012 - placeUnits and generateField removed; functionality now proived by Maps
- * @version 10 Dec 2012 - changed VERSION from a static string to being read from the MANIFEST.MF file
- * @version 2013 Aug 07 - dropping image-related functions
  */
 package object deductionTactics
 {
@@ -54,10 +39,11 @@ package object deductionTactics
 		} else "Unversioned";
 	}
 	
+	/** A title for use in About dialogs */
 	def TITLE = "Deduction Tactics" //java.lang.Package.getPackage("com.rayrobdod.deductionTactics").getImplementationTitle();
 	
 	
-	
+	/** Creates a valid JSON string representing the specified TokenClass. */
 	def tokenClassToJSON(tclass:CannonicalTokenClass):String = {
 		val writer = new java.io.StringWriter();
 		

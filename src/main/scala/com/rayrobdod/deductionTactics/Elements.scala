@@ -21,23 +21,8 @@ import scala.collection.immutable.{Seq, Set}
 import com.rayrobdod.deductionTactics.LoggerInitializer.{elementsLogger => logger}
 
 /**
- * An enumeration for the elements
+ * An enumeration of elements
  * @author Raymond Dodge
- * @version 21 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 01 Feb 2012 - changed "filter{}.head" to "find{}.get"
- * @version 02 Feb 2012 - subtrait Element now extends NameAndIcon
- * @version 15 Feb 2012 - implementing Element.toString
- * @version 27 Feb 2012 - adding Element.color
- * @version 15 Apr 2012 - moving icons
- * @version 11 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
- * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
- * @version 30 Jul 2012 - Element never obeyed the transetivity requirement of Ordered, so it no longer implements that class
- * @version 2013 Jun 13 - Element is now a class rather than a trait with a single implementor
- * @version 2013 Jun 14 - Element no longer extends NameAndIcon; removing icon method
- * @version 2013 Aug 19 - Element no longer contains a color
- 
  */
 object Elements {
 	

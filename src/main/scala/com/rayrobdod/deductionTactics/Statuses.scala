@@ -20,21 +20,10 @@ package com.rayrobdod.deductionTactics
 import scala.collection.immutable.{Seq, Set}
 
 /**
- * An enumeration for the statuses
+ * An enumeration of statuses
  * 
  * May in the future contain what the status does
  * @author Raymond Dodge
- * @version 21 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 27 Jan 2012 - using Seq.find().get instead of Seq.filter().head
- * @version 02 Feb 2012 - subtrait Element now extends NameAndIcon
- * @version 15 Apr 2012 - moving icons
- * @version 03 Jun 2012 - adding Heal
- * @version 04 Jun 2012 - adding toString to Status
- * @version 10 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
- * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
- * @version 2013 Jun 14 - Status no longer extends NameAndIcon; removing icon method
  */
 object Statuses {
 	/** Might as well be an Enumeration value at this point */

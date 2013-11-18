@@ -40,8 +40,8 @@ import LoggerInitializer.{tokenClassDecoderLogger => Logger}
 
 /**
  * A builder for CannonicalTokenClasses.
- * @version 2013 Jun 23
- * @version 2013 Aug 06 - removing icon
+ * @since a.4.1
+ * @version a.5.0
  */
 class CannonicalTokenClassBuilder extends TokenClass {
 	var nameOpt:Option[String] = None

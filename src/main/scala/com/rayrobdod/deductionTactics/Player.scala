@@ -29,15 +29,7 @@ import com.rayrobdod.util.services.ClassServiceLoader
  * A Deduction Tactics player
  * 
  * @author Raymond Dodge
- * @version 21 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 19 Jan 2012 - changing parameters from Seq[Token] to PlayerListOfTokens
- * @version 27 Jan 2012 - added ForwardAttackObservations
- * @version 12 Feb 2012 - made forward EndOfTurn to tokens too
- * @version 20 Mar 2012 - modified reactions for new event model
- * @version 01 Jun 2012 - disabled the debug version of the Reactions thing
- * @version 2013 Aug 07 - complete rewrite to remove the Actor aspect
+ * @version a.5.0 - no longer relies on actors
  */
 final class Player(val tokens:PlayerListOfTokens, val ai:PlayerAI)
 {
@@ -71,29 +63,21 @@ object Player {
 
 /**
  * An abstract class that provides an interface for ais to play this game.
- * Because that was easiest, this is a Reaction.
  * 
  * @author Raymond Dodge
- * @version 21 Aug 2011
- * @version 23 Aug 2011 - added buildTeam, and nuked TeamBuilder class
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 27 Jan 2012 - added observeAttack 
- * @version 06 Feb 2012 - added prepareIO 
- * @version 27 Feb 2012 - adding observeStatusAttack
- * @version 20 Mar 2012 - modified reactions for new event model
- * @version 2013 Jun 07 - no longer implements scala.swing.Reactions.Reaction
+ * @version a.5.0 - no longer relies on scala-swing
  */
 abstract class PlayerAI
 {
-	/** create a team of tokens */
+	/** Generates a team of tokens that this AI would like to use. */
 	def buildTeam:Seq[CannonicalTokenClass]
+	
 	/**
-	 * Called once at the beginning of each turn.
-	 *  
-	 * @post the last command is {@code player ! EndTurn}
+	 * The engine calls this to make a player take its turn.
+	 * The turn ends when this method returns to its caller.
 	 */
 	def takeTurn(player:Player):Any
+	
 	/**
 	 * called once at the start of the game to allow the
 	 * AI to set up additional listeners or setup an IO
@@ -116,15 +100,6 @@ abstract class PlayerAI
  * The bases extends PlayerAI and have a one PlayerAI arg constructor
  * 
  * @author Raymond Dodge
- * @version 21 Aug 2011
- * @version 24 Aug 2011 made service loader refer to class, not companion object
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 20 Mar 2012 - added StandardObserveAttacks, to move out of the PlayerAI class
- * @version 25 Mar 2012 - moved StandardObserveAttacks to com.rayrobdod.deductionTactics.ai
- * @version 10 Jul 2012 - replacing long Class.forName("com. ... .PlayerAI").asInstanceOf[Class[PlayerAI]] with classOf[PlayerAI]
- * @version 12 Jul 2012 - renaming serviceLoader and serviceSeq to baseServiceLoader and baseServiceSeq;
- 			adding decoratorServiceLoader and decoratorServiceSeq
  */
 object PlayerAI
 {

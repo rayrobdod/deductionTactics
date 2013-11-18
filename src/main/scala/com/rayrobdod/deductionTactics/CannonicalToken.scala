@@ -32,29 +32,9 @@ import java.util.logging.Level
 import scala.collection.mutable.Buffer
 
 /**
- * A token on the board
+ * A game token.
  * @author Raymond Dodge
- * @version 21 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 19 Jan 2012 - renaming to CanonicalToken
- * @version 19 Jan 2012 - removing permissions checks on methods
- * @version 25 Jan 2012 - modified death - now outsiders can read it. Fixed off by one error in death forwarding
- * @version 12 Feb 2012 - made the canmove/attackthisturn items visible
- * @version 12 Feb 2012 - RequestMove is now a thing
- * @version 14 Feb 2012 - created a StatusReaction, but not sure how to initalize it; also doesn't do damage yet
- * @version 27 Feb 2012 - AttackReaction now handles StatusAttack too.
- * @version 20 Mar 2012 - modified reactions for new event model
- * @version 24 Mar 2012 - Added toString to CannoincalToken that uses only the tokenClass. 
- * @version 24 Mar 2012 - Added toString to all sub-class reactions
- * @version 05 Apr 2012 - {@link BoardGameSpaceClass}.movementCost -> BoardGameSpaceClass.cost and adding {@link TypeOfCost}s to those that now need it in {@link BoardGameSpace}
- * @version 24 Apr 2012 - trying to implement the damage direction multiplier
- * @version 04 Jun 2012 - adding an effect for Status.Heal to the StatusAct object
- * @version 27 Jun 2012 - moving the majority of CannonicalToken.BeAttackedReaction.directionMultiplier's
-			implementation to Directions.pathDirections and Directions.Direction.weaknessMultiplier 
- * @version 01 Aug 2012 - Status Act will now send a Died event if applicable
- * @version 01 Aug 2012 - TurnStartReaction will no longer respond if unit is supposed to be dead
- * @version 2013 Aug 07 - complete rewrite to get rid of Actor stuff
+ * @version a.5.0 - no longer relies on actors
  */
 final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 {

@@ -37,12 +37,7 @@ import scala.collection.JavaConversions.mapAsJavaMap
 /**
  * A supposed-to-be-immutable trait defining a token's class
  * @author Raymond Dodge
- * @version 19 Jan 2012
- * @version 24 Mar 2012 - implementing toString that only uses the name
- * @version 05 Jun 2012 - changing weakWeapon from Some[Map[Weaponkind, Float]]
-			to Map[Weaponkind, Some[Float]]
- * @version 03 Jul 2012 - adding method toJSONObject
- * @version 2013 Aug 06 - removing icon
+ * @version a.5.0
  */
 trait CannonicalTokenClass extends TokenClass
 {
@@ -64,11 +59,10 @@ trait CannonicalTokenClass extends TokenClass
 }
 
 /**
- * A CannonicalTokenClass that has all of it's values defined
- * directly in the constructor 
+ * A CannonicalTokenClass that has all of its values defined
+ * directly in the constructor
  * @author Raymond Dodge
- * @version 03 Jul 2012 - adding method toJSONObject
- * @version 2013 Aug 06 - removing icon
+ * @version a.5.0
  */
 final class CannonicalTokenClassBlunt(
 	override val name:String,
@@ -86,21 +80,10 @@ final class CannonicalTokenClassBlunt(
 ) extends CannonicalTokenClass
 
 /**
- * Generates a sequence of tokens
+ * Loads tokens as a service.
  * 
- * @version ?? Aug 2011
- * @version 06 Oct 2011 - Java7: ListModel takes type paramters now
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 18 Jan 2012 - modified due to changes in the JSONParser
- * @version 19 Jan 2012 - renamed from TokenClass to CannonicalTokenClass
- * @version 04 Jun 2012 - making the tokens a service, instead of a fixed resource
- * @version 12 Jul 2012 - only making a new jar file system if there isn't already one
- * @version 18 Jul 2012 - Changing to use com.rayrobdod.util.services.ResourcesServiceLoader,
-			as well as making futher use of Scala Collection's functional interface.
- * @version 14 Jun 2013 - Closing jsonReader
- * @version 2013 Jun 23 - using CannonicalTokenClassParseListener and friends instead of CannonicalTokenClassFromMap
- * @version 2013 Aug 06 - adding suport fot the binary token class format
+ * @author Raymond Dodge
+ * @version a.5.0
  */
 object CannonicalTokenClass
 {
