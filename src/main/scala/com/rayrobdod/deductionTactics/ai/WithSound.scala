@@ -25,12 +25,10 @@ import com.rayrobdod.boardGame.{RectangularField => Field, Space}
 import javax.sound.sampled.AudioSystem
 
 /**
- *
+ * Only has one sound so far...
  *
  * @author Raymond Dodge
- * @version 17 Sept 2012
- * @version 2012 Nov 30 - implementing canEquals, equals, hashCode and toString
- * @version 2013 Aug 07 - ripples from rewriting Player
+ * @version a.5.0
  */
 final class WithSound(val base:PlayerAI) extends PlayerAI
 {

@@ -32,19 +32,7 @@ import java.util.logging.Level
  * and attack the closest enemy tokens.
  * 
  * @author Raymond Dodge
- * @version 24 Jan 2012
- * @version 25 Jan 2012 - implemented toString, equals and hashCode
- * @version 27 Jan 2012 - made AI take unit's speed into account
- * @version 27 Jan 2012 - adding observeAttack
- * @version 06 Feb 2012 - added prepareIO 
- * @version 12 Feb 2012 - Did the RequestMove thing, which really simplified things.
- * @version 13 Feb 2012 - making try all possible moves; any illegal ones will be denied.
- * @version 27 Feb 2012 - adding observeStatusAttack
- * @version 21 Mar 2012 - modified reactions for new event model
- * @version 05 Apr 2012 - adding TokenCosts to Space and SpaceClass methods that now require them
- * @version 08 Apr 2012 - changed initialize to use new StandardObserveAttacks and StandardObserveMovement
- * @version 30 Jul 2012 - doesn't use any info from initialize, so removing its implementation
- * @version 2013 Aug 07 - ripples from rewriting Player
+ * @version a.5.0
  */
 class BlindAttackAI extends PlayerAI
 {

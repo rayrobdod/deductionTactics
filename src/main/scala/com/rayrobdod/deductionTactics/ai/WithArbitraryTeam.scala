@@ -30,11 +30,6 @@ import com.rayrobdod.deductionTactics.swingView.InputFrame
  * a random one using the package randomTeam method
  *
  * @author Raymond Dodge
- * @version 09 Jul 2012
- * @version 12 Jul 2012 - giving seedBox a default value; changed initialize to base.initialize
- * @version 24 Jul 2012 - changing seedBox from being a JTextField to a JFormattedTextField
- * @version 03 Aug 2012 - replacing an annonymous inner class with an instance of InputFrame
- * @version 2012 Nov 30 - modifying toString to include the base
  */
 final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 {

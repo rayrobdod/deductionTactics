@@ -33,15 +33,7 @@ import scala.runtime.{AbstractFunction1 => Function1}
 
 /**
  * @author Raymond Dodge
- * @version 24 Jan 2012
- * @version 25 Mar 2012 - moved StandardObserveAttacks from com.rayrobdod.deductionTactics.PlayerAI
- * @version 08 Apr 2012 - adding StandardObserveMovement
- * @version 08 Apr 2012 - StandardObserveAttacks now is one-per-token and uses the Token as a parameter rather than an entire Token List
- * @version 08 Apr 2012 - StandardObserveAttacks now observes range too.
- * @version 30 May 2012 - moved speedRangeOf and attackRangeOf from SleepAbuserAI
- * @version 2013 Jan 18 - adding logging to StandardObserveMovement
- * @version 2013 Jan 18 - speedRangeOf and attackRangeOf now contains no overlap in functionality
- * @version 2013 Aug 07 - ripples from rewriting Player
+ * @version a.5.0
  */
 package object ai
 {

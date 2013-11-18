@@ -27,7 +27,7 @@ import com.rayrobdod.boardGame.{RectangularField => Field, Token => BoardGameTok
  * A decorator for PlayerAIs. It prints to console events that happen
  *
  * @author Raymond Dodge
- * @version 2013 Aug 07
+ * @version a.5.0
  */
 final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 {

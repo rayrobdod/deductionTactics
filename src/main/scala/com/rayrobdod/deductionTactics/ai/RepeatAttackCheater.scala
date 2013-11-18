@@ -26,7 +26,7 @@ import com.rayrobdod.boardGame.{RectangularField => Field}
  * An AI that blatantly cheats. This needs to not work.
  * 
  * @author Raymond Dodge
- * @version 2013 Aug 07
+ * @since a.5.0
  */
 class RepeatAttackCheater extends PlayerAI
 {

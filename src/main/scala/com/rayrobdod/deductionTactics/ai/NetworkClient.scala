@@ -35,17 +35,7 @@ import com.rayrobdod.commonFunctionNotation.Parser.{parse => cfnParse}
 /**
  * 
  * @author Raymond Dodge
- * @version 03 Jul 2012
- * @version 05 Jul 2012
- * @version 12 Jul 2012 - minor notify-before-lock condition fixed
- * @version 03 Aug 2012 - replacing an anonymous inner class with an instance of InputFrame
- * @version 09 Aug 2012 - changed a line of logging to show the received tokenclass
- * @version 09 Aug 2012 - Instead of collecting values in a MSet in a range's foreach function,
- 			using the same range's map function instead
- * @version 10 Aug 2012 - removing instance variables in exchange for `TokenClassWithHiddenData`
- * @version 26 Dec 2012 - the status attack function had RequestAttackForDamage changed to RequestAttackForStatus
- * @version 2013 Jun 23 - responding to rename of ToScalaCollection
- * @version 2013 Aug 16 - ripples from changes in Token
+ * @version a.5.0
  */
 class NetworkClient extends PlayerAI
 {

@@ -25,11 +25,7 @@ import com.rayrobdod.boardGame.{RectangularField => Field}
  * player that can help determine various things about the tokens.
  *
  * @author Raymond Dodge
- * @version ???
- * @version 03 Jul 2012 - renamed from HumanAutorecordAI to SwingInterfaceWithAutorecord
- * @version 09 Jul 2012 - renaming from SwingInterfaceWithAutorecord to WithAutorecord; making a decorator
- * @version 2012 Nov 30 - modifying toString to include the base
- * @version 2013 Aug 07 - ripples from rewriting Player
+ * @version a.5.0
  */
 final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 {

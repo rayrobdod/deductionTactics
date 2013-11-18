@@ -32,14 +32,7 @@ import scala.util.Random
  * An AI that will use the sleep status to its advantage
  *
  * @author Raymond Dodge
- * @version 29 Feb 2012
- * @version 21 Mar 2012 - modified reactions for new event model
- * @version 05 Apr 2012 - adding TokenCosts to Space and SpaceClass methods that now require them
- * @version 08 Apr 2012 - changed initialize to use new StandardObserveAttacks and StandardObserveMovement
- * @version 28 Apr 2012 - gutting in hopes of complete rewrite
- * @version 28 Apr 2012 - adding speedRangeOf and attackRangeOf
- * @version 30 May 2012 - moved speedRangeOf and attackRangeOf to the package object
- * @version 2013 Aug 07 - ripples from rewriting Player
+ * @version a.5.0
  */
 class SleepAbuserAI extends PlayerAI
 {

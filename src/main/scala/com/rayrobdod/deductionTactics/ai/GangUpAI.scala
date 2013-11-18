@@ -30,8 +30,7 @@ import java.util.logging.Level
  * tokens attack that one.
  * 
  * @author Raymond Dodge
- * @version 30 Jul 2012
- * @version 2013 Aug 07 - ripples from rewriting Player
+ * @version a.5.0
  */
 class GangUpAI extends PlayerAI
 {
