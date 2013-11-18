@@ -27,9 +27,6 @@ import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 
 /**
  * @author Raymond Dodge
- * @version 29 Feb 2012
- * @version 06 Jun 2012 - change due to change of weakWeapon in tokenClass
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  */
 class FilterKnownTokenClassesComponent extends JPanel
 {
@@ -48,10 +45,6 @@ class FilterKnownTokenClassesComponent extends JPanel
 
 /**
  * @author Raymond Dodge
- * @version 29 Feb 2012
- * @version 06 Jun 2012 - change due to change of weakWeapon in tokenClass
- * @version 11 Jun 2012 - extracted from FilterKnownTokenClassesComponent
- * @version 27 Jun 2012 - changing the numerical equal to checks to a numerical less than or equal to check
  */
 class TokenClassMatcher(template:TokenClass) extends Function1[TokenClass,Boolean]
 	{

@@ -39,7 +39,7 @@ import javax.imageio.ImageIO
  * class names to `javax.swing.Icon`s
  * 
  * @author Raymond Dodge
- * @version 2013 Aug 05
+ * @since a.5.0
  */
 class TokenClassNameToIconFromJson(sources:Seq[Path]) {
 	
@@ -129,7 +129,7 @@ class TokenClassNameToIconFromJson(sources:Seq[Path]) {
  * class names to `javax.swing.Icon`s
  * 
  * @author Raymond Dodge
- * @version 2013 Aug 05
+ * @since a.5.0
  */
 class TokenClassNameToIconFromBinary(sources:Seq[Path]) {
 	import com.rayrobdod.deductionTactics.CannonicalTokenClassFromBinary.{nameLength, enumsLength, imageLocLength}

@@ -26,8 +26,6 @@ import java.awt.event.{MouseAdapter, MouseEvent}
  * this will create a component outside the JList to take the mouseactions instead
  * 
  * @author Raymond Dodge
- * @version 11 Feb 2012
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  */
 class ShowHumanSuspicionsPanelMouseListener(list:JList[Token]) extends MouseAdapter
 {

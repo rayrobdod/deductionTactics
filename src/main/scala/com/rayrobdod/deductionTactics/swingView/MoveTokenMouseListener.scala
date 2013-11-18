@@ -25,14 +25,7 @@ import com.rayrobdod.deductionTactics.ai.attackRangeOf
 
 /**
  * @author Raymond Dodge
- * @version 11 Feb 2012
- * @version 12 Feb 2012 - made do the RequestMove thing instead of the Moved thing
- * @version 21 Mar 2012 - modified reactions for new event model
- * @version 06 Apr 2012 - adding SellectAttackTypePanel parameter
- * @version 30 May 2012 - allowing for long-range attacks without running out of movment
- * @version 01 Jun 2012 - Now only resonds to BUTTON1 mouse clicks.
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
- * @version 2013 Aug 07 - ripples from rewriting BoardGameToken
+ * @version a.5.0
  */
 class MoveTokenMouseListener(owner:Player, space:Space, attackType:SellectAttackTypePanel) extends MouseAdapter
 {

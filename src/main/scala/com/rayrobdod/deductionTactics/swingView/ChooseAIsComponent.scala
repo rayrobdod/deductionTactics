@@ -30,15 +30,7 @@ import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 
 /**
  * @author Raymond Dodge
- * @version 23 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics.view
-			to com.rayrobdod.deductionTactics.view
- * @version 12 Jul 2012 - Now shows both the AI bases and the decorators, now that they're availible
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
- * @version 28 Nov 2012 - Using ScalaSeqListModel intead of custom objects
- * @version 28 Nov 2012 - Making number of players changable
- * @version 19 Jan 2013 - using ++ to remove foreach invocations.
- * @version 28-29 Jan 2013 - Adding JLabels and changing layout from Grid to GridBag.
+ * @version a.4.?
  */
 class ChooseAIsComponent extends JPanel
 {

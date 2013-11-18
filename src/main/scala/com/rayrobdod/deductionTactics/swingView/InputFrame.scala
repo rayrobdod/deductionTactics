@@ -26,9 +26,8 @@ import javax.swing.{JFrame, JButton, JPanel}
  *
  * Put here for reusablity and reducing anonimous inner functions
  * 
+ * @note javax.swing.JOptionPane.showMessageDialog(main, ...)
  * @author Raymond Dodge
- * @version 03 Aug 2012
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  */
 class InputFrame(
 			title:String,

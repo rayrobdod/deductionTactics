@@ -31,11 +31,9 @@ import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 import java.lang.Integer
 
 /**
- * A component that displays and lets one selecte between map-related options
+ * A component that displays and lets one select map-related options
  * 
- * @version 28 Nov 2012
- * @version 29 Jan 2013 - Adding JLabels and changing layout from Flow to GridBag.
- * @version 2013 Jun 24 - more resistant to errors.
+ * @version a.4.1
  */
 class ChooseMapComponent extends JPanel
 {

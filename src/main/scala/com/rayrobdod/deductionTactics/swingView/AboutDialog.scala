@@ -1,4 +1,3 @@
-package com.rayrobdod.deductionTactics.swingView
 /*
 	Deduction Tactics
 	Copyright (C) 2012-2013  Raymond Dodge
@@ -16,6 +15,7 @@ package com.rayrobdod.deductionTactics.swingView
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+package com.rayrobdod.deductionTactics.swingView
 
 import javax.swing.{JDialog, JPanel, JLabel, ImageIcon}
 import javax.imageio.ImageIO
@@ -26,15 +26,7 @@ import com.rayrobdod.swing.GridBagConstraintsFactory
 /**
  * An about dialog
  * @author Raymond Dodge
- * @version 06 Feb 2012
- * @version 27 Apr 2012 - replacing a call to setLocation to an equivalent
- 		setLocationRelativeTo call
- * @version 30 May 2012 - turning a bunch of variables into an array of arrays (credits)
- * @version 03 Jun 2012 - Moving version to the deductionTactics package
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
- * @version 13 Dec 2012 - making all internal variables private; changing some variables to includes
- * @version 29 Jan 2013 - Using the new class: com.rayrobdod.swing.GridBagConstraintsFactory
- * @version 29 Jan 2013 - Using a border for padding instead of playing with setDimension and getDimension
+ * @version a.5.0
  */
 class AboutDialog(
 		owner:Window,

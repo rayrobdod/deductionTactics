@@ -23,10 +23,7 @@ import com.rayrobdod.deductionTactics.TokenClass
 
 /**
  * @author Raymond Dodge
- * @version 08 Aug 2012
- * @version 14 Aug 2012 - moving inner object TokenClassPanelTypeSelector to 
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
- * @version 2013 Aug 08 - uses package.tokenClassNameToIcon and package.generateGenericIcon instead of token.icon
+ * @version a.5.0
  */
 class TokenClassPanelTypeSelector(modend:AllKnownTokenClassesComponent) extends JPanel
 {

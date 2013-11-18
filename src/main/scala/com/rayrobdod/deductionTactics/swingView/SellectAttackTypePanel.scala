@@ -22,9 +22,7 @@ import com.rayrobdod.deductionTactics.{Token, CannonicalToken}
 		
 /**
  * @author Raymond Dodge
- * @version 06 Apr 2012
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
- * @version 2013 Aug 07 - ripples from rewriting BoardGameToken
+ * @version a.5.0
  */
 class SellectAttackTypePanel extends JPanel
 {

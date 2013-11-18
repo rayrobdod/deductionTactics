@@ -27,10 +27,6 @@ import java.awt.event.{ActionListener, ActionEvent}
 /**
  * An interface for setting options
  * @author Raymond Dodge
- * @version 29 May 2012 - only contains currentTilesheet
- * @version 24 Jul 2012 - adding movementSpeed
- * @version 28 Oct 2012 - changing imports from com.rayrobdod.boardGame.view to com.rayrobdod.boardGame.swingView
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  */
 class OptionsDialog(
 		owner:Window,

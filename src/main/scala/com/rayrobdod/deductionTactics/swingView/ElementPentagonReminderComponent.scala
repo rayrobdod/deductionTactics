@@ -24,10 +24,7 @@ import javax.swing.BoxLayout.{PAGE_AXIS => pageAxis}
 import java.awt.GridLayout
 
 /**
- * @version ?? ??? ????
- * @version 27 Apr 2012 - Changing from nexted Box Layouts to a Grid Layout
- * @version 27 Apr 2012 - Made show full circle, meaning the head is shown twice
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
+ * A small component to remind the elemnt relationships
  */
 class ElementPentagonReminderComponent extends JPanel
 {

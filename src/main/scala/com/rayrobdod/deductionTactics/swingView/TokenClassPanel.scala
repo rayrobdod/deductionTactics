@@ -32,24 +32,7 @@ import com.rayrobdod.swing.GridBagConstraintsFactory
 
 /**
  * @author Raymond Dodge
- * @version 21 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics.view
-			to com.rayrobdod.deductionTactics.view
- * @version 20 Jan 2012 - modifying due to change in TokenClass
- * @version 01 Feb 2012 - implemented paint(Graphics), which updates the children and calls the super
- * @version 14 Feb 2012 - child panels now change color with the TokenClassPanel
- * @version 20 Apr 2012 - reducing the number of anonimous classes by replacing a few identiacl ones with one object
- * @version 05 Jun 2012 - adding JProgressbars indicating weapon weaknesses
- * @version 05 Jun 2012 - changes due to weakWeapon change in [[com.rayrobdod.deductionTactics.TokenClass]]
- * @version 11 Jun 2012 - adding command to update weapon weakness bars
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
- * @version 02 Dec 2012 - manual optimizations: RemainderGridBagConstraints
- * @version 29 Jan 2013 - Using the new class: com.rayrobdod.swing.GridBagConstraintsFactory
- * @version 2013 Jun 14 - using makeIconFor instead of per-class icon properties
- * @version 2013 Jun 14 - getWeakWeaponIcon only traverses the traverses weakWeapon once now
- * @version 2013 Jun 17 - putting subcomponent update stuff in "doLayout" instead of "repaint"
- * @version 2013 Jun 25 - weakWeaponPanel changed from val to object because it seems more Proguard-friendly
- * @version 2013 Aug 08 - uses package.tokenClassNameToIcon and package.generateGenericIcon instead of token.icon
+ * @version a.5.0
  */
 class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayout)
 {

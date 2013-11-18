@@ -26,15 +26,6 @@ import scala.collection.immutable.Seq
 
 /**
  * @author Raymond Dodge
- * @version 22 Aug 2011
- * @version 23 Aug 2011 - renamed from AllKnownTokenClassesFrame to AllKnownTokenClassesComponent,
- 			and made extends JPanel instead of JFrame
- * @version 23 Aug 2011 - JScrollPane no longer included
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics.view
-			to com.rayrobdod.deductionTactics.view
- * @version 03 Jun 2012 - Allowing layout to have multiple columns when wide enough to do so.
- * @version 08 Aug 2012 - implementing tokenClassToComponent, and changing tokenClassPanels from a val to a def
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  */
 class AllKnownTokenClassesComponent extends JPanel
 {

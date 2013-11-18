@@ -39,10 +39,7 @@ import com.rayrobdod.swing.NameAndIcon
 
 /** 
  * @author Raymond Dodge
- * @version 11 Feb 2012 - cut vast majority of content from {@link HumanSuspicionTest} and pasted here
- * @version 11 Jun 2012 - adding listeners to WeaponWeakPanel
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
- * @version 2013 Jun 17 - Inducing component revalidate upon actions in this class
+ * @version a.5.0
  */
 class HumanSuspicionsPanel(tokenClass:SuspicionsTokenClass) extends TokenClassPanel(tokenClass)
 {

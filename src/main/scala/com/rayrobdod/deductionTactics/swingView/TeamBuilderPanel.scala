@@ -38,17 +38,7 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
 
 /**
  * @author Raymond Dodge
- * @version 23 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics.view
-			to com.rayrobdod.deductionTactics.view
- * @version 11 Feb 2012 - added cabability to multi-add and multi-remove
- * @version 27 Apr 2012 - made the allTokenClassesList have a VERTICAL_WRAP oritntation, rather than the default
- * @version 01 Jun 2012 - redoing the layout; the currentSelectionList is constant Width, as are the buttons,
-			but the allTokenClassesList is variable width 
- * @version 05 Jun 2012 - setting allTokenClassesList's visibleRowCount to 10
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
- * @version 2013 Aug 19 - reducing number of anonymous inner classes
- * @version 2013 Aug 19 - Adding ability to change the lists' ListCellRenderer
+ * @version a.5.0
  */
 class TeamBuilderPanel extends JPanel
 {

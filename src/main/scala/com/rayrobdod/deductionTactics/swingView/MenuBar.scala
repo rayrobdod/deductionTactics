@@ -31,14 +31,7 @@ import java.awt.BorderLayout.{NORTH, SOUTH}
 		
 /**
  * @author Raymond Dodge
- * @version 12 Feb 2012
- * @version 13 Feb 2012 - discovered some useful things in {@link javax.swing.SwingUtilities}, so this doesn't need parameters anymore
- * @version 20 Apr 2012 - Adding action to new game
- * @version 20 Apr 2012 - reducing repetion by creating MyMenuItem and adding those instead of having each MenuItem be a new anonymous class
- * @version 14 Aug 2012 - modifying the "View Classes…" frame to include a TokenClassPanelTypeSelector
- * @version 19 Nov 2012 - modifying the "Filter Classes…" frame's title
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
- * @version 2013 Aug 19 - reducing number of anonymous inner classes
+ * @version a.5.0
  */
 class MenuBar() extends JMenuBar
 {

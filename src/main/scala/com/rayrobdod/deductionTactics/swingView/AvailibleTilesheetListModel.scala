@@ -25,10 +25,6 @@ import javax.swing.{AbstractListModel, DefaultListCellRenderer,
  * A ListModel of all tilesheets.
  * Would thought this could have a more immediate use
  * @author Raymond Dodge
- * @version 15 Apr 2012
- * @version 27 Apr 2012 - improving performance by caching the set of tilesheets
- * @version 28 Oct 2012 - changing imports from com.rayrobdod.boardGame.view to com.rayrobdod.boardGame.swingView
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  */
 object AvailibleTilesheetListModel extends AbstractListModel[RectangularTilesheet]
 {
@@ -41,8 +37,6 @@ object AvailibleTilesheetListModel extends AbstractListModel[RectangularTileshee
 /**
  * A Listrenderer that shows a tilesheet name
  * @author Raymond Dodge
- * @version 15 Apr 2012
- * @version 28 Oct 2012 - changing imports from com.rayrobdod.boardGame.view to com.rayrobdod.boardGame.swingView
  */
 object TilesheetListRenderer extends ListCellRenderer[RectangularTilesheet]
 {

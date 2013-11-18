@@ -34,12 +34,6 @@ import java.lang.{Float => JavaFloat}
 
 /** 
  * @author Raymond Dodge
- * @version 06 Feb 2012
- * @version 07 Jun 2012 - changing to use Option instead of Some
- * @version 07 Jun 2012 - adding support for null values in the list
- * @version 15 Jun 2012 - replacing anonymous inner class with a 
-		decorator: [[com.rayrobdod.swing.NullReplaceListCellRenderer]]
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  */
 class NameAndIconSetterChooserFrameMaker[A](
 			listOfItems:Seq[A],
@@ -60,9 +54,6 @@ class NameAndIconSetterChooserFrameMaker[A](
 
 /** 
  * @author Raymond Dodge
- * @version 06 Feb 2012
- * @version 07 Jun 2012 - changing to use Option instead of Some
- * @version 07 Jun 2012 - adding support for null values in the list
  */
 class IntSetterChooserFrameMaker(
 			setter:Function1[Option[Int],Any],
@@ -81,8 +72,6 @@ class IntSetterChooserFrameMaker(
 
 /** 
  * @author Raymond Dodge
- * @version 11 Jun 2012
- * @version 15 Jun 2012 - adding null support
  * @pre weaknessModel.getMin <= 50
  * @pre weaknessModel.getMin >= 200
  */
@@ -103,8 +92,6 @@ class WeaponMultiplerSetterChooserFrameMaker(
 
 /** 
  * @author Raymond Dodge
- * @version 11 Jun 2012
- * @version 15 Jun 2012 - adding null support
  */
 object WeaponMultiplerSetterChooserFrameMaker
 {
@@ -113,11 +100,6 @@ object WeaponMultiplerSetterChooserFrameMaker
 
 /** 
  * @author Raymond Dodge
- * @version 11 Jun 2012
- * @version 12 Jun 2012 - no longer extends ChooserFrameMaker; creates a new Model
-			each mouse click rather than using the same model each time
- * @version 12 Jun 2012 - now sets Name and Icon as well as the other things it used to set
- * @version 2013 Aug 06 - no longer set icons in token class
  */
 class ClassSynchonizerFrameMaker(
 			tokenClass:SuspicionsTokenClass,
@@ -155,10 +137,6 @@ class ClassSynchonizerFrameMaker(
 
 /** 
  * @author Raymond Dodge
- * @version 01 Feb 2012
- * @version 06 Feb 2012 - moved from com.rayrobdod.deductionTactics.test
-			 to com.rayrobdod.deductionTactics.view
- * @version 27 Apr 2012 - making created Dialog have a setLocationRelativeTo the source of the MouseEvent
  */
 class ChooserFrameMaker[A](model:ListModel[A],
 			renderer:ListCellRenderer[_ >: A],
@@ -171,10 +149,6 @@ class ChooserFrameMaker[A](model:ListModel[A],
 
 /** 
  * @author Raymond Dodge
- * @version 01 Feb 2012
- * @version 06 Feb 2012 - moved from com.rayrobdod.deductionTactics.test
-			 to com.rayrobdod.deductionTactics.view
- * @version 12 Feb 2012 - now extends JDialog instead of JFrame
  */
 class ChooserFrame[A](model:ListModel[A],
 			renderer:ListCellRenderer[_ >: A],
