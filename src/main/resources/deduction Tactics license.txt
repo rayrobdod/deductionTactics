@@ -1,7 +1,0 @@
-Deduction Tactics
-
-The items in the com.rayrobdod package and subpackages are covered by this license
-
-Copyright © 2012 Raymond Dodge. All rights resevered, save the following: you may residtribute the binary, unmodified, provided you do so free of charge.
-
-This software is still in development, and this means that there are going to be problems, including serious problems that, however unlikely, might damage your system or the information stored on it.  Please be aware of this before playing.
