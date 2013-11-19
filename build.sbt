@@ -112,3 +112,8 @@ ProguardKeys.inputFilter in Proguard := { file =>
 		Some("**.class")
 	}
 }
+
+artifactPath in Proguard <<= (artifactPath in Proguard, proguardType, version).apply{(orig:File, level:String, version:String) =>
+	orig.getParentFile() / ("deductionTactics-" + version + "-full-" + level + ".jar")
+}
+

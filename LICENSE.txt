@@ -763,7 +763,7 @@ CC-By 3.0 <http://creativecommons.org/licenses/by/3.0/legalcode>
 
 Hit Sounds <http://opengameart.org/content/hit-sounds>
 
-Copytight (c) Paulius Jurgelevičius
+Copyright (c) Paulius Jurgelevičius
 
 CC0  <http://creativecommons.org/publicdomain/zero/1.0/legalcode>
 
