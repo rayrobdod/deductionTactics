@@ -223,7 +223,7 @@ object NoStandOnSpaceClass extends SpaceClassConstructor
 /**
  * A SpaceClass that cannot be stood on except by a particular element
  * @author Raymond Dodge
- * @version 2013 Jul 13
+ * @version a.5.1
  */
 class ElementRestrictedSpaceClass(val element:Elements.Element) extends BoardGameSpaceClass
 		with NoLandOnAction

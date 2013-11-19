@@ -11,10 +11,7 @@ import scala.runtime.{AbstractFunction1 => Function1}
 
 /**
  * @author Raymond Dodge
- * @version 2012 Dec 01
- * @version 2012 Dec 02 - manual optimization: private getName
- * @version 2013 Jun 14 - getWeakWeapon only traverses the traverses weakWeapon once now
- * @version 2013 Jun 14 - undoing getName as classes no longer share a trait
+ * @version a.4.0
  */
 object TokenClassPrinter extends Function1[TokenClass,Unit]
 {

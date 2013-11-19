@@ -12,6 +12,7 @@ import java.util.logging.Level
  * An AI that first uses fuzzy logic to determine who, if anyone, to attack,
  * and then uses potential fields to determine how to attack and retreat.
  * @author Raymond Dodge
+ * @version a.5.1
  */
 final class FieldPotentialAI extends PlayerAI
 {

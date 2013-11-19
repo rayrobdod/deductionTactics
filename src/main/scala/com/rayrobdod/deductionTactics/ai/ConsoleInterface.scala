@@ -9,7 +9,7 @@ import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
  * 
  * Requires ANSI escape codes to work. Is not reusable.
  * @author Raymond Dodge
- * @version 2013 Oct 05
+ * @version a.5.1
  */
 final class ConsoleInterface extends PlayerAI
 {

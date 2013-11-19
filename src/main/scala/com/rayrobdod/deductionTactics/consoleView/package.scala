@@ -8,8 +8,6 @@ package object consoleView
 {
 
 	/**
-	 * @version 10 Aug 2012
-	 * @version 2012 Nov 30 - making use zips instead of Iterators and maps
 	 * @throws IllegalArgumentException if tokens has more tokens than this has letters reserved for
 	 */
 	def tokensToLetters(tokens:ListOfTokens):Map[Token, Char] = {
@@ -29,6 +27,8 @@ package object consoleView
 		return returnValue;
 	}
 	
+	/** @since a.5.1 */
 	val controlCursorToTop = "\u001B[1;1H"
+	/** @since a.5.1 */
 	val controlClearRest = "\u001B[J"
 }
