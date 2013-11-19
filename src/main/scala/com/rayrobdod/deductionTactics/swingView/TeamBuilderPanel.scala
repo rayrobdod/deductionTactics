@@ -1,3 +1,20 @@
+/*
+	Deduction Tactics
+	Copyright (C) 2012-2013  Raymond Dodge
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.rayrobdod.deductionTactics.swingView
 
 import javax.swing.{JList, JPanel, ButtonGroup, JButton, BoxLayout,
@@ -21,17 +38,7 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
 
 /**
  * @author Raymond Dodge
- * @version 23 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics.view
-			to com.rayrobdod.deductionTactics.view
- * @version 11 Feb 2012 - added cabability to multi-add and multi-remove
- * @version 27 Apr 2012 - made the allTokenClassesList have a VERTICAL_WRAP oritntation, rather than the default
- * @version 01 Jun 2012 - redoing the layout; the currentSelectionList is constant Width, as are the buttons,
-			but the allTokenClassesList is variable width 
- * @version 05 Jun 2012 - setting allTokenClassesList's visibleRowCount to 10
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
- * @version 2013 Aug 19 - reducing number of anonymous inner classes
- * @version 2013 Aug 19 - Adding ability to change the lists' ListCellRenderer
+ * @version a.5.0
  */
 class TeamBuilderPanel extends JPanel
 {

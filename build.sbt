@@ -67,6 +67,15 @@ excludeFilter in unmanagedResources in Compile := new FileFilter{
 	}
 }
 
+
+// license nonsense
+licenses += (("GPLv3 or later", new java.net.URL("http://www.gnu.org/licenses/") ))
+
+mappings in (Compile, packageSrc) <+= baseDirectory.map{(b) => (new File(b, "LICENSE.txt"), "LICENSE.txt" )}
+
+mappings in (Compile, packageBin) <+= baseDirectory.map{(b) => (new File(b, "LICENSE.txt"), "LICENSE.txt" )}
+
+
 // Token compiling
 excludeFilter in unmanagedResources in Compile <<= (excludeFilter in unmanagedResources in Compile, compileTokensInput) apply {(previous, tokenSrc) =>
 	previous || new FileFilter{

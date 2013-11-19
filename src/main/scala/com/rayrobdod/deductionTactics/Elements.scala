@@ -1,26 +1,28 @@
+/*
+	Deduction Tactics
+	Copyright (C) 2012-2013  Raymond Dodge
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.{Seq, Set}
 import com.rayrobdod.deductionTactics.LoggerInitializer.{elementsLogger => logger}
 
 /**
- * An enumeration for the elements
+ * An enumeration of elements
  * @author Raymond Dodge
- * @version 21 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 01 Feb 2012 - changed "filter{}.head" to "find{}.get"
- * @version 02 Feb 2012 - subtrait Element now extends NameAndIcon
- * @version 15 Feb 2012 - implementing Element.toString
- * @version 27 Feb 2012 - adding Element.color
- * @version 15 Apr 2012 - moving icons
- * @version 11 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
- * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
- * @version 30 Jul 2012 - Element never obeyed the transetivity requirement of Ordered, so it no longer implements that class
- * @version 2013 Jun 13 - Element is now a class rather than a trait with a single implementor
- * @version 2013 Jun 14 - Element no longer extends NameAndIcon; removing icon method
- * @version 2013 Aug 19 - Element no longer contains a color
- 
  */
 object Elements {
 	

@@ -1,3 +1,20 @@
+/*
+	Deduction Tactics
+	Copyright (C) 2012-2013  Raymond Dodge
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.rayrobdod.deductionTactics.ai
 
 import scala.collection.immutable.Seq
@@ -27,19 +44,7 @@ import com.rayrobdod.deductionTactics.swingView.{
  * they are are equal to each other
  *
  * @author Raymond Dodge
- * @version 22 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics.ai
- * @version 06 Feb 2012 - added prepareIO 
- * @version 11 Feb 2012 - playing with fieldComp manipulation in prepareIO
- * @version 27 Feb 2012 - adding observeStatusAttack
- * @version 06 Apr 2012 - incorporating SellectAttackTypePanel into initialization;
-			now can choose between status and damage attacks.
- * @version 30 May 2012 - now repaints frame after modifying it
- * @version 03 Jul 2012 - renamed from HumanAI to SwingInterface
- * @version 04 Aug 2012 - replacing an annonymous inner class with an instance of InputFrame
- * @version 04 Aug 2012 - failed attempt to make a victory display
- * @version 2013 Aug 07 - ripples from rewriting Player
+ * @version a.5.0
  */
 sealed class SwingInterface extends PlayerAI
 {

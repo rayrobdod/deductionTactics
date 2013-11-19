@@ -1,3 +1,20 @@
+/*
+	Deduction Tactics
+	Copyright (C) 2012-2013  Raymond Dodge
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.rayrobdod.deductionTactics.swingView
 
 import scala.util.Random
@@ -10,9 +27,13 @@ import com.rayrobdod.boardGame.swingView.RectangularTilesheet
 import com.rayrobdod.boardGame.{SpaceClass, Space}
 
 /**
+ * A basic tilesheet that is both visually simplistic and versitile.
+ * 
+ * Is a hard-coded thing instead of a resource thing because the resources
+ * were both slow and large, an the stylesheet is simple enough that it can
+ * be hard-coded relatively easily.
  * @author Raymond Dodge
- * @version 2013 Jan 19
- * @version 2013 Jan 26 - minor optimizations
+ * @since a.4.1
  */
 object FieldChessTilesheet extends RectangularTilesheet
 {

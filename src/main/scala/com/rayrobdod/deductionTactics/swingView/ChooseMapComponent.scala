@@ -1,3 +1,20 @@
+/*
+	Deduction Tactics
+	Copyright (C) 2012-2013  Raymond Dodge
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.rayrobdod.deductionTactics.swingView
 
 import scala.collection.immutable.Seq
@@ -14,11 +31,9 @@ import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 import java.lang.Integer
 
 /**
- * A component that displays and lets one selecte between map-related options
+ * A component that displays and lets one select map-related options
  * 
- * @version 28 Nov 2012
- * @version 29 Jan 2013 - Adding JLabels and changing layout from Flow to GridBag.
- * @version 2013 Jun 24 - more resistant to errors.
+ * @version a.4.1
  */
 class ChooseMapComponent extends JPanel
 {

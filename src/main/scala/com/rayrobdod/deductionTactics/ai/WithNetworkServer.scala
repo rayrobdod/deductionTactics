@@ -1,3 +1,20 @@
+/*
+	Deduction Tactics
+	Copyright (C) 2012-2013  Raymond Dodge
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.rayrobdod.deductionTactics
 package ai
 
@@ -18,16 +35,7 @@ import java.nio.charset.StandardCharsets.UTF_8
  * moves to anyone willing to listen.
  *
  * @author Raymond Dodge
- * @version 03 Jul 2012
- * @version 05 Jul 2012
- * @version 09 Jul 2012 - renaming from SwingInterfaceWithNetworkServer to WithNetworkServer; making a decorator
- * @version 12 Jul 2012 - fixing issue where this didn't send tokens to clients, due to not setting myTokens
- * @version 19 Jul 2012 - corecting equals with new class name
- * @version 03 Aug 2012 - replacing an annonymous inner class with an instance of InputFrame
- * @version 09 Aug 2012 - removing instance variables in exchange for `TokenClassWithHiddenData`
- * @version 2012 Nov 30 - modifying toString to include the base
- * @version 2013 Aug 08 - removing certain parenthesis that Scala 2.11 doesn't like
- * @version 2013 Aug 16 - complete rewrite
+ * @version a.5.0
  */
 class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 	

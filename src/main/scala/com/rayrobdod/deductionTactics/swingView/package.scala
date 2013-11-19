@@ -1,3 +1,20 @@
+/*
+	Deduction Tactics
+	Copyright (C) 2012-2013  Raymond Dodge
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.rayrobdod.deductionTactics
 
 import com.rayrobdod.deductionTactics.Elements.Element
@@ -25,21 +42,25 @@ import scala.collection.immutable.{Map => IMap}
 
 package object swingView
 {
+	/** @since a.5.0 */
 	private[swingView] implicit def elementToNameAndIcon = {(e:Element) =>
 		if (e != null) {
 			new MyNameAndIcon(e.name, makeIconFor(e))
 		} else {UnsetNameAndIcon}
 	}
+	/** @since a.5.0 */
 	private[swingView] implicit def weaponToNameAndIcon = {(e:Weaponkind) =>
 		if (e != null) {
 			new MyNameAndIcon(e.name, makeIconFor(e))
 		} else {UnsetNameAndIcon}
 	}
+	/** @since a.5.0 */
 	private[swingView] implicit def statusToNameAndIcon = {(e:Status) =>
 		if (e != null) {
 			new MyNameAndIcon(e.name, makeIconFor(e))
 		} else {UnsetNameAndIcon}
 	}
+	/** @since a.5.0 */
 	private[swingView] implicit def directionToNameAndIcon = {(e:Direction) =>
 		if (e != null) {
 			new MyNameAndIcon(e.name, makeIconFor(e))
@@ -48,7 +69,7 @@ package object swingView
 	
 	
 	/**
-	 * @version 2013 Jun 14
+	 * @since 2013 Jun 14
 	 */
 	private val DEFAULT_SIZE = 32
 	/**
@@ -137,7 +158,7 @@ package object swingView
 	/**
 	 * Turns an file at the given URL into an icon, based on the url's last
 	 * filetype extension
-	 * @version 22 Aug 2011
+	 * @since 22 Aug 2011
 	 * @version 2013 Jun 30 - copied over from deductionTactics.package
 	 */
 	def loadIcon(resource:String, size:Int):Icon = {
@@ -230,7 +251,7 @@ package object swingView
 				generateGenericIcon(tokenClass))
 	}
 	
-	
+	/** @since a.5.0 */
 	def elementToColor(e:Element):Color = e match {
 		case Elements.Light    => new Color(253,253,187)
 		case Elements.Electric => Color.yellow
@@ -239,9 +260,11 @@ package object swingView
 		case Elements.Sound    => new Color(0,255,0)
 		case _                 => Color.gray
 	}
+	/** @since a.5.0 */
 	def genericTokenClassFile(k:Weaponkind):String = {
 		"/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/" + k.classType + ".png"
 	}
+	/** @since a.5.0 */
 	def attackEffectFile(k:Weaponkind):String = {
 		"/com/rayrobdod/deductionTactics/tokenClasses/sprites/effects/" + k.name + " strike.png"
 	}
