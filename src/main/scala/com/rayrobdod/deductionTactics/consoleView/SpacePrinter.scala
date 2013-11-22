@@ -7,7 +7,7 @@ import scala.runtime.{AbstractFunction1 => Function1}
 /**
  * @author Raymond Dodge
  * @since 2012 Dec 20
- * @version 2013 Oct 06
+ * @version a.5.2
  */
 class SpaceInfoPrinter(tokens:ListOfTokens) extends Function1[Space,Unit]
 {

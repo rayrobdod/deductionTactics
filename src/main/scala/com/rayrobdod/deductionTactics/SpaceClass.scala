@@ -22,6 +22,7 @@ import scala.collection.immutable.{Seq => ISeq}
 
 /**
  * @author Raymond Dodge
+ * @version a.5.2
  */
 class FreePassageSpaceClass extends BoardGameSpaceClass
 		with NoLandOnAction
@@ -38,6 +39,7 @@ class FreePassageSpaceClass extends BoardGameSpaceClass
 /**
  * A constructor and deconstructor of SpaceClasses
  * @author Raymond Dodge
+ * @version a.5.2
  */
 object FreePassageSpaceClass extends SpaceClassConstructor
 {
@@ -51,6 +53,7 @@ object FreePassageSpaceClass extends SpaceClassConstructor
  *
  * @note every Space will need its own instance of this class
  * @author Raymond Dodge
+ * @version a.5.2
  */
 class AllyPassageSpaceClass(tokens:ListOfTokens) extends BoardGameSpaceClass
 		with NoLandOnAction
@@ -91,6 +94,7 @@ class AllyPassageSpaceClass(tokens:ListOfTokens) extends BoardGameSpaceClass
 /**
  * A constructor and deconstructor for AllyPassageSpaceClass
  * @author Raymond Dodge
+ * @version a.5.2
  */
 object AllyPassageSpaceClass extends SpaceClassConstructor
 {
@@ -104,6 +108,7 @@ object AllyPassageSpaceClass extends SpaceClassConstructor
  *
  * @note every Space will need its own instance of this class
  * @author Raymond Dodge
+ * @version a.5.2
  */
 class UniPassageSpaceClass(tokens:ListOfTokens) extends BoardGameSpaceClass
 		with NoLandOnAction
@@ -139,6 +144,7 @@ class UniPassageSpaceClass(tokens:ListOfTokens) extends BoardGameSpaceClass
 /**
  * A constructor and deconstructor for UniPassageSpaceClasses
  * @author Raymond Dodge
+ * @version a.5.2
  */
 object UniPassageSpaceClass extends SpaceClassConstructor
 {
@@ -152,6 +158,7 @@ object UniPassageSpaceClass extends SpaceClassConstructor
 /**
  * A SpaceClass that is impossible to move to or attack through
  * @author Raymond Dodge
+ * @version a.5.2
  */
 class ImpassibleSpaceClass extends BoardGameSpaceClass
 		with NoLandOnAction
@@ -171,6 +178,7 @@ class ImpassibleSpaceClass extends BoardGameSpaceClass
 /**
  * A constructor and deconstructor for ImpassibleSpaceClass
  * @author Raymond Dodge
+ * @version a.5.2
  */
 object ImpassibleSpaceClass extends SpaceClassConstructor
 {
@@ -181,6 +189,7 @@ object ImpassibleSpaceClass extends SpaceClassConstructor
 /**
  * A SpaceClass that is impossible to move through but is possible to attack through
  * @author Raymond Dodge
+ * @version a.5.2
  */
 class AttackOnlySpaceClass extends BoardGameSpaceClass
 		with NoLandOnAction
@@ -204,6 +213,7 @@ class AttackOnlySpaceClass extends BoardGameSpaceClass
 /**
  * A constructor and deconstructor for AttackOnlySpaceClass
  * @author Raymond Dodge
+ * @version a.5.2
  */
 object AttackOnlySpaceClass extends SpaceClassConstructor
 {
@@ -214,6 +224,7 @@ object AttackOnlySpaceClass extends SpaceClassConstructor
 /**
  * A SpaceClass that cannot be stood on
  * @author Raymond Dodge
+ * @version a.5.2
  */
 class FlyingPassageSpaceClass extends BoardGameSpaceClass
 		with NoLandOnAction
@@ -238,6 +249,7 @@ class FlyingPassageSpaceClass extends BoardGameSpaceClass
 /**
  * A constructor and deconstructor for FlyingPassageSpaceClass
  * @author Raymond Dodge
+ * @version a.5.2
  */
 object FlyingPassageSpaceClass extends SpaceClassConstructor
 {
@@ -252,6 +264,7 @@ object FlyingPassageSpaceClass extends SpaceClassConstructor
 /**
  * A SpaceClass that cannot be stood on except by a particular element
  * @author Raymond Dodge
+ * @version a.5.2
  */
 class ElementRestrictedSpaceClass(val element:Elements.Element) extends BoardGameSpaceClass
 		with NoLandOnAction
@@ -282,6 +295,7 @@ class ElementRestrictedSpaceClass(val element:Elements.Element) extends BoardGam
 /**
  * A constructor and deconstructor of SpaceClasses
  * @author Raymond Dodge
+ * @version a.5.2
  */
 object FirePassageSpaceClass extends SpaceClassConstructor
 {

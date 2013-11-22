@@ -11,6 +11,7 @@ import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
  * 
  * @author Raymond Dodge
  * @version 2013 Oct 05 Nuking
+ * @version a.5.2
  */
 object BoardPrinter{
 	private def spaceToString(a:SpaceClass) = a match {

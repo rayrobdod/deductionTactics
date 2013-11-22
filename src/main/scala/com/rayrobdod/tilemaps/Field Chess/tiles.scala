@@ -11,8 +11,8 @@ import com.rayrobdod.boardGame.{SpaceClass, Space}
 
 /**
  * @author Raymond Dodge
- * @version 2013 Jan 19
- * @version 2013 Jan 26 - minor optimizations
+ * @since a.4.1
+ * @version a.5.2
  */
 object FieldChessTilesheet extends RectangularTilesheet
 {
