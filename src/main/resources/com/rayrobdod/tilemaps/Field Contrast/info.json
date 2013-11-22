@@ -1,0 +1,10 @@
+{
+	"name":"Simple High Contrast",
+	
+	"tiles":"black_and_white.png",
+	"tileWidth":32,
+	"tileHeight":32,
+	
+	"rules":"tiles.json",
+	"classMap":"../../deductionTactics/letterMapping.json"
+}

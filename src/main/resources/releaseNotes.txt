@@ -3,6 +3,12 @@
 Wishlist: Token Animations, Persistent preferences, Flying units,
 		change AIs to use builder model, Better AIs
 
+== a.5.2 ==
+Adding SpaceClasses: SlowPassageSpaceClass
+Modifying maps: tripath
+Adding tilemap: simple high contrast
+
+
 == a.5.1 ==
 Adding AI: field potential ai
 

@@ -1,0 +1,9 @@
+[
+	{ "tiles":7 },
+	{ "tiles":0, "surroundingSpaces":{"(0,0)":" " } },
+	{ "tiles":1, "surroundingSpaces":{"(0,0)":"." } },
+	{ "tiles":2, "surroundingSpaces":{"(0,0)":"|" } },
+	{ "tiles":3, "surroundingSpaces":{"(0,0)":":" } },
+	{ "tiles":5, "surroundingSpaces":{"(0,0)":"s" } },
+	{ "tiles":6, "surroundingSpaces":{"(0,0)":"f" } }
+]

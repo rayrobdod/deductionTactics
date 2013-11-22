@@ -8,5 +8,6 @@
 	
 	
 	"f" : "com.rayrobdod.deductionTactics.FirePassageSpaceClass",
-	"w" : "com.rayrobdod.deductionTactics.FlyingPassageSpaceClass"
+	"w" : "com.rayrobdod.deductionTactics.FlyingPassageSpaceClass",
+	"s" : "com.rayrobdod.deductionTactics.SlowPassageSpaceClass"
 }
