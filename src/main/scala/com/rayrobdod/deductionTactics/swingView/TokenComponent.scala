@@ -1,3 +1,20 @@
+/*
+	Deduction Tactics
+	Copyright (C) 2012-2013  Raymond Dodge
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.rayrobdod.deductionTactics.swingView
 
 import scala.util.Random
@@ -20,16 +37,7 @@ import java.awt.Color
 
 /**
  * @author Raymond Dodge
- * @version 29 Feb 2012 ?
- * @version 08 Apr 2012 - working on ShowDamageReaction; works to my satisfaction now.
- * @version 30 May 2012 - removing File from ImageIO call, using URL instead
- * @version 28 Oct 2012 - changing imports from com.rayrobdod.boardGame.view to com.rayrobdod.boardGame.swingView
- * @version 13 Nov 2012 - adding status-infliction animations to ShowDamageReaction
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
- * @version 27 Nov 2012 - background color now corresponds to which team a token is on. 
- * @version 2013 Aug 06 - uses package.tokenClassNameToIcon and package.generateGenericIcon instead of token.icon
- * @version 2013 Aug 07 - ripples from rewriting BoardGameToken
- * @version 2013 Aug 09 - fixing 'any attack affects every token component'
+ * @version a.5.0
  * @TODO try making a queue of animations - for cases where a lot of moves are made really quickly?
          Better done by artificial delays in the layout's reactions?
  */

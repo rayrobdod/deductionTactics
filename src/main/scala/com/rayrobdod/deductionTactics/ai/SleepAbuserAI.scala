@@ -1,3 +1,20 @@
+/*
+	Deduction Tactics
+	Copyright (C) 2012-2013  Raymond Dodge
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.rayrobdod.deductionTactics
 package ai
 
@@ -15,14 +32,7 @@ import scala.util.Random
  * An AI that will use the sleep status to its advantage
  *
  * @author Raymond Dodge
- * @version 29 Feb 2012
- * @version 21 Mar 2012 - modified reactions for new event model
- * @version 05 Apr 2012 - adding TokenCosts to Space and SpaceClass methods that now require them
- * @version 08 Apr 2012 - changed initialize to use new StandardObserveAttacks and StandardObserveMovement
- * @version 28 Apr 2012 - gutting in hopes of complete rewrite
- * @version 28 Apr 2012 - adding speedRangeOf and attackRangeOf
- * @version 30 May 2012 - moved speedRangeOf and attackRangeOf to the package object
- * @version 2013 Aug 07 - ripples from rewriting Player
+ * @version a.5.0
  */
 class SleepAbuserAI extends PlayerAI
 {

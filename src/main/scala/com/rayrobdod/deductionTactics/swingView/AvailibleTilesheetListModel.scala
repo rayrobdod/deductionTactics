@@ -1,3 +1,20 @@
+/*
+	Deduction Tactics
+	Copyright (C) 2012-2013  Raymond Dodge
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.rayrobdod.deductionTactics.swingView
 
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularTilesheetLoader}
@@ -8,10 +25,6 @@ import javax.swing.{AbstractListModel, DefaultListCellRenderer,
  * A ListModel of all tilesheets.
  * Would thought this could have a more immediate use
  * @author Raymond Dodge
- * @version 15 Apr 2012
- * @version 27 Apr 2012 - improving performance by caching the set of tilesheets
- * @version 28 Oct 2012 - changing imports from com.rayrobdod.boardGame.view to com.rayrobdod.boardGame.swingView
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  */
 object AvailibleTilesheetListModel extends AbstractListModel[RectangularTilesheet]
 {
@@ -24,8 +37,6 @@ object AvailibleTilesheetListModel extends AbstractListModel[RectangularTileshee
 /**
  * A Listrenderer that shows a tilesheet name
  * @author Raymond Dodge
- * @version 15 Apr 2012
- * @version 28 Oct 2012 - changing imports from com.rayrobdod.boardGame.view to com.rayrobdod.boardGame.swingView
  */
 object TilesheetListRenderer extends ListCellRenderer[RectangularTilesheet]
 {

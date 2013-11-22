@@ -1,3 +1,20 @@
+/*
+	Deduction Tactics
+	Copyright (C) 2012-2013  Raymond Dodge
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.rayrobdod.deductionTactics
 
 import com.rayrobdod.boardGame.{RectangularSpace, Space => BoardGameSpace,
@@ -8,22 +25,10 @@ import LoggerInitializer.{cannonicalTokenLogger => Logger}
 /**
  * An enumeration of directions
  * @author Raymond Dodge
- * @version 22 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 02 Feb 2012 - changed "filter{}.head" to "find{}.get"
- * @version 02 Feb 2012 - subtrait Direction now extends NameAndIcon
- * @version 15 Apr 2012 - moving icons
- * @version 24 Apr 2012 - implementing Directions.Direction.toString
- * @version 27 Jun 2012 - moving the majority of CannonicalToken.BeAttackedReaction.directionMultiplier's
-			implementation to Directions.pathDirections and Directions.Direction.weaknessMultiplier
- * @version 10 Jul 2012 - replacing apply(x) = values.find{_.id == x}.get with  apply(x) = values(x)
- * @version 29 Jul 2012 - making withName throw a NoSuchElementException with a better message
- * @version 2013 Jun 14 - Direction no longer extends NameAndIcon; removing icon method
  */
 object Directions
 {
-	class Direction(val id:Int, val name:String,
+	final class Direction(val id:Int, val name:String,
 			val function:Function1[RectangularSpace,Option[BoardGameSpace]])
 	{
 		def spaceIs(th:RectangularSpace, other:BoardGameSpace):Boolean =

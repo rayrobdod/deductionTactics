@@ -7,7 +7,8 @@ import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
 /**
  * A console application that can let a user navigate a RectangularField
  * @author Raymond Dodge
- * @since 2013 Oct 06
+ * @since a.5.1
+ * @version a.5.1
  */
 class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Runnable {
 	val out:java.io.PrintStream = System.out

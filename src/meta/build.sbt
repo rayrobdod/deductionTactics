@@ -22,6 +22,8 @@ libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "2.0.0-SNAPSHO
 
 scalaSource := new File("C:/Users/Raymond/Documents/Programming/Java/Games/DeductionTactics/src/meta")
 
+licenses += (("GPLv3 or later", new java.net.URL("http://www.gnu.org/licenses/") ))
+
 
 
 javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked")

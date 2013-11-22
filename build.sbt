@@ -61,10 +61,20 @@ excludeFilter in unmanagedResources in Compile := new FileFilter{
 			(abPath endsWith "deductionTacticsCombined.svg") ||
 			(abPath endsWith "tokenClasses/basic.json.php") ||
 			(abPath contains "tokenClasses/sportsmen/") ||
+			(abPath contains "tilemaps/Field Chess") ||
 			((abPath contains "deductionTactics/maps/") && (abPath endsWith ".png"))
 		)
 	}
 }
+
+
+// license nonsense
+licenses += (("GPLv3 or later", new java.net.URL("http://www.gnu.org/licenses/") ))
+
+mappings in (Compile, packageSrc) <+= baseDirectory.map{(b) => (new File(b, "LICENSE.txt"), "LICENSE.txt" )}
+
+mappings in (Compile, packageBin) <+= baseDirectory.map{(b) => (new File(b, "LICENSE.txt"), "LICENSE.txt" )}
+
 
 // Token compiling
 excludeFilter in unmanagedResources in Compile <<= (excludeFilter in unmanagedResources in Compile, compileTokensInput) apply {(previous, tokenSrc) =>

@@ -1,3 +1,20 @@
+/*
+	Deduction Tactics
+	Copyright (C) 2012-2013  Raymond Dodge
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package com.rayrobdod.deductionTactics.swingView
 
 import com.rayrobdod.deductionTactics.Elements
@@ -7,10 +24,7 @@ import javax.swing.BoxLayout.{PAGE_AXIS => pageAxis}
 import java.awt.GridLayout
 
 /**
- * @version ?? ??? ????
- * @version 27 Apr 2012 - Changing from nexted Box Layouts to a Grid Layout
- * @version 27 Apr 2012 - Made show full circle, meaning the head is shown twice
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
+ * A small component to remind the elemnt relationships
  */
 class ElementPentagonReminderComponent extends JPanel
 {
