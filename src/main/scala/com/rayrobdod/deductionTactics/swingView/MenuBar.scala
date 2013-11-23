@@ -17,28 +17,27 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
-import javax.swing.{JMenuBar, JMenu, JMenuItem, JFrame, JScrollPane, JDialog}
+import javax.swing.{JMenuBar, JMenu, JMenuItem, JFrame, JScrollPane, JDialog, JLabel}
 import java.awt.event.{ActionListener, ActionEvent}
 import java.awt.event.{FocusAdapter, FocusEvent}
 import javax.swing.ScrollPaneConstants.{
 		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever
 }
-import javax.swing.KeyStroke.{getKeyStroke => KeyStroke}
 import javax.swing.SwingUtilities.getWindowAncestor
 import com.rayrobdod.deductionTactics.SuspicionsTokenClass
 import java.awt.BorderLayout.{NORTH, SOUTH}
 		
 /**
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.5.2
  */
 class MenuBar() extends JMenuBar
 {
 	this.add({ val a = new JMenu("Game")
 		a.setMnemonic('g')
 		
-		a.add(new MyMenuItem("New Game", 'n', new ActionListener{
+		a.add(myMenuItem("New Game", 'n', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				com.rayrobdod.deductionTactics.main.Main.startNewGame
 			}
@@ -46,7 +45,7 @@ class MenuBar() extends JMenuBar
 		
 		a.addSeparator()
 		
-		a.add(new MyMenuItem("Options…", 'o', new ActionListener{
+		a.add(myMenuItem("Options…", 'o', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				val dialog:JDialog = new OptionsDialog(getWindowAncestor(MenuBar.this))
 				dialog.setVisible(true)
@@ -63,7 +62,7 @@ class MenuBar() extends JMenuBar
 	this.add({ val a = new JMenu("Help")
 		a.setMnemonic('h')
 		
-		a.add(new MyMenuItem("View Classes…", 'c', new ActionListener{
+		a.add(myMenuItem("View Classes…", 'c', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				val classesComp = new AllKnownTokenClassesComponent()
 				val classesPane = new JScrollPane(classesComp,
@@ -78,7 +77,7 @@ class MenuBar() extends JMenuBar
 			}
 		}))
 		
-		a.add(new MyMenuItem("Filter Classes…", 'f', new ActionListener{
+		a.add(myMenuItem("Filter Classes…", 'f', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
 				
@@ -100,7 +99,7 @@ class MenuBar() extends JMenuBar
 			}
 		}))
 		
-		a.add(new MyMenuItem("View Elements…", 'e', new ActionListener{
+		a.add(myMenuItem("View Elements…", 'e', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
 				frame.add(new ElementPentagonReminderComponent)
@@ -112,11 +111,11 @@ class MenuBar() extends JMenuBar
 		
 		a.addSeparator() 
 		
-		a.add(new MyMenuItem("About…", 'a', new ActionListener{
+		a.add(myMenuItem("About…", 'a', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				javax.swing.JOptionPane.showMessageDialog(
 						MenuBar.this,
-						new javax.swing.JLabel(aboutDialogString),
+						new JLabel(aboutDialogString),
 						"About Deduction Tactics",
 						javax.swing.JOptionPane.PLAIN_MESSAGE
 				)
@@ -126,10 +125,11 @@ class MenuBar() extends JMenuBar
 		a;
 	})
 	
-	private class MyMenuItem(title:String, mnemonic:Char, action:ActionListener)
-			extends JMenuItem(title)
+	private def myMenuItem(title:String, mnemonic:Char, action:ActionListener):JMenuItem =
 	{
-		setMnemonic(mnemonic)
-		addActionListener(action)
+		val retVal = new JMenuItem(title)
+		retVal.setMnemonic(mnemonic)
+		retVal.addActionListener(action)
+		retVal
 	}
 }
