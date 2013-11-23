@@ -274,4 +274,49 @@ package object swingView
 	
 	final class MyNameAndIcon(val name:String, val icon:Icon) extends NameAndIcon
 	final val UnsetNameAndIcon:NameAndIcon = new MyNameAndIcon("Unset", unknownIcon())
+	
+	
+	import com.rayrobdod.deductionTactics.{TITLE => appName, VERSION => version}
+	private val runningOn = "Running on Java; " + System.getProperty("java.vendor") + " " + System.getProperty("java.version")
+	
+	/** @since a.5.2 */
+	val aboutDialogString:String = ("<html><head>" +
+			"<style>" +
+				"h1, div {text-align: center;}" +
+				"h2, h3, dl, div {margin-bottom:0}" +
+				"h2, h3 {margin-top:12;}" +
+				"dl, div {margin-top:0;}" +
+			"</style>" +
+		"</head><body>" +
+			"<h1>" + appName + "</h1>" +
+			"<div>" + version + "</div>" +
+			"<div>" + runningOn + "</div>" +
+			
+			"<h2>Credits</h2>" +
+			"<dl>" +
+				"<dt>Programmer</dt>" +
+				"""<dd>Raymond Dodge (<a href="http://rayrobdod.name/">http://rayrobdod.name/</a>)</dd>""" +
+				
+				"<dt>Inspiration guy</dt>" +
+				"""<dd>Sean 'Squidi' Howard (<a href="http://www.squidi.net/">http://www.squidi.net/</a>)</dd>""" +
+			"""</dl>""" +
+			
+			"<h3>Libraries</h3>" +
+			"<dl>" +
+				"<dt>Scala</dt>" +
+				"""<dd><a href="http://www.scala-lang.org/">http://www.scala-lang.org/</a></dd>""" +
+				
+				"<dt>SVG Salamander</dt>" +
+				"""<dd>Mark 'kitfox' MacKay (<a href="http://svgsalamander.java.net/">http://svgsalamander.java.net/</a>)</dd>""" +
+			"</dl>" +
+			
+			"<h3>Resources</h3>" +
+			"<dl>" +
+				"<dt>dark_forest tileset</dt>" +
+				"""<dd>Stephen 'Redshrike' Challener (<a href="http://opengameart.org/content/32x32-and-16x16-rpg-tiles-forest-and-some-interior-tiles">http://opengameart.org/content/32x32-and-16x16-rpg-tiles-forest-and-some-interior-tiles</a>)</dd>""" +
+				
+				"<dt>Hit Sounds</dt>" +
+				"<dd>Paulius Jurgelevičius</dd>" +
+			"</dl>" +
+		"</body></html>")
 }

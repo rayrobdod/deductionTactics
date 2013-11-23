@@ -114,8 +114,12 @@ class MenuBar() extends JMenuBar
 		
 		a.add(new MyMenuItem("About…", 'a', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
-				val dialog:JDialog = new AboutDialog(getWindowAncestor(MenuBar.this))
-				dialog.setVisible(true)
+				javax.swing.JOptionPane.showMessageDialog(
+						MenuBar.this,
+						new javax.swing.JLabel(aboutDialogString),
+						"About Deduction Tactics",
+						javax.swing.JOptionPane.PLAIN_MESSAGE
+				)
 			}
 		}))
 		
