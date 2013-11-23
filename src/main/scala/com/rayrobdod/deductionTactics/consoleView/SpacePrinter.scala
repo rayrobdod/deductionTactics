@@ -42,7 +42,8 @@ class SpaceInfoPrinter(tokens:ListOfTokens) extends Function1[Space,Unit]
 			case ImpassibleSpaceClass()    => "Impassible";
 			case AttackOnlySpaceClass()    => "Impassable, but attackable";
 			case FlyingPassageSpaceClass() => "Passible if Flying";
-			case FirePassageSpaceClass()   => "Passible if Flying or Fire";
+			case FirePassageSpaceClass()   => "Passible if Fire";
+			case SlowPassageSpaceClass()   => "Passible, slowly"
 			case _ => "Unknown"
 		})
 	}

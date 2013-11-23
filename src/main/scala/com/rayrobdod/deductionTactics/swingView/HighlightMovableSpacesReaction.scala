@@ -42,7 +42,7 @@ import com.rayrobdod.swing.SolidColorIcon
  * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
  * @version 2013 Aug 07 - ripples from rewriting BoardGameToken
  */
-class HighlightMovableSpacesReaction(token:Token, panel:BoardGamePanel, allTokens:ListOfTokens)
+final class HighlightMovableSpacesReaction(token:Token, panel:BoardGamePanel, allTokens:ListOfTokens)
 		extends Function1[Boolean, Unit] with BoardGameToken.MoveReactionType with Function0[Unit]
 {
 	val highlightLayer = new javax.swing.JPanel(panel.centerpiece.lowLayer.getLayout)
