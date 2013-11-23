@@ -115,28 +115,3 @@ class ChooseAIsComponent extends JPanel
 	this.setLayout(new GridBagLayout())
 	this.players = 2;
 }
-
-/**
- * @author Raymond Dodge
- * @version ?? ??? ????
- * @version 12 Jul 2012 - adapting due to change in PlayerAI$
- * @deprecated use ScalaSeqListModel(PlayerAI.baseServiceSeq) instead
- */
-@deprecated("use ScalaSeqListModel(PlayerAI.baseServiceSeq) instead", "2012 Nov 28")
-object AvailibleAIListModel extends AbstractListModel[PlayerAI]
-{
-	def getElementAt(index:Int):PlayerAI = PlayerAI.baseServiceSeq(index)
-	def getSize:Int = PlayerAI.baseServiceSeq.size
-}
-
-/**
- * @author Raymond Dodge
- * @version 12 Jul 2012
- * @deprecated use ScalaSeqListModel(PlayerAI.decoratorServiceSeq) instead
- */
-@deprecated("use ScalaSeqListModel(PlayerAI.decoratorServiceSeq) instead", "2012 Nov 28")
-object AvailibleAIDecoratorListModel extends AbstractListModel[Class[_ <: PlayerAI]]
-{
-	def getElementAt(index:Int):Class[_ <: PlayerAI] = PlayerAI.decoratorServiceSeq(index)
-	def getSize:Int = PlayerAI.decoratorServiceSeq.size
-}

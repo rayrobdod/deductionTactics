@@ -30,7 +30,7 @@ import Directions.Direction
  * @since a.4.1
  * @version a.5.0
  */
-class CannonicalTokenClassFromBinary(reader:java.io.DataInput) extends CannonicalTokenClass
+final class CannonicalTokenClassFromBinary(reader:java.io.DataInput) extends CannonicalTokenClass
 {
 	import CannonicalTokenClassFromBinary.{nameLength, imageLocLength}
 	

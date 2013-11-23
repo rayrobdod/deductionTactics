@@ -43,7 +43,7 @@ import LoggerInitializer.{tokenClassDecoderLogger => Logger}
  * @since a.4.1
  * @version a.5.0
  */
-class CannonicalTokenClassBuilder extends TokenClass {
+final class CannonicalTokenClassBuilder extends TokenClass {
 	var nameOpt:Option[String] = None
 	def name = nameOpt.getOrElse("???")
 	
@@ -125,7 +125,7 @@ object CannonicalTokenClassDecoder extends JSONDecoder[CannonicalTokenClass] {
  * @version 2013 Jun 24 - internal FloatDecoder directly makes Some(Float)s now
  * @version 2013 Aug 06 - removing icon
  */
-class CannonicalTokenClassParseListener extends JSONParseListener {
+final class CannonicalTokenClassParseListener extends JSONParseListener {
 	private val builder = new CannonicalTokenClassBuilder
 	private var strBuilder = StringBuilder.newBuilder
 	private var key:Option[String] = None
