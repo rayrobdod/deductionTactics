@@ -4,7 +4,7 @@ organization := "com.rayrobdod"
 
 organizationHomepage := Some(new URL("http://rayrobdod.name/"))
 
-version := "a.5.0-SNAPSHOT"
+version := "a.5.0"
 
 scalaVersion := "2.9.3"
 
@@ -22,7 +22,7 @@ libraryDependencies += ("com.rayrobdod" %% "json" % "1.0.0")
 
 libraryDependencies += ("com.rayrobdod" %% "csv" % "1.0.0")
 
-libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "2.0.0-SNAPSHOT")
+libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "2.0.0")
 
 
 
