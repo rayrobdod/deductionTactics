@@ -4,17 +4,15 @@ organization := "com.rayrobdod"
 
 organizationHomepage := Some(new URL("http://rayrobdod.name/"))
 
-version := "a.5.0"
+version := "a.5.1-SNAPSHOT"
 
 scalaVersion := "2.9.3"
 
-crossScalaVersions ++= Seq("2.9.1", "2.9.2", "2.10.2", "2.11.0-M4")
+crossScalaVersions ++= Seq("2.9.1", "2.9.2", "2.9.3", "2.10.2", "2.11.0-M4")
 
 exportJars := true
 
 mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
-
-target := new File("C:/Users/Raymond/AppData/Local/Temp/build/DeductionTactics/")
 
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "20130908")
 
@@ -48,14 +46,9 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 	def accept(n:File) = {
 		val abPath = n.getAbsolutePath().replace('\\', '/')
 		(
-			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/ansiEscape/SpacePrinter.scala") ||
-			(abPath contains "com/rayrobdod/deductionTactics/consoleView/") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface_CFN.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/ai/FieldPotentialAI.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithConsoleViewport.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/TokenEventPrinter.scala")
+			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala")
 		)
 	}
 }
@@ -67,7 +60,9 @@ excludeFilter in unmanagedResources in Compile := new FileFilter{
 			((abPath contains "/Hits/") && !((abPath endsWith "/Hits/Hit.wav") || (abPath endsWith "/Hits/license.txt"))) ||
 			(abPath endsWith "deductionTacticsCombined.svg") ||
 			(abPath endsWith "tokenClasses/basic.json.php") ||
-			(abPath contains "tokenClasses/sportsmen/")
+			(abPath contains "tokenClasses/sportsmen/") ||
+			(abPath contains "tilemaps/Field Chess") ||
+			((abPath contains "deductionTactics/maps/") && (abPath endsWith ".png"))
 		)
 	}
 }
@@ -93,6 +88,7 @@ mappings in (Compile, packageSrc) <++= (compileTokensInput) map { (tokenSrc) =>
 	tokenSrc.map{x => ((x, "com/rayrobdod/deductionTactics/tokenClasses/" + x.getName )) }
 }
 
+// if some part of the circular dependency breaks down, remove this line
 resourceGenerators in Compile <+= compileTokens.task
 
 
@@ -116,4 +112,13 @@ ProguardKeys.inputFilter in Proguard := { file =>
 artifactPath in Proguard <<= (artifactPath in Proguard, proguardType, version).apply{(orig:File, level:String, version:String) =>
 	orig.getParentFile() / ("deductionTactics-" + version + "-full-" + level + ".jar")
 }
+
+javaOptions in (Proguard, ProguardKeys.proguard) += "-Xmx2G"
+
+// anon-fun-reduce
+autoCompilerPlugins := true
+
+addCompilerPlugin("com.rayrobdod" %% "anon-fun-reduce" % "1.0.0")
+
+libraryDependencies += ("com.rayrobdod" %% "anon-fun-reduce" % "1.0.0")
 

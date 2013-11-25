@@ -23,7 +23,6 @@ import scala.runtime.{AbstractFunction1 => Function1}
 
 /**
  * @author Raymond Dodge
- * @version 2012 Dec 08
  */
 object TokenPrinter extends Function1[Token,Unit]
 {

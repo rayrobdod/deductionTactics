@@ -27,11 +27,6 @@ private[deductionTactics] object LoggerInitializer
 	val finerConsoleHander = new ConsoleHandler()
 	finerConsoleHander.setLevel(Level.FINER)
 	
-	val blindAttackAILogger = Logger.getLogger(
-			"com.rayrobdod.deductionTactics.ai.BlindAttackAI")
-	blindAttackAILogger.addHandler(finerConsoleHander)
-	blindAttackAILogger.setLevel(Level.WARNING)
-	
 	val cannonicalTokenLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.CannonicalToken")
 	cannonicalTokenLogger.addHandler(finerConsoleHander)
@@ -41,6 +36,26 @@ private[deductionTactics] object LoggerInitializer
 			"com.rayrobdod.deductionTactics.CannonicalToken~RequestMove")
 	cannonicalTokenMovementLogger.addHandler(finerConsoleHander)
 	cannonicalTokenMovementLogger.setLevel(Level.WARNING)
+	
+	val elementsLogger = Logger.getLogger(
+			"com.rayrobdod.deductionTactics.Elements")
+	elementsLogger.addHandler(finerConsoleHander)
+	elementsLogger.setLevel(Level.WARNING)
+	
+	val tokenClassDecoderLogger = Logger.getLogger(
+			"com.rayrobdod.deductionTactics.CannonicalTokenClassDecoder")
+	tokenClassDecoderLogger.addHandler(finerConsoleHander)
+	tokenClassDecoderLogger.setLevel(Level.WARNING)
+	
+	val observeMovementLogger = Logger.getLogger(
+			"com.rayrobdod.deductionTactics.ai.StandardObserveMovement")
+	observeMovementLogger.addHandler(finerConsoleHander)
+	observeMovementLogger.setLevel(Level.WARNING)
+	
+	val blindAttackAILogger = Logger.getLogger(
+			"com.rayrobdod.deductionTactics.ai.BlindAttackAI")
+	blindAttackAILogger.addHandler(finerConsoleHander)
+	blindAttackAILogger.setLevel(Level.WARNING)
 	
 	val sleepAbuserAILogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.SleepAbuserAI")
@@ -52,11 +67,6 @@ private[deductionTactics] object LoggerInitializer
 	findWeaknessAILogger.addHandler(finerConsoleHander)
 	findWeaknessAILogger.setLevel(Level.WARNING)
 	
-	val elementsLogger = Logger.getLogger(
-			"com.rayrobdod.deductionTactics.Elements")
-	elementsLogger.addHandler(finerConsoleHander)
-	elementsLogger.setLevel(Level.WARNING)
-	
 	val networkServerLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.WithNetworkServer")
 	networkServerLogger.addHandler(finerConsoleHander)
@@ -67,14 +77,9 @@ private[deductionTactics] object LoggerInitializer
 	networkClientLogger.addHandler(finerConsoleHander)
 	networkClientLogger.setLevel(Level.WARNING)
 	
-	val observeMovementLogger = Logger.getLogger(
-			"com.rayrobdod.deductionTactics.ai.StandardObserveMovement")
-	observeMovementLogger.addHandler(finerConsoleHander)
-	observeMovementLogger.setLevel(Level.WARNING)
-	
-	val tokenClassDecoderLogger = Logger.getLogger(
-			"com.rayrobdod.deductionTactics.CannonicalTokenClassDecoder")
-	tokenClassDecoderLogger.addHandler(finerConsoleHander)
-	tokenClassDecoderLogger.setLevel(Level.WARNING)
+	val fieldPotentialAiLogger = Logger.getLogger(
+			"com.rayrobdod.deductionTactics.ai.FieldPotentialAI")
+	fieldPotentialAiLogger.addHandler(finerConsoleHander)
+	fieldPotentialAiLogger.setLevel(Level.FINER)
 	
 }

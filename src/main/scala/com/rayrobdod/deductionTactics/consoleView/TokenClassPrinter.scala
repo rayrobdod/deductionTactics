@@ -28,16 +28,14 @@ import scala.runtime.{AbstractFunction1 => Function1}
 
 /**
  * @author Raymond Dodge
- * @version 2012 Dec 01
- * @version 2012 Dec 02 - manual optimization: private getName
- * @version 2013 Jun 14 - getWeakWeapon only traverses the traverses weakWeapon once now
- * @version 2013 Jun 14 - undoing getName as classes no longer share a trait
+ * @version a.4.0
  */
 object TokenClassPrinter extends Function1[TokenClass,Unit]
 {
 	private def out = System.out
 	private val elseString = "Unknown"
 	
+	val getName = {(x:{def name:String}) => x.name}
 	
 	
 	def apply(tokenClass:TokenClass) = {
@@ -45,22 +43,22 @@ object TokenClassPrinter extends Function1[TokenClass,Unit]
 		
 		out.print("Speed: ");
 		out.print(tokenClass.speed.getOrElse(0));
-		out.print(" Range: ");
+		out.print("  Range: ");
 		out.println(tokenClass.range.getOrElse(0));
 		
 		out.print("Attack:   ")
-		out.print(tokenClass.atkElement.map{_.name}.getOrElse{elseString});
+		out.print(tokenClass.atkElement.map{getName}.getOrElse{elseString});
 		out.print("; ");
-		out.print(tokenClass.atkWeapon.map{_.name}.getOrElse{elseString});
+		out.print(tokenClass.atkWeapon.map{getName}.getOrElse{elseString});
 		out.print("; ");
-		out.println(tokenClass.atkStatus.map{_.name}.getOrElse{elseString});
+		out.println(tokenClass.atkStatus.map{getName}.getOrElse{elseString});
 		
 		out.print("Weakness: ")
-		out.print(tokenClass.weakDirection.map{_.name}.getOrElse{elseString});
+		out.print(tokenClass.weakDirection.map{getName}.getOrElse{elseString});
 		out.print("; ");
 		out.print(getWeakWeapon(tokenClass));
 		out.print("; ");
-		out.println(tokenClass.weakStatus.map{_.name}.getOrElse{elseString});
+		out.println(tokenClass.weakStatus.map{getName}.getOrElse{elseString});
 	}
 	
 	private def getWeakWeapon(tokenClass:TokenClass) = {

@@ -240,7 +240,7 @@ object NoStandOnSpaceClass extends SpaceClassConstructor
 /**
  * A SpaceClass that cannot be stood on except by a particular element
  * @author Raymond Dodge
- * @version 2013 Jul 13
+ * @version a.5.1
  */
 class ElementRestrictedSpaceClass(val element:Elements.Element) extends BoardGameSpaceClass
 		with NoLandOnAction
@@ -251,10 +251,13 @@ class ElementRestrictedSpaceClass(val element:Elements.Element) extends BoardGam
 	import NoStandOnSpaceClass.unitIsFlying
 	
 	override def cost(tokenMoving:BoardGameToken, costType:TypeOfCost) = {
-		tokenMoving match {case x:Token => costType match {
-			case TokenMovementCost => if (unitIsFlying(tokenMoving) || x.tokenClass.atkElement == someElement) {1} else {1000}
-			case _ => 1
-		}}
+		tokenMoving match {
+			case x:Token => costType match {
+				case TokenMovementCost => if (unitIsFlying(tokenMoving) || x.tokenClass.atkElement == someElement) {1} else {1000}
+				case _ => 1
+			}
+			case _ => 1000
+		}
 	}
 	
 	override def hashCode = 100 + element.hashCode;

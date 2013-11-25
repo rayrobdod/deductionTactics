@@ -118,6 +118,7 @@ object CannonicalTokenClassDecoder extends JSONDecoder[CannonicalTokenClass] {
 		l.result
 	}
 }
+
 /**
  * When parsing a token, parses it into a CannonicalTokenClass
  * @version 2013 Jun 23

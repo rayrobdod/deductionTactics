@@ -27,9 +27,7 @@ import java.util.regex.{Pattern, Matcher}
  * 
  * 
  * @author Raymond Dodge
- * @version 2012 Dec 07
- * @version 2012 Dec 08 - fixes from testing
- * @version 2013 Aug 07 - ripples from rewriting Player
+ * @version a.5.1
  */
 class CommandParser(tokens:ListOfTokens, field:Field) {
 	import CommandParser._;

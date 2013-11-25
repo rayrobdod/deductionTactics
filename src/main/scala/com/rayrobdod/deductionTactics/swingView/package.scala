@@ -243,6 +243,13 @@ package object swingView
 		e
 	}
 	
+	/**
+	 * @since a.5.1
+	 */
+	def tokenClassToIcon(tokenClass:TokenClass) = {
+		tokenClassNameToIcon.getOrElse(tokenClass.name,
+				generateGenericIcon(tokenClass))
+	}
 	
 	/** @since a.5.0 */
 	def elementToColor(e:Element):Color = e match {

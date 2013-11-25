@@ -27,6 +27,8 @@ import com.rayrobdod.util.services.ClassServiceLoader
 
 /**
  * A Deduction Tactics player
+ *
+ * This is more of a data structure. To control the Player, one would use a PlayerAI.
  * 
  * @author Raymond Dodge
  * @version a.5.0 - no longer relies on actors
@@ -62,10 +64,12 @@ object Player {
 
 
 /**
- * An abstract class that provides an interface for ais to play this game.
- * 
+ * An abstract class that  Player will poll when it is taking a turn to
+ * determine how to act.
+ *  
  * @author Raymond Dodge
  * @version a.5.0 - no longer relies on scala-swing
+ * @todo trait instead of abstract class? Could it possibly hurt?
  */
 abstract class PlayerAI
 {

@@ -106,9 +106,7 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 	
 	override def doLayout()
 	{
-		this.icon.setIcon({
-			tokenClassNameToIcon.getOrElse(tokenClass.name, generateGenericIcon(tokenClass))
-		})
+		this.icon.setIcon(tokenClassToIcon(tokenClass))
 		this.name.setText(tokenClass.name)
 		this.range.setText("Range: " + tokenClass.range.getOrElse("?"))
 		this.speed.setText("Speed: " + tokenClass.speed.getOrElse("?"))

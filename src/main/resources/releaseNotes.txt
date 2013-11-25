@@ -1,8 +1,17 @@
 ﻿deductionTactics
 
-Wishlist: Token Animations, Persistent preferences, Flying units,
+Wishlist: Token Animations, Flying units,
 		change AIs to use builder model, Better AIs
+		main method using the console (and thus displaying the flexibility to use Android's stuff, or switching to JavaFX)
 
+== a.5.1 ==
+Adding AI: field potential ai
+Rewriting console interface
+
+Allowing preferences to persist
+
+
+== a.5.0 ==
 === Major / Breaking ===
 * No longer uses scala.swing or scala.actors.
 

@@ -3,5 +3,8 @@
 	"." : "com.rayrobdod.deductionTactics.NoStandOnSpaceClass",
 	"|" : "com.rayrobdod.deductionTactics.ImpassibleSpaceClass",
 	":" : "com.rayrobdod.deductionTactics.AttackableOnlySpaceClass",
-	"f" : "com.rayrobdod.deductionTactics.FireRestrictedSpaceClass"
+	
+	
+	"f" : "com.rayrobdod.deductionTactics.FireRestrictedSpaceClass",
+	"w" : "com.rayrobdod.deductionTactics.NoStandOnSpaceClass"
 }

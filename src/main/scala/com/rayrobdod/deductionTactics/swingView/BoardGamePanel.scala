@@ -17,6 +17,7 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
+import com.rayrobdod.deductionTactics._
 import javax.swing.{JButton, JList, JPanel, ImageIcon,
 		DefaultListModel, JScrollPane}
 import javax.imageio.ImageIO
@@ -29,7 +30,7 @@ import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
 import com.rayrobdod.boardGame.mapValuesFromObjectNameToSpaceClassConstructor
 import com.rayrobdod.boardGame.swingView.FieldComponent
-import com.rayrobdod.deductionTactics._
+import com.rayrobdod.boardGame.swingView.{RectangularTilesheet => Tilesheet}
 import scala.collection.immutable.Seq
 import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
@@ -44,7 +45,7 @@ import com.rayrobdod.boardGame.swingView.{TokenComponent => BGTokenComponent}
 
 /**
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.5.1
  */
 class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JPanel
 {
@@ -56,8 +57,8 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 	{
 		import com.rayrobdod.swing.layouts.MoveToLayout
 		
-		val layout:MoveToLayout = Options.movementLayout
-		val tilesheetInfo = Options.currentTilesheet
+		val layout:MoveToLayout = BoardGamePanel.movementLayout
+		val tilesheetInfo = BoardGamePanel.currentTilesheet
 		
 		val fieldComp = new FieldComponent(tilesheetInfo,field)
 		fieldComp.tokenLayer.setLayout(layout)
@@ -125,4 +126,48 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 	this.add(centerScrollPane, BorderLayout.CENTER)
 	this.add(westScrollPane, BorderLayout.WEST)
 	this.add(eastScrollPane, BorderLayout.EAST)
+}
+
+/**
+ * constants used by the BoardGamePanel class
+ * @author Raymond Dodge
+ * @since a.5.1
+ */
+object BoardGamePanel {
+	import java.util.prefs.Preferences;
+	import com.rayrobdod.swing.layouts.{MoveToLayout,
+		MoveToInstantLayout, MoveToGradualLayout2,
+		MoveToGradualLayout, SequentialMoveToLayout
+	}
+	
+	val movementSpeedPrefsKey:String = "tokenMoveSpeed";
+	val tilesheetPrefsKey:String = "tilesheetIndex";
+	private def myPrefs = Preferences.userNodeForPackage(classOf[BoardGamePanel]);
+	
+	def movementSpeed:Int = {
+		myPrefs.getInt( movementSpeedPrefsKey, 15 );
+	}
+	def movementSpeed_=(x:Int) {
+		myPrefs.putInt( movementSpeedPrefsKey, x );
+	}
+	
+	def movementLayout:MoveToLayout = {
+		if (movementSpeed <= 0) {
+			new MoveToInstantLayout()
+		} else {
+			new MoveToGradualLayout(movementSpeed)
+		}
+	}
+	
+	/* ... ... ... */
+	def currentTilesheet:Tilesheet = {
+		AvailibleTilesheetListModel.getElementAt(
+			myPrefs.getInt(tilesheetPrefsKey, 0)
+		)
+	}
+	
+	def currentTilesheet_=(x:Tilesheet) {
+		val index = AvailibleTilesheetListModel.tilesheets.indexOf(x);
+		myPrefs.putInt(tilesheetPrefsKey, index);
+	}
 }

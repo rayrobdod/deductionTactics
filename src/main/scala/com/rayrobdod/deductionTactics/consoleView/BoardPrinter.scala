@@ -20,54 +20,46 @@ package consoleView
 
 import com.rayrobdod.boardGame.{RectangularField, Space, SpaceClass,
 		SpaceClassConstructor, mapValuesFromObjectNameToSpaceClassConstructor}
-import java.io.InputStreamReader
+import java.io.PrintStream
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 
 /**
  * 
  * @author Raymond Dodge
- * @version 10 Aug 2012
- * @version 2013 Jun 23 - responding to changes in ToScalaCollection
- * @todo use the selected token and print out its range
+ * @version a.5.1
  */
-class BoardPrinter(tokens:ListOfTokens, val field:RectangularField)
-{
-	private val out:java.io.OutputStream = System.out;
-	private val tokensToLetters = consoleView.tokensToLetters(tokens)
-	
-	val spaceClassConsToLetters:Map[SpaceClassConstructor, Char] = {
-		val letterToNameMapReader = new InputStreamReader(this.getClass().getResourceAsStream("/com/rayrobdod/deductionTactics/letterMapping.json"))
-		val letterToNameMap:Map[String,String] = {
-			val listener = ToScalaCollection()
-			JSONParser.parse(listener, letterToNameMapReader)
-			listener.resultMap.mapValues{_.toString}
-		}
-		val letterToSpaceClass = mapValuesFromObjectNameToSpaceClassConstructor(letterToNameMap)
-		
-		letterToSpaceClass.map{_.swap}.mapValues{_(0)}
+object BoardPrinter{
+	private def spaceToString(a:SpaceClass) = a match {
+		case NoStandOnSpaceClass()      => scala.Console.BLUE_B
+		case ImpassibleSpaceClass()     => scala.Console.YELLOW_B
+		case AttackableOnlySpaceClass() => scala.Console.GREEN_B
+		case FireRestrictedSpaceClass() => scala.Console.RED_B
+		case _ => scala.Console.BLACK_B
 	}
 	
-	def printField(){
-		val middles = field.spaces.map{_.map{(space:Space) =>
-			val tokensOnSpace = tokens.tokens.flatten.filter{_.currentSpace == space}.headOption
-			val spaceClassCons = spaceClassConsToLetters.map{_._1}.filter{_.unapply(space.typeOfSpace)}.headOption
-			val lastResortChar = '‽'
+	def spaceStrings(tokens:ListOfTokens, field:RectangularField, cursor:Option[Space] = None, selected:Option[Token] = None):Seq[Seq[String]] = {
+		field.spaces.map{_.map{(space:Space) =>
+			val tokenOnSpace = tokens.aliveTokens.flatten.filter{_.currentSpace == space}.headOption
 			
-			tokensOnSpace.map{tokensToLetters}.orElse{spaceClassCons.map{
-						spaceClassConsToLetters}}.getOrElse{lastResortChar}
-		}}
+			val spaceClassColor = spaceToString(space.typeOfSpace)
+			val tokenString = tokenOnSpace.map{tokensToLetters(tokens)}.getOrElse{' '}
+			val cursorColor = cursor.filter{_ == space}.map{x => scala.Console.BLINK}.getOrElse("\u001b[25m") // blink off
+			val tokenColor = if (tokenOnSpace == selected && tokenOnSpace != None) {scala.Console.BOLD} else {"\u001b[21m"}
+			
+			cursorColor + spaceClassColor + tokenColor + tokenString
+		} :+ "\n"}
+	}
+	
+	// I'd prefer to use the top line, but the consoles are ASCII only
+	//val (tl, tr, bl, br, horiz, vert) = ('┏', '┓', '┗', '┛', '━', '┃')
+	private val (tl, tr, bl, br, horiz, vert) = (',', '.', '`', '\'', '-', '|')
+
+	def apply(out:PrintStream, tokens:ListOfTokens, field:RectangularField, cursor:Option[Space] = None, selected:Option[Token] = None) {
+		val strings = spaceStrings(tokens, field, cursor, selected)
 		
-		// I'd prefer to use the top line, but the consoles are ASCII only
-//		val (tl, tr, bl, br, horiz, vert) = ('┏', '┓', '┗', '┛', '━', '┃')
-		val (tl, tr, bl, br, horiz, vert) = (',', '.', '`', '\'', '-', '|')
-		
-		val topBorder = tl +: Seq.fill(middles.head.length){horiz} :+ tr :+ '\n'
-		val midsWithBorder = middles.map{vert +: _ :+ vert :+ '\n'}
-		val botBorder = bl +: Seq.fill(middles.last.length){horiz} :+ br :+ '\n' :+ '\n'
-		
-		val whole = topBorder +: midsWithBorder :+ botBorder
-		
-		whole.flatten.foreach{out.write(_)}
+		strings.flatten.foreach{ x => System.out.print( x ) }
+		out.println( scala.Console.RESET )
 	}
 }
+

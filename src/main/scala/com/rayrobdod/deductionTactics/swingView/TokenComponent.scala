@@ -42,10 +42,9 @@ import java.awt.Color
          Better done by artificial delays in the layout's reactions?
  */
 class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout, tokens:ListOfTokens)
-		extends BoardGameTokenComponent(token, fieldComp, layout, {
-				tokenClassNameToIcon.getOrElse(token.tokenClass.name,
-						generateGenericIcon(token.tokenClass))
-			})
+		extends BoardGameTokenComponent(token, fieldComp, layout, 
+				tokenClassToIcon(token.tokenClass)
+		)
 {
 	private val myTeamNumber = tokens.tokens.zipWithIndex.filter{_._1.contains(token)}.head._2
 	private val teamColors:Function1[Int,Color] = Seq(new Color(64,64,255), new Color(255,64,64), new Color(64,255,64), new Color(192,192,64) /*,... */)
@@ -57,8 +56,7 @@ class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout,
 	token.updateReactions_+=(UpdateIconReaction)
 	object UpdateIconReaction extends Function0[Unit] {
 		override def apply():Unit = TokenComponent.this.setIcon(
-				tokenClassNameToIcon.getOrElse(token.tokenClass.name,
-						generateGenericIcon(token.tokenClass))
+				tokenClassToIcon(token.tokenClass)
 		)
 	}
 	
@@ -75,6 +73,11 @@ class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout,
 		var currentEffectFrameNumber = 0;
 		var prevFrameStartTime:Long = System.currentTimeMillis();
 		
+		/**
+		 * @param elem the element of damage inflicted by the attack
+		 * @param kind the weaponkind of damage inflicted by the attack
+		 * @param space unused
+		 */
 		def apply(elem:Element, kind:Weaponkind, space:Space):Unit =
 		{
 			val effectFile = this.getClass().getResource(attackEffectFile(kind))
@@ -92,6 +95,10 @@ class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout,
 			this.shared()
 		}
 		
+		/**
+		 * @param status the status inflicted by the attack
+		 * @param space unused
+		 */
 		def apply(status:Status, space:Space):Unit =
 		{
 			val effectFile = this.getClass().getResource("/com/rayrobdod/glyphs/status/" + status.name.toLowerCase + "-i.png")
@@ -118,8 +125,7 @@ class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout,
 			val currentImage = new BufferedImage(IMAGE_DIM, IMAGE_DIM, BufferedImage.TYPE_INT_ARGB)
 			val currentImageGraphics = currentImage.getGraphics()
 			
-			tokenClassNameToIcon.getOrElse(token.tokenClass.name,
-					generateGenericIcon(token.tokenClass)).paintIcon(
+			tokenClassToIcon(token.tokenClass).paintIcon(
 				TokenComponent.this,
 				currentImageGraphics,
 				0,0
