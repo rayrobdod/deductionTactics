@@ -29,6 +29,7 @@ import java.net.{Socket, ServerSocket, InetAddress}
 import java.io.{OutputStreamWriter}
 import scala.collection.immutable.Seq
 import java.nio.charset.StandardCharsets.UTF_8
+import scala.runtime.{AbstractFunction2 => AFunction2, AbstractFunction1 => AFunction1}
 
 /**
  * A decorator that sets up a bunch of sockets which broadcast that player's
@@ -159,7 +160,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 	}
 	
 	
-	final class PrintMove(tokenIndex:String) extends BoardGameToken.MoveReactionType {
+	final class PrintMove(tokenIndex:String) extends AFunction2[Space, Boolean, Unit] with BoardGameToken.MoveReactionType {
 		def apply(space:Space, landedOn:Boolean):Unit = space match {
 			case s:RectangularSpace => {
 				output.write("RequestMove(MyTokens(")
@@ -171,7 +172,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		}
 	}
 	
-	final class PrintRequestDamageAttack(tokenIndex:String) extends CannonicalToken.RequestAttackType {
+	final class PrintRequestDamageAttack(tokenIndex:String) extends AFunction1[Token, Unit] with CannonicalToken.RequestAttackType {
 		def apply(target:Token):Unit = target match {
 			case target2:MirrorToken => {
 				output.write("RequestAttackForDamage(MyTokens(")
@@ -183,7 +184,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		}
 	}
 	
-	final class PrintRequestStatusAttack(tokenIndex:String) extends CannonicalToken.RequestAttackType {
+	final class PrintRequestStatusAttack(tokenIndex:String) extends AFunction1[Token, Unit] with CannonicalToken.RequestAttackType {
 		def apply(target:Token):Unit = target match {
 			case target2:MirrorToken => {
 				output.write("RequestAttackForStatus(MyTokens(")

@@ -29,7 +29,7 @@ import com.rayrobdod.boardGame.{PhysicalStrikeCost,
 			Space, TokenMovementCost}
 import com.rayrobdod.deductionTactics.LoggerInitializer.{
 				observeMovementLogger => somLogger}
-import scala.runtime.{AbstractFunction1 => Function1}
+import scala.runtime.{AbstractFunction1 => Function1, AbstractFunction2 => AFunction2}
 
 /**
  * @author Raymond Dodge
@@ -109,7 +109,7 @@ package object ai
 	 * @version a.5.2
 	 */
 	final class StandardObserveMovement(token:MirrorToken)
-				extends Function2[Space, Boolean, Unit] with Function0[Unit]
+				extends AFunction2[Space, Boolean, Unit] with Function0[Unit]
 	{
 		private var countThisTurn = 0;
 		
