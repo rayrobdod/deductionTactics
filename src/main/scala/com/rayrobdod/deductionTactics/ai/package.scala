@@ -106,6 +106,7 @@ package object ai
 	 * A standard movement observer that will update a SuspiciounsTokenClass when a token moves
 	 * 
 	 * One per enemy token. Parameter is that token. Add to that token and at least one player.
+	 * @version a.5.2
 	 */
 	final class StandardObserveMovement(token:MirrorToken)
 				extends Function2[Space, Boolean, Unit] with Function0[Unit]
@@ -113,17 +114,17 @@ package object ai
 		private var countThisTurn = 0;
 		
 		override def apply():Unit = {
-				countThisTurn = countThisTurn + 1
-				somLogger.finer("Incremented token's movement");
-		}
-		
-		override def apply(e:Space, b:Boolean) = {
 				if (countThisTurn > token.tokenClass.speed.getOrElse(0))
 				{
 					token.tokenClass.speed = Some(countThisTurn)
 					somLogger.fine("Recording token's movement: " + countThisTurn);
 				}
 				countThisTurn = 0;
+		}
+		
+		override def apply(e:Space, b:Boolean) = {
+				countThisTurn = countThisTurn + 1
+				somLogger.finer("Incremented token's movement");
 		}
 	}
 
