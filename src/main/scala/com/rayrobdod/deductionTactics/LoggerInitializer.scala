@@ -70,7 +70,7 @@ private[deductionTactics] object LoggerInitializer
 	val networkServerLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.WithNetworkServer")
 	networkServerLogger.addHandler(finerConsoleHander)
-	networkServerLogger.setLevel(Level.FINER)
+	networkServerLogger.setLevel(Level.WARNING)
 	
 	val networkClientLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.NetworkClient")
@@ -80,6 +80,6 @@ private[deductionTactics] object LoggerInitializer
 	val fieldPotentialAiLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.FieldPotentialAI")
 	fieldPotentialAiLogger.addHandler(finerConsoleHander)
-	fieldPotentialAiLogger.setLevel(Level.FINER)
+	fieldPotentialAiLogger.setLevel(Level.WARNING)
 	
 }

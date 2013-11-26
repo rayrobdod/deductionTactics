@@ -89,8 +89,8 @@ final class FieldPotentialAI extends PlayerAI
 			val frame = new JFrame("PotentialFieldAI$RetreatField") 
 			frame.getContentPane.setLayout(
 				new java.awt.GridLayout(
-					field.spaces(0).size,
-					field.spaces.size
+					field.spaces.size,
+					field.spaces(0).size
 				)
 			)
 			
