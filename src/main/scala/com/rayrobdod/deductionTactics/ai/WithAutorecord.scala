@@ -41,14 +41,13 @@ final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 		base.initialize(player, field)
 		
 		// setup recorders
-		player.tokens.otherTokens.flatten.foreach{(other:MirrorToken) =>
-			val attacks = new StandardObserveAttacks(other, player.tokens)
+		player.tokens.myTokens.foreach{(mine:CannonicalToken) =>
+			val attacks = new StandardObserveAttacks(mine, player.tokens)
 			
-			player.tokens.myTokens.foreach{(mine:CannonicalToken) =>
-				mine.beDamageAttackedReactions_+=(attacks)
-				mine.beStatusAttackedReactions_+=(attacks)
-			}
-				
+			mine.beDamageAttackedReactions_+=(attacks)
+			mine.beStatusAttackedReactions_+=(attacks)
+		}
+		player.tokens.otherTokens.flatten.foreach{(other:MirrorToken) =>
 			val movement = new StandardObserveMovement(other)
 			other.moveReactions_+=(movement)
 			player.addStartTurnReaction(movement)

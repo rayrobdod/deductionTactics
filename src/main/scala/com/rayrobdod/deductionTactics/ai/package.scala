@@ -56,9 +56,10 @@ package object ai
 	/**
 	 * A standard attack observer that will update a SuspiciounsTokenClass when a token attacks
 	 * 
-	 * Might only need one per player. Add to enemy mirror tokens.
+	 * Add as Be___AttackedReaction to the target token.
+	 * @version a.5.2
 	 */
-	class StandardObserveAttacks(target:MirrorToken, allTokens:ListOfTokens)
+	final class StandardObserveAttacks(target:CannonicalToken, allTokens:ListOfTokens)
 			extends Token.StatusAttackedReactionType with Token.DamageAttackedReactionType
 	{
 		def apply(status:Status, attackerSpace:Space) = {
@@ -72,7 +73,7 @@ package object ai
 					
 					attackerClass.atkStatus = Some(status)
 					
-					if (range > attackerClass.range.getOrElse(0)) {
+					if (range > attackerClass.range.getOrElse(0) && range < 5) {
 						attackerClass.range = Some(range)
 					}
 				}
@@ -92,7 +93,7 @@ package object ai
 					attackerClass.atkElement = Some(element)
 					attackerClass.atkWeapon = Some(kind)
 					
-					if (range > attackerClass.range.getOrElse(0)) {
+					if (range > attackerClass.range.getOrElse(0) && range < 5) {
 						attackerClass.range = Some(range)
 					}
 				}
@@ -106,7 +107,7 @@ package object ai
 	 * 
 	 * One per enemy token. Parameter is that token. Add to that token and at least one player.
 	 */
-	class StandardObserveMovement(token:MirrorToken)
+	final class StandardObserveMovement(token:MirrorToken)
 				extends Function2[Space, Boolean, Unit] with Function0[Unit]
 	{
 		private var countThisTurn = 0;
