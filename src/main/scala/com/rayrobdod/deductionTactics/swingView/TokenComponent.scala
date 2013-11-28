@@ -17,8 +17,13 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
+import com.rayrobdod.deductionTactics.Elements.Element
+import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
+import com.rayrobdod.deductionTactics.Statuses.Status
+import com.rayrobdod.deductionTactics.BodyTypes.{Value => BodyType}
+import com.rayrobdod.deductionTactics.Directions.Direction
+
 import scala.util.Random
-import java.awt.{Image, GridLayout, Point}
 import java.awt.image.BufferedImage
 import javax.swing.{JLabel, JComponent, Icon, ImageIcon}
 import javax.swing.SwingUtilities.invokeLater
@@ -26,11 +31,7 @@ import com.rayrobdod.swing.layouts.MoveToLayout
 import com.rayrobdod.boardGame.Space
 import com.rayrobdod.boardGame.swingView.{FieldComponent,
 		TokenComponent => BoardGameTokenComponent}
-import com.rayrobdod.deductionTactics.{CannonicalToken, Player,
-		Token, ListOfTokens}
-import com.rayrobdod.deductionTactics.Elements.Element
-import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
-import com.rayrobdod.deductionTactics.Statuses.Status
+import com.rayrobdod.deductionTactics.{Token, ListOfTokens}
 import com.rayrobdod.util.BlitzAnimImage
 import javax.imageio.ImageIO
 import java.awt.Color

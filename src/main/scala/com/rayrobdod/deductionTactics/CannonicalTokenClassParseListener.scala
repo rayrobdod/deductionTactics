@@ -31,9 +31,6 @@ import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import com.rayrobdod.javaScriptObjectNotation.JSONString
 import java.io.{StringReader, InputStreamReader}
-import scala.collection.JavaConversions.mapAsScalaMap
-import scala.collection.JavaConversions.asScalaBuffer
-import scala.collection.JavaConversions.mapAsJavaMap
 import LoggerInitializer.{tokenClassDecoderLogger => Logger}
 
 

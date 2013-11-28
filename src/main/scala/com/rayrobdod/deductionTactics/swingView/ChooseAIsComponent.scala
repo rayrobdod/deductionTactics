@@ -19,7 +19,6 @@ package com.rayrobdod.deductionTactics.swingView
 
 import scala.collection.immutable.Seq
 import javax.swing.{JPanel, BoxLayout, JList, AbstractListModel, JScrollPane, ListSelectionModel, JLabel}
-import javax.swing.BoxLayout.{X_AXIS => boxXAxis}
 import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,

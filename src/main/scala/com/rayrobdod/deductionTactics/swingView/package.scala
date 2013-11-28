@@ -277,6 +277,7 @@ package object swingView
 	
 	
 	import com.rayrobdod.deductionTactics.{TITLE => appName, VERSION => version}
+	/** @since a.5.2 */
 	private val runningOn = "Running on Java; " + System.getProperty("java.vendor") + " " + System.getProperty("java.version")
 	
 	/** @since a.5.2 */
