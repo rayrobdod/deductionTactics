@@ -81,7 +81,7 @@ object SpaceClass {
 	object IsFlying extends CanEnterType2 {
 		def apply(space:BoardGameSpaceClass, myToken:BoardGameToken):Boolean = {
 			myToken match {
-				case x:Token => x.tokenClass.body.get == BodyTypes.Avian
+				case x:Token => x.tokenClass.body.map{_ == BodyTypes.Avian}.getOrElse(false)
 				case _ => false
 			}
 		}
@@ -90,7 +90,7 @@ object SpaceClass {
 	case class IsElement(val element:Elements.Element) extends CanEnterType2 {
 		def apply(space:BoardGameSpaceClass, myToken:BoardGameToken):Boolean = {
 			myToken match {
-				case x:Token => x.tokenClass.atkElement.get == element
+				case x:Token => x.tokenClass.body.map{_ == element}.getOrElse(false)
 				case _ => false
 			}
 		}

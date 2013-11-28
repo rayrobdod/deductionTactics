@@ -39,24 +39,24 @@ import com.rayrobdod.swing.NameAndIcon
 
 /** 
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.5.2
  */
 class HumanSuspicionsPanel(tokenClass:SuspicionsTokenClass) extends TokenClassPanel(tokenClass)
 {
 	this.atkElement.addMouseListener(new NameAndIconSetterChooserFrameMaker[Element](
-			null +: Elements.values, new FunctionThenRevalidate(tokenClass.atkElement_=_), this))
+			null +: Elements.values, tokenClass.atkElement_=_, this))
 	this.atkWeapon.addMouseListener(new NameAndIconSetterChooserFrameMaker[Weaponkind](
-			null +: Weaponkinds.values, new FunctionThenRevalidate(tokenClass.atkWeapon_=_), this))
+			null +: Weaponkinds.values, tokenClass.atkWeapon_=_, this))
 	this.atkStatus.addMouseListener(new NameAndIconSetterChooserFrameMaker[Status](
-			null +: Statuses.values, new FunctionThenRevalidate(tokenClass.atkStatus_=_), this))
+			null +: Statuses.values, tokenClass.atkStatus_=_, this))
 	this.weakStatus.addMouseListener(new NameAndIconSetterChooserFrameMaker[Status](
-			null +: Statuses.values, new FunctionThenRevalidate(tokenClass.weakStatus_=_), this))
+			null +: Statuses.values, tokenClass.weakStatus_=_, this))
 	this.weakDirection.addMouseListener(new NameAndIconSetterChooserFrameMaker[Direction](
-			null +: Directions.values, new FunctionThenRevalidate(tokenClass.weakDirection_=_), this))
+			null +: Directions.values, tokenClass.weakDirection_=_, this))
 	this.speed.addMouseListener(new IntSetterChooserFrameMaker(
-			new FunctionThenRevalidate(tokenClass.speed_=_), this))
+			tokenClass.speed_=_, this))
 	this.range.addMouseListener(new IntSetterChooserFrameMaker(
-			new FunctionThenRevalidate(tokenClass.range_=_), this))
+			tokenClass.range_=_, this))
 	
 	this.weaponWeakPanel.addends.zip(Weaponkinds.values).foreach(
 		{(bar:JProgressBar, weapon:Weaponkind) =>
@@ -66,13 +66,5 @@ class HumanSuspicionsPanel(tokenClass:SuspicionsTokenClass) extends TokenClassPa
 	
 	this.name.addMouseListener(new ClassSynchonizerFrameMaker(
 			tokenClass, this))
-	
-	class FunctionThenRevalidate[A](fun:Function1[A,Any]) extends Function1[A,Any] {
-		def apply(a:A) {
-			fun(a)
-			HumanSuspicionsPanel.this.revalidate()
-			HumanSuspicionsPanel.this.repaint()
-		}
-	}
 }
 
