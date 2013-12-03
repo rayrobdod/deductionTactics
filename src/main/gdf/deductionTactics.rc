@@ -1,7 +1,11 @@
 
 /*
 
-"C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\rc" -I "C:\Program Files\Microsoft SDKs\Windows\v7.1\Include" -I "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include"  deductionTactics.rc
+cd "%USERPROFILE%\Documents\Programming\Java\Games\DeductionTactics"
+"C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\rc" -I "C:\Program Files\Microsoft SDKs\Windows\v7.1\Include" -I "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include" /fo target\wix\gdf.res src\main\gdf\deductionTactics.rc
+"C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\cl" /c /Fo<target\wix\gdf.obj> -I"C:\Program Files (x86)\Java\jdk1.7.0_07\include" -I"C:\Program Files (x86)\Java\jdk1.7.0_07\include\win32" -I"C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include" -I"C:\Program Files\Microsoft SDKs\Windows\v7.1\Include" src\main\gdf\installGdf.cpp
+"C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\amd64\link" /DLL target\wix\gdf.res target\wix\gdf.obj "C:\Program Files\Microsoft SDKs\Windows\v7.1\Lib\x64\*.lib" "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\lib\amd64\libcmt.lib" "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\lib\amd64\oldnames.lib" /out:target\wix\gdf.dll
+
 
  */
 
@@ -13,8 +17,8 @@
 
 #include <Winver.h>
 
-#define VERSION "a.4.1\0"
-#define VERSION_MANIFEST 0,10,4,1
+#define VERSION "a.5.2\0"
+#define VERSION_MANIFEST 0,10,5,2
 
 
 1 VERSIONINFO
@@ -31,7 +35,7 @@
             VALUE "FileDescription",  "Game Definition File"
             VALUE "FileVersion",      VERSION
             VALUE "InternalName",     "Whee!"
-            VALUE "LegalCopyright",   "Whee!"
+            VALUE "LegalCopyright",   "GNU GPL v3"
             VALUE "LegalTrademarks1", "Whee!"
             VALUE "LegalTrademarks2", "Whee!"
             VALUE "OriginalFilename", "GDF"

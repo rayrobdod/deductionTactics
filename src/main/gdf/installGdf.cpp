@@ -37,3 +37,15 @@ int main() {
 	printf("\n");
 	return 0;
 }
+
+
+// http://msdn.microsoft.com/en-us/library/ms853727.aspx
+extern "C" BOOL WINAPI
+DllMain(
+    HINSTANCE   hInstance,
+    DWORD       dwReason,
+    LPVOID      lpReserved
+    )
+{
+        return (TRUE);
+}   //  end of DllMain method

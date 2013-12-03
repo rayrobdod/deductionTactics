@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="windows-1252"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:gdf="http://schemas.microsoft.com/wix/GamingExtension">
 	<!--
 cd "%USERPROFILE%\Documents\Programming\Java\Games\DeductionTactics"
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\candle.exe" -pedantic -out target\wix\out.wixout src\main\gdf\windowsInstaller.wix
-"C:\Program Files (x86)\WiX Toolset v3.8\bin\light.exe" -ext WixUIExtension -b target\scala-2.9.3\proguard -b src\main\gdf -out target\wix\out.msi target\wix\out.wixout
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\candle.exe" -pedantic -ext WixGamingExtension -out target\wix\out.wixout src\main\gdf\windowsInstaller.wix
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\light.exe" -ext WixUIExtension -ext WixGamingExtension -b target\scala-2.9.3\proguard -b src\main\gdf -out target\wix\out.msi target\wix\out.wixout
 	-->
 
 	<Product Name="Deduction Tactics" Id="464a266b-aafb-4ed4-850d-fb3bb284b09d"
@@ -23,12 +24,14 @@ cd "%USERPROFILE%\Documents\Programming\Java\Games\DeductionTactics"
 		<Property Id='DiskPrompt' Value="Deduction Tactics" />
 		
 		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder" Name="PFiles">
-				<Directory Id="Acme" Name="rayrobdod">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="CompanyFolder" Name="rayrobdod">
 					<Directory Id="INSTALLDIR" Name="Deduction Tactics">
 						<Component Id="MainExecutable" Guid="464a266b-aafb-4ed4-850d-fb3bb284b09d">
-							<File Id="MainJarPack" Name="deductionTactics.jar.pack.gz" Source="deductionTactics-a.5.2-SNAPSHOT-full-mini.jar.pack.gz" KeyPath="yes" />
-							<RemoveFile Id='MainJar' On='uninstall' Name='deductionTactics.jar' />
+							<File Id="MainJar" KeyPath="yes"
+									Name="deductionTactics.jar"
+									Source="deductionTactics-a.5.2-SNAPSHOT-full-mini.jar" />
+							<!-- RemoveFile Id='MainJar' On='uninstall' Name='deductionTactics.jar' / -->
 						</Component>
 					
 						<Component Id="LicenseComp" Guid="8a8b6175-ccde-4a89-9187-46619c9b9460">
@@ -36,25 +39,33 @@ cd "%USERPROFILE%\Documents\Programming\Java\Games\DeductionTactics"
 						</Component>
 					
 						<Component Id="GameDefFile" Guid="18ff063c-2490-4053-9968-f8cb65bb8867">
-							<File Id="GameDefFileFile" Name="deductionTactics.gdf" Source="deductionTactics.gdf" KeyPath="yes" />
+							<File Id="GameDefDll" Name="deductionTactics_gdf.dll" Source="gdf.dll" KeyPath="yes" >
+								<gdf:Game Id="66560d2b-23e1-4d9a-8510-f0ef84509530" ExecutableFile="MainJar" GdfResourceFile="GameDefDll" />
+							</File>
 						</Component>
 					</Directory>
 				</Directory>
+			</Directory>
+			<Directory Id="ProgramMenuFolder" Name="StartMenu">
+				<Component Id="ApplicationShortcut" Guid="1afb74a1-954d-4cc6-bbef-b1ae1e563225">
+					<Shortcut Id="ApplicationStartMenuShortcut"
+							Name="Deduction Tactics"
+							Description="My Application Description"
+							Target="java" Arguments="-jar [#MainJar]"
+							WorkingDirectory="INSTALLDIR"/>
+					<RegistryValue Root="HKCU" Key="Software\Microsoft\MyApplicationName" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+				</Component>
 			</Directory>
 		</Directory>
 		
 		<Feature Id="Complete" Level="1" Title="Deduction Tactics"
 					Description="The deduction tactics game"
 					Display="expand" ConfigurableDirectory='INSTALLDIR'>
-			<Feature Id="MainExecutableFeature" Level="1" Title="Program"
-						Description="The jar files required for running the program" Display="expand">
-				<ComponentRef Id="MainExecutable" />
-				<ComponentRef Id="LicenseComp" />
-			</Feature>
-			<Feature Id="GameDefFileFeature" Level="3" Title="Game Explorer Entry"
-						Description="Show this game in the Game Explorer" Display="expand">
-				<ComponentRef Id="GameDefFile" />
-			</Feature>
+					
+			<ComponentRef Id="MainExecutable" />
+			<ComponentRef Id="LicenseComp" />
+			<ComponentRef Id="ApplicationShortcut" />
+			<ComponentRef Id="GameDefFile" />
 		</Feature>
 		
 		
@@ -64,7 +75,7 @@ cd "%USERPROFILE%\Documents\Programming\Java\Games\DeductionTactics"
 		<InstallExecuteSequence>
 			<!--LaunchConditions After='InstallFiles' /-->
 			<!-- Custom Action='UnpackJar' After='InstallFiles'>NOT Installed</Custom -->
-			<Custom Action='UnpackJar' After='InstallFinalize'>NOT Installed</Custom>
+			<!-- Custom Action='UnpackJar' After='InstallFinalize'>NOT Installed</Custom -->
 		</InstallExecuteSequence>
 		
 	</Product>
