@@ -1,15 +1,24 @@
 ﻿deductionTactics
 
-Wishlist: Token Animations, Flying units,
+Wishlist: Token Animations,
 		change AIs to use builder model, Better AIs
 		main method using the console (and thus displaying the flexibility to use Android's stuff, or switching to JavaFX)
 
 == a.5.2 ==
+Consolodating spaceclasses into one file with parameters
+Changing a few dialogs to use JOptionPane instead of custom solution
+Fixing spaceclasses such that all of them only permit passage when unoccupied
 Adding SpaceClasses: SlowPassageSpaceClass
-Modifying maps: tripath
+Making FlyingPassageSpaceClass actually work
+
+=== Data ===
+Modifying maps: tripath, nobamb-farm3
 Adding tilemap: simple high contrast
 
-fixing WithAutorecord - it set up listeners to notice when a token attacked itself. Now listens for things that are actually possible. Presumably broken since a.5.0
+=== Fixes ===
+fixing WithAutorecord - it set up listeners to notice when a token attacked
+        itself. Now listens for things that are actually possible. Presumably
+        broken since a.5.0. I told you they didn't go through proper testing.
 
 == a.5.1 ==
 Adding AI: field potential ai

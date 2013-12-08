@@ -1,0 +1,23 @@
+{
+	"name": "NobAmb Farm L3",
+	"layout":"nobamb-farm3-layout.csv",
+	"classMap":"../letterMapping.json",
+	
+	"deductionTactics::startSpaces":{
+		"2": [[
+			[0,1],
+			[0,2],
+			[0,3],
+			[0,6],
+			[0,7],
+			[0,8]
+		],[
+			[7,2],
+			[8,4],
+			[7,6],
+			[6,7],
+			[5,6],
+			[6,8]
+		]]
+	}
+}
