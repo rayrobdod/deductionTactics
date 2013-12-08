@@ -32,13 +32,7 @@ import java.nio.charset.StandardCharsets.UTF_8
 /**
  * An object that deals with Maps
  * 
- * @version 28 Nov 2012
- * @version 22 Dec 2012 - making metadata a thing, and making the entry point a file rather than a string
- * @version 2013 Jun 16 - allowing startSpaces to be inlined
- * @version 2013 Jun 23 - responding to changes in JSON module; mostly ToSeqJSONParseListener → ToScalaCollection
- * @version 2013 Aug 06 - Apparently 'Future' in scala means 'there's a thing that I will want in the future', not 
- 			'there's a thing that will become availiable in the futrue'. Either way, scala.parellel.Future no longer exists,
- 			as of Scala 2.11. Using `scala.Function0` instead.
+ * @version a.5.0
  */
 // metadata
 // starting locations

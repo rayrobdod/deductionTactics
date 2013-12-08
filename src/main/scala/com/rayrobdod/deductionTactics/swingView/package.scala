@@ -192,9 +192,7 @@ package object swingView
 	
 	/**
 	 * Creates an undetailed icon which matches some of the traits of the TokenClass
-	 * @version 27 Feb 2012
-	 * @version 28 Jun 2012 - adding a cache to generateGenericIcon
-	 * @version 2013 Jun 30 - copied over from deductionTactics.package
+	 * @version 2013 Jun 30
 	 */
 	def generateGenericIcon(tokenClass:TokenClass) =
 	{

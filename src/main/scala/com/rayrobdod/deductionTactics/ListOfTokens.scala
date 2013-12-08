@@ -22,8 +22,7 @@ import scala.collection.immutable.{Seq => ISeq, Map => IMap}
 
 /**
  * @author Raymond Dodge
- * @version 19 Jan 2012
- * @version 25 Jan 2012 - implemented aliveTokens
+ * @version 25 Jan 2012
  */
 trait ListOfTokens {
 	def tokens():ISeq[ISeq[Token]]
@@ -51,9 +50,7 @@ class CannonicalListOfTokens(
 
 /**
  * @author Raymond Dodge
- * @version 19 Jan 2012
- * @version 25 Jan 2012 - added aliveMyTokens and aliveOtherTokens
- * @version 27 Nov 2012 - in tokens: prepending myTokens to otherTokens rather than appending myTokens to otherTokens
+ * @version 27 Nov 2012
  */
 class PlayerListOfTokens(
 		val myTokens:ISeq[CannonicalToken],

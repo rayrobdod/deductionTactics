@@ -143,12 +143,7 @@ class TeamBuilderPanel extends JPanel
 
 /**
  * @author Raymond Dodge
- * @version 23 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics.view
-			to com.rayrobdod.deductionTactics.view
- * @version 06 Feb 2012 - made the thing's color the same as the list's prefered seleciton color
- * @version 11 Feb 2012 - renamed from TokenClassListRender to TokenClassListRenderer
- * @version 2013 Aug 19 - renamed from TokenClassListRenderer to FullTokenClassListRenderer
+ * @version a.5.0
  */
 object FullTokenClassListRenderer extends ListCellRenderer[TokenClass]
 {
@@ -166,7 +161,7 @@ object FullTokenClassListRenderer extends ListCellRenderer[TokenClass]
 
 /**
  * @author Raymond Dodge
- * @version 2013 Aug 19 - Copeid and modified from FullTokenClassListRenderer
+ * @version a.5.0
  */
 object NoWeaponWeakTokenClassListRenderer extends ListCellRenderer[TokenClass]
 {

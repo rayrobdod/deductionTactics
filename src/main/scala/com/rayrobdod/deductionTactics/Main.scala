@@ -30,19 +30,7 @@ import com.rayrobdod.boardGame.{RectangularField}
 
 /**
  * @author Raymond Dodge
- * @version 2012 Apr 20
- * @version 30 May 2012 - moving the tokens' moving to their starting spaces
- 		until after all players are initialized
- * @version 05 Jun 2012 - adding a sleep after tokens move in hopes that they
- 		are done moving by the time the sleep ends
- * @version 28 Jun 2012 - adding a few default buttons to the startNewGame frame
- * @version 12 Jul 2012 - removing viewpoint choosers, since PlayerAI decorators can do that now
- * @version 04 Aug 2012 - putting the PlayerAI.initialize(player,field) inside a loop
- * @version 28 Nov 2012 - adding map-selection abilities
- * @version 13 Jan 2013 - limit number of tokens to number of availiable spaces.
- * @version 14 Jun 2013 - Giving the initial frame a menu bar
- * @version 2013 Aug 07 - ripples from rewriting Player
- * @version 2013 Aug 07 - removing scala.swing stuff
+ * @version a.5.0
  */
 object Main extends App
 {

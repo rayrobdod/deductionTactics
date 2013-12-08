@@ -62,8 +62,7 @@ final class WithSound(val base:PlayerAI) extends PlayerAI
  * A container for stateless anonymous inner classes
  *
  * @author Raymond Dodge
- * @version 17 Sept 2012
- * @version 2013 Aug 07 - ripples from rewriting Player
+ * @version a.5.0
  */
 object WithSound
 {

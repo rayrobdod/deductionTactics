@@ -39,7 +39,7 @@ import java.awt.Color
 /**
  * @author Raymond Dodge
  * @version a.5.0
- * @TODO try making a queue of animations - for cases where a lot of moves are made really quickly?
+ * @todo try making a queue of animations - for cases where a lot of moves are made really quickly?
          Better done by artificial delays in the layout's reactions?
  */
 class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout, tokens:ListOfTokens)
