@@ -34,6 +34,7 @@ import com.rayrobdod.boardGame.{SpaceClass, Space}
  * be hard-coded relatively easily.
  * @author Raymond Dodge
  * @since a.4.1
+ * @version a.5.2
  */
 object FieldChessTilesheet extends RectangularTilesheet
 {
@@ -45,6 +46,8 @@ object FieldChessTilesheet extends RectangularTilesheet
 	private val lavaDark   = new Color(228, 69, 69);
 	private val rockLight  = new Color(149, 149, 149);
 	private val rockDark   = new Color(127, 127, 127);
+	private val tallGrassLight = new Color(56, 232, 91);
+	private val tallGrassDark  = new Color(64, 223, 99);
 	private val transColor = new Color(0,0,0,0);
 	
 	def name = "Field Chess";
@@ -54,21 +57,25 @@ object FieldChessTilesheet extends RectangularTilesheet
 			
 			if (useDarker) {
 				s match {
-					case PassibleSpaceClass() => grassDark
-					case UnitAwareSpaceClass() => grassDark
-					case ImpassibleSpaceClass() => rockDark
-					case AttackableOnlySpaceClass() => rockDark
-					case NoStandOnSpaceClass() => waterDark
-					case FireRestrictedSpaceClass() => lavaDark
+					case FreePassageSpaceClass()   => grassDark
+					case AllyPassageSpaceClass()   => grassDark
+					case UniPassageSpaceClass()    => grassDark
+					case ImpassibleSpaceClass()    => rockDark
+					case AttackOnlySpaceClass()    => rockDark
+					case FlyingPassageSpaceClass() => waterDark
+					case FirePassageSpaceClass()   => lavaDark
+					case SlowPassageSpaceClass()   => tallGrassDark
 				}
 			} else {
 				s match {
-					case PassibleSpaceClass() => grassLight
-					case UnitAwareSpaceClass() => grassLight
-					case ImpassibleSpaceClass() => rockLight
-					case AttackableOnlySpaceClass() => rockLight
-					case NoStandOnSpaceClass() => waterLight
-					case FireRestrictedSpaceClass() => lavaLight
+					case FreePassageSpaceClass()   => grassLight
+					case AllyPassageSpaceClass()   => grassLight
+					case UniPassageSpaceClass()    => grassLight
+					case ImpassibleSpaceClass()    => rockLight
+					case AttackOnlySpaceClass()    => rockLight
+					case FlyingPassageSpaceClass() => waterLight
+					case FirePassageSpaceClass()   => lavaLight
+					case SlowPassageSpaceClass()   => tallGrassLight
 				}
 			}
 	}

@@ -23,6 +23,7 @@ import Statuses.Status
 import BodyTypes.{Value => BodyType}
 import Directions.Direction
 import com.rayrobdod.boardGame.{Token => BoardGameToken, Space}
+import scala.runtime.{AbstractFunction2 => AFunction2, AbstractFunction1 => AFunction1}
 
 /**
  * A token which mirrors the actions of the parent, but doesn't reveal
@@ -43,7 +44,7 @@ final class MirrorToken(parent:Token) extends Token
 	def tokenClass = tokenSuspicions
 	
 	parent.moveReactions_+=(MirrorMoveReaction)
-	private object MirrorMoveReaction extends BoardGameToken.MoveReactionType {
+	private object MirrorMoveReaction extends AFunction2[Space, Boolean, Unit] with BoardGameToken.MoveReactionType {
 		def apply(s:Space, b:Boolean):Unit = {
 			MirrorToken.this.currentSpace_=(s, b)
 		}

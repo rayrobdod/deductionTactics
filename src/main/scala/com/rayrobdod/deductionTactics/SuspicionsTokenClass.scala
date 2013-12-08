@@ -29,19 +29,7 @@ import scala.collection.immutable.Map
  * being mutable and the slight possiblity of any of the items being [[scala.None]]
  * 
  * @author Raymond Dodge
- * @version 21 Aug 2011
- * @version 13 Jan 2012 - moved from net.verizon.rayrobdod.deductionTactics
-			to com.rayrobdod.deductionTactics
- * @version 19 Jan 2012 - renamed from TokenSuspicions to SuspicionsTokenClass
- * @version 20 Jan 2012 - has an actual icon now, although it doesn't change with the options 
- * @version 14 Feb 2012 - icon has minor change with gueses properties
- * @version 28 Feb 2012 - made the icon function use package#generateGenericIcon
- * @version 05 Jun 2012 - changing weakWeapon from Option[Map[Weaponkind, Float]]
-			to Map[Weaponkind, Option[Float]]
- * @version 12 Jun 2012 - changed name from val to var, and implementing a icon_= function
- * @version 28 Jun 2012 - implementing hashCode and equals
- * @version 2013 Jun 17 - turning the equals method into a match statement
- * @version 2013 Aug 06 - removing icon
+ * @version a.5.0
  * @todo Make observable
  * 
  */

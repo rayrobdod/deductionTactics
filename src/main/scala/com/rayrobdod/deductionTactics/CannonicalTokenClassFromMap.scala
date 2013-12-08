@@ -34,7 +34,7 @@ import scala.collection.JavaConversions.mapAsJavaMap
  * @author Raymond Dodge
  * @version a.5.0
  */
-class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenClass
+final class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenClass
 {
 	override def name = map("name").toString
 	

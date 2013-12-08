@@ -27,7 +27,7 @@ import scala.collection.immutable.{Seq, Set}
  */
 object Statuses {
 	/** Might as well be an Enumeration value at this point */
-	class Status(val id:Int, val name:String) {
+	final class Status(val id:Int, val name:String) {
 		override def toString = "com.rayrobdod.deductionTactics.Statuses." + name
 	}
 	

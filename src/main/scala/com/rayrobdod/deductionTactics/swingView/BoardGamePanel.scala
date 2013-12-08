@@ -18,30 +18,20 @@
 package com.rayrobdod.deductionTactics.swingView
 
 import com.rayrobdod.deductionTactics._
-import javax.swing.{JButton, JList, JPanel, ImageIcon,
-		DefaultListModel, JScrollPane}
-import javax.imageio.ImageIO
+import javax.swing.{JPanel, JScrollPane}
 import java.awt.{BorderLayout, GridLayout}
-import java.awt.event.{ActionListener, ActionEvent}
-import java.io.{InputStreamReader}
-import java.net.URL
-import com.rayrobdod.commaSeparatedValues.parser.{CSVParser, ToSeqSeqCSVParseListener, CSVPatterns}
-import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
-import com.rayrobdod.boardGame.mapValuesFromObjectNameToSpaceClassConstructor
-import com.rayrobdod.boardGame.swingView.FieldComponent
-import com.rayrobdod.boardGame.swingView.{RectangularTilesheet => Tilesheet}
+import com.rayrobdod.boardGame.swingView.{FieldComponent, RectangularTilesheet}
 import scala.collection.immutable.Seq
-import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
+import javax.swing.ScrollPaneConstants.{
+		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
-		HORIZONTAL_SCROLLBAR_AS_NEEDED => scrollHorizontalAsNeeded}
+		HORIZONTAL_SCROLLBAR_AS_NEEDED => scrollHorizontalAsNeeded
+}
 import javax.swing.BoxLayout.{Y_AXIS => boxYAxis}
 import javax.swing.BoxLayout
 
-
-import com.rayrobdod.deductionTactics.swingView.{TokenComponent => DTTokenComponent}
-import com.rayrobdod.boardGame.swingView.{TokenComponent => BGTokenComponent}
 
 /**
  * @author Raymond Dodge
@@ -64,7 +54,7 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 		fieldComp.tokenLayer.setLayout(layout)
 		
 		val tokenComponents = tokens.tokens.flatten.map{(t:Token) =>
-			val comp = new DTTokenComponent(t, fieldComp, layout, tokens)
+			val comp = new TokenComponent(t, fieldComp, layout, tokens)
 			
 			t.diedReactions_+=(RemoveComponentUponDeathAct)
 			object RemoveComponentUponDeathAct extends Function0[Unit] {
@@ -160,13 +150,13 @@ object BoardGamePanel {
 	}
 	
 	/* ... ... ... */
-	def currentTilesheet:Tilesheet = {
+	def currentTilesheet:RectangularTilesheet = {
 		AvailibleTilesheetListModel.getElementAt(
 			myPrefs.getInt(tilesheetPrefsKey, 0)
 		)
 	}
 	
-	def currentTilesheet_=(x:Tilesheet) {
+	def currentTilesheet_=(x:RectangularTilesheet) {
 		val index = AvailibleTilesheetListModel.tilesheets.indexOf(x);
 		myPrefs.putInt(tilesheetPrefsKey, index);
 	}

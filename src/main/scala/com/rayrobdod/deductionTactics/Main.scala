@@ -131,7 +131,7 @@ object Main extends App
 			}}
 		}}.tupled)
 		canonTokens.foreach{(seq:Seq[CannonicalToken]) => {
-			UnitAwareSpaceClass.tokens.tokens = UnitAwareSpaceClass.tokens.tokens :+ seq;
+			SpaceClass.tokens.tokens = SpaceClass.tokens.tokens :+ seq;
 		}}
 		allTokens.foreach{(x:Token) => {
 			x.selectedReactions_+=(new UnselectOtherTokens(x,allTokens)) 

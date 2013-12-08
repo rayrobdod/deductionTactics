@@ -31,9 +31,6 @@ import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import com.rayrobdod.javaScriptObjectNotation.JSONString
 import java.io.{StringReader, InputStreamReader}
-import scala.collection.JavaConversions.mapAsScalaMap
-import scala.collection.JavaConversions.asScalaBuffer
-import scala.collection.JavaConversions.mapAsJavaMap
 import LoggerInitializer.{tokenClassDecoderLogger => Logger}
 
 
@@ -43,7 +40,7 @@ import LoggerInitializer.{tokenClassDecoderLogger => Logger}
  * @since a.4.1
  * @version a.5.0
  */
-class CannonicalTokenClassBuilder extends TokenClass {
+final class CannonicalTokenClassBuilder extends TokenClass {
 	var nameOpt:Option[String] = None
 	def name = nameOpt.getOrElse("???")
 	
@@ -125,7 +122,7 @@ object CannonicalTokenClassDecoder extends JSONDecoder[CannonicalTokenClass] {
  * @version 2013 Jun 24 - internal FloatDecoder directly makes Some(Float)s now
  * @version 2013 Aug 06 - removing icon
  */
-class CannonicalTokenClassParseListener extends JSONParseListener {
+final class CannonicalTokenClassParseListener extends JSONParseListener {
 	private val builder = new CannonicalTokenClassBuilder
 	private var strBuilder = StringBuilder.newBuilder
 	private var key:Option[String] = None

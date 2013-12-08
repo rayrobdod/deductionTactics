@@ -29,20 +29,9 @@ import com.rayrobdod.swing.SolidColorIcon
  * A reaction that hilights the spaces a unit can move to or attack
  *
  * @author Raymond Dodge
- * @version 11 Feb 2012 - 12 Feb 2012
- * @version 13 Feb 2012 - using java.awt.EventQueue.invokeLater to eliminate OutOfBounds errors while repainting a component
- 			It only seems to notice when removing components, not when adding them.
- * @version 13 Feb 2012 - no longer hilights spaces that cannot be moved to as attackable when guy cannot attack.
- * @version 15 Feb 2012 - now reacts to things that can change what a token can do.
- * @version 05 Apr 2012 - adding TokenCosts to Space and SpaceClass methods that now require them
- * @version 05 Apr 2012 - Made the RangeSpaces take into account that you can't attack from someplace you can't reach.
- * @version 06 Apr 2012 - Now reasponds to AttackFor* and Moved, rather than RequestAttackFor* and RequestMove,
-			meaning it now updates when the token moves or attacks.
- * @version 28 Oct 2012 - changing a name due to change in BoardGamePanel
- * @version 26 Nov 2012 - Moved from com.rayrobdod.deductionTactics.view to com.rayrobdod.deductionTactics.swingView
- * @version 2013 Aug 07 - ripples from rewriting BoardGameToken
+ * @version a.5.0
  */
-class HighlightMovableSpacesReaction(token:Token, panel:BoardGamePanel, allTokens:ListOfTokens)
+final class HighlightMovableSpacesReaction(token:Token, panel:BoardGamePanel, allTokens:ListOfTokens)
 		extends Function1[Boolean, Unit] with BoardGameToken.MoveReactionType with Function0[Unit]
 {
 	val highlightLayer = new javax.swing.JPanel(panel.centerpiece.lowLayer.getLayout)

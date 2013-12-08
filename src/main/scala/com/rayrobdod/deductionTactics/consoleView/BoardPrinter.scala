@@ -27,14 +27,14 @@ import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 /**
  * 
  * @author Raymond Dodge
- * @version a.5.1
+ * @version a.5.2
  */
 object BoardPrinter{
 	private def spaceToString(a:SpaceClass) = a match {
-		case NoStandOnSpaceClass()      => scala.Console.BLUE_B
+		case FlyingPassageSpaceClass()  => scala.Console.BLUE_B
 		case ImpassibleSpaceClass()     => scala.Console.YELLOW_B
-		case AttackableOnlySpaceClass() => scala.Console.GREEN_B
-		case FireRestrictedSpaceClass() => scala.Console.RED_B
+		case AttackOnlySpaceClass()     => scala.Console.GREEN_B
+		case FirePassageSpaceClass()    => scala.Console.RED_B
 		case _ => scala.Console.BLACK_B
 	}
 	

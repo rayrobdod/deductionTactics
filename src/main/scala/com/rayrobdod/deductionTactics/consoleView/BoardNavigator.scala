@@ -80,7 +80,8 @@ class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Ru
 		}
 	}
 	
-	class SelectedListener(t:Token) extends Function1[Boolean, Unit] {
+	import scala.runtime.{AbstractFunction1 => AFunction1}
+	class SelectedListener(t:Token) extends AFunction1[Boolean, Unit] {
 		def apply(b:Boolean) {
 			if (b) {
 				selected = Some(t)

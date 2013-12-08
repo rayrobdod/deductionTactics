@@ -21,7 +21,6 @@ import com.rayrobdod.deductionTactics.{CannonicalToken, Player}
 import com.rayrobdod.boardGame.{Space,
 		PhysicalStrikeCost, TokenMovementCost}
 import java.awt.event.{MouseAdapter, MouseEvent}
-import com.rayrobdod.deductionTactics.ai.attackRangeOf
 
 /**
  * @author Raymond Dodge

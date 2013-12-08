@@ -17,12 +17,9 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
-import com.rayrobdod.deductionTactics.{CannonicalToken,
-		Player, ListOfTokens}
-import com.rayrobdod.boardGame.{Space,
-		PhysicalStrikeCost, TokenMovementCost}
+import com.rayrobdod.deductionTactics.ListOfTokens
+import com.rayrobdod.boardGame.Space
 import java.awt.event.{MouseAdapter, MouseEvent}
-import com.rayrobdod.deductionTactics.ai.attackRangeOf
 
 /**
  * A MouseListener that will cause the token on the current space to be selected 

@@ -1,40 +1,82 @@
 <?xml version="1.0" encoding="windows-1252"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Name="Deduction Tactics" Id="YOURGUID-86C7-4D14-AEC0-86416A69ABDE"
-			UpgradeCode="YOURGUID-7349-453F-94F6-BCB5110BA4FD"
-		Language="1033" Codepage="1252" Version="000.010.5.0" Manufacturer="Raymond Dodge">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:gdf="http://schemas.microsoft.com/wix/GamingExtension">
+	<!--
+cd "%USERPROFILE%\Documents\Programming\Java\Games\DeductionTactics"
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\candle.exe" -pedantic -ext WixGamingExtension -out target\wix\out.wixout src\main\gdf\windowsInstaller.wix
+"C:\Program Files (x86)\WiX Toolset v3.8\bin\light.exe" -ext WixUIExtension -ext WixGamingExtension -b target\scala-2.9.3\proguard -b src\main\gdf -out target\wix\out.msi target\wix\out.wixout
+	-->
+
+	<Product Name="Deduction Tactics" Id="464a266b-aafb-4ed4-850d-fb3bb284b09d"
+			UpgradeCode="464a266b-aafb-4ed4-850d-fb3bb284b09d"
+		Language="1033" Codepage="1252" Version="000.010.5.2" Manufacturer="Raymond Dodge">
 		
 		<Package Id="*" Keywords="Installer" Description="DeductionTactics Installer"
-			Comments="Foobar is a registered trademark of Acme Ltd." Manufacturer="Raymond Dodge"
+			Comments=" " Manufacturer="Raymond Dodge"
 			InstallerVersion="100" Languages="1033" Compressed="yes" SummaryCodepage="1252" />
 		
 		<UIRef Id="WixUI_Mondo" />
+		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+		<WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
+		
+		
+		<Media Id='1' Cabinet='Sample.cab' EmbedCab='yes' DiskPrompt='CD-ROM #1' />
+		<Property Id='DiskPrompt' Value="Deduction Tactics" />
 		
 		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder" Name="PFiles">
-				<Directory Id="Acme" Name="rayrobdod">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="CompanyFolder" Name="rayrobdod">
 					<Directory Id="INSTALLDIR" Name="Deduction Tactics">
-						<Component Id="MainExecutable" Guid="YOURGUID-83F1-4F22-985B-FDB3C8ABD471">
-							<File Id="MainJar" Name="FoobarAppl10.exe" Source="FoobarAppl10.exe" KeyPath="yes">
+						<Component Id="MainExecutable" Guid="464a266b-aafb-4ed4-850d-fb3bb284b09d">
+							<File Id="MainJar" KeyPath="yes"
+									Name="deductionTactics.jar"
+									Source="deductionTactics-a.5.2-SNAPSHOT-full-mini.jar" />
+							<!-- RemoveFile Id='MainJar' On='uninstall' Name='deductionTactics.jar' / -->
 						</Component>
 					
-						<Component Id="GameDefFile" >
+						<Component Id="LicenseComp" Guid="8a8b6175-ccde-4a89-9187-46619c9b9460">
+							<File Id="LICENSE" Name="LICENSE.txt" Source="LICENSE.txt" KeyPath="yes" />
+						</Component>
+					
+						<Component Id="GameDefFile" Guid="18ff063c-2490-4053-9968-f8cb65bb8867">
+							<File Id="GameDefDll" Name="deductionTactics_gdf.dll" Source="gdf.dll" KeyPath="yes" >
+								<gdf:Game Id="66560d2b-23e1-4d9a-8510-f0ef84509530" ExecutableFile="MainJar" GdfResourceFile="GameDefDll" />
+							</File>
 						</Component>
 					</Directory>
 				</Directory>
 			</Directory>
+			<Directory Id="ProgramMenuFolder" Name="StartMenu">
+				<Component Id="ApplicationShortcut" Guid="1afb74a1-954d-4cc6-bbef-b1ae1e563225">
+					<Shortcut Id="ApplicationStartMenuShortcut"
+							Name="Deduction Tactics"
+							Description="My Application Description"
+							Target="java" Arguments="-jar [#MainJar]"
+							WorkingDirectory="INSTALLDIR"/>
+					<RegistryValue Root="HKCU" Key="Software\Microsoft\MyApplicationName" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+				</Component>
+			</Directory>
 		</Directory>
 		
 		<Feature Id="Complete" Level="1" Title="Deduction Tactics"
-					Description=""
-					Display="Expand" ConfigurableDirectory='INSTALLDIR'>
-			<Feature Id="MainExecutableFeature" Level="1" Title="Program"
-						Description="The program" Display="Expand">
-				<ComponentRef Id="MainExecutable" />
-			</Feature>
-			<Feature Id="GameDefFileFeature" Level="3" Title="Game Explorer Entry"
-						Description="Show this game in the Game Explorer" Display="Expand">
-				<ComponentRef Id="GameDefFile" />
+					Description="The deduction tactics game"
+					Display="expand" ConfigurableDirectory='INSTALLDIR'>
+					
+			<ComponentRef Id="MainExecutable" />
+			<ComponentRef Id="LicenseComp" />
+			<ComponentRef Id="ApplicationShortcut" />
+			<ComponentRef Id="GameDefFile" />
 		</Feature>
+		
+		
+		<Property Id='unpack'>unpack200.exe</Property>
+		<CustomAction Id='UnpackJar' Property='unpack' ExeCommand='"[INSTALLDIR]deductionTactics.jar.pack.gz" "[INSTALLDIR]deductionTactics.jar"' Return='check' />
+		
+		<InstallExecuteSequence>
+			<!--LaunchConditions After='InstallFiles' /-->
+			<!-- Custom Action='UnpackJar' After='InstallFiles'>NOT Installed</Custom -->
+			<!-- Custom Action='UnpackJar' After='InstallFinalize'>NOT Installed</Custom -->
+		</InstallExecuteSequence>
+		
 	</Product>
 </Wix>

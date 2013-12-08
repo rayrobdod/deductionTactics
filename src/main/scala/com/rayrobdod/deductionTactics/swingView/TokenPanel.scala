@@ -23,11 +23,9 @@ import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.BodyTypes.{Value => BodyType}
 import com.rayrobdod.deductionTactics.Directions.Direction
 
-import javax.swing.{JPanel, JLabel, Icon}
-import java.awt.{GridBagLayout, GridBagConstraints, FlowLayout}
+import javax.swing.{JPanel, JLabel, JList, ListCellRenderer}
+import java.awt.{GridBagLayout, GridBagConstraints}
 import com.rayrobdod.deductionTactics.Token
-
-import javax.swing.{JList, ListCellRenderer}
 import com.rayrobdod.swing.{GridBagConstraintsFactory}
 
 import java.awt.event.{MouseAdapter, MouseEvent}

@@ -69,8 +69,9 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 
 object WithConsoleEventPrinting {
 	val out = System.out
+	import scala.runtime.{AbstractFunction2 => AFunction2, AbstractFunction1 => AFunction1}
 	
-	final class PrintBeSelected(tokenName:String) extends BoardGameToken.SelectedReactionType {
+	final class PrintBeSelected(tokenName:String) extends AFunction1[Boolean, Unit] with BoardGameToken.SelectedReactionType {
 		def apply(b:Boolean) = {
 			out.print(tokenName)
 			out.print(": Selected(")
@@ -79,7 +80,7 @@ object WithConsoleEventPrinting {
 		}
 	}
 	
-	final class PrintMove(tokenName:String) extends BoardGameToken.MoveReactionType {
+	final class PrintMove(tokenName:String) extends AFunction2[Space, Boolean, Unit] with BoardGameToken.MoveReactionType {
 		def apply(s:Space, b:Boolean) = {
 			out.print(tokenName)
 			out.println(": Moved(-, -)")

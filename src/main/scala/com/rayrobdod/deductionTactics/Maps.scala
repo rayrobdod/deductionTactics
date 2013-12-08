@@ -20,14 +20,12 @@ package com.rayrobdod.deductionTactics
 import scala.collection.immutable.{Seq => ISeq, Set}
 import scala.collection.mutable.{Seq => MSeq}
 import scala.collection.JavaConversions.iterableAsScalaIterable
-import scala.{Function0 => Future}
 import com.rayrobdod.util.services.{ResourcesServiceLoader, Services}
 import com.rayrobdod.commaSeparatedValues.parser.{CSVParser, ToSeqSeqCSVParseListener, CSVPatterns}
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import com.rayrobdod.boardGame.{RectangularField, SpaceClassConstructor}
 import com.rayrobdod.boardGame.mapValuesFromObjectNameToSpaceClassConstructor
-import java.io.InputStreamReader
 import java.nio.file.{Files, Path, Paths, FileSystems}
 import java.nio.charset.StandardCharsets.UTF_8
 

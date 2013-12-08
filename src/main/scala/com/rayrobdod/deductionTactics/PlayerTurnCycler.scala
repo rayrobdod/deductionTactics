@@ -29,7 +29,7 @@ import scala.collection.immutable.{Seq, Set, BitSet}
  * @author Raymond Dodge
  * @version a.5.0
  */
-class PlayerTurnCycler(val players:Seq[Player], var timeBetweenTurns:Int = 500) extends Runnable
+final class PlayerTurnCycler(val players:Seq[Player], var timeBetweenTurns:Int = 500) extends Runnable
 {
 	private var gameContinues:Boolean = true
 	def gameEnded = !gameContinues

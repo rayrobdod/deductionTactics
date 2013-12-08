@@ -34,6 +34,7 @@ import java.lang.{Float => JavaFloat}
 
 /** 
  * @author Raymond Dodge
+ * @version a.5.2
  */
 class NameAndIconSetterChooserFrameMaker[A](
 			listOfItems:Seq[A],
@@ -47,6 +48,8 @@ class NameAndIconSetterChooserFrameMaker[A](
 				override def valueChanged(e:ListSelectionEvent)
 				{
 					setter(Option(listOfItems(e.getFirstIndex)))
+					
+					panel.revalidate()
 					panel.repaint()
 				}
 			}
@@ -54,6 +57,7 @@ class NameAndIconSetterChooserFrameMaker[A](
 
 /** 
  * @author Raymond Dodge
+ * @version a.5.2
  */
 class IntSetterChooserFrameMaker(
 			setter:Function1[Option[Int],Any],
@@ -65,6 +69,8 @@ class IntSetterChooserFrameMaker(
 				override def valueChanged(e:ListSelectionEvent)
 				{
 					setter(Option(e.getFirstIndex))
+					
+					panel.revalidate()
 					panel.repaint()
 				}
 			}
@@ -72,6 +78,7 @@ class IntSetterChooserFrameMaker(
 
 /** 
  * @author Raymond Dodge
+ * @version a.5.2
  * @pre weaknessModel.getMin <= 50
  * @pre weaknessModel.getMin >= 200
  */
@@ -85,6 +92,8 @@ class WeaponMultiplerSetterChooserFrameMaker(
 				override def valueChanged(e:ListSelectionEvent)
 				{
 					setter(Option(WeaponMultiplerSetterChooserFrameMaker.values(e.getFirstIndex)).map{Float2float})
+					
+					panel.revalidate()
 					panel.repaint()
 				}
 			}
@@ -100,6 +109,7 @@ object WeaponMultiplerSetterChooserFrameMaker
 
 /** 
  * @author Raymond Dodge
+ * @version a.5.2
  */
 class ClassSynchonizerFrameMaker(
 			tokenClass:SuspicionsTokenClass,
@@ -131,6 +141,10 @@ class ClassSynchonizerFrameMaker(
 			tokenClass.speed = selected.speed
 			tokenClass.range = selected.range
 			tokenClass.weakWeapon = selected.weakWeapon
+			
+			
+			panel.revalidate()
+			panel.repaint()
 		}
 	}
 }

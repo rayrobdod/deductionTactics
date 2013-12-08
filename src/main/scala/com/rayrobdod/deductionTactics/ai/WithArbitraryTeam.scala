@@ -20,10 +20,6 @@ package ai
 
 import scala.util.Random
 import com.rayrobdod.boardGame.{RectangularField => Field}
-import javax.swing.{JButton, JFrame, JPanel, JLabel, JList, JFormattedTextField}
-import java.awt.event.{ActionListener, ActionEvent}
-import java.awt.BorderLayout
-import com.rayrobdod.deductionTactics.swingView.InputFrame
 
 /**
  * A decorator for PlayerAIs. It intercepts the buildTeam command and creates
@@ -40,36 +36,19 @@ final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 	
 	/** chooses a team randomly */
 	def buildTeam = {
+		import javax.swing.JOptionPane.PLAIN_MESSAGE
 		
-		val buildingLock = new Object()
+		val pane = new javax.swing.JOptionPane;
+		pane.setWantsInput(true);
+		pane.setMessage("Choose a RNG seed");
+		pane.setInitialSelectionValue(Random.nextInt);
+		pane.selectInitialValue() 
+		pane.setMessageType(PLAIN_MESSAGE);
+		val dialog = pane.createDialog("WithArbitraryTeam")
+		dialog.setVisible(true);
+		val input = pane.getInputValue.hashCode
 		
-		val seedBox = new JFormattedTextField(java.text.NumberFormat.getIntegerInstance())
-			seedBox.setValue(Random.nextInt)
-		
-		val frame = new InputFrame("Choose Seed", seedBox, new ActionListener {
-			override def actionPerformed(e:ActionEvent) = {
-				seedBox.commitEdit()
-				if (seedBox.isEditValid()) {
-					buildingLock.synchronized { buildingLock.notifyAll }
-				}
-			}
-		})
-		
-		buildingLock.synchronized {
-			frame.setVisible(true)
-			buildingLock.wait
-		}
-		
-		frame.setVisible(false)
-		ai.randomTeam(new Random(somethingToLong(seedBox.getValue)))
-	}
-	
-	def somethingToLong(a:Any):Long = a match {
-		case x:Long => x
-		case x:Int => x
-		case x:Double => x.longValue
-		case x:String => java.lang.Long.parseLong(x)
-		case _ => java.lang.Long.parseLong(a.toString)
+		ai.randomTeam(new Random(input))
 	}
 	
 	

@@ -29,7 +29,7 @@ import com.rayrobdod.boardGame.{PhysicalStrikeCost,
 			Space, TokenMovementCost}
 import com.rayrobdod.deductionTactics.LoggerInitializer.{
 				observeMovementLogger => somLogger}
-import scala.runtime.{AbstractFunction1 => Function1}
+import scala.runtime.{AbstractFunction1 => Function1, AbstractFunction2 => AFunction2}
 
 /**
  * @author Raymond Dodge
@@ -56,9 +56,10 @@ package object ai
 	/**
 	 * A standard attack observer that will update a SuspiciounsTokenClass when a token attacks
 	 * 
-	 * Might only need one per player. Add to enemy mirror tokens.
+	 * Add as Be___AttackedReaction to the target token.
+	 * @version a.5.2
 	 */
-	class StandardObserveAttacks(target:MirrorToken, allTokens:ListOfTokens)
+	final class StandardObserveAttacks(target:CannonicalToken, allTokens:ListOfTokens)
 			extends Token.StatusAttackedReactionType with Token.DamageAttackedReactionType
 	{
 		def apply(status:Status, attackerSpace:Space) = {
@@ -72,7 +73,7 @@ package object ai
 					
 					attackerClass.atkStatus = Some(status)
 					
-					if (range > attackerClass.range.getOrElse(0)) {
+					if (range > attackerClass.range.getOrElse(0) && range < 5) {
 						attackerClass.range = Some(range)
 					}
 				}
@@ -92,7 +93,7 @@ package object ai
 					attackerClass.atkElement = Some(element)
 					attackerClass.atkWeapon = Some(kind)
 					
-					if (range > attackerClass.range.getOrElse(0)) {
+					if (range > attackerClass.range.getOrElse(0) && range < 5) {
 						attackerClass.range = Some(range)
 					}
 				}
@@ -105,24 +106,25 @@ package object ai
 	 * A standard movement observer that will update a SuspiciounsTokenClass when a token moves
 	 * 
 	 * One per enemy token. Parameter is that token. Add to that token and at least one player.
+	 * @version a.5.2
 	 */
-	class StandardObserveMovement(token:MirrorToken)
-				extends Function2[Space, Boolean, Unit] with Function0[Unit]
+	final class StandardObserveMovement(token:MirrorToken)
+				extends AFunction2[Space, Boolean, Unit] with Function0[Unit]
 	{
 		private var countThisTurn = 0;
 		
 		override def apply():Unit = {
-				countThisTurn = countThisTurn + 1
-				somLogger.finer("Incremented token's movement");
-		}
-		
-		override def apply(e:Space, b:Boolean) = {
 				if (countThisTurn > token.tokenClass.speed.getOrElse(0))
 				{
 					token.tokenClass.speed = Some(countThisTurn)
 					somLogger.fine("Recording token's movement: " + countThisTurn);
 				}
 				countThisTurn = 0;
+		}
+		
+		override def apply(e:Space, b:Boolean) = {
+				countThisTurn = countThisTurn + 1
+				somLogger.finer("Incremented token's movement");
 		}
 	}
 

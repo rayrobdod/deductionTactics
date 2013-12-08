@@ -25,7 +25,7 @@ import com.rayrobdod.boardGame.{RectangularField => Field}
  * player that can help determine various things about the tokens.
  *
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.5.2
  */
 final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 {
@@ -41,12 +41,15 @@ final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 		base.initialize(player, field)
 		
 		// setup recorders
-		player.tokens.otherTokens.flatten.foreach{(token:MirrorToken) =>
-			token.beDamageAttackedReactions_+=(new StandardObserveAttacks(token, player.tokens))
-			token.beStatusAttackedReactions_+=(new StandardObserveAttacks(token, player.tokens))
+		player.tokens.myTokens.foreach{(mine:CannonicalToken) =>
+			val attacks = new StandardObserveAttacks(mine, player.tokens)
 			
-			val movement = new StandardObserveMovement(token)
-			token.moveReactions_+=(movement)
+			mine.beDamageAttackedReactions_+=(attacks)
+			mine.beStatusAttackedReactions_+=(attacks)
+		}
+		player.tokens.otherTokens.flatten.foreach{(other:MirrorToken) =>
+			val movement = new StandardObserveMovement(other)
+			other.moveReactions_+=(movement)
 			player.addStartTurnReaction(movement)
 		}
 	}
