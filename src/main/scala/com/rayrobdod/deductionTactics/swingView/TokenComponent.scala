@@ -29,7 +29,7 @@ import javax.swing.{JLabel, JComponent, Icon, ImageIcon}
 import javax.swing.SwingUtilities.invokeLater
 import com.rayrobdod.swing.layouts.MoveToLayout
 import com.rayrobdod.boardGame.Space
-import com.rayrobdod.boardGame.swingView.{FieldComponent,
+import com.rayrobdod.boardGame.swingView.{RectangularFieldComponent => FieldComponent,
 		TokenComponent => BoardGameTokenComponent}
 import com.rayrobdod.deductionTactics.{Token, ListOfTokens}
 import com.rayrobdod.util.BlitzAnimImage

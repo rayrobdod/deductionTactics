@@ -21,7 +21,7 @@ import scala.collection.immutable.{Seq => ISeq, Set}
 import scala.collection.mutable.{Seq => MSeq}
 import scala.collection.JavaConversions.iterableAsScalaIterable
 import com.rayrobdod.util.services.{ResourcesServiceLoader, Services}
-import com.rayrobdod.commaSeparatedValues.parser.{CSVParser, ToSeqSeqCSVParseListener, CSVPatterns}
+import au.com.bytecode.opencsv.CSVReader;
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import com.rayrobdod.boardGame.{RectangularField, SpaceClassConstructor}
@@ -91,9 +91,9 @@ object Maps
 		val layoutPath = metadataPath.getParent.resolve(metadataMap("layout").toString)
 		val layoutReader = Files.newBufferedReader(layoutPath, UTF_8)
 		val layoutTable:ISeq[ISeq[SpaceClassConstructor]] = {
-			val listener = new ToSeqSeqCSVParseListener()
-			new CSVParser(CSVPatterns.commaDelimeted).parse(listener, layoutReader)
-			val letterTable = listener.result
+			val reader = new CSVReader(layoutReader);
+			val letterTable3 = reader.readAll();
+			val letterTable = ISeq.empty ++ letterTable3.map{ISeq.empty ++ _}
 			
 			letterTable.map{_.map{letterToSpaceClassConsMap}}
 		}

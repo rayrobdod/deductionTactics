@@ -21,7 +21,7 @@ import com.rayrobdod.deductionTactics._
 import javax.swing.{JPanel, JScrollPane}
 import java.awt.{BorderLayout, GridLayout}
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
-import com.rayrobdod.boardGame.swingView.{FieldComponent, RectangularTilesheet}
+import com.rayrobdod.boardGame.swingView.{RectangularFieldComponent => FieldComponent, RectangularTilesheet}
 import scala.collection.immutable.Seq
 import javax.swing.ScrollPaneConstants.{
 		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
