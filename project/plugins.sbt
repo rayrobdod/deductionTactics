@@ -4,3 +4,6 @@ libraryDependencies += ("com.rayrobdod" %% "deduction-tactics-meta" % "a.5.0-SNA
 
 libraryDependencies += ("com.rayrobdod" %% "deduction-tactics" % "a.5.0-SNAPSHOT")
 
+resolvers += Resolver.url("sbt-plugin-releases", new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
+
+addSbtPlugin("com.github.retronym" % "sbt-onejar" % "0.8")

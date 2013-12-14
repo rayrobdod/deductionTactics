@@ -2,6 +2,7 @@ import sbt._
 import Keys._
 import java.util.zip.{ZipInputStream, ZipOutputStream, ZipEntry}
 import com.rayrobdod.deductionTactics.meta.CompileTokenClassesToBinary
+import com.github.retronym.SbtOneJar
 
 object DeductionTacticsBuild extends Build {
 	
@@ -48,8 +49,10 @@ object DeductionTacticsBuild extends Build {
 	lazy val root = Project(
 			id = "deductionTactics",
 			base = file("."),
-			settings = Defaults.defaultSettings ++ Seq(
-					proguardTypeSetting) ++ compileTokensSettings
+			settings = Defaults.defaultSettings ++
+					Seq(proguardTypeSetting) ++
+					compileTokensSettings ++
+					SbtOneJar.oneJarSettings
 	)
 	lazy val meta = Project(
 			id = "deductionTactics-meta",

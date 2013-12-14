@@ -21,7 +21,7 @@
 },
 
 {
-	"comment":"twe random littery stuff",
+	"comment":"the random littery stuff",
 	"tiles":{"-80":10},
 	"surroundingSpaces":{"(0,0)":"."}
 },{
@@ -53,10 +53,6 @@
 	"surroundingSpaces":{"(0,0)":"."},
 	"tileRand":5
 },{
-	"tiles":{"-80":28},
-	"surroundingSpaces":{"(0,0)":"."},
-	"tileRand":5
-},{
 	"tiles":{"-80":34},
 	"surroundingSpaces":{"(0,0)":"."},
 	"tileRand":5
@@ -68,8 +64,27 @@
 	"tiles":{"-80":36},
 	"surroundingSpaces":{"(0,0)":"."},
 	"tileRand":5
-},	
-	
+},
+
+{
+	"tiles":{"-80":2},
+	"surroundingSpaces":{"(0,0)":"s"}
+},{
+	"tiles":{"-80":3},
+	"surroundingSpaces":{"(0,0)":"s"},
+	"tileRand":4
+},{
+	"tiles":{"-80":4},
+	"surroundingSpaces":{"(0,0)":"s"},
+	"tileRand":7
+},
+
+{
+	"comment":"mushrooms are firey because red?",
+	"tiles":{"-80":28},
+	"surroundingSpaces":{"(0,0)":"f"}
+},
+
 {
 	"comment":"the two-tile log",
 	"tiles":{"-80":31},
@@ -123,6 +138,5 @@
 	"surroundingSpaces":{"(-1,2)":"|"},
 	"indexies":"y<(w-2) && x>=1 && 1==1"
 }
-
 
 ]
