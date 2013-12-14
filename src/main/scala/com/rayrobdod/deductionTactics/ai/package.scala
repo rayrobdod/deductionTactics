@@ -59,7 +59,7 @@ package object ai
 	 * Add as Be___AttackedReaction to the target token.
 	 * @version a.5.2
 	 */
-	final class StandardObserveAttacks(target:CannonicalToken, allTokens:ListOfTokens)
+	final class StandardObserveAttacks(target:Token, allTokens:ListOfTokens)
 			extends Token.StatusAttackedReactionType with Token.DamageAttackedReactionType
 	{
 		def apply(status:Status, attackerSpace:Space) = {

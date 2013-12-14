@@ -74,7 +74,7 @@ final class FieldPotentialAI extends PlayerAI
 		
 	def initialize(player:Player, field:Field) = {
 		// setup recorders
-		player.tokens.myTokens.foreach{(mine:CannonicalToken) =>
+		player.tokens.tokens.flatten.foreach{(mine:CannonicalToken) =>
 			val attacks = new StandardObserveAttacks(mine, player.tokens)
 			
 			mine.beDamageAttackedReactions_+=(attacks)

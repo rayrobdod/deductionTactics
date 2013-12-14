@@ -1,30 +1,34 @@
 ﻿deductionTactics
 
-Wishlist: Token Animations,
-		change AIs to use builder model, Better AIs
-		main method using the console (and thus displaying the flexibility to use Android's stuff, or switching to JavaFX)
+Wishlist:
+* Token Animations
+* change AIs to use builder model, Better AIs
+* alternative console-based main method
+* Pokemon Stadium-like pre-battle negotiations
+
 
 == a.5.2 ==
-Consolodating spaceclasses into one file with parameters
-Changing a few dialogs to use JOptionPane instead of custom solution
-Fixing spaceclasses such that all of them only permit passage when unoccupied
-Adding SpaceClasses: SlowPassageSpaceClass
-Making FlyingPassageSpaceClass actually work
+* Consolodating spaceclasses into one class with parameters
+* Changing a few dialogs to use JOptionPane instead of custom solution
+* Fixing spaceclasses such that all of them only permit passage when unoccupied
+* Adding SpaceClasses: SlowPassageSpaceClass
+* Making FlyingPassageSpaceClass actually work
 
 === Data ===
-Modifying maps: tripath, nobamb-farm3
-Adding tilemap: simple high contrast
+* Modifying maps: tripath, nobamb-farm3
+* Adding tilemap: simple high contrast
+* Forest can now deal with Fire and Slow space classes
 
 === Fixes ===
-fixing WithAutorecord - it set up listeners to notice when a token attacked
+* fixing WithAutorecord - it set up listeners to notice when a token attacked
         itself. Now listens for things that are actually possible. Presumably
         broken since a.5.0. I told you they didn't go through proper testing.
 
 == a.5.1 ==
-Adding AI: field potential ai
-Rewriting console interface
+* Adding AI: field potential ai
+* Rewriting console interface
 
-Allowing preferences to persist
+* Allowing preferences to persist
 
 
 == a.5.0 ==

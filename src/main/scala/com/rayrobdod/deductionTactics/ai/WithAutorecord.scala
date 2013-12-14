@@ -41,7 +41,7 @@ final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 		base.initialize(player, field)
 		
 		// setup recorders
-		player.tokens.myTokens.foreach{(mine:CannonicalToken) =>
+		player.tokens.tokens.flatten.foreach{(mine:Token) =>
 			val attacks = new StandardObserveAttacks(mine, player.tokens)
 			
 			mine.beDamageAttackedReactions_+=(attacks)
