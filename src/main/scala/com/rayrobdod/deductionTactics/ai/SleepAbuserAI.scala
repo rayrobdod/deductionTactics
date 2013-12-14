@@ -73,7 +73,7 @@ class SleepAbuserAI extends PlayerAI
 	
 	def initialize(player:Player, field:Field) = {
 		// setup recorders
-		player.tokens.tokens.flatten.foreach{(mine:CannonicalToken) =>
+		player.tokens.tokens.flatten.foreach{(mine:Token) =>
 			val attacks = new StandardObserveAttacks(mine, player.tokens)
 			
 			mine.beDamageAttackedReactions_+=(attacks)
