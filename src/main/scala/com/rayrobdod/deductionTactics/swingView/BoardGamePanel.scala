@@ -132,7 +132,11 @@ object BoardGamePanel {
 	
 	val movementSpeedPrefsKey:String = "tokenMoveSpeed";
 	val tilesheetPrefsKey:String = "tilesheetIndex";
-	private def myPrefs = Preferences.userNodeForPackage(classOf[BoardGamePanel]);
+	private def myPrefs = try {
+		Preferences.userNodeForPackage(classOf[BoardGamePanel]);
+	} catch {
+		case e:java.security.AccessControlException => NilPreferences
+	}
 	
 	def movementSpeed:Int = {
 		myPrefs.getInt( movementSpeedPrefsKey, 15 );
@@ -159,5 +163,19 @@ object BoardGamePanel {
 	def currentTilesheet_=(x:RectangularTilesheet) {
 		val index = AvailibleTilesheetListModel.tilesheets.indexOf(x);
 		myPrefs.putInt(tilesheetPrefsKey, index);
+	}
+	
+	
+	
+	private object NilPreferences extends java.util.prefs.AbstractPreferences(null, "") {
+		def getSpi(key:String) = null
+		def putSpi(key:String, value:String) {}
+		def removeSpi(key:String) {}
+		def removeNodeSpi() {}
+		def keysSpi() = new Array(0)
+		def childrenNamesSpi() = new Array(0)
+		def flushSpi() {}
+		def syncSpi() {}
+		def childSpi(key:String) = NilPreferences
 	}
 }

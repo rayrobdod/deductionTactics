@@ -4,6 +4,9 @@ Wishlist: Token Animations,
 		change AIs to use builder model, Better AIs
 		main method using the console (and thus displaying the flexibility to use Android's stuff, or switching to JavaFX)
 
+== a.5.3 ==
+Metastability improvements
+
 == a.5.2 ==
 Consolodating spaceclasses into one file with parameters
 Changing a few dialogs to use JOptionPane instead of custom solution
