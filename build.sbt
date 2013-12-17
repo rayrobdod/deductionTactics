@@ -14,7 +14,7 @@ exportJars := true
 
 mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
 
-libraryDependencies += ("com.rayrobdod" %% "utilities" % "20130908")
+libraryDependencies += ("com.rayrobdod" %% "utilities" % "SNAPSHOT")
 
 libraryDependencies += ("com.rayrobdod" %% "json" % "1.0.0")
 

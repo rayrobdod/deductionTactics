@@ -8,7 +8,6 @@ object DeductionTacticsBuild extends Build {
 	val proguardType = SettingKey[String]("proguard-type", "The strength of proguard compression")
 	val proguardTypeSetting = proguardType := "mini"
 //	val proguardTypeSetting = proguardType := "micro"
-
 	
 	
 	
@@ -26,7 +25,7 @@ object DeductionTacticsBuild extends Build {
 	val compileTokensSettings = Seq(
 		compileTokensInput <<= (resourceDirectory in Compile) apply { x =>
 			new File(x, tokensPackage).listFiles(new FileFilter{
-   	 		def accept(x:File) = x.toString.endsWith(".json")
+				def accept(x:File) = x.toString.endsWith(".json")
 			})
 		},
 		compileTokensOutput <<= (managedResourceDirectories in Compile) apply { x =>
