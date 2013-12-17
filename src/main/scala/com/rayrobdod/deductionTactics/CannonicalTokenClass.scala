@@ -23,6 +23,7 @@ import Statuses.Status
 import BodyTypes.{Value => BodyType}
 import Directions.Direction
 
+import java.net.URL
 import scala.collection.Seq
 import scala.collection.immutable.{Map, Seq => ISeq}
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
@@ -31,7 +32,6 @@ import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import scala.collection.JavaConversions.mapAsScalaMap
 import scala.collection.JavaConversions.asScalaBuffer
 import scala.collection.JavaConversions.enumerationAsScalaIterator
-import java.nio.file.{Files, Path, Paths}
 import scala.collection.JavaConversions.mapAsJavaMap
 
 /**
@@ -83,7 +83,7 @@ final class CannonicalTokenClassBlunt(
  * Loads tokens as a service.
  * 
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.5.3
  */
 object CannonicalTokenClass
 {
@@ -95,22 +95,24 @@ object CannonicalTokenClass
 		import com.rayrobdod.util.services.ResourcesServiceLoader
 		import java.nio.charset.StandardCharsets.UTF_8
 		
-		val a:Seq[Path] = new ResourcesServiceLoader(SERVICE).toSeq
+		val a:Seq[URL] = new ResourcesServiceLoader(SERVICE).toSeq
 		
 		// Binary version
-		val b:Seq[Seq[CannonicalTokenClass]] = a.map{(jsonPath:Path) =>
+		val b:Seq[Seq[CannonicalTokenClass]] = a.map{(jsonPath:URL) =>
 			if (jsonPath.toString.endsWith(".rrd-dt-tokenClass")) {
 			
-				val is = Files.newInputStream(jsonPath)
+				val is = jsonPath.openStream()
 				val dis = new java.io.DataInputStream(is)
 				
 				val count = dis.readShort()
 				
-				(1 to count).map{(a) =>
+				val retVal = (1 to count).map{(a) =>
 					new CannonicalTokenClassFromBinary(dis)
 				}
+				dis.close();
+				retVal
 			} else { // assume JSON
-				val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
+				val jsonReader = new java.io.InputStreamReader(jsonPath.openStream(), UTF_8)
 				
 				val l = new ToScalaCollection(CannonicalTokenClassDecoder)
 				JSONParser.parse(l, jsonReader)

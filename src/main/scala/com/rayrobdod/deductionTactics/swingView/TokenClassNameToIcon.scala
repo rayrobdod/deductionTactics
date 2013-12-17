@@ -18,7 +18,6 @@
 package com.rayrobdod.deductionTactics.swingView
 
 import javax.swing.{Icon, ImageIcon}
-import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
 import com.rayrobdod.deductionTactics.{CannonicalTokenClass,
@@ -29,9 +28,8 @@ import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.{
 		JSONParser, JSONDecoder, JSONParseListener}
 import com.rayrobdod.javaScriptObjectNotation.JSONString
-import com.rayrobdod.binaryJSON.BSONWriter
 import java.io.{ByteArrayOutputStream, DataOutputStream}
-import java.nio.file.{Path, Files}
+import java.net.URL
 import javax.imageio.ImageIO
 
 /**
@@ -39,13 +37,13 @@ import javax.imageio.ImageIO
  * class names to `javax.swing.Icon`s
  * 
  * @author Raymond Dodge
- * @since a.5.0
+ * @since a.5.3
  */
-class TokenClassNameToIconFromJson(sources:Seq[Path]) {
+class TokenClassNameToIconFromJson(sources:Seq[URL]) {
 	
 	val map:Map[String, Icon] = {
-		val a:Seq[Seq[(String, Icon)]] = sources.map{(jsonPath:Path) =>
-			val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
+		val a:Seq[Seq[(String, Icon)]] = sources.map{(jsonPath:URL) =>
+			val jsonReader = new java.io.InputStreamReader(jsonPath.openStream(), UTF_8)
 			
 			val l = new ToScalaCollection(this.Decoder)
 			JSONParser.parse(l, jsonReader)
@@ -103,13 +101,13 @@ class TokenClassNameToIconFromJson(sources:Seq[Path]) {
 			}
 			strBuilder = StringBuilder.newBuilder
 		}
-	
+		
 		override def keyValueSeparation(index:Int, charact:Char) =
 		{
 				key = Some(JSONString.generateUnparsed(strBuilder.toString).toString)
 				strBuilder = StringBuilder.newBuilder;
 		}
-	
+		
 		def result:(String, Icon) = {
 			val name = builder.name;
 			val icon = if (iconLoc.isDefined) {
@@ -129,19 +127,19 @@ class TokenClassNameToIconFromJson(sources:Seq[Path]) {
  * class names to `javax.swing.Icon`s
  * 
  * @author Raymond Dodge
- * @since a.5.0
+ * @since a.5.3
  */
-class TokenClassNameToIconFromBinary(sources:Seq[Path]) {
+class TokenClassNameToIconFromBinary(sources:Seq[URL]) {
 	import com.rayrobdod.deductionTactics.CannonicalTokenClassFromBinary.{nameLength, enumsLength, imageLocLength}
 
 	
 	val map:Map[String, Icon] = {
-		val a:Seq[Seq[(String, Icon)]] = sources.map{(jsonPath:Path) =>
-			val is = Files.newInputStream(jsonPath)
+		val a:Seq[Seq[(String, Icon)]] = sources.map{(jsonPath:URL) =>
+			val is = jsonPath.openStream()
 			val dis = new java.io.DataInputStream(is)
 			val count = dis.readShort()
 			
-			var values = (1 to count).map{ (a) =>
+			val values = (1 to count).map{ (a) =>
 				val nameBytes = new Array[Byte](nameLength)
 				is.read(nameBytes)
 				val name = new String(nameBytes.takeWhile{_ != 0})
@@ -167,6 +165,7 @@ class TokenClassNameToIconFromBinary(sources:Seq[Path]) {
 				
 				((name, icon))
 			}
+			dis.close();
 			
 			values
 		}

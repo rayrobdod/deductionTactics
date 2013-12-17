@@ -26,7 +26,7 @@ import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import com.rayrobdod.boardGame.{RectangularField, SpaceClassConstructor}
 import com.rayrobdod.boardGame.mapValuesFromObjectNameToSpaceClassConstructor
-import java.nio.file.{Files, Path, Paths, FileSystems}
+import java.net.URL
 import java.nio.charset.StandardCharsets.UTF_8
 
 /**
@@ -45,14 +45,14 @@ object Maps
 		ISeq.empty ++ Services.readServices(SERVICE);
 	}
 	
-	val paths:ISeq[Path] = {
+	val paths:ISeq[URL] = {
 		ISeq.empty ++ new ResourcesServiceLoader(SERVICE);
 	}
 	
 	private def getMetadata(index:Int):Map[String, Any] = {
 		val metadataPath = Maps.paths(index)
 		val metadataMap:Map[String,Any] = {
-			val reader = Files.newBufferedReader(metadataPath, UTF_8);
+			val reader = new java.io.InputStreamReader(metadataPath.openStream(), UTF_8)
 			val listener = ToScalaCollection()
 			JSONParser.parse(listener, reader)
 			reader.close()
@@ -67,8 +67,8 @@ object Maps
 		val metadataMap = getMetadata(index)
 		
 		val letterToSpaceClassConsMap:Map[String,SpaceClassConstructor] = {
-			val path = metadataPath.getParent.resolve(metadataMap("classMap").toString)
-			val reader = Files.newBufferedReader(path, UTF_8)
+			val path = new URL(metadataPath, metadataMap("classMap").toString)
+			val reader = new java.io.InputStreamReader(path.openStream(), UTF_8)
 			val listener = ToScalaCollection()
 			JSONParser.parse(listener, reader)
 			val letterToClassNameMap = listener.resultMap.mapValues{_.toString}
@@ -82,8 +82,8 @@ object Maps
 			}
 		}
 		
-		val layoutPath = metadataPath.getParent.resolve(metadataMap("layout").toString)
-		val layoutReader = Files.newBufferedReader(layoutPath, UTF_8)
+		val layoutPath = new URL(metadataPath, metadataMap("layout").toString)
+		val layoutReader = new java.io.InputStreamReader(layoutPath.openStream(), UTF_8)
 		val layoutTable:ISeq[ISeq[SpaceClassConstructor]] = {
 			val reader = new CSVReader(layoutReader);
 			val letterTable3 = reader.readAll();
@@ -104,8 +104,8 @@ object Maps
 		val startSpaceMap:Map[String,Any] = startSpaceValue match {
 			case x:Map[_,_] => x.map{x => ((x._1.toString, x._2))}
 			case _ => {
-				val startSpacePath = metadataPath.getParent.resolve(startSpaceValue.toString)
-				val startSpaceReader = Files.newBufferedReader(startSpacePath, UTF_8)
+				val startSpacePath = new URL(metadataPath, startSpaceValue.toString)
+				val startSpaceReader = new java.io.InputStreamReader(startSpacePath.openStream(), UTF_8)
 				
 				val listener = ToScalaCollection()
 				JSONParser.parse(listener, startSpaceReader)
@@ -133,8 +133,8 @@ object Maps
 		val startSpaceMapRaw:Map[String,Any] = startSpaceValue match {
 			case x:Map[_,_] => x.map{x => ((x._1.toString, x._2))}
 			case _ => {
-				val startSpacePath = metadataPath.getParent.resolve(startSpaceValue.toString)
-				val startSpaceReader = Files.newBufferedReader(startSpacePath, UTF_8)
+				val startSpacePath = new URL(metadataPath, startSpaceValue.toString)
+				val startSpaceReader = new java.io.InputStreamReader(startSpacePath.openStream(), UTF_8)
 				
 				val listener = ToScalaCollection()
 				JSONParser.parse(listener, startSpaceReader)
