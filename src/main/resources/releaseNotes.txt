@@ -44,6 +44,7 @@ Allowing preferences to persist
 * Adding classes: Pheonix, Owl (with image), Pigeon (with image)
 * Changing weaponWeaknesses for Umbrella Swordsman
 * Using said binary format for token classes
+* found out that pack200 repacking is good for file sizes
 
 
 == a.4.1 ==
