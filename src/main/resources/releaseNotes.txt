@@ -7,6 +7,9 @@ Wishlist:
 * Pokemon Stadium-like pre-battle negotiations
 
 
+== a.5.3 ==
+Metastability improvements
+
 == a.5.2 ==
 * Consolodating spaceclasses into one class with parameters
 * Changing a few dialogs to use JOptionPane instead of custom solution
@@ -48,6 +51,7 @@ Wishlist:
 * Adding classes: Pheonix, Owl (with image), Pigeon (with image)
 * Changing weaponWeaknesses for Umbrella Swordsman
 * Using said binary format for token classes
+* found out that pack200 repacking is good for file sizes
 
 
 == a.4.1 ==

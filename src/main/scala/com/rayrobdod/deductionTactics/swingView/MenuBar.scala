@@ -45,6 +45,7 @@ class MenuBar() extends JMenuBar
 		
 		a.addSeparator()
 		
+		// TODO: disable menu item if Preferences are denied
 		a.add(myMenuItem("Options…", 'o', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				val dialog:JDialog = new OptionsDialog(getWindowAncestor(MenuBar.this))

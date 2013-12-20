@@ -31,7 +31,6 @@ import javax.swing.{ImageIcon, Icon}
 import java.awt.Image.{SCALE_SMOOTH => imageScaleSmooth}
 
 import java.net.URL
-import java.nio.file.{Path, Files}
 import javax.imageio.ImageIO
 import com.kitfox.svg.app.beans.SVGIcon
 import com.rayrobdod.swing.NameAndIcon
@@ -192,9 +191,7 @@ package object swingView
 	
 	/**
 	 * Creates an undetailed icon which matches some of the traits of the TokenClass
-	 * @version 27 Feb 2012
-	 * @version 28 Jun 2012 - adding a cache to generateGenericIcon
-	 * @version 2013 Jun 30 - copied over from deductionTactics.package
+	 * @version 2013 Jun 30
 	 */
 	def generateGenericIcon(tokenClass:TokenClass) =
 	{
@@ -220,17 +217,17 @@ package object swingView
 	
 	
 	/**
-	 * @version 2013 Aug 06
+	 * @version a.5.3
 	 */
 	val tokenClassNameToIcon:Map[String, Icon] =
 	{
 		import scala.collection.JavaConversions.iterableAsScalaIterable
 		import com.rayrobdod.util.services.ResourcesServiceLoader
 		
-		val a:Seq[Path] = new ResourcesServiceLoader(CannonicalTokenClass.SERVICE).toSeq
+		val a:Seq[URL] = new ResourcesServiceLoader(CannonicalTokenClass.SERVICE).toSeq
 		
 		// Binary version
-		val b:Seq[Map[String, Icon]] = a.map{(jsonPath:Path) =>
+		val b:Seq[Map[String, Icon]] = a.map{(jsonPath:URL) =>
 			if (jsonPath.toString.endsWith(".rrd-dt-tokenClass")) {
 			
 				new TokenClassNameToIconFromBinary(Seq(jsonPath)).map

@@ -17,38 +17,48 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
-import java.awt.Color
+import java.awt.{Color, Graphics, Shape, Graphics2D}
 import scala.collection.immutable.{Seq, Set}
-import javax.swing.{JLabel, Icon}
+import javax.swing.JComponent
 import com.rayrobdod.boardGame.{Space, RectangularSpace,
 		TokenMovementCost, PhysicalStrikeCost, Token => BoardGameToken}
 import com.rayrobdod.deductionTactics.{Token, ListOfTokens}
-import com.rayrobdod.swing.SolidColorIcon
+import HighlightMovableSpacesReaction._
 
 /**
  * A reaction that hilights the spaces a unit can move to or attack
  *
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.5.2
  */
 final class HighlightMovableSpacesReaction(token:Token, panel:BoardGamePanel, allTokens:ListOfTokens)
-		extends Function1[Boolean, Unit] with BoardGameToken.MoveReactionType with Function0[Unit]
+		extends Function1[Boolean, Unit] with Function0[Unit]
 {
-	val highlightLayer = new javax.swing.JPanel(panel.centerpiece.lowLayer.getLayout)
-	highlightLayer.setPreferredSize(panel.centerpiece.lowLayer.getPreferredSize)
-//	val highlightLayer = panel.tokenLayer
-
-	val transparent = new java.awt.Color(0,0,0,0);
+	private val _highlightLayer = new HighlightLayer();
+	val highlightLayer:JComponent = _highlightLayer;
 	
-	val hilights:Map[Space, JLabel] = panel.centerpiece.spaces.map{(space:RectangularSpace) =>
-		val label = new JLabel 
-		label.setIcon(null)
-		label.setBackground(transparent)
-		label.setOpaque(false)
-		highlightLayer.add(label)
-		(space, label)
-	}.toMap
-	highlightLayer.setBackground(transparent)
+	private final class HighlightLayer extends JComponent {
+		var currentSpeeds:Seq[Shape] = Seq.empty;
+		var currentRanges:Seq[Shape] = Seq.empty;
+		var maximumSpeeds:Seq[Shape] = Seq.empty;
+		var maximumRanges:Seq[Shape] = Seq.empty;
+		
+		override def paintComponent(g:Graphics) {
+			val g2 = g.asInstanceOf[Graphics2D]
+			val g2Fill = {(x:Shape) => g2.fill(x)}
+			
+			g2.setColor(currentSpeedColor)
+			currentSpeeds.foreach(g2Fill)
+			g2.setColor(currentRangeColor)
+			currentRanges.foreach(g2Fill)
+			g2.setColor(maximumSpeedColor)
+			maximumSpeeds.foreach(g2Fill)
+			g2.setColor(maximumRangeColor)
+			maximumRanges.foreach(g2Fill)
+		}
+	}
+	
+	highlightLayer.setBackground(transparentColor)
 	highlightLayer.setOpaque(false)
 	panel.centerpiece.add(highlightLayer,0)
 	
@@ -58,20 +68,8 @@ final class HighlightMovableSpacesReaction(token:Token, panel:BoardGamePanel, al
 		wasSelected = isSelected
 		this.apply();
 	}
-	override def apply(a:Space, b:Boolean) = this.apply();
 	
 	override def apply() = {
-		highlightLayer.setPreferredSize(panel.centerpiece.lowLayer.getPreferredSize)
-		
-		hilights.foreach({(space:Space, label:JLabel) =>
-			space match{
-				case rs:RectangularSpace =>
-				{
-					val hilightedLabel = panel.centerpiece.spaceLabelMap(rs)
-					label.setIcon(null)
-				}
-			}
-		}.tupled)
 		
 		if (wasSelected) {
 			val tokenMaxSpeed = token.tokenClass.speed.getOrElse(0)
@@ -81,17 +79,25 @@ final class HighlightMovableSpacesReaction(token:Token, panel:BoardGamePanel, al
 			
 			//val noUnitIsInSpace:Function1[Space,Boolean] = {(x:Space) => ! allTokens.aliveTokens.flatten.map{_.currentSpace}.contains(x)}
 			
-			val maxSpeedSpaces = token.currentSpace.spacesWithin(tokenMaxSpeed, token, TokenMovementCost) - token.currentSpace
-			val maxRangeSpaces = (maxSpeedSpaces + token.currentSpace).map{_.spacesWithin(tokenMaxRange, token, PhysicalStrikeCost)}.flatten -- maxSpeedSpaces - token.currentSpace
 			val curSpeedSpaces = token.currentSpace.spacesWithin(tokenCurSpeed, token, TokenMovementCost) - token.currentSpace
 			val curRangeSpaces = if (token.canAttackThisTurn) {(curSpeedSpaces + token.currentSpace).map{_.spacesWithin(tokenMaxRange, token, PhysicalStrikeCost)}.flatten -- curSpeedSpaces - token.currentSpace} else {Seq.empty}
+			val maxSpeedSpaces = token.currentSpace.spacesWithin(tokenMaxSpeed, token, TokenMovementCost) -- curSpeedSpaces - token.currentSpace
+			val maxRangeSpaces = (maxSpeedSpaces + token.currentSpace).map{_.spacesWithin(tokenMaxRange, token, PhysicalStrikeCost)}.flatten -- maxSpeedSpaces -- curSpeedSpaces - token.currentSpace
 			
-			import HighlightMovableSpacesReaction._
-			maxSpeedSpaces.foreach{hilights(_).setIcon(maximumSpeedIcon)}
-			maxRangeSpaces.foreach{hilights(_).setIcon(maximumRangeIcon)}
-			curSpeedSpaces.foreach{hilights(_).setIcon(currentSpeedIcon)}
-			curRangeSpaces.foreach{hilights(_).setIcon(currentRangeIcon)}
+			val spaceToShape = {(x:Space) => panel.centerpiece.spaceLocation(x)}
+			
+			_highlightLayer.currentSpeeds = Seq.empty ++ curSpeedSpaces.map(spaceToShape)
+			_highlightLayer.currentRanges = Seq.empty ++ curRangeSpaces.map(spaceToShape)
+			_highlightLayer.maximumSpeeds = Seq.empty ++ maxSpeedSpaces.map(spaceToShape)
+			_highlightLayer.maximumRanges = Seq.empty ++ maxRangeSpaces.map(spaceToShape)
+		} else {
+			_highlightLayer.currentSpeeds = Seq.empty
+			_highlightLayer.currentRanges = Seq.empty
+			_highlightLayer.maximumSpeeds = Seq.empty
+			_highlightLayer.maximumRanges = Seq.empty			
 		}
+		
+		_highlightLayer.repaint();
 	}
 }
 
@@ -99,14 +105,14 @@ final class HighlightMovableSpacesReaction(token:Token, panel:BoardGamePanel, al
  * Useful functions used by the associated class
  *
  * @author Raymond Dodge
- * @version 11 Feb 2012 - 12 Feb 2012
- * @version 2013 Aug 07 - replacing custom impl with com.rayrobdod.swing.SolidColorIcon
+ * @version a.5.2
  */
 object HighlightMovableSpacesReaction
 {
-	val currentSpeedIcon:Icon = new SolidColorIcon(new Color(0x803333DD, true), 32, 32)
-	val currentRangeIcon:Icon = new SolidColorIcon(new Color(0x80DD3333, true), 32, 32)
-	val maximumSpeedIcon:Icon = new SolidColorIcon(new Color(0x203333DD, true), 32, 32)
-	val maximumRangeIcon:Icon = new SolidColorIcon(new Color(0x20DD3333, true), 32, 32)
+	val transparentColor  = new Color(0x00000000, true)
+	val currentSpeedColor = new Color(0x803333DD, true)
+	val currentRangeColor = new Color(0x80DD3333, true)
+	val maximumSpeedColor = new Color(0x203333DD, true)
+	val maximumRangeColor = new Color(0x20DD3333, true)
 	
 }

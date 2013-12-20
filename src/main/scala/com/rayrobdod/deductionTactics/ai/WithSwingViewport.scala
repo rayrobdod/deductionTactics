@@ -28,8 +28,6 @@ import com.rayrobdod.deductionTactics.swingView.BoardGamePanel
  * only matches.
  *
  * @author Raymond Dodge
- * @version 09 Jul 2012
- * @version 2012 Nov 30 - modifying toString to include the base
  */
 final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 {

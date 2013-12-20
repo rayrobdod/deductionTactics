@@ -20,7 +20,7 @@ package com.rayrobdod.deductionTactics.ai
 import scala.collection.immutable.Seq
 import scala.collection.mutable.{Map => MMap}
 import com.rayrobdod.boardGame.{Space}
-import com.rayrobdod.deductionTactics.{PlayerAI, Player, Token}
+import com.rayrobdod.deductionTactics.{PlayerAI, Player, Token, CannonicalToken}
 import java.awt.event.{ActionListener, ActionEvent}
 import javax.swing.{JButton, JFrame, JPanel, JLabel, JList}
 import java.awt.BorderLayout
@@ -67,15 +67,26 @@ sealed class SwingInterface extends PlayerAI
 		
 		val attackTypeSelector = new SellectAttackTypePanel()
 		
-		tokens.tokens.flatten.foreach{(x:Token) =>
+		tokens.otherTokens.flatten.foreach{(x:Token) =>
 			val reaction = new HighlightMovableSpacesReaction(x, panel, player.tokens);
 			x.selectedReactions_+=(reaction)
-			x.moveReactions_+=(reaction)
+			x.moveReactions_+={(x,y) => reaction()}
 		}
-		panel.centerpiece.spaceLabelMap.foreach({(s:RectangularSpace, c:JLabel) => 
-			c.addMouseListener(new SelectTokenOnSpaceMouseListener(s, player.tokens))
-			c.addMouseListener(new MoveTokenMouseListener(player, s, attackTypeSelector))
-		}.tupled)
+		tokens.myTokens.foreach{(x:CannonicalToken) =>
+			val reaction = new HighlightMovableSpacesReaction(x, panel, player.tokens);
+			x.selectedReactions_+=(reaction)
+			x.moveReactions_+={(x,y) => reaction()}
+			
+			x.tryDamageAttackedReactions_+={(x) => reaction()}
+			x.tryStatusAttackedReactions_+={(x) => reaction()}
+			
+			player.addEndTurnReaction(reaction)
+			player.addStartTurnReaction(reaction)
+		}
+		field.spaces.flatten.foreach{(s:RectangularSpace) => 
+			panel.centerpiece.addMouseListenerToSpace(s, new SelectTokenOnSpaceMouseListener(s, player.tokens))
+			panel.centerpiece.addMouseListenerToSpace(s, new MoveTokenMouseListener(player, s, attackTypeSelector))
+		}
 		
 		val endOfTurnButton = new JButton("End Turn")
 		playerButtons += ((player, endOfTurnButton))

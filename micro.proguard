@@ -2,18 +2,13 @@
 
 -dontskipnonpubliclibraryclassmembers
 -optimizations !class/merging/*
--dontobfuscate
--keeppackagenames scala,com.rayrobdod,com.kitfox
+-keeppackagenames scala,com.rayrobdod,com.kitfox,au.com.bytecode.opencsv
 -dontwarn scala.**,com.kitfox.svg.app.ant.SVGToImageAntTask
 -optimizationpasses 2
 
 
 -keep class com.rayrobdod.deductionTactics.swingView.FieldChessTilesheet
 -keep class com.rayrobdod.deductionTactics.swingView.FieldChessTilesheet$
-
-# for scala Actors; revisit when switch to Akka Actors
--keep class scala.actors.Actor
--keep class com.rayrobdod.*.Token
 
 -keepclassmembers class com.rayrobdod.deductionTactics.ai.* extends com.rayrobdod.deductionTactics.PlayerAI {
 	public <init>();
@@ -354,12 +349,12 @@
 
 # Remove debugging - All logging API calls. Remove all invocations of the
 # logging API whose return values are not used.
--assumenosideeffects public class java.util.logging.* {
-    <methods>;
+-assumenosideeffects public class java.util.logging.Logger {
+    public void finer(java.lang.String);
+    public void warning(java.lang.String);
+    public void setLevel(**);
+    public void addHandler(**);
 }
-
-# Remove debugging - All Log4j API calls. Remove all invocations of the
-# Log4j API whose return values are not used.
--assumenosideeffects public class org.apache.log4j.** {
-    <methods>;
+-assumenosideeffects public class java.util.logging.Handler {
+    public void setLevel(**);
 }

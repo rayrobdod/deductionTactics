@@ -21,24 +21,18 @@ import scala.collection.immutable.{Seq => ISeq, Set}
 import scala.collection.mutable.{Seq => MSeq}
 import scala.collection.JavaConversions.iterableAsScalaIterable
 import com.rayrobdod.util.services.{ResourcesServiceLoader, Services}
-import com.rayrobdod.commaSeparatedValues.parser.{CSVParser, ToSeqSeqCSVParseListener, CSVPatterns}
+import au.com.bytecode.opencsv.CSVReader;
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 import com.rayrobdod.boardGame.{RectangularField, SpaceClassConstructor}
 import com.rayrobdod.boardGame.mapValuesFromObjectNameToSpaceClassConstructor
-import java.nio.file.{Files, Path, Paths, FileSystems}
+import java.net.URL
 import java.nio.charset.StandardCharsets.UTF_8
 
 /**
  * An object that deals with Maps
  * 
- * @version 28 Nov 2012
- * @version 22 Dec 2012 - making metadata a thing, and making the entry point a file rather than a string
- * @version 2013 Jun 16 - allowing startSpaces to be inlined
- * @version 2013 Jun 23 - responding to changes in JSON module; mostly ToSeqJSONParseListener → ToScalaCollection
- * @version 2013 Aug 06 - Apparently 'Future' in scala means 'there's a thing that I will want in the future', not 
- 			'there's a thing that will become availiable in the futrue'. Either way, scala.parellel.Future no longer exists,
- 			as of Scala 2.11. Using `scala.Function0` instead.
+ * @version a.5.0
  */
 // metadata
 // starting locations
@@ -51,14 +45,14 @@ object Maps
 		ISeq.empty ++ Services.readServices(SERVICE);
 	}
 	
-	val paths:ISeq[Path] = {
+	val paths:ISeq[URL] = {
 		ISeq.empty ++ new ResourcesServiceLoader(SERVICE);
 	}
 	
 	private def getMetadata(index:Int):Map[String, Any] = {
 		val metadataPath = Maps.paths(index)
 		val metadataMap:Map[String,Any] = {
-			val reader = Files.newBufferedReader(metadataPath, UTF_8);
+			val reader = new java.io.InputStreamReader(metadataPath.openStream(), UTF_8)
 			val listener = ToScalaCollection()
 			JSONParser.parse(listener, reader)
 			reader.close()
@@ -73,8 +67,8 @@ object Maps
 		val metadataMap = getMetadata(index)
 		
 		val letterToSpaceClassConsMap:Map[String,SpaceClassConstructor] = {
-			val path = metadataPath.getParent.resolve(metadataMap("classMap").toString)
-			val reader = Files.newBufferedReader(path, UTF_8)
+			val path = new URL(metadataPath, metadataMap("classMap").toString)
+			val reader = new java.io.InputStreamReader(path.openStream(), UTF_8)
 			val listener = ToScalaCollection()
 			JSONParser.parse(listener, reader)
 			val letterToClassNameMap = listener.resultMap.mapValues{_.toString}
@@ -88,12 +82,12 @@ object Maps
 			}
 		}
 		
-		val layoutPath = metadataPath.getParent.resolve(metadataMap("layout").toString)
-		val layoutReader = Files.newBufferedReader(layoutPath, UTF_8)
+		val layoutPath = new URL(metadataPath, metadataMap("layout").toString)
+		val layoutReader = new java.io.InputStreamReader(layoutPath.openStream(), UTF_8)
 		val layoutTable:ISeq[ISeq[SpaceClassConstructor]] = {
-			val listener = new ToSeqSeqCSVParseListener()
-			new CSVParser(CSVPatterns.commaDelimeted).parse(listener, layoutReader)
-			val letterTable = listener.result
+			val reader = new CSVReader(layoutReader);
+			val letterTable3 = reader.readAll();
+			val letterTable = ISeq.empty ++ letterTable3.map{ISeq.empty ++ _}
 			
 			letterTable.map{_.map{letterToSpaceClassConsMap}}
 		}
@@ -110,8 +104,8 @@ object Maps
 		val startSpaceMap:Map[String,Any] = startSpaceValue match {
 			case x:Map[_,_] => x.map{x => ((x._1.toString, x._2))}
 			case _ => {
-				val startSpacePath = metadataPath.getParent.resolve(startSpaceValue.toString)
-				val startSpaceReader = Files.newBufferedReader(startSpacePath, UTF_8)
+				val startSpacePath = new URL(metadataPath, startSpaceValue.toString)
+				val startSpaceReader = new java.io.InputStreamReader(startSpacePath.openStream(), UTF_8)
 				
 				val listener = ToScalaCollection()
 				JSONParser.parse(listener, startSpaceReader)
@@ -139,8 +133,8 @@ object Maps
 		val startSpaceMapRaw:Map[String,Any] = startSpaceValue match {
 			case x:Map[_,_] => x.map{x => ((x._1.toString, x._2))}
 			case _ => {
-				val startSpacePath = metadataPath.getParent.resolve(startSpaceValue.toString)
-				val startSpaceReader = Files.newBufferedReader(startSpacePath, UTF_8)
+				val startSpacePath = new URL(metadataPath, startSpaceValue.toString)
+				val startSpaceReader = new java.io.InputStreamReader(startSpacePath.openStream(), UTF_8)
 				
 				val listener = ToScalaCollection()
 				JSONParser.parse(listener, startSpaceReader)

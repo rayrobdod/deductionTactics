@@ -118,9 +118,7 @@ object CannonicalTokenClassDecoder extends JSONDecoder[CannonicalTokenClass] {
 
 /**
  * When parsing a token, parses it into a CannonicalTokenClass
- * @version 2013 Jun 23
- * @version 2013 Jun 24 - internal FloatDecoder directly makes Some(Float)s now
- * @version 2013 Aug 06 - removing icon
+ * @version a.5.0
  */
 final class CannonicalTokenClassParseListener extends JSONParseListener {
 	private val builder = new CannonicalTokenClassBuilder
