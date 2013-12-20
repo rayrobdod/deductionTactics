@@ -91,6 +91,7 @@ mappings in (Compile, packageSrc) <++= (compileTokensInput) map { (tokenSrc) =>
 // if some part of the circular dependency breaks down, remove this line
 resourceGenerators in Compile <+= compileTokens.task
 
+resourceGenerators in Compile <+= genBasicTokens.task
 
 // proguard
 proguardSettings
