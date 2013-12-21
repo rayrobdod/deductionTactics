@@ -85,19 +85,24 @@ object GenerateBasicTokens
 			)
 		}.tupled)}.tupled).flatten
 	}
+	val nameToIcon:Function1[String, Option[String]] = {(className:String) =>
+		val base = """C:/Users/Raymond/Documents/Programming/Java/Games/DeductionTactics/src/main/resources"""
+		val pack = """/com/rayrobdod/deductionTactics/tokenClasses/basic/"""
+		val retVal = pack + className + ".png"
+		
+		
+		val location:Option[Path] = Some(defaultFileSystem.getPath(base + retVal))
+		location.filter{ Files.exists(_) }.map{(x) => retVal}
+	}
 	
 	
 	def compile(outPath:Path) = {
-		
-		
-		
-		
 		val writer = Files.newBufferedWriter(outPath, UTF_8);
 		writer.write('[')
 		
 		classes.zipWithIndex.foreach({(tclass:CannonicalTokenClass, index:Int) =>
 			if (index != 0) writer.write(',')
-			writer.write( tokenClassToJSON(tclass) )
+			writer.write( tokenClassToJSON(tclass, nameToIcon) )
 		}.tupled)
 		
 		writer.write(']');
@@ -106,8 +111,8 @@ object GenerateBasicTokens
 	
 	def main(args:Array[String]) {
 		val (outDir) = {
-			var outDir:Option[Path] = Some(defaultFileSystem getPath """C:\Users\Raymond\AppData\Local\Temp\basic.json""")
-		
+			var outDir:Option[Path] = None
+			
 			var i = 0
 			while (i < args.length) {
 				args(i) match {
