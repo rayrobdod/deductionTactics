@@ -70,9 +70,4 @@ object DeductionTacticsBuild extends Build {
 					generateBasicTokens ++
 					SbtOneJar.oneJarSettings
 	)
-	lazy val meta = Project(
-			id = "deductionTactics-meta",
-			base = file("src/meta"),
-			settings = Defaults.defaultSettings
-	) dependsOn(root)
 }

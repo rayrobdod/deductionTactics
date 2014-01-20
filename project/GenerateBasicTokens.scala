@@ -49,6 +49,17 @@ object GenerateBasicTokens
 {
 	case class ElementAttributes(unitName:String, atkStatus:Status)
 	case class WeaponkindAttributes(unitName:String, weakStatus:Status, weakWeapon:Map[Weaponkind, Double])
+	object CannonicalTokenClassOrdering extends Ordering[CannonicalTokenClass] {
+		def compare(a:CannonicalTokenClass, b:CannonicalTokenClass) = {
+			if (a.atkElement != b.atkElement) {
+				a.atkElement.get.id compareTo b.atkElement.get.id
+			} else if (a.atkWeapon != b.atkWeapon) {
+				a.atkWeapon.get.id compareTo b.atkWeapon.get.id
+			} else {
+				0
+			}
+		}
+	}
 	
 	val elements = Map(
 		Elements.Light    -> ElementAttributes(unitName = "Shining", atkStatus = Statuses.Blind),
@@ -83,7 +94,7 @@ object GenerateBasicTokens
 				speed = Some(3),
 				weakDirection = Some(DontCare)
 			)
-		}.tupled)}.tupled).flatten
+		}.tupled)}.tupled).flatten.toSeq.sorted(CannonicalTokenClassOrdering)
 	}
 	val nameToIcon:Function1[String, Option[String]] = {(className:String) =>
 		val base = """C:/Users/Raymond/Documents/Programming/Java/Games/DeductionTactics/src/main/resources"""
