@@ -1,6 +1,6 @@
 /*
 	Deduction Tactics
-	Copyright (C) 2012-2013  Raymond Dodge
+	Copyright (C) 2012-2014  Raymond Dodge
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -48,8 +48,25 @@ class MenuBar() extends JMenuBar
 		// TODO: disable menu item if Preferences are denied
 		a.add(myMenuItem("Options…", 'o', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
-				val dialog:JDialog = new OptionsDialog(getWindowAncestor(MenuBar.this))
-				dialog.setVisible(true)
+				val optionsPanel = new OptionsPanel
+				
+				val result = javax.swing.JOptionPane.showOptionDialog(
+						getWindowAncestor(MenuBar.this),
+						optionsPanel,
+						"Options",
+						javax.swing.JOptionPane.DEFAULT_OPTION,
+						javax.swing.JOptionPane.PLAIN_MESSAGE,
+						null,
+						Array[Object](
+							"Apply",
+							"Cancel"
+						),
+						"Apply"
+				)
+				
+				if (result == 0) { // Apply selected
+					optionsPanel.apply.actionPerformed(null)
+				}
 			}
 		}))
 		
@@ -115,7 +132,7 @@ class MenuBar() extends JMenuBar
 		a.add(myMenuItem("About…", 'a', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				javax.swing.JOptionPane.showMessageDialog(
-						MenuBar.this,
+						getWindowAncestor(MenuBar.this),
 						new JLabel(aboutDialogString),
 						"About Deduction Tactics",
 						javax.swing.JOptionPane.PLAIN_MESSAGE

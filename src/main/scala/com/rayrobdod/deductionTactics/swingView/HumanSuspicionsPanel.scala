@@ -25,17 +25,7 @@ import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.BodyTypes.{Value => BodyType}
 import com.rayrobdod.deductionTactics.Directions.Direction
 
-import javax.swing.JFrame
-import javax.swing.{JLabel, JPanel, JList}
-import java.awt.event.{MouseAdapter, MouseEvent}
-import java.lang.Integer
-import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
-import javax.swing.{ListModel, ListCellRenderer, DefaultListCellRenderer, AbstractListModel, JScrollBar, JProgressBar}
-import java.awt.Adjustable.{HORIZONTAL => horizontal}
-import java.awt.{GridBagLayout, GridBagConstraints, FlowLayout}
-
-import com.rayrobdod.swing.NameAndIconCellRenderer
-import com.rayrobdod.swing.NameAndIcon
+import javax.swing.JProgressBar
 
 /** 
  * @author Raymond Dodge
