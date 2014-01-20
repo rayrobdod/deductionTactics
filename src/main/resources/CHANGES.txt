@@ -2,6 +2,7 @@
 
 Wishlist:
 * Token Animations
+  * Probably in the Liberated Pixel Cup style
 * change AIs to use builder model, Better AIs
 * alternative console-based main method
 * Pokemon Stadium-like pre-battle negotiations

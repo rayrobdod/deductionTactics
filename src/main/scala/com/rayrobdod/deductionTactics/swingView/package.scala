@@ -306,6 +306,9 @@ package object swingView
 				
 				"<dt>SVG Salamander</dt>" +
 				"""<dd>Mark 'kitfox' MacKay (<a href="http://svgsalamander.java.net/">http://svgsalamander.java.net/</a>)</dd>""" +
+				
+				"<dt>opencsv</dt>" +
+				"""<dd><a href="http://opencsv.sourceforge.net/">http://opencsv.sourceforge.net/</a></dd>""" +
 			"</dl>" +
 			
 			"<h3>Resources</h3>" +

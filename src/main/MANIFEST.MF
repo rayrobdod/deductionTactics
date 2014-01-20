@@ -9,11 +9,17 @@ Implementation-Title: Deduction Tactics
 Name: com/kitfox/svg/
 Implementation-Date: January 11 2013
 Implementation-URL: http://svgsalamander.java.net/
+Implementation-Title: SvgSalamander
 
 Name: scala/
 Implementation-Version: 2.9.3
 Implementation-URL: http://www.scala-lang.org/
+Implementation-Title: Scala
 
+Name: au/com/bytecode/opencsv/
+Implementation-Version: 2.3
+Implementation-URL: http://opencsv.sourceforge.net/
+Implementation-Title: opencsv
 
 
 
