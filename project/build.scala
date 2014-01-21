@@ -2,6 +2,7 @@ import sbt._
 import Keys._
 import java.util.zip.{ZipInputStream, ZipOutputStream, ZipEntry}
 import com.rayrobdod.deductionTactics.meta.CompileTokenClassesToBinary
+import com.rayrobdod.deductionTactics.meta.GenerateBasicTokens
 import com.github.retronym.SbtOneJar
 
 object DeductionTacticsBuild extends Build {
@@ -16,8 +17,10 @@ object DeductionTacticsBuild extends Build {
 	// configuration points, like the built in `version`, `libraryDependencies`, or `compile`
 	// by implementing Plugin, these are automatically imported in a user's `build.sbt`
 	val compileTokens = TaskKey[Seq[File]]("token-compile")
-	val compileTokensInput = SettingKey[Seq[File]]("token-in")
-	val compileTokensOutput = SettingKey[File]("token-outdir")
+	val compileTokensInput = SettingKey[Seq[File]]("token-compile-in")
+	val compileTokensOutput = SettingKey[File]("token-compile-out")
+	val genBasicTokens = TaskKey[Seq[File]]("token-basicGen")
+	val genBasicTokensOutput = SettingKey[File]("token-basicGen-out")
 	
 	val tokensPackage = "com/rayrobdod/deductionTactics/tokenClasses/"
 	
@@ -42,6 +45,19 @@ object DeductionTacticsBuild extends Build {
 			Seq(out2.toFile)
 		}
 	)
+	val generateBasicTokens = Seq(
+		genBasicTokensOutput <<= (managedResourceDirectories in Compile) apply { x =>
+			new File(x.head, tokensPackage + "basic.json")
+		},
+		genBasicTokens <<= (genBasicTokensOutput) map { (out) =>
+			val out2 = out.toPath
+			
+			java.nio.file.Files.createDirectories(out2.getParent())
+			GenerateBasicTokens.compile(out2)
+			
+			Seq(out2.toFile)
+		}
+	)
 	
 	
 	
@@ -51,11 +67,7 @@ object DeductionTacticsBuild extends Build {
 			settings = Defaults.defaultSettings ++
 					Seq(proguardTypeSetting) ++
 					compileTokensSettings ++
+					generateBasicTokens ++
 					SbtOneJar.oneJarSettings
 	)
-	lazy val meta = Project(
-			id = "deductionTactics-meta",
-			base = file("src/meta"),
-			settings = Defaults.defaultSettings
-	) dependsOn(root)
 }

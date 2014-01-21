@@ -44,7 +44,7 @@ package object deductionTactics
 	
 	
 	/** Creates a valid JSON string representing the specified TokenClass. */
-	def tokenClassToJSON(tclass:CannonicalTokenClass):String = {
+	def tokenClassToJSON(tclass:CannonicalTokenClass, nameToIcon:Function1[String, Option[String]] = {(x) => None}):String = {
 		val writer = new java.io.StringWriter();
 		
 		writer.write("{\"name\":\"");
@@ -83,8 +83,16 @@ package object deductionTactics
 			a.append(b._2.get)
 		}.toString.tail
 		writer.write(weakWeapon)
+		writer.write("}");
 		
-		writer.write("}}");
+		val iconOpt = nameToIcon(tclass.name);
+		iconOpt.map{(icon:String) => 
+			writer.write(",\"icon\":\"")
+			writer.write(icon)
+			writer.write('"')
+		}
+		
+		writer.write("}");
 		
 		writer.toString();
 	}
