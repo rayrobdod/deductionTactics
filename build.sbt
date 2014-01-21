@@ -77,6 +77,10 @@ mappings in (Compile, packageBin) <+= baseDirectory.map{(b) => (new File(b, "LIC
 
 
 // Token compiling
+compileTokensInput <<= (compileTokensInput, genBasicTokensOutput).apply{(a, b) => b +: a}
+
+compileTokens <<= compileTokens.dependsOn (genBasicTokens)
+
 excludeFilter in unmanagedResources in Compile <<= (excludeFilter in unmanagedResources in Compile, compileTokensInput) apply {(previous, tokenSrc) =>
 	previous || new FileFilter{
 		def accept(n:File) = tokenSrc.contains(n)
@@ -90,8 +94,6 @@ mappings in (Compile, packageSrc) <++= (compileTokensInput) map { (tokenSrc) =>
 
 // if some part of the circular dependency breaks down, remove this line
 resourceGenerators in Compile <+= compileTokens.task
-
-resourceGenerators in Compile <+= genBasicTokens.task
 
 // proguard
 proguardSettings
