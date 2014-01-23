@@ -1,6 +1,6 @@
 /*
 	Deduction Tactics
-	Copyright (C) 2012-2013  Raymond Dodge
+	Copyright (C) 2012-2014  Raymond Dodge
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -24,13 +24,13 @@ import com.rayrobdod.deductionTactics.BodyTypes.{Value => BodyType}
 import com.rayrobdod.deductionTactics.Directions.Direction
 
 import scala.util.Random
+import scala.runtime.{AbstractFunction1, AbstractFunction2}
 import java.awt.image.BufferedImage
 import javax.swing.{JLabel, JComponent, Icon, ImageIcon}
 import javax.swing.SwingUtilities.invokeLater
 import com.rayrobdod.swing.layouts.MoveToLayout
 import com.rayrobdod.boardGame.Space
-import com.rayrobdod.boardGame.swingView.{RectangularFieldComponent => FieldComponent,
-		TokenComponent => BoardGameTokenComponent}
+import com.rayrobdod.boardGame.swingView.{FieldViewer}
 import com.rayrobdod.deductionTactics.{Token, ListOfTokens}
 import com.rayrobdod.util.BlitzAnimImage
 import javax.imageio.ImageIO
@@ -38,17 +38,14 @@ import java.awt.Color
 
 /**
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.5.3
  * @todo try making a queue of animations - for cases where a lot of moves are made really quickly?
          Better done by artificial delays in the layout's reactions?
  */
-class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout, tokens:ListOfTokens)
-		extends BoardGameTokenComponent(token, fieldComp, layout, 
-				tokenClassToIcon(token.tokenClass)
-		)
+class TokenComponent(token:Token, fieldComp:FieldViewer, layout:MoveToLayout, tokens:ListOfTokens)
+		extends JLabel(tokenClassToIcon(token.tokenClass))
 {
 	private val myTeamNumber = tokens.tokens.zipWithIndex.filter{_._1.contains(token)}.head._2
-	private val teamColors:Function1[Int,Color] = Seq(new Color(64,64,255), new Color(255,64,64), new Color(64,255,64), new Color(192,192,64) /*,... */)
 	
 	this.setBackground( teamColors(myTeamNumber) );
 	
@@ -60,6 +57,26 @@ class TokenComponent(token:Token, fieldComp:FieldComponent, layout:MoveToLayout,
 				tokenClassToIcon(token.tokenClass)
 		)
 	}
+	
+	token.moveReactions_+=(ComponentMovementUpdateAct)
+	object ComponentMovementUpdateAct extends AbstractFunction2[Space, Boolean, Unit] {
+		def apply(movedTo:Space, landed:Boolean) = {
+			val location = new java.awt.Point(
+					(fieldComp.spaceLocation(movedTo).getBounds2D().getCenterX() - TokenComponent.this.getWidth()  / 2).toInt,
+					(fieldComp.spaceLocation(movedTo).getBounds2D().getCenterY() - TokenComponent.this.getHeight() / 2).toInt
+			);
+			layout.moveTo(TokenComponent.this, location)
+		}
+	}
+	
+	token.selectedReactions_+=(BeSelectedAct)
+	object BeSelectedAct extends AbstractFunction1[Boolean, Unit] {
+		def apply(b:Boolean) = {
+			TokenComponent.this.setOpaque(b)
+			TokenComponent.this.repaint()
+		}
+	}
+	
 	
 	token.beDamageAttackedReactions_+=(ShowDamageReaction)
 	token.beStatusAttackedReactions_+=(ShowDamageReaction)

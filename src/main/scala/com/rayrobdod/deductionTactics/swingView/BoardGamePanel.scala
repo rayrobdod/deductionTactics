@@ -53,21 +53,8 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 		val fieldComp = new FieldComponent(tilesheetInfo,field)
 		fieldComp.tokenLayer.setLayout(layout)
 		
-		val tokenComponents = tokens.tokens.flatten.map{(t:Token) =>
-			val comp = new TokenComponent(t, fieldComp, layout, tokens)
-			
-			t.diedReactions_+=(RemoveComponentUponDeathAct)
-			object RemoveComponentUponDeathAct extends Function0[Unit] {
-				override def apply() = {
-						tokenLayer remove comp
-						tokenLayer.repaint()
-				}
-			}
-			
-			comp
-		}
-		
-		tokenComponents.foreach{fieldComp.tokenLayer.add(_)}
+		val controller = new TokenComponentController(fieldComp, tokens)
+		new java.lang.Thread(controller).start()
 		
 		fieldComp
 	}
