@@ -54,7 +54,7 @@ object Main extends App
 		aiChooserFrame.getContentPane.add(okButton, borderSouth)
 		aiChooserFrame.getRootPane.setDefaultButton(okButton);
 		aiChooserFrame.setJMenuBar(new swingView.MenuBar)
-
+		
 		
 		mapChooser.numPlayersList.addListSelectionListener(AiChooserCountChanger)
 		object AiChooserCountChanger extends ListSelectionListener {
@@ -98,26 +98,7 @@ object Main extends App
 		).tupled}
 		val allTokens = (canonTokens ++ mirrorTokens).flatten
 		
-		val players = playerListOfTokens.zip(ais).map({new Player(_, _)}.tupled)
-		players.foreach({(player:Player) =>
-			player.ai.initialize(player, field)
-			//   Breaks a lock or something I DON'T KNOW LEAVE ME ALONE
-			//player.reactions.+=(ai)
-		})
 		
-		/* canonTokens.flatten.zip(mirrorTokens.flatten).foreach({(hisCannon:CannonicalToken, hisMirror:MirrorToken) =>
-			canonTokens.flatten.foreach{(mine:CannonicalToken) =>
-				mine.reactions.+=(new hisCannon.BeAttackedReaction(hisMirror))
-			}
-		}.tupled) */
-	
-		players.zip(canonTokens).foreach({(p:Player, ts:Seq[CannonicalToken]) => {
-			ts.foreach{(t:CannonicalToken) => {
-				p.addStartTurnReaction(t.TurnStartReaction)
-				p.addEndTurnReaction(t.TurnEndReaction)
-				p.addStartTurnReaction(new t.StatusAct(p.tokens))
-			}}
-		}}.tupled)
 		canonTokens.foreach{(seq:Seq[CannonicalToken]) => {
 			SpaceClass.tokens.tokens = SpaceClass.tokens.tokens :+ seq;
 		}}
@@ -132,10 +113,18 @@ object Main extends App
 		}.tupled)
 		
 		
-		// pray that the tokens have moved by the time this sleep is over
-		// This seems to solve a null pointer exception in the PlayerAI
-		Thread.sleep(1000)
+		val players = playerListOfTokens.zip(ais).map({new Player(_, _)}.tupled)
+		players.foreach({(player:Player) =>
+			player.ai.initialize(player, field)
+		})
 		
+		players.zip(canonTokens).foreach({(p:Player, ts:Seq[CannonicalToken]) => {
+			ts.foreach{(t:CannonicalToken) => {
+				p.addStartTurnReaction(t.TurnStartReaction)
+				p.addEndTurnReaction(t.TurnEndReaction)
+				p.addStartTurnReaction(new t.StatusAct(p.tokens))
+			}}
+		}}.tupled)
 		
 		// run, meaning this returns when PlayerTurnCycler returns
 		new PlayerTurnCycler(players).run()
