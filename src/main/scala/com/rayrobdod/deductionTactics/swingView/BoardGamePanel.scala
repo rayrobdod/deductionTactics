@@ -54,7 +54,6 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 		fieldComp.tokenLayer.setLayout(layout)
 		
 		val controller = new TokenComponentController(fieldComp, tokens)
-		new java.lang.Thread(controller).start()
 		
 		fieldComp
 	}
