@@ -98,6 +98,7 @@ final class TokenComponentController(fieldComp:FieldViewer,
 		label.setBackground( teamColors(myTeamNumber) );
 		
 		label.setIcon( tokenClassToIcon(t.tokenClass) )
+		label.setSize( label.getPreferredSize )
 		
 		fieldComp.tokenLayer.add(label)
 	}.tupled)
@@ -286,7 +287,7 @@ object TokenComponentController {
 			tokenToComponentMap:Seq[(Token, JLabel)]
 		) = {
 			val label = tokenToComponentMap.find{_._1 == defender}.get._2
-			if (frameEnd.map{_ > System.currentTimeMillis()}.getOrElse(true)) {
+			if (frameEnd.map{_ < System.currentTimeMillis()}.getOrElse(true)) {
 				frameEnd = Some(System.currentTimeMillis() + EFFECT_FRAME_LENGTH)
 				currentEffectFrameNumber = currentEffectFrameNumber + 1
 			}
