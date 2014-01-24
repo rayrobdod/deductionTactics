@@ -92,7 +92,10 @@ final class TokenComponentController(fieldComp:FieldViewer,
 		t.beStatusAttackedReactions_+=(AddActionToQueueReaction)
 		t.moveReactions_+=(AddActionToQueueReaction)
 		t.diedReactions_+=(AddActionToQueueReaction)
-		// t.selectedReactions_+=(BeSelectedAct)
+		t.selectedReactions_+=(BeSelectedAct)
+		
+		val myTeamNumber = tokens.tokens.zipWithIndex.find{_._1.contains(t)}.get._2
+		label.setBackground( teamColors(myTeamNumber) );
 		
 		label.setIcon( tokenClassToIcon(t.tokenClass) )
 		
@@ -116,6 +119,7 @@ final class TokenComponentController(fieldComp:FieldViewer,
 					(fieldComp.spaceLocation(t.currentSpace).getBounds2D().getCenterY() - label.getHeight() / 2).toInt
 				));
 				
+				label.setIcon( tokenClassToIcon(t.tokenClass) )
 			}.tupled)
 			
 			
