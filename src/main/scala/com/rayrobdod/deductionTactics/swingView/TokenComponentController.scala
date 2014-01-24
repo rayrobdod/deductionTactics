@@ -32,6 +32,7 @@ import java.awt.{Component, Container, Dimension, Point, LayoutManager}
 import java.awt.event.{ComponentAdapter, ComponentEvent}
 import javax.swing.{JLabel, JComponent, Icon, ImageIcon}
 import javax.swing.SwingUtilities.invokeLater
+import com.rayrobdod.boardGame.Space
 import com.rayrobdod.boardGame.swingView.{FieldViewer}
 import com.rayrobdod.deductionTactics.{Token, ListOfTokens}
 import com.rayrobdod.util.BlitzAnimImage
@@ -184,7 +185,7 @@ object TokenComponentController {
 		
 		private def soFarTime = System.currentTimeMillis - startTime.getOrElse(System.currentTimeMillis)
 		private def totalTime = (deltaX zip deltaY).map{(a) =>
-			math.sqrt((a._1 * a._1) + (a._2 * a._2)) * TOTAL_TIME_MULTIPLER / speed
+			math.sqrt((a._1 * a._1) + (a._2 * a._2)) * MOVE_TIME_MULTIPLER / speed
 		}.headOption
 		
 		def apply(
@@ -218,19 +219,93 @@ object TokenComponentController {
 	}
 	
 	class DamageAction(defender:Token, attacker:Token, elem:Element, kind:Weaponkind) extends Action {
+		private var frameEnd:Option[Long] = None
+		private val effect:BlitzAnimImage = {
+			val effectFile = this.getClass().getResource(attackEffectFile(kind))
+			val effectImage = ImageIO.read(effectFile)
+			
+			(0 until effectImage.getWidth).foreach{(x:Int) => 
+				(0 until effectImage.getHeight).foreach{(y:Int) => 
+					if (effectImage.getRGB(x,y) == 0xFFFFFFFF) {effectImage.setRGB(x,y,elementToColor(elem).getRGB)}
+				}
+			}
+			
+			new BlitzAnimImage(effectImage, EFFECT_IMAGE_DIM, EFFECT_IMAGE_DIM, 0, 8)
+		}
+		private var currentEffectFrameNumber = -1
+		
+		
 		def apply(
 			fieldComp:FieldViewer,
 			tokenToComponentMap:Seq[(Token, JLabel)]
-		) = {}
-		def isDone:Boolean = true
+		) = {
+			val label = tokenToComponentMap.find{_._1 == defender}.get._2
+			if (frameEnd.map{_ < System.currentTimeMillis()}.getOrElse(true)) {
+				frameEnd = Some(System.currentTimeMillis() + EFFECT_FRAME_LENGTH)
+				currentEffectFrameNumber = currentEffectFrameNumber + 1
+			}
+			
+			val tokenIcon = tokenClassToIcon(defender.tokenClass)
+			val currentImage = new BufferedImage(tokenIcon.getIconWidth(), tokenIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB)
+			val currentImageGraphics = currentImage.getGraphics()
+			
+			tokenIcon.paintIcon(
+				label, currentImageGraphics, 0, 0
+			)
+			
+			if (currentEffectFrameNumber < effect.size()) {
+				val currentEffectFrame = effect.getFrame(currentEffectFrameNumber)
+				currentImageGraphics.drawImage(currentEffectFrame,
+						(tokenIcon.getIconWidth()  - EFFECT_IMAGE_DIM) / 2,
+						(tokenIcon.getIconHeight() - EFFECT_IMAGE_DIM) / 2,
+						EFFECT_IMAGE_DIM, EFFECT_IMAGE_DIM, null)
+			}
+			
+			label.setIcon(new ImageIcon(currentImage))
+		}
+		def isDone:Boolean = currentEffectFrameNumber >= EFFECT_FRAME_COUNT
 	}
 	
 	class StatusAction(defender:Token, attacker:Token, status:Status) extends Action {
+		private var frameEnd:Option[Long] = None
+		private val effect:BlitzAnimImage = {
+			val effectFile = this.getClass().getResource("/com/rayrobdod/glyphs/status/" + status.name.toLowerCase + "-i.png")
+			val effectImage = ImageIO.read(effectFile)
+			
+			new BlitzAnimImage(effectImage, EFFECT_IMAGE_DIM, EFFECT_IMAGE_DIM, 0, EFFECT_FRAME_COUNT)
+		}
+		private var currentEffectFrameNumber = -1
+		
+		
 		def apply(
 			fieldComp:FieldViewer,
 			tokenToComponentMap:Seq[(Token, JLabel)]
-		) = {}
-		def isDone:Boolean = true
+		) = {
+			val label = tokenToComponentMap.find{_._1 == defender}.get._2
+			if (frameEnd.map{_ > System.currentTimeMillis()}.getOrElse(true)) {
+				frameEnd = Some(System.currentTimeMillis() + EFFECT_FRAME_LENGTH)
+				currentEffectFrameNumber = currentEffectFrameNumber + 1
+			}
+			
+			val tokenIcon = tokenClassToIcon(defender.tokenClass)
+			val currentImage = new BufferedImage(tokenIcon.getIconWidth(), tokenIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB)
+			val currentImageGraphics = currentImage.getGraphics()
+			
+			tokenIcon.paintIcon(
+				label, currentImageGraphics, 0, 0
+			)
+			
+			if (currentEffectFrameNumber < effect.size()) {
+				val currentEffectFrame = effect.getFrame(currentEffectFrameNumber)
+				currentImageGraphics.drawImage(currentEffectFrame,
+						(tokenIcon.getIconWidth()  - EFFECT_IMAGE_DIM) / 2,
+						(tokenIcon.getIconHeight() - EFFECT_IMAGE_DIM) / 2,
+						EFFECT_IMAGE_DIM, EFFECT_IMAGE_DIM, null)
+			}
+			
+			label.setIcon(new ImageIcon(currentImage))
+		}
+		def isDone:Boolean = currentEffectFrameNumber >= EFFECT_FRAME_COUNT
 	}
 	
 	class RevalidateAction extends Action {
@@ -249,5 +324,8 @@ object TokenComponentController {
 	
 	/* constants */
 	val REFRESH_DELAY = 12
-	val TOTAL_TIME_MULTIPLER = 120
+	val MOVE_TIME_MULTIPLER = 120
+	val EFFECT_FRAME_LENGTH = 36 
+	val EFFECT_IMAGE_DIM = 32
+	val EFFECT_FRAME_COUNT = 8
 }
