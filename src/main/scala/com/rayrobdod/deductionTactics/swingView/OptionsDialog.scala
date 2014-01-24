@@ -42,7 +42,7 @@ class OptionsPanel extends JPanel
 			GridBagConstraintsFactory( gridx = 0, gridy = 0 ))
 	this.add(currentTilesheet,
 			GridBagConstraintsFactory( gridx = 0, gridy = 1 ))
-	this.add(new JLabel("Tokens' movement speed (lower is faster)"),
+	this.add(new JLabel("Tokens' movement speed"),
 			GridBagConstraintsFactory( gridx = 1, gridy = 0 ))
 	this.add(movementSpeed,
 			GridBagConstraintsFactory( gridx = 1, gridy = 1 ))

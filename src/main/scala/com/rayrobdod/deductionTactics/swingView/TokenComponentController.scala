@@ -28,11 +28,10 @@ import scala.runtime.{AbstractFunction1, AbstractFunction2}
 import scala.collection.mutable.{SynchronizedQueue => MQueue}
 import scala.collection.immutable.{Seq}
 import java.awt.image.BufferedImage
-import java.awt.{Component, Container, Dimension, LayoutManager}
+import java.awt.{Component, Container, Dimension, Point, LayoutManager}
 import java.awt.event.{ComponentAdapter, ComponentEvent}
 import javax.swing.{JLabel, JComponent, Icon, ImageIcon}
 import javax.swing.SwingUtilities.invokeLater
-import com.rayrobdod.boardGame.Space
 import com.rayrobdod.boardGame.swingView.{FieldViewer}
 import com.rayrobdod.deductionTactics.{Token, ListOfTokens}
 import com.rayrobdod.util.BlitzAnimImage
@@ -41,8 +40,10 @@ import java.awt.Color
 import TokenComponentController._
 
 
-
-
+/**
+ * 
+ * @since a.5.3
+ */
 final class TokenComponentController(fieldComp:FieldViewer,
 		tokens:ListOfTokens) extends LayoutManager
 {
@@ -126,7 +127,7 @@ final class TokenComponentController(fieldComp:FieldViewer,
 				
 				new Thread(new Runnable() {
 					def run() {
-						Thread.sleep(100)
+						Thread.sleep(REFRESH_DELAY)
 						fieldComp.tokenLayer.revalidate()
 					}
 				}, "TokenComponentControllerDelay").start()
@@ -164,6 +165,7 @@ object TokenComponentController {
 		) = {
 			val comp = tokenToComponentMap.find{_._1 == t}.get._2
 			fieldComp.tokenLayer remove comp
+			fieldComp.tokenLayer.revalidate()
 			
 			_isDone = true;
 		}
@@ -173,20 +175,36 @@ object TokenComponentController {
 	
 	class MovementAction(t:Token, s:Space) extends Action {
 		private var startTime:Option[Long] = None
+		private var startPoint:Option[Point] = None
+		private var endPoint:Option[Point] = None
+		private val speed = BoardGamePanel.movementSpeed
+		
+		private def deltaX:Option[Int] = (endPoint zip startPoint).map{(a) => a._1.x - a._2.x}.headOption
+		private def deltaY:Option[Int] = (endPoint zip startPoint).map{(a) => a._1.y - a._2.y}.headOption
+		
+		private def soFarTime = System.currentTimeMillis - startTime.getOrElse(System.currentTimeMillis)
+		private def totalTime = (deltaX zip deltaY).map{(a) =>
+			math.sqrt((a._1 * a._1) + (a._2 * a._2)) * TOTAL_TIME_MULTIPLER / speed
+		}.headOption
 		
 		def apply(
 			fieldComp:FieldViewer,
 			tokenToComponentMap:Seq[(Token, JLabel)]
 		) = {
+			val label = tokenToComponentMap.find{_._1 == t}.get._2
 			if (startTime == None) {
 				startTime = Some(System.currentTimeMillis())
-				System.out.println(startTime)
+				startPoint = Some(new Point(label.getX(), label.getY()))
 			}
-			val label = tokenToComponentMap.find{_._1 == t}.get._2
+			
+			val endX = (fieldComp.spaceLocation(s).getBounds2D().getCenterX() - label.getWidth()  / 2).toInt
+			val endY = (fieldComp.spaceLocation(s).getBounds2D().getCenterY() - label.getHeight() / 2).toInt
+			
+			endPoint = Some(new Point(endX, endY))
 			
 			label.setLocation( new java.awt.Point(
-				(fieldComp.spaceLocation(s).getBounds2D().getCenterX() - label.getWidth()  / 2).toInt,
-				(fieldComp.spaceLocation(s).getBounds2D().getCenterY() - label.getHeight() / 2).toInt
+				(startPoint.get.x + (deltaX.get * soFarTime / totalTime.get)).intValue,
+				(startPoint.get.y + (deltaY.get * soFarTime / totalTime.get)).intValue
 			));
 			
 			fieldComp.tokenLayer.revalidate()
@@ -195,7 +213,7 @@ object TokenComponentController {
 		override val dontLayout = Seq(t)
 		
 		override def isDone:Boolean = {
-			startTime.map{ System.currentTimeMillis() > _ + 1000 }.getOrElse(false)
+			totalTime.map{soFarTime > _}.getOrElse{false}
 		}
 	}
 	
@@ -229,10 +247,7 @@ object TokenComponentController {
 	
 	
 	
-	
-	/* token reactions */
-	
-	
-	
-	
+	/* constants */
+	val REFRESH_DELAY = 12
+	val TOTAL_TIME_MULTIPLER = 120
 }
