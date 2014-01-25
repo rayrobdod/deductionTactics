@@ -29,14 +29,7 @@ package object deductionTactics
 		val v = java.lang.Package.getPackage("com.rayrobdod.deductionTactics").getImplementationVersion();
 		
 		// Manifest doesn't like alpha chars in version numbers
-		if (v != null) {
-			if (v.take(8) == "000.010.")
-				"a" + v.drop(7);
-			else if (v.take(8) == "000.011.")
-				"b" + v.drop(7);
-			else
-				v;
-		} else "Unversioned";
+		if (v != null) v else "Unversioned";
 	}
 	
 	/** A title for use in About dialogs */
@@ -60,8 +53,7 @@ package object deductionTactics
 		writer.write(tclass.atkStatus.get.name)
 		
 		writer.write("\",\"body\":\"");
-		// writer.write(tclass.body.get.name)
-		writer.write("Human");
+		writer.write(tclass.body.get.name)
 		
 		writer.write("\",\"range\":");
 		writer.write(tclass.range.get.toString)

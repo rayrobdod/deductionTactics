@@ -20,7 +20,7 @@ package com.rayrobdod.deductionTactics
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.Status
-import BodyTypes.{Value => BodyType}
+import BodyTypes.BodyType
 import Directions.Direction
 import com.rayrobdod.boardGame.{Token => BoardGameToken, Space}
 import scala.runtime.{AbstractFunction2 => AFunction2, AbstractFunction1 => AFunction1}

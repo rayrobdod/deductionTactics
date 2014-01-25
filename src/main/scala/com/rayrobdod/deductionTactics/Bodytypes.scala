@@ -18,14 +18,29 @@
 package com.rayrobdod.deductionTactics
 
 /**
- * An enumeration of Bodytypes.
- * 
- * It doesn't actually *do* anything yet, but theoretically, it should
- * determine whether a tokenclass can 'fly' or not.
+ * An enumeration of Bodytypes. Partially determines what spaces
+ * a token may enter.
  * @author Raymond Dodge
+ * @version a.5.3
  */
-object BodyTypes extends Enumeration {
-	val Humanoid = Value("Human")
-	val Avian    = Value("Avian")
-	val Gerbil   = Value("Gerbillinae")
+object BodyTypes {
+	final class BodyType(val id:Int, val name:String)
+	
+	val Humanoid = new BodyType(0, "Human")
+	val Avian    = new BodyType(1, "Avian")
+	val Gerbil   = new BodyType(2, "Gerbillinae")
+	
+	def values = Seq[BodyType](Humanoid, Avian, Gerbil)
+	def apply(x:Int) = values(x) //.find{_.id == x}.get
+	
+	def withName(s:String) = {
+		try {
+			values.find{_.name.equalsIgnoreCase(s)}.get
+		} catch {
+			case x:NoSuchElementException => 
+				val y = new NoSuchElementException("No element with name: "+ s)
+				y.initCause(x)
+				throw y
+		}
+	}
 }

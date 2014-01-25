@@ -37,6 +37,7 @@ object AvailibleTilesheetListModel extends AbstractListModel[RectangularTileshee
 /**
  * A Listrenderer that shows a tilesheet name
  * @author Raymond Dodge
+ * @version a.5.3
  */
 object TilesheetListRenderer extends ListCellRenderer[RectangularTilesheet]
 {
@@ -45,9 +46,7 @@ object TilesheetListRenderer extends ListCellRenderer[RectangularTilesheet]
 	def getListCellRendererComponent(list:JList[_ <: RectangularTilesheet], value:RectangularTilesheet, index:Int,
 			isSelected:Boolean, cellHasFocus:Boolean) =
 	{
-		val returnValue = back.getListCellRendererComponent(
-				list, value, index, isSelected, cellHasFocus)
-		returnValue.asInstanceOf[javax.swing.JLabel].setText(value.name)
-		returnValue
+		back.getListCellRendererComponent(
+				list, value.name, index, isSelected, cellHasFocus)
 	}
 }

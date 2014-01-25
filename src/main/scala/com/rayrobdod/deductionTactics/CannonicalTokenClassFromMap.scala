@@ -20,7 +20,7 @@ package com.rayrobdod.deductionTactics
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.Status
-import BodyTypes.{Value => BodyType}
+import BodyTypes.BodyType
 import Directions.Direction
 
 import scala.collection.Seq

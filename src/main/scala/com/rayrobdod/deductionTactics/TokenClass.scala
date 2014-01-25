@@ -20,7 +20,7 @@ package com.rayrobdod.deductionTactics
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.Status
-import BodyTypes.{Value => BodyType}
+import BodyTypes.BodyType
 import Directions.Direction
 
 import scala.collection.immutable.{Map}
@@ -40,7 +40,7 @@ trait TokenClass
 	/** A class's name */
 	def name:String
 	
-	/** A class's bodytype. Currently doesn't affect anything */
+	/** A class's bodytype. */
 	def body:Option[BodyType]
 	
 	/** The element a unit attacks with. Also determines it's defenses against elements. */

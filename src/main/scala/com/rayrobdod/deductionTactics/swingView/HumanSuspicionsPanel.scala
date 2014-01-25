@@ -22,7 +22,7 @@ import com.rayrobdod.deductionTactics._
 import com.rayrobdod.deductionTactics.Elements.Element
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 import com.rayrobdod.deductionTactics.Statuses.Status
-import com.rayrobdod.deductionTactics.BodyTypes.{Value => BodyType}
+import com.rayrobdod.deductionTactics.BodyTypes.BodyType
 import com.rayrobdod.deductionTactics.Directions.Direction
 
 import javax.swing.JProgressBar
