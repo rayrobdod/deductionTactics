@@ -68,8 +68,8 @@ final class TokenComponentController(fieldComp:FieldViewer,
 				actionQueue += new MovementAction(t, s)
 				fieldComp.tokenLayer.revalidate()
 			}
-			def apply(elem:Element, kind:Weaponkind, space:Space) {
-				actionQueue += new DamageAction(t, tokenOnSpace(space), elem, kind)
+			def apply(elem:Element, kind:Weaponkind, damage:Int, space:Space) {
+				actionQueue += new DamageAction(t, tokenOnSpace(space), elem, kind, damage)
 				fieldComp.tokenLayer.revalidate()
 			}
 			def apply(status:Status, space:Space) {
@@ -223,7 +223,7 @@ object TokenComponentController {
 		}
 	}
 	
-	class DamageAction(defender:Token, attacker:Token, elem:Element, kind:Weaponkind) extends Action {
+	class DamageAction(defender:Token, attacker:Token, elem:Element, kind:Weaponkind, damage:Int) extends Action {
 		private var frameEnd:Option[Long] = None
 		private val effect:BlitzAnimImage = {
 			val effectFile = this.getClass().getResource(attackEffectFile(kind))
@@ -238,6 +238,16 @@ object TokenComponentController {
 			new BlitzAnimImage(effectImage, EFFECT_IMAGE_DIM, EFFECT_IMAGE_DIM, 0, 8)
 		}
 		private var currentEffectFrameNumber = -1
+		private val damageLabel = {
+			val a = new JLabel("-" + damage.toString)
+			a.setBackground(Color.black)
+			a.setForeground(Color.white)
+			a.setSize(a.getPreferredSize)
+			
+			System.out.println(a)
+			
+			a
+		}
 		
 		
 		def apply(
@@ -248,6 +258,7 @@ object TokenComponentController {
 			if (frameEnd.map{_ < System.currentTimeMillis()}.getOrElse(true)) {
 				frameEnd = Some(System.currentTimeMillis() + EFFECT_FRAME_LENGTH)
 				currentEffectFrameNumber = currentEffectFrameNumber + 1
+				fieldComp.tokenLayer.add(damageLabel)
 			}
 			
 			val tokenIcon = tokenClassToIcon(defender.tokenClass)
@@ -264,6 +275,13 @@ object TokenComponentController {
 						(tokenIcon.getIconWidth()  - EFFECT_IMAGE_DIM) / 2,
 						(tokenIcon.getIconHeight() - EFFECT_IMAGE_DIM) / 2,
 						EFFECT_IMAGE_DIM, EFFECT_IMAGE_DIM, null)
+				
+				damageLabel.setLocation(
+						(label.getX() - (damageLabel.getWidth()  / 2)),
+						(label.getY() - (damageLabel.getHeight() / 2))
+				)
+			} else {
+				// fieldComp.tokenLayer.remove(damageLabel)
 			}
 			
 			label.setIcon(new ImageIcon(currentImage))

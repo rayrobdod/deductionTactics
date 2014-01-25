@@ -67,7 +67,7 @@ trait Token extends BoardGameToken
 	private val beDamageAttackedReactions:Buffer[Token.DamageAttackedReactionType] = Buffer.empty;
 	def beDamageAttackedReactions_+=(a:Token.DamageAttackedReactionType) = {beDamageAttackedReactions += a}
 	def beDamageAttackedReactions_-=(a:Token.DamageAttackedReactionType) = {beDamageAttackedReactions -= a}
-	protected def triggerBeDamageAttackedReactions(b:Element, c:Weaponkind, d:Space) = {beDamageAttackedReactions.foreach{a => a(b,c,d)}}
+	protected def triggerBeDamageAttackedReactions(b:Element, c:Weaponkind, e:Int, d:Space) = {beDamageAttackedReactions.foreach{a => a(b,c,e,d)}}
 
 	private val beStatusAttackedReactions:Buffer[Token.StatusAttackedReactionType] = Buffer.empty;
 	def beStatusAttackedReactions_+=(a:Token.StatusAttackedReactionType) = {beStatusAttackedReactions += a}
@@ -77,7 +77,12 @@ trait Token extends BoardGameToken
 
 object Token {
 	trait DamageAttackedReactionType {
-		def apply(atkElem:Element, atkKind:Weaponkind, attackerSpace:Space):Unit;
+		def apply(
+			atkElem:Element,
+			atkKind:Weaponkind,
+			damage:Int,
+			attackerSpace:Space
+		):Unit;
 	}
 	
 	trait StatusAttackedReactionType {

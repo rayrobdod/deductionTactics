@@ -180,7 +180,7 @@ final class CannonicalToken(val tokenClass:CannonicalTokenClass) extends Token
 		
 		_currentHitpoints = _currentHitpoints - damageDone
 		
-		this.triggerBeDamageAttackedReactions(elem,kind,from)
+		this.triggerBeDamageAttackedReactions(elem,kind,damageDone,from)
 		this.triggerUpdateReactions
 		if (_currentHitpoints <= 0) {CannonicalToken.this.triggerDiedReactions()}
 	}

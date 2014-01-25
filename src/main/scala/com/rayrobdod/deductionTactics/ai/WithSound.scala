@@ -72,7 +72,7 @@ object WithSound
 	 * A reaction that plays an audio clip when an action occurs.
 	 */
 	object AttackSoundReaction extends Token.DamageAttackedReactionType {
-		def apply(e:Element, k:Weaponkind, s:Space):Unit = {
+		def apply(e:Element, k:Weaponkind, d:Int, s:Space):Unit = {
 			// TODO: sound depends on how hard the hit was?
 			// TODO: sound depends on element and kind of attack
 			// TODO: give some units a unique attack sound (very ?)

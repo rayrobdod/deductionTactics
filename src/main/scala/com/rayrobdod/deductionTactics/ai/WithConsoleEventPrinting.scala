@@ -95,7 +95,7 @@ object WithConsoleEventPrinting {
 	}
 	
 	final class PrintDamageAttack(tokenName:String) extends Token.DamageAttackedReactionType {
-		def apply(atkElem:Element, atkKind:Weaponkind, attackerSpace:Space):Unit = {
+		def apply(atkElem:Element, atkKind:Weaponkind, damage:Int, attackerSpace:Space):Unit = {
 			out.print(tokenName)
 			out.print(": DamageAttack(")
 			out.print(atkElem)

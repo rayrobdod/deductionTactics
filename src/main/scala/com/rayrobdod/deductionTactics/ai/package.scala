@@ -81,7 +81,7 @@ package object ai
 			}
 		}
 		
-		def apply(element:Element, kind:Weaponkind, attackerSpace:Space) = {
+		def apply(element:Element, kind:Weaponkind, damage:Int, attackerSpace:Space) = {
 			val targetSpace = target.currentSpace
 			val attacker = allTokens.tokens.flatten.find{_.currentSpace == attackerSpace}
 			
