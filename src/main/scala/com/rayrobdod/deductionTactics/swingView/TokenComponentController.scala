@@ -240,11 +240,8 @@ object TokenComponentController {
 		private var currentEffectFrameNumber = -1
 		private val damageLabel = {
 			val a = new JLabel("-" + damage.toString)
-			a.setBackground(Color.black)
-			a.setForeground(Color.white)
+			a.setForeground(Color.black)
 			a.setSize(a.getPreferredSize)
-			
-			System.out.println(a)
 			
 			a
 		}
@@ -277,11 +274,12 @@ object TokenComponentController {
 						EFFECT_IMAGE_DIM, EFFECT_IMAGE_DIM, null)
 				
 				damageLabel.setLocation(
-						(label.getX() - (damageLabel.getWidth()  / 2)),
-						(label.getY() - (damageLabel.getHeight() / 2))
+						label.getX() + (label.getWidth()  - damageLabel.getWidth() ) / 2,
+						label.getY() - damageLabel.getHeight() + effect.size() - currentEffectFrameNumber
 				)
 			} else {
-				// fieldComp.tokenLayer.remove(damageLabel)
+				fieldComp.tokenLayer.remove(damageLabel)
+				// doesn't disapear until next repaint... bug or feature?
 			}
 			
 			label.setIcon(new ImageIcon(currentImage))
