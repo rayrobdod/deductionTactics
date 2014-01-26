@@ -3,7 +3,7 @@
 -dontskipnonpubliclibraryclassmembers
 -dontoptimize
 -dontobfuscate
--dontwarn scala.**,com.kitfox.svg.app.ant.SVGToImageAntTask
+-dontwarn scala.**,com.kitfox.svg.app.ant.SVGToImageAntTask,ch.epfl.lamp.compiler.msil.emit.*
 -keepattributes SourceFile,LineNumberTable
 
 
