@@ -90,7 +90,7 @@ object SpaceClass {
 	case class IsElement(val element:Elements.Element) extends CanEnterType2 {
 		def apply(space:BoardGameSpaceClass, myToken:BoardGameToken):Boolean = {
 			myToken match {
-				case x:Token => x.tokenClass.body.map{_ == element}.getOrElse(false)
+				case x:Token => x.tokenClass.atkElement.map{_ == element}.getOrElse(false)
 				case _ => false
 			}
 		}

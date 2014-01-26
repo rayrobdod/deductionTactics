@@ -41,33 +41,14 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 {
 	setLayout(new BorderLayout)
 	
-	def tokenLayer:JPanel = centerpiece.tokenLayer
 	
 	val centerpiece = 
 	{
-		import com.rayrobdod.swing.layouts.MoveToLayout
-		
-		val layout:MoveToLayout = BoardGamePanel.movementLayout
 		val tilesheetInfo = BoardGamePanel.currentTilesheet
 		
 		val fieldComp = new FieldComponent(tilesheetInfo,field)
-		fieldComp.tokenLayer.setLayout(layout)
 		
-		val tokenComponents = tokens.tokens.flatten.map{(t:Token) =>
-			val comp = new TokenComponent(t, fieldComp, layout, tokens)
-			
-			t.diedReactions_+=(RemoveComponentUponDeathAct)
-			object RemoveComponentUponDeathAct extends Function0[Unit] {
-				override def apply() = {
-						tokenLayer remove comp
-						tokenLayer.repaint()
-				}
-			}
-			
-			comp
-		}
-		
-		tokenComponents.foreach{fieldComp.tokenLayer.add(_)}
+		val controller = new TokenComponentController(fieldComp, tokens)
 		
 		fieldComp
 	}
@@ -125,10 +106,6 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
  */
 object BoardGamePanel {
 	import java.util.prefs.Preferences;
-	import com.rayrobdod.swing.layouts.{MoveToLayout,
-		MoveToInstantLayout, MoveToGradualLayout2,
-		MoveToGradualLayout, SequentialMoveToLayout
-	}
 	
 	val movementSpeedPrefsKey:String = "tokenMoveSpeed";
 	val tilesheetPrefsKey:String = "tilesheetIndex";
@@ -143,14 +120,6 @@ object BoardGamePanel {
 	}
 	def movementSpeed_=(x:Int) {
 		myPrefs.putInt( movementSpeedPrefsKey, x );
-	}
-	
-	def movementLayout:MoveToLayout = {
-		if (movementSpeed <= 0) {
-			new MoveToInstantLayout()
-		} else {
-			new MoveToGradualLayout(movementSpeed)
-		}
 	}
 	
 	/* ... ... ... */

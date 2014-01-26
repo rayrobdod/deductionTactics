@@ -66,6 +66,9 @@ package object swingView
 		} else {UnsetNameAndIcon}
 	}
 	
+	/** @since a.5.3 */
+	val teamColors:Function1[Int,Color] = Seq(new Color(64,64,255), new Color(255,64,64), new Color(64,255,64), new Color(192,192,64) /*,... */)
+	
 	
 	/**
 	 * @since 2013 Jun 14

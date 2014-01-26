@@ -62,7 +62,7 @@ final class MirrorToken(parent:Token) extends Token
 	
 	parent.beDamageAttackedReactions_+=(MirrorDamageAttackReaction)
 	private object MirrorDamageAttackReaction extends Token.DamageAttackedReactionType {
-		def apply(a:Element, b:Weaponkind, c:Space):Unit = MirrorToken.this.triggerBeDamageAttackedReactions(a,b,c)
+		def apply(a:Element, b:Weaponkind, d:Int, c:Space):Unit = MirrorToken.this.triggerBeDamageAttackedReactions(a,b,d,c)
 	}
 	
 	parent.beStatusAttackedReactions_+=(MirrorStatusAttackReaction)
