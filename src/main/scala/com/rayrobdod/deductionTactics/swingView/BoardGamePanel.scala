@@ -105,10 +105,10 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 	// make so that pack doesn't cause a screen-consuming size
 	val westScrollPane = new JScrollPane(playerTokenLists(0),
 			scrollVerticalAlways, scrollHorizontalNever)
-	westScrollPane.setPreferredSize(new java.awt.Dimension(westScrollPane.getPreferredSize().width, 1))
+	westScrollPane.setPreferredSize(new java.awt.Dimension(westScrollPane.getPreferredSize().width + 5, 1))
 	val eastScrollPane = new JScrollPane(eastPanel,
 			scrollVerticalAlways, scrollHorizontalAsNeeded)
-	eastScrollPane.setPreferredSize(new java.awt.Dimension(westScrollPane.getPreferredSize().width, 1))
+	eastScrollPane.setPreferredSize(new java.awt.Dimension(westScrollPane.getPreferredSize().width + 5, 1))
 	
 	val centerScrollPane = new JScrollPane(centerpiece,
 			scrollVerticalAsNeeded, scrollHorizontalAsNeeded)

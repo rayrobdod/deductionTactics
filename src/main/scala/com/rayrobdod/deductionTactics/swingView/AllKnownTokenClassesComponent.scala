@@ -58,7 +58,7 @@ class AllKnownTokenClassesComponent extends JPanel
 				val childSize = c.getComponent(0).getPreferredSize
 				val thisSize = javax.swing.SwingUtilities.getWindowAncestor(c).getSize
 				
-				val cols = math.max(thisSize.width / childSize.width, 1)
+				val cols = math.max(thisSize.width / childSize.width * 3/4, 1)
 				val rows = c.getComponentCount / cols + 1
 				
 				new Dimension(cols * (childSize.width + getVgap),
