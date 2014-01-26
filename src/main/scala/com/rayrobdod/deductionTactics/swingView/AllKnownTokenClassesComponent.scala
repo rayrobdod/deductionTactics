@@ -17,10 +17,8 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
-import javax.swing.{JList, JButton, JPanel, JFrame, JScrollPane, BoxLayout, JComponent}
-import javax.swing.BoxLayout.{Y_AXIS => boxYAxis}
-import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
-		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever}
+import javax.swing.{JPanel, JComponent}
+import java.awt.{FlowLayout, Container, Dimension}
 import com.rayrobdod.deductionTactics.{TokenClass, CannonicalTokenClass}
 import scala.collection.immutable.Seq
 
@@ -41,13 +39,6 @@ class AllKnownTokenClassesComponent extends JPanel
 	
 	private def tokenClassPanels:Seq[JComponent] = CannonicalTokenClass.allKnown.map(tokenClassToComponent)
 	
-	// TODO: Create a new LayoutManager that is basically a flow-layout
-	// but has a preferred width the same as the component's width and
-	// a corresponding height
-	
-	import java.awt.{FlowLayout, Container, Dimension}
-	
-//	this.setLayout(new BoxLayout(this, boxYAxis))
 	this.setLayout(new FlowLayout(){
 		override def preferredLayoutSize(c:Container) = minimumLayoutSize(c)
 		

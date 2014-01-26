@@ -21,18 +21,6 @@ import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularTiles
 import javax.swing.{AbstractListModel, DefaultListCellRenderer,
 		JList, ListCellRenderer, JLabel}
 
-/**
- * A ListModel of all tilesheets.
- * Would thought this could have a more immediate use
- * @author Raymond Dodge
- */
-object AvailibleTilesheetListModel extends AbstractListModel[RectangularTilesheet]
-{
-	val tilesheets = new RectangularTilesheetLoader("com.rayrobdod.deductionTactics.view.tilesheet").toSeq
-	
-	def getElementAt(index:Int):RectangularTilesheet = tilesheets(index)
-	def getSize:Int = tilesheets.size
-}
 
 /**
  * A Listrenderer that shows a tilesheet name

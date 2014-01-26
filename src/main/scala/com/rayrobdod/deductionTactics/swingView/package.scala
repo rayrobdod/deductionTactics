@@ -27,15 +27,14 @@ import com.rayrobdod.deductionTactics.swingView.{
 }
 
 import java.awt.{Dimension, Color}
-import javax.swing.{ImageIcon, Icon}
+import javax.swing.{ImageIcon, Icon, ListModel}
 import java.awt.Image.{SCALE_SMOOTH => imageScaleSmooth}
 
 import java.net.URL
 import javax.imageio.ImageIO
 import com.kitfox.svg.app.beans.SVGIcon
-import com.rayrobdod.swing.NameAndIcon
+import com.rayrobdod.swing.{NameAndIcon, ScalaSeqListModel}
 
-import scala.collection.mutable.{Map => MMap}
 import scala.collection.immutable.{Map => IMap}
 
 
@@ -80,7 +79,7 @@ package object swingView
 	def unknownIcon(size:Int = DEFAULT_SIZE):Icon = makeSVGIcon("/com/rayrobdod/glyphs/unknown.svg", size)
 	
 	
-	private val iconCache = MMap.empty[AnyRef, Icon];
+	private var iconCache = IMap.empty[AnyRef, Icon];
 	
 	
 	/**
@@ -109,7 +108,7 @@ package object swingView
 				
 				case _ => unknownIcon(size)
 			}
-			iconCache(e) = retVal;
+			iconCache = iconCache + ((e, retVal));
 			retVal
 		}
 	}
@@ -213,7 +212,6 @@ package object swingView
 		}
 		
 		val returnValue = new ImageIcon(base)
-	//	genericIconCache += ((tokenClass, returnValue))
 		returnValue
 	}
 	
@@ -269,6 +267,15 @@ package object swingView
 		"/com/rayrobdod/deductionTactics/tokenClasses/sprites/effects/" + k.name + " strike.png"
 	}
 	
+	
+	import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularTilesheetLoader}
+	val tilesheets = new RectangularTilesheetLoader("com.rayrobdod.deductionTactics.view.tilesheet").toSeq
+	/**
+	 * A ListModel of all tilesheets.
+	 * Would thought this could have a more immediate use
+	 * @version a.5.3
+	 */
+	final val AvailibleTilesheetListModel:ListModel[RectangularTilesheet] = new ScalaSeqListModel(tilesheets)
 	
 	
 	

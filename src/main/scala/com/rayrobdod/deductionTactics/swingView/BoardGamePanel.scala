@@ -130,7 +130,7 @@ object BoardGamePanel {
 	}
 	
 	def currentTilesheet_=(x:RectangularTilesheet) {
-		val index = AvailibleTilesheetListModel.tilesheets.indexOf(x);
+		val index = tilesheets.indexOf(x);
 		myPrefs.putInt(tilesheetPrefsKey, index);
 	}
 	

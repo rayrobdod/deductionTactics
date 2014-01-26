@@ -9,7 +9,11 @@ Wishlist:
 
 
 == a.5.3 ==
-Metastability improvements
+* Metastability improvements
+
+* Swingview:
+  * Sequential animations
+  * Damage value display
 
 == a.5.2 ==
 * Consolodating spaceclasses into one class with parameters
