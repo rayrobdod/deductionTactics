@@ -79,7 +79,7 @@ package object swingView
 	def unknownIcon(size:Int = DEFAULT_SIZE):Icon = makeSVGIcon("/com/rayrobdod/glyphs/unknown.svg", size)
 	
 	
-	private var iconCache = IMap.empty[AnyRef, Icon];
+	private var iconCache = IMap.empty[(AnyRef, Int), Icon];
 	
 	
 	/**
@@ -91,8 +91,8 @@ package object swingView
 	 		but the compiler didn't seem to recognise some of the overloads
 	 */
 	def makeIconFor(e:AnyRef, size:Int = DEFAULT_SIZE):Icon = {
-		if (iconCache.isDefinedAt(e)) {
-			iconCache(e)
+		if (iconCache.isDefinedAt( ((e, size)) )) {
+			iconCache( ((e, size)) )
 		} else {
 			val retVal = e match {
 				case None => unknownIcon(size)
@@ -108,7 +108,7 @@ package object swingView
 				
 				case _ => unknownIcon(size)
 			}
-			iconCache = iconCache + ((e, retVal));
+			iconCache = iconCache + ((((e, size)), retVal));
 			retVal
 		}
 	}

@@ -19,7 +19,7 @@ package com.rayrobdod.deductionTactics.swingView
 
 import javax.swing.{JMenuBar, JMenu, JMenuItem, JFrame, JScrollPane, JDialog, JLabel}
 import java.awt.event.{ActionListener, ActionEvent}
-import java.awt.event.{FocusAdapter, FocusEvent}
+import javax.swing.event.{ChangeListener, ChangeEvent}
 import javax.swing.ScrollPaneConstants.{
 		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever
@@ -104,10 +104,10 @@ class MenuBar() extends JMenuBar
 						scrollVerticalAsNeeded, scrollHorizontalNever))
 					
 				val filterClass = new SuspicionsTokenClass
-				frame.add(new HumanSuspicionsPanel(filterClass), NORTH)
-					
-				frame.addFocusListener(new FocusAdapter(){
-					override def focusGained(e:FocusEvent) {
+				val filterPanel = new HumanSuspicionsPanel(filterClass)
+				frame.add(filterPanel, NORTH)
+				filterPanel.addChangeListener(new ChangeListener(){
+					override def stateChanged(e:ChangeEvent) {
 						display.filter(filterClass)
 					}
 				})
