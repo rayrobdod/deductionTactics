@@ -43,16 +43,18 @@ class HumanSuspicionsPanel(tokenClass:SuspicionsTokenClass) extends JPanel
 {
 	this.setLayout(new GridBagLayout)
 	
+	private class MyListModel[A](a:Seq[A]) extends ScalaSeqListModel[Option[A]](None +: a.map{Option(_)}) with AbstractComboBoxModel[Option[A]]
+	
 	val icon = new JLabel(generateGenericIcon(tokenClass))
 	val name = new JLabel("???")
 	val range = new JSpinner(new SpinnerNumberModel(0,0,5,1))
 	val speed = new JSpinner(new SpinnerNumberModel(0,0,5,1))
-	val atkElement = new JComboBox(new ScalaSeqListModel[Option[Element]](None +: Elements.values.map{Option(_)}) with AbstractComboBoxModel[Option[Element]])
-	val atkWeapon = new JComboBox(new ScalaSeqListModel[Option[Weaponkind]](None +: Weaponkinds.values.map{Option(_)}) with AbstractComboBoxModel[Option[Weaponkind]])
-	val atkStatus = new JComboBox(new ScalaSeqListModel[Option[Status]](None +: Statuses.values.map{Option(_)}) with AbstractComboBoxModel[Option[Status]])
-	val weakStatus = new JComboBox(new ScalaSeqListModel[Option[Status]](None +: Statuses.values.map{Option(_)}) with AbstractComboBoxModel[Option[Status]])
+	val atkElement = new JComboBox(new MyListModel(Elements.values))
+	val atkWeapon = new JComboBox(new MyListModel(Weaponkinds.values))
+	val atkStatus = new JComboBox(new MyListModel(Statuses.values))
+	val weakStatus = new JComboBox(new MyListModel(Statuses.values))
 	val weakWeapon = new JLabel
-	val weakDirection = new JComboBox(new ScalaSeqListModel[Option[Direction]](None +: Directions.values.map{Option(_)}) with AbstractComboBoxModel[Option[Direction]])
+	val weakDirection = new JComboBox(new MyListModel(Directions.values))
 	
 	atkWeapon.setRenderer(myCellRenderer)
 	atkElement.setRenderer(myCellRenderer)

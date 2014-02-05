@@ -14,9 +14,10 @@ Wishlist:
 * Swingview:
   * Sequential animations
   * Damage value display
+  * New SuspicionsPanel
 
 == a.5.2 ==
-* Consolodating spaceclasses into one class with parameters
+* Consolidating spaceclasses into one class with parameters
 * Changing a few dialogs to use JOptionPane instead of custom solution
 * Fixing spaceclasses such that all of them only permit passage when unoccupied
 * Adding SpaceClasses: SlowPassageSpaceClass
@@ -70,12 +71,12 @@ Wishlist:
 === Fix ===
 * ai NetworkClient will now respond to a "RequestAttackForStatus" with a
 		Status attack, rather than a damage attack.
-* Main will now properly truncate the list of selected tokens to the availiable
+* Main will now properly truncate the list of selected tokens to the available
 		slots for tokens
-* Doesn't consume excessive amounts of CPU at all times from contant repaints…
+* Doesn't consume excessive amounts of CPU at all times from constant repaints…
 		… again …
 
-=== Impelemntation detail ===
+=== Implementation detail ===
 * Icons are no longer held in Enumeration classes
 * Tokenclasses use "DontCare" instead of "Rand" to specify the choose-for-me
 		condition. 
@@ -95,13 +96,13 @@ Wishlist:
 * "How to make dungeons pretty" 2.0
   > overlay - tile images can be compositions of multiple images, and some
     images can be specified to appear over the tokens
-  > infinte discretion - tiles can use tiles from any distance to determine its
+  > infinite discretion - tiles can use tiles from any distance to determine its
     own appearance
   > Doesn't actually have multiple layers of randomness yet…
 * map-choosing ability
 
 === Minor level ===
-* The beginings of combat-noises; currently only one type of sound when there
+* The beginnings of combat-noises; currently only one type of sound when there
 		is a hit and accessed with a new ai decorator: WithSound
 * Swing view: Added status infliction animations
 * Swing view: When selected, token's background will be a team color rather
@@ -113,15 +114,15 @@ Wishlist:
 * Made the space types actually work as expected.
 
 === Data Level ===
-* Added Forest tileset, because it shows off the Major change in a noticable
+* Added Forest tileset, because it shows off the Major change in a noticeable
 		way.
   > MORE CREDITS!!!1!
 * Added a Castle-like tileset, because ???
-* Removed the supermarket tileset, due to lack of abilty to handle multiple
+* Removed the supermarket tileset, due to lack of ability to handle multiple
 		types of tiles
 * Added Tokenclasses: Haunted Hoodie, Tiny Evergreen Tree, Snowman; with icons.
 
-=== Miniscule level ===
+=== Minuscule level ===
 * Changed the title of the Filter Classes dialog
 * Swing view: Switched which side the player's and enemy's token info panels
 		appear on.
@@ -219,7 +220,7 @@ Wishlist:
 
 === Minor level ===
 ==== Model Change ====
-* Adding Weakponkind: Powderkind
+* Adding Weaponkind: Powderkind
 * Adding Status: Heal
 
 ==== Interface Change ====
