@@ -21,7 +21,7 @@ package meta
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.Status
-import BodyTypes.{Value => BodyType}
+import BodyTypes.BodyType
 import Directions.Direction
 
 import com.rayrobdod.deductionTactics.tokenClassToJSON

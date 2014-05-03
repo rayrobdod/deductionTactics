@@ -29,7 +29,7 @@ import com.rayrobdod.boardGame.{Space,
  * @author Raymond Dodge
  * @version a.5.0 - removing actors dependency
  */
-trait Token extends BoardGameToken
+trait Token extends BoardGameToken[SpaceClass]
 {
 	def currentHitpoints:Int
 	def currentStatus:Option[Status]
@@ -41,51 +41,4 @@ trait Token extends BoardGameToken
 	
 	final val maximumHitpoints:Int = 256
 	final val baseDamage:Int = 8
-	
-	
-	/**  figure out how to not need these */
-	def beAttacked(elem:Element, kind:Weaponkind, from:Space);
-	/**  figure out how to not need these */
-	def beAttacked(status:Status, from:Space);
-	
-	
-	
-	
-	
-	
-	
-	private val diedReactions:Buffer[() => Unit] = Buffer.empty;
-	def diedReactions_+=(a:() => Unit) = {diedReactions += a}
-	def diedReactions_-=(a:() => Unit) = {diedReactions -= a}
-	protected def triggerDiedReactions() = {diedReactions.foreach{a => a()}}
-	
-	private val updateReactions:Buffer[() => Unit] = Buffer.empty;
-	def updateReactions_+=(a:() => Unit) = {updateReactions += a}
-	def updateReactions_-=(a:() => Unit) = {updateReactions -= a}
-	protected def triggerUpdateReactions() = {updateReactions.foreach{a => a()}}
-	
-	private val beDamageAttackedReactions:Buffer[Token.DamageAttackedReactionType] = Buffer.empty;
-	def beDamageAttackedReactions_+=(a:Token.DamageAttackedReactionType) = {beDamageAttackedReactions += a}
-	def beDamageAttackedReactions_-=(a:Token.DamageAttackedReactionType) = {beDamageAttackedReactions -= a}
-	protected def triggerBeDamageAttackedReactions(b:Element, c:Weaponkind, e:Int, d:Space) = {beDamageAttackedReactions.foreach{a => a(b,c,e,d)}}
-
-	private val beStatusAttackedReactions:Buffer[Token.StatusAttackedReactionType] = Buffer.empty;
-	def beStatusAttackedReactions_+=(a:Token.StatusAttackedReactionType) = {beStatusAttackedReactions += a}
-	def beStatusAttackedReactions_-=(a:Token.StatusAttackedReactionType) = {beStatusAttackedReactions -= a}
-	protected def triggerBeStatusAttackedReactions(a:Status, b:Space) = {beStatusAttackedReactions.foreach{c => c(a,b)}}
-}
-
-object Token {
-	trait DamageAttackedReactionType {
-		def apply(
-			atkElem:Element,
-			atkKind:Weaponkind,
-			damage:Int,
-			attackerSpace:Space
-		):Unit;
-	}
-	
-	trait StatusAttackedReactionType {
-		def apply(atkStatus:Status, attackerSpace:Space):Unit;
-	}
-}
+}=

@@ -17,8 +17,7 @@
 */
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.{RectangularSpace, Space => BoardGameSpace,
-			PhysicalStrikeCost}
+import com.rayrobdod.boardGame.{StrictRectangularSpace}
 import scala.collection.immutable.{Seq, Set}
 import LoggerInitializer.{cannonicalTokenLogger => Logger}
 
@@ -29,7 +28,7 @@ import LoggerInitializer.{cannonicalTokenLogger => Logger}
 object Directions
 {
 	final class Direction(val id:Int, val name:String,
-			val function:Function1[RectangularSpace,Option[BoardGameSpace]])
+			val function:Function1[StrictRectangularSpace,Option[StrictRectangularSpace]])
 	{
 		def spaceIs(th:RectangularSpace, other:BoardGameSpace):Boolean =
 		{

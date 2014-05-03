@@ -17,10 +17,7 @@
 */
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.{SpaceClassConstructor, SpaceClass => BoardGameSpaceClass,
-		Token => BoardGameToken, TypeOfCost}
-import com.rayrobdod.boardGame.{NoLandOnAction, NoPassOverAction, UniformMovementCost}
-import com.rayrobdod.boardGame.{TokenMovementCost, PhysicalStrikeCost, MagicalStrikeCost}
+import com.rayrobdod.boardGame.{Token => BoardGameToken}
 import scala.collection.immutable.{Seq => ISeq}
 
 /*
@@ -36,6 +33,11 @@ import scala.collection.immutable.{Seq => ISeq}
  *     BurningSpaceClass    | IT BURNS!       |  Yes
  */
 
+trait SpaceClass {
+	def canEnter:SpaceClass.CanEnterType
+	def canAttack:SpaceClass.CanEnterType
+}
+
 /**
  * Things used in common by other space classes.
  * @since a.5.2
@@ -45,8 +47,8 @@ object SpaceClass {
 	val impossiblePassage = 1000
 	
 	
-	type CanEnterType = Function2[BoardGameSpaceClass, BoardGameToken, Boolean]
-	private type CanEnterType2 = scala.runtime.AbstractFunction2[BoardGameSpaceClass, BoardGameToken, Boolean]
+	type CanEnterType = Function2[SpaceClass, BoardGameToken[SpaceClass], Boolean]
+	private type CanEnterType2 = scala.runtime.AbstractFunction2[SpaceClass, BoardGameToken[SpaceClass], Boolean]
 	
 	// change to the actual list of tokens
 	// I can guarentee that this is a memory leak
@@ -55,7 +57,7 @@ object SpaceClass {
 	
 	
 	final class FriendPassageEntry(tokens:ListOfTokens) extends CanEnterType2 {
-		def apply(space:BoardGameSpaceClass, myToken:BoardGameToken):Boolean = {
+		def apply(space:SpaceClass, myToken:BoardGameToken[SpaceClass]):Boolean = {
 			val myTeam = tokens.tokens.zipWithIndex.find{_._1.contains(myToken)}.map{_._2}
 			val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.find{
 					_.currentSpace.typeOfSpace == space
@@ -69,7 +71,7 @@ object SpaceClass {
 	}
 	
 	final class SinglePassageEntry(tokens:ListOfTokens) extends CanEnterType2 {
-		def apply(space:BoardGameSpaceClass, myToken:BoardGameToken):Boolean = {
+		def apply(space:SpaceClass[A], myToken:BoardGameToken[SpaceClass]):Boolean = {
 			
 			val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.
 					find{_.currentSpace.typeOfSpace == space}
@@ -79,7 +81,7 @@ object SpaceClass {
 	}
 	
 	object IsFlying extends CanEnterType2 {
-		def apply(space:BoardGameSpaceClass, myToken:BoardGameToken):Boolean = {
+		def apply(space:SpaceClass[A], myToken:BoardGameToken[SpaceClass]):Boolean = {
 			myToken match {
 				case x:Token => x.tokenClass.body.map{_ == BodyTypes.Avian}.getOrElse(false)
 				case _ => false
@@ -88,7 +90,7 @@ object SpaceClass {
 	}
 	
 	case class IsElement(val element:Elements.Element) extends CanEnterType2 {
-		def apply(space:BoardGameSpaceClass, myToken:BoardGameToken):Boolean = {
+		def apply(space:SpaceClass, myToken:BoardGameToken[SpaceClass]):Boolean = {
 			myToken match {
 				case x:Token => x.tokenClass.atkElement.map{_ == element}.getOrElse(false)
 				case _ => false
@@ -97,7 +99,7 @@ object SpaceClass {
 	}
 	
 	final case class CanEnterAnd(a:CanEnterType, b:CanEnterType) extends CanEnterType2 {
-		def apply(space:BoardGameSpaceClass, myToken:BoardGameToken):Boolean = {
+		def apply(space:SpaceClass, myToken:BoardGameToken[SpaceClass]):Boolean = {
 			a(space, myToken) && b(space, myToken);
 		}
 	}
@@ -116,9 +118,8 @@ import SpaceClass._
  * @since a.5.2
  */
 case class BooleanSpaceClass(canEnter:CanEnterType, canAttack:Boolean)
-		extends BoardGameSpaceClass with NoLandOnAction with NoPassOverAction
 {
-	override def cost(tokenMoving:BoardGameToken, costType:TypeOfCost) = {
+	override def cost(tokenMoving:BoardGameToken[SpaceClass], costType:TypeOfCost) = {
 		costType match {
 			case TokenMovementCost => {
 				if (canEnter(this, tokenMoving)) {normalPassage} else {impossiblePassage}
@@ -140,7 +141,7 @@ case class BooleanSpaceClass(canEnter:CanEnterType, canAttack:Boolean)
  */
 object FreePassageSpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:BoardGameSpaceClass) = a match {
+	def unapply(a:SpaceClass) = a match {
 		case BooleanSpaceClass(a, true) => a == funTrue
 		case _ => false
 	}
@@ -155,7 +156,7 @@ object FreePassageSpaceClass extends SpaceClassConstructor
  */
 object AllyPassageSpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:BoardGameSpaceClass) = a match {
+	def unapply(a:SpaceClass) = a match {
 		case BooleanSpaceClass(a, true) => a.isInstanceOf[FriendPassageEntry]
 		case _ => false
 	}
@@ -169,7 +170,7 @@ object AllyPassageSpaceClass extends SpaceClassConstructor
  */
 object UniPassageSpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:BoardGameSpaceClass) = a match {
+	def unapply(a:SpaceClass) = a match {
 		case BooleanSpaceClass(a, true) => a.isInstanceOf[SinglePassageEntry]
 		case _ => false
 	}
@@ -183,7 +184,7 @@ object UniPassageSpaceClass extends SpaceClassConstructor
  */
 object ImpassibleSpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:BoardGameSpaceClass) = a match {
+	def unapply(a:SpaceClass) = a match {
 		case BooleanSpaceClass(a, false) => a == funFalse
 		case _ => false
 	}
@@ -198,7 +199,7 @@ object ImpassibleSpaceClass extends SpaceClassConstructor
  */
 object AttackOnlySpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:BoardGameSpaceClass) = a match {
+	def unapply(a:SpaceClass) = a match {
 		case BooleanSpaceClass(a, true) => a == funFalse
 		case _ => false
 	}
@@ -212,7 +213,7 @@ object AttackOnlySpaceClass extends SpaceClassConstructor
  */
 object FlyingPassageSpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:BoardGameSpaceClass) = a match {
+	def unapply(a:SpaceClass) = a match {
 		case BooleanSpaceClass(CanEnterAnd(a,b), true) => a.isInstanceOf[SinglePassageEntry] && b == IsFlying
 		case _ => false
 	}
@@ -229,7 +230,7 @@ object FlyingPassageSpaceClass extends SpaceClassConstructor
  */
 object FirePassageSpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:BoardGameSpaceClass) = a match {
+	def unapply(a:SpaceClass) = a match {
 		case BooleanSpaceClass(CanEnterAnd(a,IsElement(b)), true) => a.isInstanceOf[SinglePassageEntry] && b == Elements.Fire
 		case _ => false
 	}
@@ -247,11 +248,11 @@ object FirePassageSpaceClass extends SpaceClassConstructor
  */
 object SlowPassageSpaceClass extends SpaceClassConstructor
 {
-	private class MySpaceClass(tokens:MutableListOfTokens) extends BoardGameSpaceClass with NoLandOnAction with NoPassOverAction
+	private class MySpaceClass(tokens:MutableListOfTokens) extends SpaceClass with NoLandOnAction with NoPassOverAction
 	{
 		val passageEntry = new SinglePassageEntry(tokens);
 		
-		override def cost(tokenMoving:BoardGameToken, costType:TypeOfCost) = {
+		override def cost(tokenMoving:BoardGameToken[SpaceClass], costType:TypeOfCost) = {
 			costType match {
 				case TokenMovementCost => {
 					if (passageEntry(this, tokenMoving)) {normalPassage * 2} else {impossiblePassage}
@@ -261,10 +262,10 @@ object SlowPassageSpaceClass extends SpaceClassConstructor
 		}
 	}
 	
-	def unapply(a:BoardGameSpaceClass) = a match {
+	def unapply(a:SpaceClass) = a match {
 		case x:MySpaceClass => true
 		case _ => false
 	}
-	def apply:BoardGameSpaceClass = new MySpaceClass(SpaceClass.tokens)
+	def apply:SpaceClass = new MySpaceClass(SpaceClass.tokens)
 	
 }
