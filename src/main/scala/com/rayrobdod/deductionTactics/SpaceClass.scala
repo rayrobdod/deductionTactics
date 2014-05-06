@@ -17,7 +17,7 @@
 */
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.{Token => BoardGameToken}
+import com.rayrobdod.boardGame.{Token => BoardGameToken, Space => BoardGameSpace}
 import scala.collection.immutable.{Seq => ISeq}
 
 /*
@@ -33,10 +33,11 @@ import scala.collection.immutable.{Seq => ISeq}
  *     BurningSpaceClass    | IT BURNS!       |  Yes
  */
 
-trait SpaceClass {
-	def canEnter:SpaceClass.CanEnterType
-	def canAttack:SpaceClass.CanEnterType
-}
+case class SpaceClass(
+	val toString:String,
+	val canEnter:SpaceClass.CanEnterType,
+	val canAttack:SpaceClass.CanEnterType
+)
 
 /**
  * Things used in common by other space classes.
@@ -46,14 +47,20 @@ object SpaceClass {
 	val normalPassage = 1
 	val impossiblePassage = 1000
 	
+	val movementSpaceCost = {(a:BoardGameSpace[SpaceClass], b:BoardGameSpace[SpaceClass]) =>
+			b.typeOfSpace.canEnter
+	}
+	val attackSpaceCost = {(a:BoardGameSpace[SpaceClass], b:BoardGameSpace[SpaceClass]) =>
+			b.typeOfSpace.canAttack
+	}
 	
-	type CanEnterType = Function2[SpaceClass, BoardGameToken[SpaceClass], Boolean]
-	private type CanEnterType2 = scala.runtime.AbstractFunction2[SpaceClass, BoardGameToken[SpaceClass], Boolean]
+	
+	type CanEnterType = Function2[SpaceClass, BoardGameToken[SpaceClass], Int]
+	private type CanEnterType2 = scala.runtime.AbstractFunction2[SpaceClass, BoardGameToken[SpaceClass], Int]
 	
 	// change to the actual list of tokens
 	// I can guarentee that this is a memory leak
 	// move to the main method(?)
-	var tokens:MutableListOfTokens = new MutableListOfTokens()
 	
 	
 	final class FriendPassageEntry(tokens:ListOfTokens) extends CanEnterType2 {
@@ -111,27 +118,27 @@ object SpaceClass {
 import SpaceClass._
 
 
+object SpaceClassFactory {
+	
+	def apply(reference:String):SpaceClass = reference match {
+		case " " => {}
+		case _ => {}
+	}
+}
 
-/**
- * A SpaceClass where entry, of either a token or an attack,
- * is either normal or impossible.
- * @since a.5.2
- */
-case class BooleanSpaceClass(canEnter:CanEnterType, canAttack:Boolean)
-{
-	override def cost(tokenMoving:BoardGameToken[SpaceClass], costType:TypeOfCost) = {
-		costType match {
-			case TokenMovementCost => {
-				if (canEnter(this, tokenMoving)) {normalPassage} else {impossiblePassage}
-			}
-			case PhysicalStrikeCost => if (canAttack) {normalPassage} else {impossiblePassage}
-			case MagicalStrikeCost  => if (canAttack) {normalPassage} else {impossiblePassage}
-			case _ => normalPassage
-		}
+object SpaceClassMatcherFactory extends SpaceClassMatcherFactory[SpaceClass] {
+	
+	def apply(reference:Sting):SpaceClassMatcher[SpaceClass] = {
+		
 	}
 }
 
 
+package spaceClasses {
+	
+	
+	
+}
 
 /**
  * constructs and deconstructs a spaceclass that allows units through,
@@ -141,11 +148,7 @@ case class BooleanSpaceClass(canEnter:CanEnterType, canAttack:Boolean)
  */
 object FreePassageSpaceClass extends SpaceClassConstructor
 {
-	def unapply(a:SpaceClass) = a match {
-		case BooleanSpaceClass(a, true) => a == funTrue
-		case _ => false
-	}
-	val apply = new BooleanSpaceClass(funTrue, true)
+	val apply = new SpaceClass(funTrue, funTrue)
 }
 
 /**

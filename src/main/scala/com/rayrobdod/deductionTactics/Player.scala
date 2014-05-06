@@ -74,7 +74,7 @@ object Player {
 abstract class PlayerAI
 {
 	/** Generates a team of tokens that this AI would like to use. */
-	def buildTeam:Seq[CannonicalTokenClass]
+	def buildTeam:Seq[TokenClass]
 	
 	/**
 	 * The engine calls this to make a player take its turn.
@@ -87,7 +87,7 @@ abstract class PlayerAI
 	 * AI to set up additional listeners or setup an IO
 	 * or other such tasks.
 	 */
-	def initialize(player:Player, field:Field):Any
+	def initialize(player:Player, field:Field[SpaceClass]):Any
 }
 
 /**

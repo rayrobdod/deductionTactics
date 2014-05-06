@@ -23,7 +23,7 @@ import Statuses.Status
 import BodyTypes.BodyType
 import Directions.Direction
 
-import scala.collection.immutable.{Map}
+import scala.collection.immutable.{Seq, Map}
 
 /**
  * A description of the attributes of a unit.
@@ -111,13 +111,16 @@ object TokenClass
 {
 	val SERVICE = "com.rayrobdod.deductionTactics.TokenClass"
 	
-	val allKnown:ISeq[TokenClass] =
+	val allKnown:Seq[TokenClass] =
 	{
 		import scala.collection.JavaConversions.iterableAsScalaIterable
+		import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
+		import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 		import com.rayrobdod.util.services.ResourcesServiceLoader
 		import java.nio.charset.StandardCharsets.UTF_8
+		import java.net.URL
 		
-		val a:Seq[URL] = new ResourcesServiceLoader(SERVICE).toSeq
+		val a:Seq[URL] = Seq.empty ++ new ResourcesServiceLoader(SERVICE)
 		
 		// Binary version
 		val b:Seq[Seq[TokenClass]] = a.map{(jsonPath:URL) =>
@@ -129,14 +132,14 @@ object TokenClass
 				val count = dis.readShort()
 				
 				val retVal = (1 to count).map{(a) =>
-					new TokenClassFromBinary(dis)
+					new CannonicalTokenClassFromBinary(dis)
 				}
 				dis.close();
 				retVal
 			} else { // assume JSON
 				val jsonReader = new java.io.InputStreamReader(jsonPath.openStream(), UTF_8)
 				
-				val l = new ToScalaCollection(TokenClassDecoder)
+				val l = new ToScalaCollection(CannonicalTokenClassDecoder)
 				JSONParser.parse(l, jsonReader)
 				jsonReader.close()
 				l.resultSeq
@@ -145,6 +148,6 @@ object TokenClass
 		val e = b.flatten
 		
 		
-		ISeq.empty ++ e
+		Seq.empty ++ e
 	}
 }

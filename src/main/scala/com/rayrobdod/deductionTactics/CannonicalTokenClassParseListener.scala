@@ -91,7 +91,7 @@ final class CannonicalTokenClassBuilder extends TokenClass {
 				CannonicalTokenClassBuilder.this.range.get,
 				CannonicalTokenClassBuilder.this.speed.get,
 				CannonicalTokenClassBuilder.this.weakDirection.getOrElse(arbitraryDirection),
-				CannonicalTokenClassBuilder.this.weakWeapon.map{_.get},
+				CannonicalTokenClassBuilder.this.weakWeapon.map{(a) => ((a._1, a._2.get))},
 				CannonicalTokenClassBuilder.this.weakStatus.get
 			)
 		} catch {

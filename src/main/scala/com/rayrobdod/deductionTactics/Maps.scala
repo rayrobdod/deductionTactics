@@ -24,8 +24,7 @@ import com.rayrobdod.util.services.{ResourcesServiceLoader, Services}
 import au.com.bytecode.opencsv.CSVReader;
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
-import com.rayrobdod.boardGame.{RectangularField, SpaceClassConstructor}
-import com.rayrobdod.boardGame.mapValuesFromObjectNameToSpaceClassConstructor
+import com.rayrobdod.boardGame.RectangularField
 import java.net.URL
 import java.nio.charset.StandardCharsets.UTF_8
 
@@ -62,7 +61,7 @@ object Maps
 		metadataMap
 	}
 	
-	def getMap(index:Int):RectangularField = {
+	def getMap(index:Int):RectangularField[SpaceClass] = {
 		val metadataPath = Maps.paths(index)
 		val metadataMap = getMetadata(index)
 		

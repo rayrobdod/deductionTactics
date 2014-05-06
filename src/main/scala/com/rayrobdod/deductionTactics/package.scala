@@ -37,7 +37,7 @@ package object deductionTactics
 	
 	
 	/** Creates a valid JSON string representing the specified TokenClass. */
-	def tokenClassToJSON(tclass:CannonicalTokenClass, nameToIcon:Function1[String, Option[String]] = {(x) => None}):String = {
+	def tokenClassToJSON(tclass:TokenClass, nameToIcon:Function1[String, Option[String]] = {(x) => None}):String = {
 		val writer = new java.io.StringWriter();
 		
 		writer.write("{\"name\":\"");
