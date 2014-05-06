@@ -25,43 +25,6 @@ import java.util.ServiceLoader
 import com.rayrobdod.util.services.ClassServiceLoader
 
 
-/**
- * A Deduction Tactics player
- *
- * This is more of a data structure. To control the Player, one would use a PlayerAI.
- * 
- * @author Raymond Dodge
- * @version a.5.0 - no longer relies on actors
- */
-final class Player(val tokens:PlayerListOfTokens, val ai:PlayerAI)
-{
-	def takeTurn() = {
-		startTurnReaction.foreach{a => a()}
-		ai.takeTurn(this)
-		endTurnReaction.foreach{a => a()}
-	}
-	
-	val startTurnReaction:Buffer[Function0[Any]] = Buffer.empty
-	def addStartTurnReaction(f:Function0[Any]) = startTurnReaction += f
-	
-	val endTurnReaction:Buffer[Function0[Any]] = Buffer.empty
-	def addEndTurnReaction(f:Function0[Any]) = endTurnReaction += f
-	
-	val victoryReaction:Buffer[Function0[Any]] = Buffer.empty
-	def addVictoryReaction(f:Function0[Any]) = victoryReaction += f
-	
-	val defeatReaction:Buffer[Function0[Any]] = Buffer.empty
-	def addDefeatReaction(f:Function0[Any]) = defeatReaction += f
-	
-}
-
-object Player {
-	type StartTurnReactionType = Function0[Unit]
-	type EndTurnReactionType = Function0[Unit]
-	type VictoryReactionType = Function0[Unit]
-	type DefeatReactionType = Function0[Unit]
-}
-
 
 /**
  * An abstract class that  Player will poll when it is taking a turn to
@@ -74,20 +37,25 @@ object Player {
 abstract class PlayerAI
 {
 	/** Generates a team of tokens that this AI would like to use. */
-	def buildTeam:Seq[TokenClass]
+	def buildTeam(size:Int):Seq[TokenClass]
 	
 	/**
 	 * The engine calls this to make a player take its turn.
 	 * The turn ends when this method returns to its caller.
 	 */
-	def takeTurn(player:Player):Any
+	def takeTurn(gameState:GameState, player:Int):Seq[GameState.Action]
+	
+	/**
+	 * Notification of what another player did on its turn.
+	 */
+	def notifyTurn(player:Int, actions:Seq[GameState.Action])
 	
 	/**
 	 * called once at the start of the game to allow the
 	 * AI to set up additional listeners or setup an IO
 	 * or other such tasks.
 	 */
-	def initialize(player:Player, field:Field[SpaceClass]):Any
+	def initialize(player:Int, initialState:GameState):Any
 }
 
 /**
@@ -121,6 +89,4 @@ object PlayerAI
 	def decoratorServiceSeq:Seq[Class[_ <: PlayerAI]] = {
 		Seq.empty ++ iterableAsScalaIterable(decoratorServiceLoader)
 	}
-	
-	final def teamSize:Int = 5
 }
