@@ -34,11 +34,11 @@ trait Token extends BoardGameToken[SpaceClass]
 	def currentHitpoints:Int
 	def currentStatus:Option[Status]
 	def currentStatusTurnsLeft:Int
-	def tokenClass:TokenClass
+	def tokenClass:Option[TokenClass]
 	
 	def canMoveThisTurn:Int
 	def canAttackThisTurn:Boolean
 	
 	final val maximumHitpoints:Int = 256
 	final val baseDamage:Int = 8
-}=
+}

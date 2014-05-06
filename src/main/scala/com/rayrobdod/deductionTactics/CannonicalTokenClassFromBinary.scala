@@ -22,6 +22,7 @@ import Weaponkinds.Weaponkind
 import Statuses.Status
 import BodyTypes.BodyType
 import Directions.Direction
+import com.rayrobdod.deductionTactics.{TokenClass => CannonicalTokenClass}
 
 /**
  * A Token Class that gets its values from a DataInput, using the really

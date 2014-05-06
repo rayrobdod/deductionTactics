@@ -22,6 +22,7 @@ import Weaponkinds.Weaponkind
 import Statuses.Status
 import BodyTypes.BodyType
 import Directions.Direction
+import com.rayrobdod.deductionTactics.{TokenClass => CannonicalTokenClass}
 
 import scala.collection.Seq
 import scala.collection.immutable.{Map, Seq => ISeq}
@@ -81,17 +82,17 @@ final class CannonicalTokenClassBuilder extends TokenClass {
 			// B*CKING DELAYED EXECUTION
 			weakWeapon.values.foreach{_.get}
 			
-			new CannonicalTokenClassBlunt (
+			new TokenClassBlunt (
 				CannonicalTokenClassBuilder.this.name,
-				Some(CannonicalTokenClassBuilder.this.body.get),
-				Some(CannonicalTokenClassBuilder.this.atkElement.get),
-				Some(CannonicalTokenClassBuilder.this.atkWeapon.get),
-				Some(CannonicalTokenClassBuilder.this.atkStatus.get),
-				Some(CannonicalTokenClassBuilder.this.range.get),
-				Some(CannonicalTokenClassBuilder.this.speed.get),
-				Some(CannonicalTokenClassBuilder.this.weakDirection.getOrElse(arbitraryDirection)),
-				CannonicalTokenClassBuilder.this.weakWeapon.mapValues{x => Some(x.get)},
-				Some(CannonicalTokenClassBuilder.this.weakStatus.get)
+				CannonicalTokenClassBuilder.this.body.get,
+				CannonicalTokenClassBuilder.this.atkElement.get,
+				CannonicalTokenClassBuilder.this.atkWeapon.get,
+				CannonicalTokenClassBuilder.this.atkStatus.get,
+				CannonicalTokenClassBuilder.this.range.get,
+				CannonicalTokenClassBuilder.this.speed.get,
+				CannonicalTokenClassBuilder.this.weakDirection.getOrElse(arbitraryDirection),
+				CannonicalTokenClassBuilder.this.weakWeapon.map{_.get},
+				CannonicalTokenClassBuilder.this.weakStatus.get
 			)
 		} catch {
 			// TODO: be more specific?
