@@ -27,18 +27,18 @@ import com.rayrobdod.boardGame.{Space,
 /**
  * 
  * @author Raymond Dodge
- * @version a.5.0 - removing actors dependency
+ * @version a.6.0
  */
-trait Token extends BoardGameToken[SpaceClass]
-{
-	def currentHitpoints:Int
-	def currentStatus:Option[Status]
-	def currentStatusTurnsLeft:Int
-	def tokenClass:Option[TokenClass]
+final case class Token (
+	currentSpace:Space[SpaceClass],
+	val currentHitpoints:Int,
+	val currentStatus:Option[Status],
+	val currentStatusTurnsLeft:Int,
+	val tokenClass:Option[TokenClass],
 	
-	def canMoveThisTurn:Int
-	def canAttackThisTurn:Boolean
-	
+	val canMoveThisTurn:Int,
+	val canAttackThisTurn:Boolean
+) extends BoardGameToken[SpaceClass](currentSpace) {
 	final val maximumHitpoints:Int = 256
 	final val baseDamage:Int = 8
 }

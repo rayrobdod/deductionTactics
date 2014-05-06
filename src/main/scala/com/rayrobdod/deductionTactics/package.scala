@@ -44,35 +44,35 @@ package object deductionTactics
 		writer.write(tclass.name);
 		
 		writer.write("\",\"element\":\"");
-		writer.write(tclass.atkElement.get.name);
+		writer.write(tclass.atkElement.name);
 		
 		writer.write("\",\"atkWeapon\":\"");
-		writer.write(tclass.atkWeapon.get.name.dropRight(4));
+		writer.write(tclass.atkWeapon.name.dropRight(4));
 		
 		writer.write("\",\"atkStatus\":\"");
-		writer.write(tclass.atkStatus.get.name)
+		writer.write(tclass.atkStatus.name)
 		
 		writer.write("\",\"body\":\"");
-		writer.write(tclass.body.get.name)
+		writer.write(tclass.body.name)
 		
 		writer.write("\",\"range\":");
-		writer.write(tclass.range.get.toString)
+		writer.write(tclass.range.toString)
 		
 		writer.write(",\"speed\":");
-		writer.write(tclass.speed.get.toString)
+		writer.write(tclass.speed.toString)
 		
 		writer.write(",\"weakStatus\":\"");
-		writer.write(tclass.weakStatus.get.name)
+		writer.write(tclass.weakStatus.name)
 		
 		writer.write("\",\"weakDirection\":\"");
-		writer.write(tclass.weakDirection.get.name)
+		writer.write(tclass.weakDirection.name)
 		
 		writer.write("\",\"weakWeapon\":{");
 		val weakWeapon = tclass.weakWeapon.foldLeft(new java.lang.StringBuilder){(a,b) => 
 			a.append(",\"")
 			a.append(b._1.name.dropRight(4))
 			a.append("\":")
-			a.append(b._2.get)
+			a.append(b._2)
 		}.toString.tail
 		writer.write(weakWeapon)
 		writer.write("}");
