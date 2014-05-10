@@ -31,11 +31,13 @@ import com.rayrobdod.util.services.ClassServiceLoader
  * determine how to act.
  *  
  * @author Raymond Dodge
- * @version a.5.0 - no longer relies on scala-swing
+ * @version a.6.0
  * @todo trait instead of abstract class? Could it possibly hurt?
  */
-abstract class PlayerAI
-{
+abstract class PlayerAI {
+	type Memo <: Any
+	
+	
 	/** Generates a team of tokens that this AI would like to use. */
 	def buildTeam(size:Int):Seq[TokenClass]
 	
@@ -43,19 +45,19 @@ abstract class PlayerAI
 	 * The engine calls this to make a player take its turn.
 	 * The turn ends when this method returns to its caller.
 	 */
-	def takeTurn(gameState:GameState, player:Int):Seq[GameState.Action]
+	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action]
 	
 	/**
 	 * Notification of what another player did on its turn.
 	 */
-	def notifyTurn(player:Int, actions:Seq[GameState.Action])
+	def notifyTurn(player:Int, actions:Seq[GameState.Action], memo:Memo):Memo
 	
 	/**
 	 * called once at the start of the game to allow the
 	 * AI to set up additional listeners or setup an IO
 	 * or other such tasks.
 	 */
-	def initialize(player:Int, initialState:GameState):Any
+	def initialize(player:Int, initialState:GameState):Memo
 }
 
 /**
