@@ -17,7 +17,9 @@
 */
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.{Token => BoardGameToken, Space => BoardGameSpace}
+import com.rayrobdod.boardGame.{Token => BoardGameToken}
+import com.rayrobdod.boardGame.{Space => BoardGameSpace}
+import com.rayrobdod.boardGame.SpaceClassMatcher
 import scala.collection.immutable.{Seq => ISeq}
 
 /*
@@ -33,242 +35,314 @@ import scala.collection.immutable.{Seq => ISeq}
  *     BurningSpaceClass    | IT BURNS!       |  Yes
  */
 
-case class SpaceClass(
+/**
+ * @version a.6.0
+ */
+final case class SpaceClass(
 	val toString:String,
-	val canEnter:SpaceClass.CanEnterType,
-	val canAttack:SpaceClass.CanEnterType
+	val canEnter:SpaceClass.CostFunctionFactory,
+	val canAttack:SpaceClass.CostFunctionFactory
 )
 
 /**
  * Things used in common by other space classes.
  * @since a.5.2
+ * @version a.6.0
  */
 object SpaceClass {
 	val normalPassage = 1
 	val impossiblePassage = 1000
 	
-	val movementSpaceCost = {(a:BoardGameSpace[SpaceClass], b:BoardGameSpace[SpaceClass]) =>
-			b.typeOfSpace.canEnter
+	type CostFunction = BoardGameSpace.CostFunction[SpaceClass]
+	type CostFunctionFactory = Function1[Token, CostFunction]
+	
+	final case class ConstantCostFunction(cost:Int) extends CostFunction {
+		def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = cost
 	}
-	val attackSpaceCost = {(a:BoardGameSpace[SpaceClass], b:BoardGameSpace[SpaceClass]) =>
-			b.typeOfSpace.canAttack
-	}
-	
-	
-	type CanEnterType = Function2[SpaceClass, BoardGameToken[SpaceClass], Int]
-	private type CanEnterType2 = scala.runtime.AbstractFunction2[SpaceClass, BoardGameToken[SpaceClass], Int]
-	
-	// change to the actual list of tokens
-	// I can guarentee that this is a memory leak
-	// move to the main method(?)
-	
-	
-	final class FriendPassageEntry(tokens:ListOfTokens) extends CanEnterType2 {
-		def apply(space:SpaceClass, myToken:BoardGameToken[SpaceClass]):Boolean = {
-			val myTeam = tokens.tokens.zipWithIndex.find{_._1.contains(myToken)}.map{_._2}
-			val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.find{
-					_.currentSpace.typeOfSpace == space
-			}
-			val otherTeam = tokenOnThis.map{(other:Token) => 
-				tokens.tokens.zipWithIndex.find{_._1.contains(other)}.map{_._2}
-			}.flatten
+	final class SinglePassageCostFunction(tokens:ListOfTokens) extends CostFunction {
+		def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
 			
-			myTeam.isEmpty || otherTeam.isEmpty || otherTeam.head == myTeam.get
+			val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.find{_.currentSpace == to}
+			tokenOnThis.map{(a) => impossiblePassage}.getOrElse{normalPassage}
+		}
+	}
+	final case class MaxCostFunction(a:CostFunction, b:CostFunction) extends CostFunction {
+		def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
+			return math.max(a(from, to), b(from, to))
 		}
 	}
 	
-	final class SinglePassageEntry(tokens:ListOfTokens) extends CanEnterType2 {
-		def apply(space:SpaceClass[A], myToken:BoardGameToken[SpaceClass]):Boolean = {
-			
-			val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.
-					find{_.currentSpace.typeOfSpace == space}
-			
-			tokenOnThis.isEmpty
-		}
+	
+	
+	final case class ConstantCostFunctionFactory(f:CostFunction) extends CostFunctionFactory  {
+		def apply(t:Token):CostFunction = f
 	}
 	
-	object IsFlying extends CanEnterType2 {
-		def apply(space:SpaceClass[A], myToken:BoardGameToken[SpaceClass]):Boolean = {
-			myToken match {
-				case x:Token => x.tokenClass.body.map{_ == BodyTypes.Avian}.getOrElse(false)
-				case _ => false
+	final class FriendPassageCostFunctionFactory(tokens:ListOfTokens) extends CostFunctionFactory {
+		def apply(myToken:Token):CostFunction = new CostFunction() {
+			def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
+				val myTeam = tokens.tokens.zipWithIndex.find{_._1.contains(myToken)}.map{_._2}
+				val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.find{
+						_.currentSpace.typeOfSpace == to
+				}
+				val otherTeam = tokenOnThis.map{(other:Token) => 
+					tokens.tokens.zipWithIndex.find{_._1.contains(other)}.map{_._2}
+				}.flatten
+				
+				val canEnter = myTeam.isEmpty || otherTeam.isEmpty || otherTeam.head == myTeam.get
+				
+				if (canEnter) {normalPassage} else {impossiblePassage}
 			}
 		}
 	}
 	
-	case class IsElement(val element:Elements.Element) extends CanEnterType2 {
-		def apply(space:SpaceClass, myToken:BoardGameToken[SpaceClass]):Boolean = {
-			myToken match {
-				case x:Token => x.tokenClass.atkElement.map{_ == element}.getOrElse(false)
-				case _ => false
-			}
+	object IsFlyingCostFunctionFactory extends CostFunctionFactory {
+		def isFlying(t:Token):Boolean = {
+			t.tokenClass.map{(a) => a.body == BodyTypes.Avian}.getOrElse(false)
 		}
+		
+		def apply(t:Token):CostFunction = new ConstantCostFunction(if (isFlying(t)) {normalPassage} else {impossiblePassage})
 	}
 	
-	final case class CanEnterAnd(a:CanEnterType, b:CanEnterType) extends CanEnterType2 {
-		def apply(space:SpaceClass, myToken:BoardGameToken[SpaceClass]):Boolean = {
-			a(space, myToken) && b(space, myToken);
+	final case class IsElementCostFunctionFactory(val element:Elements.Element) extends CostFunctionFactory {
+		def isElement(t:Token):Boolean = {
+			t.tokenClass.map{(a) => a.atkElement == element}.getOrElse(false)
 		}
+		
+		def apply(t:Token):CostFunction = new ConstantCostFunction(if (isElement(t)) {normalPassage} else {impossiblePassage})
 	}
 	
-	val funFalse:CanEnterType = {(a,b) => false}
-	val funTrue:CanEnterType  = {(a,b) => true }
+	final case class MaxCostFunctionFactory(a:CostFunctionFactory, b:CostFunctionFactory) extends CostFunctionFactory {
+		def apply(t:Token):CostFunction = new MaxCostFunction(a(t), b(t))
+	}
+
 }
 
 import SpaceClass._
 
 
-object SpaceClassFactory {
+/**
+ * @since a.6.0
+ */
+class SpaceClassFactory(tokens:ListOfTokens) {
 	
 	def apply(reference:String):SpaceClass = reference match {
-		case " " => {}
-		case _ => {}
+		case " " => UniPassageSpaceClass(tokens)
+		case "s" => SlowPassageSpaceClass(tokens)
+		case "|" => ImpassibleSpaceClass(tokens)
+		case ":" => AttackOnlySpaceClass(tokens)
+		case "." => FlyingPassageSpaceClass(tokens)
+		case "f" => FirePassageSpaceClass(tokens)
+		case _ => SpaceClass(
+				"Unknown",
+				MaxCostFunctionFactory(
+					ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens)),
+					ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens))
+				),
+				ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
+		)
 	}
 }
 
-object SpaceClassMatcherFactory extends SpaceClassMatcherFactory[SpaceClass] {
+/**
+ * @since a.6.0
+ */
+object SpaceClassMatcherFactory extends com.rayrobdod.boardGame.swingView.SpaceClassMatcherFactory[SpaceClass] {
 	
-	def apply(reference:Sting):SpaceClassMatcher[SpaceClass] = {
-		
+	def apply(reference:String):com.rayrobdod.boardGame.SpaceClassMatcher[SpaceClass] = reference match {
+		case " " => UniPassageSpaceClass
+		case "s" => SlowPassageSpaceClass
+		case "|" => ImpassibleSpaceClass
+		case ":" => AttackOnlySpaceClass
+		case "." => FlyingPassageSpaceClass
+		case "f" => FirePassageSpaceClass
+		case _ => new SpaceClassMatcher[SpaceClass]{ def unapply(sc:SpaceClass) = false }
 	}
 }
 
-
-package spaceClasses {
-	
-	
-	
-}
 
 /**
  * constructs and deconstructs a spaceclass that allows units through,
  * even if a unit is already standing on this space
  * @author Raymond Dodge
- * @version a.5.2
+ * @version a.6.0
  */
-object FreePassageSpaceClass extends SpaceClassConstructor
-{
-	val apply = new SpaceClass(funTrue, funTrue)
+object FreePassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
+	def apply(tokens:ListOfTokens) = SpaceClass("Free Passage",
+		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage)),
+		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
+	)
+	def unapply(a:SpaceClass) = a match {
+		case SpaceClass("Free Passage",
+			ConstantCostFunctionFactory(ConstantCostFunction(moveCost)),
+			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
+		) =>  (moveCost == normalPassage) && (atkCost == normalPassage)
+		case _ => false
+	}
 }
 
 /**
  * constructs and deconstructs a spaceclass that allows units through,
  * even if a friendly unit is already standing on this space
  * @author Raymond Dodge
- * @version a.5.2
+ * @version a.6.0
  */
-object AllyPassageSpaceClass extends SpaceClassConstructor
-{
+object AllyPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
+	def apply(tokens:ListOfTokens) = SpaceClass("Ally Passage",
+		new FriendPassageCostFunctionFactory(tokens),
+		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
+	)
 	def unapply(a:SpaceClass) = a match {
-		case BooleanSpaceClass(a, true) => a.isInstanceOf[FriendPassageEntry]
+		case SpaceClass("Ally Passage",
+			_:FriendPassageCostFunctionFactory,
+			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
+		) => (atkCost == normalPassage)
 		case _ => false
 	}
-	def apply = new BooleanSpaceClass(new FriendPassageEntry(SpaceClass.tokens), true)
 }
 
 /**
  * constructs and deconstructs a spaceclass that allows any through
  * @author Raymond Dodge
- * @version a.5.2
+ * @version a.6.0
  */
-object UniPassageSpaceClass extends SpaceClassConstructor
-{
+object UniPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
+	def apply(tokens:ListOfTokens) = SpaceClass("Single Passage",
+		ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens)),
+		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
+	)
 	def unapply(a:SpaceClass) = a match {
-		case BooleanSpaceClass(a, true) => a.isInstanceOf[SinglePassageEntry]
+		case SpaceClass("Single Passage",
+			ConstantCostFunctionFactory(_:SinglePassageCostFunction),
+			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
+		) => (atkCost == normalPassage)
 		case _ => false
 	}
-	def apply = new BooleanSpaceClass(new SinglePassageEntry(SpaceClass.tokens), true)
 }
 
 /**
  * constructs and deconstructs a spaceclass that allows nothing through
  * @author Raymond Dodge
- * @version a.5.2
+ * @version a.6.0
  */
-object ImpassibleSpaceClass extends SpaceClassConstructor
-{
+object ImpassibleSpaceClass extends SpaceClassMatcher[SpaceClass] {
+	def apply(tokens:ListOfTokens) = SpaceClass("Impassible",
+		MaxCostFunctionFactory(
+			ConstantCostFunctionFactory(ConstantCostFunction(impossiblePassage)),
+			ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens))
+		),
+		ConstantCostFunctionFactory(ConstantCostFunction(impossiblePassage))
+	)
 	def unapply(a:SpaceClass) = a match {
-		case BooleanSpaceClass(a, false) => a == funFalse
+		case SpaceClass("Impassible",
+			MaxCostFunctionFactory(
+				ConstantCostFunctionFactory(ConstantCostFunction(moveCost)),
+				ConstantCostFunctionFactory(_:SinglePassageCostFunction)
+			),
+			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
+		) => (moveCost == impossiblePassage) && (atkCost == impossiblePassage)
 		case _ => false
 	}
-	val apply = new BooleanSpaceClass(funFalse, false)
 }
 
 /**
  * constructs and deconstructs a spaceclass that can be attacked,
  * but not stood on
  * @author Raymond Dodge
- * @version a.5.2
+ * @version a.6.0
  */
-object AttackOnlySpaceClass extends SpaceClassConstructor
-{
+object AttackOnlySpaceClass extends SpaceClassMatcher[SpaceClass] {
+	def apply(tokens:ListOfTokens) = SpaceClass("Attack-only",
+		MaxCostFunctionFactory(
+			ConstantCostFunctionFactory(ConstantCostFunction(impossiblePassage)),
+			ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens))
+		),
+		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
+	)
 	def unapply(a:SpaceClass) = a match {
-		case BooleanSpaceClass(a, true) => a == funFalse
+		case SpaceClass("Attack-only",
+			MaxCostFunctionFactory(
+				ConstantCostFunctionFactory(ConstantCostFunction(moveCost)),
+				ConstantCostFunctionFactory(_:SinglePassageCostFunction)
+			),
+			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
+		) => (moveCost == impossiblePassage) && (atkCost == normalPassage)
 		case _ => false
 	}
-	val apply = new BooleanSpaceClass(funFalse, true)
 }
 
 /**
  * constructs and deconstructs a spaceclass that allows avian-bodied units through
  * @author Raymond Dodge
- * @version a.5.2
+ * @version a.6.0
  */
-object FlyingPassageSpaceClass extends SpaceClassConstructor
-{
+object FlyingPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
+	def apply(tokens:ListOfTokens) = SpaceClass("Flying Passage",
+		MaxCostFunctionFactory(
+			IsFlyingCostFunctionFactory,
+			ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens))
+		),
+		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
+	)
 	def unapply(a:SpaceClass) = a match {
-		case BooleanSpaceClass(CanEnterAnd(a,b), true) => a.isInstanceOf[SinglePassageEntry] && b == IsFlying
+		case SpaceClass("Flying Passage",
+			MaxCostFunctionFactory(
+				IsFlyingCostFunctionFactory,
+				ConstantCostFunctionFactory(_:SinglePassageCostFunction)
+			),
+			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
+		) => (atkCost == normalPassage)
 		case _ => false
 	}
-	def apply = new BooleanSpaceClass(CanEnterAnd(
-			new SinglePassageEntry(SpaceClass.tokens),
-			IsFlying
-	), true)
 }
 
 /**
  * constructs and deconstructs a spaceclass that allows fire elementals through
  * @author Raymond Dodge
- * @version a.5.2
+ * @version a.6.0
  */
-object FirePassageSpaceClass extends SpaceClassConstructor
-{
+object FirePassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
+	def apply(tokens:ListOfTokens) = SpaceClass("Fire Passage",
+		MaxCostFunctionFactory(
+			IsElementCostFunctionFactory(Elements.Fire),
+			ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens))
+		),
+		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
+	)
 	def unapply(a:SpaceClass) = a match {
-		case BooleanSpaceClass(CanEnterAnd(a,IsElement(b)), true) => a.isInstanceOf[SinglePassageEntry] && b == Elements.Fire
+		case SpaceClass("Fire Passage",
+			MaxCostFunctionFactory(
+				IsElementCostFunctionFactory(Elements.Fire),
+				ConstantCostFunctionFactory(_:SinglePassageCostFunction)
+			),
+			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
+		) => (atkCost == normalPassage)
 		case _ => false
 	}
-	def apply = new BooleanSpaceClass(CanEnterAnd(
-			new SinglePassageEntry(SpaceClass.tokens),
-			IsElement(Elements.Fire)
-	), true)
 }
 
 /**
  * constructs and deconstructs a spaceclass that allows anything through,
  * but not as quickly as usual
  * @author Raymond Dodge
- * @since a.5.2
+ * @version a.6.0
  */
-object SlowPassageSpaceClass extends SpaceClassConstructor
-{
-	private class MySpaceClass(tokens:MutableListOfTokens) extends SpaceClass with NoLandOnAction with NoPassOverAction
-	{
-		val passageEntry = new SinglePassageEntry(tokens);
-		
-		override def cost(tokenMoving:BoardGameToken[SpaceClass], costType:TypeOfCost) = {
-			costType match {
-				case TokenMovementCost => {
-					if (passageEntry(this, tokenMoving)) {normalPassage * 2} else {impossiblePassage}
-				}
-				case _ => normalPassage
-			}
-		}
-	}
-	
+object SlowPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
+	def apply(tokens:ListOfTokens) = SpaceClass("Slow Passage",
+		MaxCostFunctionFactory(
+			ConstantCostFunctionFactory(ConstantCostFunction(normalPassage * 2)),
+			ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens))
+		),
+		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
+	)
 	def unapply(a:SpaceClass) = a match {
-		case x:MySpaceClass => true
+		case SpaceClass("Slow Passage",
+			MaxCostFunctionFactory(
+				ConstantCostFunctionFactory(ConstantCostFunction(moveCost)),
+				ConstantCostFunctionFactory(_:SinglePassageCostFunction)
+			),
+			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
+		) => (moveCost == normalPassage * 2) && (atkCost == normalPassage)
 		case _ => false
 	}
-	def apply:SpaceClass = new MySpaceClass(SpaceClass.tokens)
-	
 }

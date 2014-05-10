@@ -24,7 +24,8 @@ import javax.swing.Icon
 import com.rayrobdod.boardGame.RectangularField
 import com.rayrobdod.swing.SolidColorIcon
 import com.rayrobdod.boardGame.swingView.RectangularTilesheet
-import com.rayrobdod.boardGame.{SpaceClass, Space}
+import com.rayrobdod.boardGame.Space
+import com.rayrobdod.deductionTactics.SpaceClass
 
 /**
  * A basic tilesheet that is both visually simplistic and versitile.
@@ -36,7 +37,7 @@ import com.rayrobdod.boardGame.{SpaceClass, Space}
  * @since a.4.1
  * @version a.5.2
  */
-object FieldChessTilesheet extends RectangularTilesheet
+object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 {
 	private val waterLight = new Color(61, 215, 237);
 	private val waterDark  = new Color(69, 208, 228);
@@ -80,12 +81,12 @@ object FieldChessTilesheet extends RectangularTilesheet
 			}
 	}
 	
-	def getIconFor(field:RectangularField, x:Int, y:Int, rng:Random):(Icon, Icon) = {
+	def getIconFor(field:RectangularField[SpaceClass], x:Int, y:Int, rng:Random):(Icon, Icon) = {
 		val useDarker = ((x + y) % 2) == 0
 		val center = spaceClassToColor(field.space(x,y).typeOfSpace, useDarker)
 		
-		def SpaceSeqToColor(x:Seq[Space]) = {
-			val x1 = x.map{(y:Space) => spaceClassToColor(y.typeOfSpace, useDarker)}
+		def SpaceSeqToColor(x:Seq[Space[SpaceClass]]) = {
+			val x1 = x.map{(y:Space[SpaceClass]) => spaceClassToColor(y.typeOfSpace, useDarker)}
 			Option(x1.head)
 					.filter{_ != center && x1.forall{_ == x1.head}}
 					.getOrElse(transColor)
