@@ -24,7 +24,7 @@ import Statuses.{Status, Sleep}
 
 import scala.util.Random
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.{Space, TokenMovementCost}
+import com.rayrobdod.boardGame.{Space}
 import com.rayrobdod.deductionTactics.LoggerInitializer.{
 				observeMovementLogger => somLogger}
 import scala.runtime.{AbstractFunction1 => Function1, AbstractFunction2 => AFunction2}
@@ -43,7 +43,7 @@ package object ai
 	 */
 	def randomTeam(teamSize:Int, random:Random):Seq[TokenClass] =
 	{
-		random.shuffle(CannonicalTokenClass.allKnown).take(teamSize)
+		random.shuffle(TokenClass.allKnown).take(teamSize)
 	}
 	
 	/**
@@ -67,7 +67,7 @@ package object ai
 			val attacker = allTokens.tokens.flatten.find{_.currentSpace == attackerSpace}
 			
 			attacker match {
-				case Some(attacker2:MirrorToken) => {
+				case Some(attacker2:Token) => {
 					val range = attackerSpace.distanceTo(targetSpace, attacker2, PhysicalStrikeCost)
 					val attackerClass = attacker2.tokenClass
 					
@@ -86,7 +86,7 @@ package object ai
 			val attacker = allTokens.tokens.flatten.find{_.currentSpace == attackerSpace}
 			
 			attacker match {
-				case Some(attacker2:MirrorToken) => {
+				case Some(attacker2:Token) => {
 					val range = attackerSpace.distanceTo(targetSpace, attacker2, PhysicalStrikeCost)
 					val attackerClass = attacker2.tokenClass
 					
@@ -108,7 +108,7 @@ package object ai
 	 * One per enemy token. Parameter is that token. Add to that token and at least one player.
 	 * @version a.5.2
 	 */
-	final class StandardObserveMovement(token:MirrorToken)
+	final class StandardObserveMovement(token:Token)
 				extends AFunction2[Space, Boolean, Unit] with Function0[Unit]
 	{
 		private var countThisTurn = 0;
@@ -144,7 +144,7 @@ package object ai
 			val speedSpaces = moveRangeOf(token)
 			
 			val tokenRange = token.tokenClass.map{_.range}.getOrElse(0)
-			val rangeSpaces = speedSpaces.map{_.spacesWithin(tokenRange, token, PhysicalStrikeCost)}.flatten
+			val rangeSpaces = speedSpaces.map{_.spacesWithin(tokenRange, fromSpace.typeOfSpace.canAttack(token, listOfTokens))}.flatten
 			
 			rangeSpaces
 		}
@@ -156,12 +156,12 @@ package object ai
 	 */
 	object moveRangeOf extends Function1[Token, Set[Space[SpaceClass]]] 
 	{
-		def apply(token:Token) =
+		def apply(token:Token, listOfTokens:ListOfTokens) =
 		{
 			val startSpace = token.currentSpace
 			
 			val tokenSpeed = token.tokenClass.map{_.speed}.filter{(x:Int) => token.currentStatus.exists{_ == Sleep}}.getOrElse(0)
-			val speedSpaces = token.currentSpace.spacesWithin(tokenSpeed, token, TokenMovementCost).toSet
+			val speedSpaces = startSpace.spacesWithin(tokenSpeed, _.typeOfSpace.canEnter(token, listOfTokens)).toSet
 			
 			speedSpaces
 		}

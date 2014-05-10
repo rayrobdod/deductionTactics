@@ -18,8 +18,6 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-//import com.rayrobdod.deductionTactics.{PlayerAI, Player,
-//		CannonicalTokenClass, Token, RequestAttackForDamage, RequestMove}
 import com.rayrobdod.boardGame.Space
 import com.rayrobdod.boardGame.{RectangularField => Field}
 import scala.collection.mutable.PriorityQueue
@@ -34,7 +32,7 @@ import java.util.logging.Level
  * @author Raymond Dodge
  * @version a.6.0
  */
-class BlindAttackAI extends PlayerAI
+final class BlindAttackAI extends PlayerAI
 {
 	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
 	def buildTeam(size:Int) = randomTeam(size)
@@ -43,7 +41,10 @@ class BlindAttackAI extends PlayerAI
 		
 		implicit object TokenPairOrdering extends Ordering[(Token, Token)] {
 			def distance(a:(Token, Token)):Int = distance(a._1, a._2)
-			def distance(a:Token, b:Token):Int = a.currentSpace.distanceTo(b.currentSpace, a.currentSpace.typeOfSpace.canEnter(a))
+			def distance(a:Token, b:Token):Int = a.currentSpace.distanceTo(
+					b.currentSpace,
+					a.currentSpace.typeOfSpace.canEnter(a, gameState.tokens)
+			)
 			
 			def compare(a:(Token, Token), b:(Token, Token)) =
 			{

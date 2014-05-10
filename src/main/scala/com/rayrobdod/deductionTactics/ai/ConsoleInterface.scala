@@ -17,7 +17,7 @@
 */
 package com.rayrobdod.deductionTactics.ai
 
-import com.rayrobdod.deductionTactics.{PlayerAI, Player, Token}
+import com.rayrobdod.deductionTactics.{PlayerAI, Token}
 import com.rayrobdod.boardGame.{RectangularField => Field}
 import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
 
@@ -36,7 +36,7 @@ final class ConsoleInterface extends PlayerAI
 		endOfTurnLock.synchronized( endOfTurnLock.wait() );
 	}
 	
-	def initialize(player:Player, field:Field) {
+	def initialize(player:Int, initialState:GameState):Memo = {
 		val runner = new BoardNavigator(player.tokens, field)
 		
 		player.addVictoryReaction(runner.EndOfGameListener)
@@ -52,9 +52,9 @@ final class ConsoleInterface extends PlayerAI
 		new Thread(runner, "ConsoleInterface").start()
 	}
 	
-	def buildTeam = {
+	def buildTeam(size:Int) = {
 		// TODO: actual prompts
-		randomTeam()
+		randomTeam(size)
 	}
 	
 	

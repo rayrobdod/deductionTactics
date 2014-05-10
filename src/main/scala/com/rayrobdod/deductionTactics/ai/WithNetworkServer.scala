@@ -59,7 +59,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		this.player = Some(player);
 		this.field  = Some(field);
 		
-		player.tokens.myTokens.zipWithIndex.foreach({ (token:CannonicalToken, index:Int) =>
+		player.tokens.myTokens.zipWithIndex.foreach({ (token:Token, index:Int) =>
 			val index2 = index.toString;
 			
 			token.tryDamageAttackedReactions_+=(new PrintRequestDamageAttack(index2))
@@ -95,7 +95,7 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		
 		output.write( returnValue.length.toString )
 		output.write( '\n' )
-		returnValue.zipWithIndex.foreach({(tclass:CannonicalTokenClass, index:Int) =>
+		returnValue.zipWithIndex.foreach({(tclass:TokenClass, index:Int) =>
 			output.write(tokenClassToJSON(tclass))
 			output.write('\n')
 		}.tupled)
@@ -172,9 +172,9 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		}
 	}
 	
-	final class PrintRequestDamageAttack(tokenIndex:String) extends AFunction1[Token, Unit] with CannonicalToken.RequestAttackType {
+	final class PrintRequestDamageAttack(tokenIndex:String) extends AFunction1[Token, Unit] with Token.RequestAttackType {
 		def apply(target:Token):Unit = target match {
-			case target2:MirrorToken => {
+			case target2:Token => {
 				output.write("RequestAttackForDamage(MyTokens(")
 				output.write(tokenIndex)
 				output.write("),OtherTokens")
@@ -184,9 +184,9 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 		}
 	}
 	
-	final class PrintRequestStatusAttack(tokenIndex:String) extends AFunction1[Token, Unit] with CannonicalToken.RequestAttackType {
+	final class PrintRequestStatusAttack(tokenIndex:String) extends AFunction1[Token, Unit] with Token.RequestAttackType {
 		def apply(target:Token):Unit = target match {
-			case target2:MirrorToken => {
+			case target2:Token => {
 				output.write("RequestAttackForStatus(MyTokens(")
 				output.write(tokenIndex)
 				output.write("),OtherTokens")

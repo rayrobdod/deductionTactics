@@ -19,8 +19,7 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import Statuses.Status
-import com.rayrobdod.boardGame.{TokenMovementCost,
-			RectangularField => Field, Space}
+import com.rayrobdod.boardGame.{RectangularField, Space}
 import scala.collection.mutable.{Map => MMap}
 import LoggerInitializer.{blindAttackAILogger => Logger}
 import java.util.logging.Level
@@ -34,11 +33,7 @@ import java.util.logging.Level
  */
 class GangUpAI extends PlayerAI
 {
-	/** The current target */
-	private val currentTargetMap = MMap.empty[Player, MirrorToken]
-	
-	def takeTurn(player:Player):Any =
-	{
+	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		if (currentTargetMap(player).currentHitpoints < 0)
 		{
 			// TRYTHIS: Choose betterly, maybe?
@@ -56,10 +51,10 @@ class GangUpAI extends PlayerAI
 		while(continue) {
 			continue = moveATokenToASpace(adjacentSpaces.toSet, player)
 		}
-		myTokens.foreach{(myToken:CannonicalToken) => myToken.requestMoveTo(currentTarget.currentSpace)}
+		myTokens.foreach{(myToken:Token) => myToken.requestMoveTo(currentTarget.currentSpace)}
 		
 		// attack selected token
-		myTokens.foreach{(myToken:CannonicalToken) =>
+		myTokens.foreach{(myToken:Token) =>
 			if (currentTarget.currentStatus == None &&
 						shouldUseStatus(myToken.tokenClass.atkStatus.get))
 				myToken.tryAttackStatus(currentTarget)
@@ -91,21 +86,21 @@ class GangUpAI extends PlayerAI
 		if (spacesAndTokensCanReach.isEmpty) return false
 		if (spacesAndTokensCanReach.exists{_._2.size == 1})
 		{
-			spacesAndTokensCanReach.filter{_._2.size == 1}.foreach({(s:Space, ts:Seq[CannonicalToken]) =>
+			spacesAndTokensCanReach.filter{_._2.size == 1}.foreach({(s:Space, ts:Seq[Token]) =>
 				ts.head.requestMoveTo(s)
 			}.tupled)
 			return true
 		}
 		else
 		{
-			spacesAndTokensCanReach.foreach({(s:Space, ts:Seq[CannonicalToken]) =>
+			spacesAndTokensCanReach.foreach({(s:Space, ts:Seq[Token]) =>
 				ts.head.requestMoveTo(s)
 			}.tupled)
 			return true
 		}
 	}
 	
-	private def tokensThatCanReachSpace(space:Space, tokens:Seq[CannonicalToken]) =
+	private def tokensThatCanReachSpace(space:Space, tokens:Seq[Token]) =
 	{
 		tokens.filter{(t:Token) => (t.currentSpace.spacesWithin(t.canMoveThisTurn, t, TokenMovementCost) - t.currentSpace).contains(space)}
 	}
@@ -113,8 +108,8 @@ class GangUpAI extends PlayerAI
 	
 	
 	
-	def buildTeam = randomTeam()
-	def initialize(player:Player, field:Field) = {
+	def buildTeam(size:Int) = randomTeam(size)
+	def initialize(player:Int, initialState:GameState):Memo = {
 		currentTargetMap.update(player, player.tokens.otherTokens.flatten.head)
 	}
 	

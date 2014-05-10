@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{Space, TokenMovementCost, PhysicalStrikeCost}
+import com.rayrobdod.boardGame.{Space}
 import com.rayrobdod.boardGame.{RectangularField => Field}
 import scala.collection.immutable.{Map, Set, Seq}
 import scala.collection.mutable.{Map => MMap}
@@ -33,12 +33,15 @@ import java.util.logging.Level
  */
 final class FieldPotentialAI extends PlayerAI
 {
-	def takeTurn(player:Player) {
-		player.tokens.aliveMyTokens.foreach{(myToken:CannonicalToken) =>
+	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
+	def buildTeam(size:Int) = randomTeam(size)
+	
+	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
+		player.tokens.aliveMyTokens.foreach{(myToken:Token) =>
 			// Stage 1 : decide who if anyone to attack
-			val target:Option[MirrorToken] = {
+			val target:Option[Token] = {
 				
-				val otherToken = player.tokens.aliveOtherTokens.flatten.map{(x:MirrorToken) =>
+				val otherToken = player.tokens.aliveOtherTokens.flatten.map{(x:Token) =>
 					import PotentialFieldAI$FuzzyLogic.shouldEngage;
 					
 					val a = shouldEngage(myToken, x);
@@ -51,14 +54,14 @@ final class FieldPotentialAI extends PlayerAI
 			}
 			
 			// Stage 2 : pre-attack move
-			target.foreach{(x:MirrorToken) =>
+			target.foreach{(x:Token) =>
 				myToken.requestMoveTo(
 					PotentialFieldAI$AttackField(myToken, x)
 				)
 			}
 			
 			// Stage 3 : attack
-			target.foreach{(x:MirrorToken) => 
+			target.foreach{(x:Token) => 
 				myToken.tryAttackDamage(x)
 			}
 			
@@ -70,7 +73,6 @@ final class FieldPotentialAI extends PlayerAI
 	}
 	
 	
-	def buildTeam = randomTeam()
 		
 	def initialize(player:Player, field:Field) = {
 		// setup recorders
@@ -80,7 +82,7 @@ final class FieldPotentialAI extends PlayerAI
 			mine.beDamageAttackedReactions_+=(attacks)
 			mine.beStatusAttackedReactions_+=(attacks)
 		}
-		player.tokens.otherTokens.flatten.foreach{(other:MirrorToken) =>
+		player.tokens.otherTokens.flatten.foreach{(other:Token) =>
 			val movement = new StandardObserveMovement(other)
 			other.moveReactions_+=(movement)
 			player.addStartTurnReaction(movement)
@@ -128,9 +130,9 @@ final class FieldPotentialAI extends PlayerAI
 private[ai] object PotentialFieldAI$FuzzyLogic {
 	import java.lang.Float.{POSITIVE_INFINITY => INF}
 	
-	class Distance(self:CannonicalToken, other:MirrorToken) {
-		private val speed:Float = self.tokenClass.speed.get;
-		private val range:Float = self.tokenClass.range.get;
+	class Distance(self:Token, other:Token) {
+		private val speed:Float = self.tokenClass.map{_.speed}.get;
+		private val range:Float = self.tokenClass.map{_.range}.get;
 		// the '1000' is the cost for entering the token's current space. Technicalities.
 		private val distance = self.currentSpace.distanceTo(other.currentSpace, self, TokenMovementCost) - 999;
 		
@@ -152,9 +154,9 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 		}
 	}
 	
-	class Advantage(selfT:CannonicalToken, otherT:MirrorToken) {
-		private val selfClass = selfT.tokenClass;
-		private val otherClass = otherT.tokenClass;
+	class Advantage(selfT:Token, otherT:Token) {
+		private val selfClass = selfT.tokenClass.get;
+		private val otherClass = otherT.tokenClass.get;
 		
 		val (self:Float, opponent:Float, even:Float, unknown:Float) = {
 			var strength:Float = 3;
@@ -163,8 +165,8 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 			var m_even     = 0f;
 			var m_unknown  = 0f;
 			
-			if (otherClass.atkElement.isDefined) {
-				val elemAd = selfClass.atkElement.get.damageModifier(otherClass.atkElement.get)
+			if (otherClass.isDefined) {
+				val elemAd = selfClass.atkElement.damageModifier(otherClass.atkElement.get)
 				
 				if (elemAd >= 1f) {
 					m_self = m_self + elemAd - 1f;
@@ -177,8 +179,8 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 				m_unknown = m_unknown + 1;
 			}
 			
-			if (otherClass.weakWeapon(selfClass.atkWeapon.get).isDefined) {
-				val weapAd = otherClass.weakWeapon(selfClass.atkWeapon.get).get
+			if (otherClass.weakWeapon(selfClass.atkWeapon).isDefined) {
+				val weapAd = otherClass.weakWeapon(selfClass.atkWeapon)
 				
 				if (weapAd >= 1f) {
 					m_self = m_self + weapAd - 1f;
@@ -239,7 +241,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 	
 	
 	
-	def shouldEngage(selfT:CannonicalToken, otherT:MirrorToken):Float = {
+	def shouldEngage(selfT:Token, otherT:Token):Float = {
 		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$FuzzyLogic", "shouldEngage")
 		
 		val distance = new Distance(selfT, otherT);
@@ -276,7 +278,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 }
 
 private[ai] object PotentialFieldAI$AttackField {
-	def apply(selfT:CannonicalToken, otherT:MirrorToken):Space = {
+	def apply(selfT:Token, otherT:Token):Space = {
 		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$AttackField", "apply")
 		
 		val eligibleSpaces:Set[Space] = otherT.currentSpace.spacesWithin(
@@ -310,22 +312,22 @@ private[ai] object PotentialFieldAI$AttackField {
 }
 
 private[ai] object PotentialFieldAI$RetreatField {
-	def apply(selfT:CannonicalToken, tokens:PlayerListOfTokens):Space = {
+	def apply(selfT:Token, tokens:PlayerListOfTokens):Space = {
 		priorities(selfT, tokens).maxBy{_._2}._1
 	}
 	
-	def priorities(selfT:CannonicalToken, tokens:PlayerListOfTokens):Map[Space, Int] = {
+	def priorities(selfT:Token, tokens:PlayerListOfTokens):Map[Space, Int] = {
 		this.priorities(selfT, tokens, selfT.canMoveThisTurn)
 	}
 	
-	def priorities(selfT:CannonicalToken, tokens:PlayerListOfTokens, range:Int):Map[Space, Int] = {
+	def priorities(selfT:Token, tokens:PlayerListOfTokens, range:Int):Map[Space, Int] = {
 		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$RetreatField", "priorities")
 		
 		val eligibleSpaces:Set[Space] = Option(selfT.currentSpace).map{_.spacesWithin(
 				range, selfT, TokenMovementCost
 		)}.getOrElse( Set.empty )
 		
-		val prioritiesEnemy:Seq[Set[(Space, Int)]] = tokens.aliveOtherTokens.flatten.map{(otherT:MirrorToken) =>
+		val prioritiesEnemy:Seq[Set[(Space, Int)]] = tokens.aliveOtherTokens.flatten.map{(otherT:Token) =>
 			eligibleSpaces.map{(space:Space) => 
 				val range = otherT.tokenClass.range.getOrElse(1)
 				val speed = otherT.tokenClass.speed.getOrElse(3)
@@ -343,7 +345,7 @@ private[ai] object PotentialFieldAI$RetreatField {
 				(( space, pri ))
 			}
 		}
-		val prioritiesHerd:Seq[Set[(Space, Int)]] = tokens.aliveMyTokens.map{(otherT:CannonicalToken) =>
+		val prioritiesHerd:Seq[Set[(Space, Int)]] = tokens.aliveMyTokens.map{(otherT:Token) =>
 			if (otherT == selfT) {
 				Set.empty[(Space, Int)]
 			} else {

@@ -20,7 +20,7 @@ package com.rayrobdod.deductionTactics.ai
 import scala.collection.immutable.Seq
 import scala.collection.mutable.{Map => MMap}
 import com.rayrobdod.boardGame.{Space}
-import com.rayrobdod.deductionTactics.{PlayerAI, Player, Token, CannonicalToken}
+import com.rayrobdod.deductionTactics.{PlayerAI, Token}
 import java.awt.event.{ActionListener, ActionEvent}
 import javax.swing.{JButton, JFrame, JPanel, JLabel, JList}
 import java.awt.BorderLayout
@@ -46,12 +46,11 @@ import com.rayrobdod.deductionTactics.swingView.{
  * @author Raymond Dodge
  * @version a.5.0
  */
-sealed class SwingInterface extends PlayerAI
+final class SwingInterface extends PlayerAI
 {
-	val playerButtons = MMap[Player, JButton]()
 	val endOfTurnLock = new Object();
 	
-	def takeTurn(player:Player) {
+	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		playerButtons(player).setEnabled(true)
 		
 		endOfTurnLock.synchronized( endOfTurnLock.wait() );
@@ -72,7 +71,7 @@ sealed class SwingInterface extends PlayerAI
 			x.selectedReactions_+=(reaction)
 			x.moveReactions_+={(x,y) => reaction()}
 		}
-		tokens.myTokens.foreach{(x:CannonicalToken) =>
+		tokens.myTokens.foreach{(x:Token) =>
 			val reaction = new HighlightMovableSpacesReaction(x, panel, player.tokens);
 			x.selectedReactions_+=(reaction)
 			x.moveReactions_+={(x,y) => reaction()}

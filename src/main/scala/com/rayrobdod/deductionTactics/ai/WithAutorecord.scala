@@ -47,7 +47,7 @@ final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 			mine.beDamageAttackedReactions_+=(attacks)
 			mine.beStatusAttackedReactions_+=(attacks)
 		}
-		player.tokens.otherTokens.flatten.foreach{(other:MirrorToken) =>
+		player.tokens.otherTokens.flatten.foreach{(other:Token) =>
 			val movement = new StandardObserveMovement(other)
 			other.moveReactions_+=(movement)
 			player.addStartTurnReaction(movement)

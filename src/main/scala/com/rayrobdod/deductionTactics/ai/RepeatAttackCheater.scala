@@ -36,7 +36,7 @@ class RepeatAttackCheater extends PlayerAI
 	def takeTurn(player:Player):Any = {
 		val otherTokens = player.tokens.otherTokens.flatten
 		
-		otherTokens.foreach{(x:MirrorToken) =>
+		otherTokens.foreach{(x:Token) =>
 			while (x.currentHitpoints > 0) {
 				x.beAttacked(Elements.Fire, Weaponkinds.Bluntkind, aSpace)
 			}
