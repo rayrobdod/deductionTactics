@@ -20,7 +20,7 @@ package ai
 
 //import com.rayrobdod.deductionTactics.{PlayerAI, Player,
 //		CannonicalTokenClass, Token, RequestAttackForDamage, RequestMove}
-import com.rayrobdod.boardGame.{Space, TokenMovementCost}
+import com.rayrobdod.boardGame.Space
 import com.rayrobdod.boardGame.{RectangularField => Field}
 import scala.collection.mutable.PriorityQueue
 import LoggerInitializer.{blindAttackAILogger => Logger}
@@ -32,41 +32,41 @@ import java.util.logging.Level
  * and attack the closest enemy tokens.
  * 
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
 class BlindAttackAI extends PlayerAI
 {
 	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
-	def buildTeam = randomTeam()
+	def buildTeam(size:Int) = randomTeam(size)
 	
-	def takeTurn(player:Player):Any =
-	{
-		implicit object TokenPairOrdering extends Ordering[(CannonicalToken, MirrorToken)]
-		{
-			def distance(a:(Token, Token)):Int = distance(a._1, a._2) 
-			def distance(a:Token, b:Token):Int = a.currentSpace.distanceTo(b.currentSpace, a, TokenMovementCost)
+	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
+		
+		implicit object TokenPairOrdering extends Ordering[(Token, Token)] {
+			def distance(a:(Token, Token)):Int = distance(a._1, a._2)
+			def distance(a:Token, b:Token):Int = a.currentSpace.distanceTo(b.currentSpace, a.currentSpace.typeOfSpace.canEnter(a))
 			
-			def compare(a:(CannonicalToken, MirrorToken), b:(CannonicalToken, MirrorToken)) =
+			def compare(a:(Token, Token), b:(Token, Token)) =
 			{
 				-(distance(a) compareTo distance(b))
 			}
 		}
 		
-		val queue = new PriorityQueue ++= player.tokens.aliveMyTokens.flatMap{(myToken:CannonicalToken) =>
-			player.tokens.aliveOtherTokens.flatten.map{(hisToken:MirrorToken) =>
+		val queue = new PriorityQueue ++= gameState.tokens.tokens(player).flatMap{(myToken:Token) =>
+			gameState.tokens.tokens.flatten.map{(hisToken:Token) =>
 			{
 				(myToken, hisToken)
 			}}
 		}
 		
-		queue.foreach({(myToken:CannonicalToken, hisToken:MirrorToken) =>
-			myToken.requestMoveTo(hisToken.currentSpace)
-			myToken.tryAttackDamage(hisToken)
-		}.tupled)
+		Seq.empty ++ queue.flatMap({(myToken:Token, hisToken:Token) => Seq(
+			GameState.TokenMove(myToken, hisToken.currentSpace),
+			GameState.TokenAttackDamage(myToken, hisToken)
+		)}.tupled)
 	}
 	
-	def initialize(player:Player, field:Field) = {}
+	def initialize(player:Int, initialState:GameState):Memo = ""
 	
+	def notifyTurn(player:Int, actions:Seq[GameState.Action], memo:Memo):Memo = memo
 	
 	def canEquals(other:Any) = {other.isInstanceOf[BlindAttackAI]}
 	override def equals(other:Any) = {

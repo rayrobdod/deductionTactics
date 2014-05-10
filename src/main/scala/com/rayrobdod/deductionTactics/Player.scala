@@ -35,7 +35,7 @@ import com.rayrobdod.util.services.ClassServiceLoader
  * @todo trait instead of abstract class? Could it possibly hurt?
  */
 abstract class PlayerAI {
-	type Memo <: Any
+	type Memo >: Any
 	
 	
 	/** Generates a team of tokens that this AI would like to use. */

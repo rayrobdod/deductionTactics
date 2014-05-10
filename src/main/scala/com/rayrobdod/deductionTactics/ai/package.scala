@@ -24,9 +24,7 @@ import Statuses.{Status, Sleep}
 
 import scala.util.Random
 import scala.collection.immutable.Seq
-import com.rayrobdod.deductionTactics.PlayerAI.teamSize
-import com.rayrobdod.boardGame.{PhysicalStrikeCost,
-			Space, TokenMovementCost}
+import com.rayrobdod.boardGame.{Space, TokenMovementCost}
 import com.rayrobdod.deductionTactics.LoggerInitializer.{
 				observeMovementLogger => somLogger}
 import scala.runtime.{AbstractFunction1 => Function1, AbstractFunction2 => AFunction2}
@@ -41,8 +39,9 @@ package object ai
 	 * Chooses a team of token classes by shuffling the list of all
 	 * possible tokens and selecting the first howevermany.
 	 * @param random the RNG to use.
+	 * @version a.6.0
 	 */
-	def randomTeam(random:Random):Seq[CannonicalTokenClass] =
+	def randomTeam(teamSize:Int, random:Random):Seq[TokenClass] =
 	{
 		random.shuffle(CannonicalTokenClass.allKnown).take(teamSize)
 	}
@@ -50,8 +49,9 @@ package object ai
 	/**
 	 * Chooses a team of token classes by shuffling the list of all
 	 * possible tokens and selecting the first howevermany
+	 * @version a.6.0
 	 */
-	def randomTeam():Seq[CannonicalTokenClass] = randomTeam(Random)
+	def randomTeam(teamSize:Int):Seq[TokenClass] = randomTeam(teamSize, Random)
 	
 	/**
 	 * A standard attack observer that will update a SuspiciounsTokenClass when a token attacks
@@ -127,35 +127,40 @@ package object ai
 				somLogger.finer("Incremented token's movement");
 		}
 	}
-
 	
 	
 	
 	
 	// TODO: other statuses can affect movement range or attack range
 	
-	/** determines the spaces a token can attack */
-	object attackRangeOf extends Function1[Token, Set[Space]] 
+	/**
+	 * determines the spaces a token can attack
+	 * @version a.6.0
+	 */
+	object attackRangeOf extends Function1[Token, Set[Space[SpaceClass]]] 
 	{
 		def apply(token:Token) =
 		{
 			val speedSpaces = moveRangeOf(token)
 			
-			val tokenRange = token.tokenClass.range.getOrElse(0)
+			val tokenRange = token.tokenClass.map{_.range}.getOrElse(0)
 			val rangeSpaces = speedSpaces.map{_.spacesWithin(tokenRange, token, PhysicalStrikeCost)}.flatten
 			
 			rangeSpaces
 		}
 	}
 
-	/** determines the spaces a token can move to */
-	object moveRangeOf extends Function1[Token, Set[Space]] 
+	/**
+	 * determines the spaces a token can move to
+	 * @version a.6.0
+	 */
+	object moveRangeOf extends Function1[Token, Set[Space[SpaceClass]]] 
 	{
 		def apply(token:Token) =
 		{
 			val startSpace = token.currentSpace
 			
-			val tokenSpeed = token.tokenClass.speed.filter{(x:Int) => token.currentStatus.exists{_ == Sleep}}.getOrElse(0)
+			val tokenSpeed = token.tokenClass.map{_.speed}.filter{(x:Int) => token.currentStatus.exists{_ == Sleep}}.getOrElse(0)
 			val speedSpaces = token.currentSpace.spacesWithin(tokenSpeed, token, TokenMovementCost).toSet
 			
 			speedSpaces

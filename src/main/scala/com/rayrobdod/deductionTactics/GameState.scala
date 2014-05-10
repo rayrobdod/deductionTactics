@@ -17,23 +17,28 @@
 */
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.RectangularField
+import com.rayrobdod.boardGame.{RectangularField, Space}
 
+/**
+ * @since a.6.0
+ */
 final case class GameState (
 	val board:RectangularField[SpaceClass],
-	val tokens:ListOfTokens,
-	val players:Seq[PlayerAI]
+	val tokens:ListOfTokens
 ) {
 	
 	
 		
 }
 
+/**
+ * @since a.6.0
+ */
 object GameState {
 	sealed class Action
 	
-	case class TokenMove(token:(Int,Int), space:(Int,Int)) extends Action
-	case class TokenAttackDamage(attacker:(Int,Int), attackee:(Int,Int)) extends Action
-	case class TokenAttackStatus(attacker:(Int,Int), attackee:(Int,Int)) extends Action
+	case class TokenMove(token:Token, space:Space[SpaceClass]) extends Action
+	case class TokenAttackDamage(attacker:Token, attackee:Token) extends Action
+	case class TokenAttackStatus(attacker:Token, attackee:Token) extends Action
 	object EndOfTurn extends Action
 }
