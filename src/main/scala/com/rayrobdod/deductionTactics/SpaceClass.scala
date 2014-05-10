@@ -54,20 +54,20 @@ object SpaceClass {
 	val impossiblePassage = 1000
 	
 	type CostFunction = BoardGameSpace.CostFunction[SpaceClass]
-	type CostFunctionFactory = Function1[Token, CostFunction]
+	type CostFunctionFactory = Function2[Token, ListOfTokens, CostFunction]
 	
 	final case class ConstantCostFunction(cost:Int) extends CostFunction {
-		def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = cost
+		override def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = cost
 	}
 	final class SinglePassageCostFunction(tokens:ListOfTokens) extends CostFunction {
-		def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
+		override def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
 			
 			val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.find{_.currentSpace == to}
 			tokenOnThis.map{(a) => impossiblePassage}.getOrElse{normalPassage}
 		}
 	}
 	final case class MaxCostFunction(a:CostFunction, b:CostFunction) extends CostFunction {
-		def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
+		override def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
 			return math.max(a(from, to), b(from, to))
 		}
 	}
@@ -75,11 +75,11 @@ object SpaceClass {
 	
 	
 	final case class ConstantCostFunctionFactory(f:CostFunction) extends CostFunctionFactory  {
-		def apply(t:Token):CostFunction = f
+		override def apply(t:Token, l:ListOfTokens):CostFunction = f
 	}
 	
-	final class FriendPassageCostFunctionFactory(tokens:ListOfTokens) extends CostFunctionFactory {
-		def apply(myToken:Token):CostFunction = new CostFunction() {
+	object FriendPassageCostFunctionFactory extends CostFunctionFactory {
+		override def apply(myToken:Token, tokens:ListOfTokens):CostFunction = new CostFunction() {
 			def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
 				val myTeam = tokens.tokens.zipWithIndex.find{_._1.contains(myToken)}.map{_._2}
 				val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.find{
@@ -96,12 +96,17 @@ object SpaceClass {
 		}
 	}
 	
+	object SinglePassageCostFunctionFactory extends CostFunctionFactory {
+		override def apply(myToken:Token, tokens:ListOfTokens):CostFunction =
+			new SinglePassageCostFunction(tokens)
+	}
+	
 	object IsFlyingCostFunctionFactory extends CostFunctionFactory {
 		def isFlying(t:Token):Boolean = {
 			t.tokenClass.map{(a) => a.body == BodyTypes.Avian}.getOrElse(false)
 		}
 		
-		def apply(t:Token):CostFunction = new ConstantCostFunction(if (isFlying(t)) {normalPassage} else {impossiblePassage})
+		override def apply(t:Token):CostFunction = new ConstantCostFunction(if (isFlying(t)) {normalPassage} else {impossiblePassage})
 	}
 	
 	final case class IsElementCostFunctionFactory(val element:Elements.Element) extends CostFunctionFactory {
@@ -109,11 +114,11 @@ object SpaceClass {
 			t.tokenClass.map{(a) => a.atkElement == element}.getOrElse(false)
 		}
 		
-		def apply(t:Token):CostFunction = new ConstantCostFunction(if (isElement(t)) {normalPassage} else {impossiblePassage})
+		override def apply(t:Token):CostFunction = new ConstantCostFunction(if (isElement(t)) {normalPassage} else {impossiblePassage})
 	}
 	
 	final case class MaxCostFunctionFactory(a:CostFunctionFactory, b:CostFunctionFactory) extends CostFunctionFactory {
-		def apply(t:Token):CostFunction = new MaxCostFunction(a(t), b(t))
+		override def apply(t:Token, l:ListOfTokens):CostFunction = new MaxCostFunction(a(t,l), b(t,l))
 	}
 
 }
@@ -127,17 +132,17 @@ import SpaceClass._
 class SpaceClassFactory(tokens:ListOfTokens) {
 	
 	def apply(reference:String):SpaceClass = reference match {
-		case " " => UniPassageSpaceClass(tokens)
-		case "s" => SlowPassageSpaceClass(tokens)
-		case "|" => ImpassibleSpaceClass(tokens)
-		case ":" => AttackOnlySpaceClass(tokens)
-		case "." => FlyingPassageSpaceClass(tokens)
-		case "f" => FirePassageSpaceClass(tokens)
+		case " " => UniPassageSpaceClass.apply
+		case "s" => SlowPassageSpaceClass.apply
+		case "|" => ImpassibleSpaceClass.apply
+		case ":" => AttackOnlySpaceClass.apply
+		case "." => FlyingPassageSpaceClass.apply
+		case "f" => FirePassageSpaceClass.apply
 		case _ => SpaceClass(
 				"Unknown",
 				MaxCostFunctionFactory(
-					ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens)),
-					ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens))
+					SinglePassageCostFunctionFactory,
+					SinglePassageCostFunctionFactory
 				),
 				ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 		)
@@ -168,7 +173,7 @@ object SpaceClassMatcherFactory extends com.rayrobdod.boardGame.swingView.SpaceC
  * @version a.6.0
  */
 object FreePassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply(tokens:ListOfTokens) = SpaceClass("Free Passage",
+	def apply = SpaceClass("Free Passage",
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage)),
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
@@ -188,13 +193,13 @@ object FreePassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object AllyPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply(tokens:ListOfTokens) = SpaceClass("Ally Passage",
-		new FriendPassageCostFunctionFactory(tokens),
+	def apply = SpaceClass("Ally Passage",
+		FriendPassageCostFunctionFactory,
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
 	def unapply(a:SpaceClass) = a match {
 		case SpaceClass("Ally Passage",
-			_:FriendPassageCostFunctionFactory,
+			FriendPassageCostFunctionFactory,
 			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
 		) => (atkCost == normalPassage)
 		case _ => false
@@ -207,8 +212,8 @@ object AllyPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object UniPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply(tokens:ListOfTokens) = SpaceClass("Single Passage",
-		ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens)),
+	def apply = SpaceClass("Single Passage",
+		SinglePassageCostFunctionFactory,
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
 	def unapply(a:SpaceClass) = a match {
@@ -226,10 +231,10 @@ object UniPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object ImpassibleSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply(tokens:ListOfTokens) = SpaceClass("Impassible",
+	def apply = SpaceClass("Impassible",
 		MaxCostFunctionFactory(
 			ConstantCostFunctionFactory(ConstantCostFunction(impossiblePassage)),
-			ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens))
+			SinglePassageCostFunctionFactory
 		),
 		ConstantCostFunctionFactory(ConstantCostFunction(impossiblePassage))
 	)
@@ -252,10 +257,10 @@ object ImpassibleSpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object AttackOnlySpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply(tokens:ListOfTokens) = SpaceClass("Attack-only",
+	def apply = SpaceClass("Attack-only",
 		MaxCostFunctionFactory(
 			ConstantCostFunctionFactory(ConstantCostFunction(impossiblePassage)),
-			ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens))
+			SinglePassageCostFunctionFactory
 		),
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
@@ -277,10 +282,10 @@ object AttackOnlySpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object FlyingPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply(tokens:ListOfTokens) = SpaceClass("Flying Passage",
+	def apply = SpaceClass("Flying Passage",
 		MaxCostFunctionFactory(
 			IsFlyingCostFunctionFactory,
-			ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens))
+			SinglePassageCostFunctionFactory
 		),
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
@@ -302,10 +307,10 @@ object FlyingPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object FirePassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply(tokens:ListOfTokens) = SpaceClass("Fire Passage",
+	def apply = SpaceClass("Fire Passage",
 		MaxCostFunctionFactory(
 			IsElementCostFunctionFactory(Elements.Fire),
-			ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens))
+			SinglePassageCostFunctionFactory
 		),
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
@@ -328,10 +333,10 @@ object FirePassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object SlowPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply(tokens:ListOfTokens) = SpaceClass("Slow Passage",
+	def apply = SpaceClass("Slow Passage",
 		MaxCostFunctionFactory(
 			ConstantCostFunctionFactory(ConstantCostFunction(normalPassage * 2)),
-			ConstantCostFunctionFactory(new SinglePassageCostFunction(tokens))
+			SinglePassageCostFunctionFactory
 		),
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
