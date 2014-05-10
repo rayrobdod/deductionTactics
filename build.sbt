@@ -46,6 +46,10 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 	def accept(n:File) = {
 		val abPath = n.getAbsolutePath().replace('\\', '/')
 		(
+			(abPath contains "/deductionTactics/ai/") ||
+			(abPath contains "/deductionTactics/main/") ||
+			(abPath contains "/deductionTactics/swingView/") ||
+			(abPath contains "/deductionTactics/consoleView/") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface_CFN.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithConsoleViewport.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala")
@@ -95,6 +99,15 @@ mappings in (Compile, packageSrc) <++= (compileTokensInput) map { (tokenSrc) =>
 // if some part of the circular dependency breaks down, remove this line
 resourceGenerators in Compile <+= compileTokens.task
 
+
+// scalaTest
+scalaVersion in Test := "2.9.3"
+
+libraryDependencies += "org.scalatest" % "scalatest_2.9.3" % "1.9.2" % "test"
+
+// testOptions in Test += Tests.Argument("-oS")
+
+
 // proguard
 proguardSettings
 
@@ -117,6 +130,7 @@ artifactPath in Proguard <<= (artifactPath in Proguard, proguardType, version).a
 }
 
 javaOptions in (Proguard, ProguardKeys.proguard) += "-Xmx2G"
+
 
 // anon-fun-reduce
 autoCompilerPlugins := true

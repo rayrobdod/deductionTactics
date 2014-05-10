@@ -27,8 +27,33 @@ final case class GameState (
 	val tokens:ListOfTokens
 ) {
 	
-	
+	def tokenMove(player:Int, token:Token, space:Space[SpaceClass]):GameState = {
 		
+		val indexOfToken:(Int, Int) = {
+			val a:Seq[Seq[Token]] = tokens.tokens
+			val b:Seq[(Seq[(Token, Int)], Int)] = a.map{_.zipWithIndex}.zipWithIndex
+			val c:Seq[(Token, Int, Int)] = b.flatMap({(st:Seq[(Token, Int)], i:Int) =>
+				st.map({(t:Token, j:Int) => (( t, i, j ))
+			}.tupled)}.tupled)
+			val d:Option[(Token, Int, Int)] = c.find(_._1 == token)
+			
+			d.map{(a) => ((a._2, a._3))}.getOrElse{ throw new IllegalArgumentException("token not found") }
+		}
+		
+		if (indexOfToken._1 != player) throw new  IllegalArgumentException("That's not your token!")
+		
+		// let's assume that the spaces don't need to be regened.
+		
+		val newTokens = new ListOfTokens(
+			tokens.tokens.updated(indexOfToken._1,
+				tokens.tokens(indexOfToken._1).updated(indexOfToken._2, token)
+			)
+		)
+		
+		
+		GameState(board, newTokens)
+	}
+	
 }
 
 /**

@@ -32,19 +32,30 @@ import scala.collection.immutable.{Seq, Set, BitSet}
  */
 final class PlayerTurnCycler(val players:Seq[PlayerAI], val initialState:GameState, var timeBetweenTurns:Int = 500) extends Runnable
 {
-	var currentState:GameState = initialState
-	def gameEnded = (remainingPlayers.size == 1)
-	
 	def run() = {
-		var i:Int = 0
+		var currentState:GameState = initialState
+		def gameEnded = (remainingPlayers(currentState).size == 1)
+		var playerOfCurrentTurn:Int = 0
+		var memos = players.zipWithIndex.map({(p:PlayerAI,i:Int) => p.initialize(i, initialState)}.tupled)
 		
 		while(!gameEnded) {
-			players(i).takeTurn()
+			val playerSeenState = GameState(
+					currentState.board,
+					currentState.tokens.hideTokenClasses(playerOfCurrentTurn)
+			)
 			
+			val actions = players(playerOfCurrentTurn)
+					.takeTurn(playerOfCurrentTurn, playerSeenState, memos)
+			
+			actions.foreach{_ match {
+				case GameState.TokenMove(t, s) => currentState = currentState.tokenMove(playerOfCurrentTurn, t, s)
+				case _ => {}
+			}}
+						
 		}
 	}
 	
-	def remainingPlayers:Set[Int] = {
+	def remainingPlayers(currentState:GameState):Set[Int] = {
 		val t:ListOfTokens = currentState.tokens
 		
 		BitSet.empty ++ t.aliveTokens.zipWithIndex.filter{_._1.length != 0}.map{_._2}

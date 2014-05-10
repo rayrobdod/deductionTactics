@@ -30,15 +30,41 @@ import com.rayrobdod.boardGame.{Space,
  * @version a.6.0
  */
 final case class Token (
-	currentSpace:Space[SpaceClass],
-	val currentHitpoints:Int,
-	val currentStatus:Option[Status],
-	val currentStatusTurnsLeft:Int,
-	val tokenClass:Option[TokenClass],
+	override val currentSpace:Space[SpaceClass],
+	val currentHitpoints:Int = 256,
+	val currentStatus:Option[Status] = None,
+	val currentStatusTurnsLeft:Int = 0,
+	val tokenClass:Option[TokenClass] = None,
 	
-	val canMoveThisTurn:Int,
-	val canAttackThisTurn:Boolean
+	val canMoveThisTurn:Int = 0,
+	val canAttackThisTurn:Boolean = false
 ) extends BoardGameToken[SpaceClass](currentSpace) {
 	final val maximumHitpoints:Int = 256
 	final val baseDamage:Int = 8
+	
+	final def startOfTurn():Token = {
+		val newStatus = currentStatus.filter{(a) => currentStatusTurnsLeft >= 0}
+		
+		new Token(
+			currentSpace,
+			currentHitpoints,
+			newStatus,
+			currentStatusTurnsLeft - 1,
+			tokenClass,
+			tokenClass.map{_.speed}.getOrElse{0},
+			true
+		)
+	}
+	
+	final def endOfTurn():Token = {
+		new Token(
+			currentSpace,
+			currentHitpoints,
+			currentStatus,
+			currentStatusTurnsLeft,
+			tokenClass,
+			0,
+			false
+		)
+	}
 }

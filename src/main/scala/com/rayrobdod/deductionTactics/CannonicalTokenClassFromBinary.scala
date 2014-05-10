@@ -41,17 +41,17 @@ final class CannonicalTokenClassFromBinary(reader:java.io.DataInput) extends Can
 		new String(bytes.takeWhile{_ != 0})
 	}
 	
-	override val atkElement = Some(Elements(reader.readByte()))
-	override val atkWeapon = Some(Weaponkinds(reader.readByte()))
-	override val atkStatus = Some(Statuses(reader.readByte()))
-	override val body = Some(BodyTypes(reader.readByte()))
+	override val atkElement = Elements(reader.readByte())
+	override val atkWeapon = Weaponkinds(reader.readByte())
+	override val atkStatus = Statuses(reader.readByte())
+	override val body = BodyTypes(reader.readByte())
 	
-	override val range = Some(reader.readByte().intValue)
-	override val speed = Some(reader.readByte().intValue)
-	override val weakStatus = Some(Statuses(reader.readByte()))
-	override val weakDirection = Some(Directions(reader.readByte()))
+	override val range = reader.readByte().intValue
+	override val speed = reader.readByte().intValue
+	override val weakStatus = Statuses(reader.readByte())
+	override val weakDirection = Directions(reader.readByte())
 	override val weakWeapon = Weaponkinds.values.map{(x:Weaponkind) =>
-		((x, Some(reader.readFloat()) ))
+		((x, reader.readFloat() ))
 	}.toMap
 	
 	reader.skipBytes(imageLocLength)

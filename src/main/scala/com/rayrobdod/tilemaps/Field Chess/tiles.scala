@@ -81,12 +81,12 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 			}
 	}
 	
-	def getIconFor(field:RectangularField[SpaceClass], x:Int, y:Int, rng:Random):(Icon, Icon) = {
+	def getIconFor(field:RectangularField[_ <: SpaceClass], x:Int, y:Int, rng:Random):(Icon, Icon) = {
 		val useDarker = ((x + y) % 2) == 0
 		val center = spaceClassToColor(field.space(x,y).typeOfSpace, useDarker)
 		
-		def SpaceSeqToColor(x:Seq[Space[SpaceClass]]) = {
-			val x1 = x.map{(y:Space[SpaceClass]) => spaceClassToColor(y.typeOfSpace, useDarker)}
+		def SpaceSeqToColor(x:Seq[Space[_ <: SpaceClass]]) = {
+			val x1 = x.map{(y:Space[_ <: SpaceClass]) => spaceClassToColor(y.typeOfSpace, useDarker)}
 			Option(x1.head)
 					.filter{_ != center && x1.forall{_ == x1.head}}
 					.getOrElse(transColor)

@@ -39,7 +39,7 @@ import scala.collection.immutable.{Seq => ISeq}
  * @version a.6.0
  */
 final case class SpaceClass(
-	val toString:String,
+	override val toString:String,
 	val canEnter:SpaceClass.CostFunctionFactory,
 	val canAttack:SpaceClass.CostFunctionFactory
 )
@@ -106,7 +106,7 @@ object SpaceClass {
 			t.tokenClass.map{(a) => a.body == BodyTypes.Avian}.getOrElse(false)
 		}
 		
-		override def apply(t:Token):CostFunction = new ConstantCostFunction(if (isFlying(t)) {normalPassage} else {impossiblePassage})
+		override def apply(t:Token, ts:ListOfTokens):CostFunction = new ConstantCostFunction(if (isFlying(t)) {normalPassage} else {impossiblePassage})
 	}
 	
 	final case class IsElementCostFunctionFactory(val element:Elements.Element) extends CostFunctionFactory {
@@ -114,7 +114,7 @@ object SpaceClass {
 			t.tokenClass.map{(a) => a.atkElement == element}.getOrElse(false)
 		}
 		
-		override def apply(t:Token):CostFunction = new ConstantCostFunction(if (isElement(t)) {normalPassage} else {impossiblePassage})
+		override def apply(t:Token, ts:ListOfTokens):CostFunction = new ConstantCostFunction(if (isElement(t)) {normalPassage} else {impossiblePassage})
 	}
 	
 	final case class MaxCostFunctionFactory(a:CostFunctionFactory, b:CostFunctionFactory) extends CostFunctionFactory {

@@ -41,7 +41,7 @@ import LoggerInitializer.{tokenClassDecoderLogger => Logger}
  * @since a.4.1
  * @version a.5.0
  */
-final class CannonicalTokenClassBuilder extends TokenClass {
+final class CannonicalTokenClassBuilder {
 	var nameOpt:Option[String] = None
 	def name = nameOpt.getOrElse("???")
 	
