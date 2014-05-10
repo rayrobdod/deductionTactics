@@ -40,16 +40,24 @@ final case class GameState (
 			d.map{(a) => ((a._2, a._3))}.getOrElse{ throw new IllegalArgumentException("token not found") }
 		}
 		
-		if (indexOfToken._1 != player) throw new  IllegalArgumentException("That's not your token!")
+		if (indexOfToken._1 != player) { throw new IllegalArgumentException("That's not your token!") }
+		
+		val distanceBetweenSpaces = token.currentSpace.distanceTo(space, new MoveToCostFunction(token, tokens))
+		if (distanceBetweenSpaces > token.canMoveThisTurn) { throw new IllegalArgumentException("Space is too far away!") }
 		
 		// let's assume that the spaces don't need to be regened.
 		
-		val newTokens = new ListOfTokens(
-			tokens.tokens.updated(indexOfToken._1,
-				tokens.tokens(indexOfToken._1).updated(indexOfToken._2, token)
-			)
+		
+		val newToken = token.copy(
+			currentSpace = space,
+			canMoveThisTurn = token.canMoveThisTurn - distanceBetweenSpaces
 		)
 		
+		val newTokens = new ListOfTokens(
+			tokens.tokens.updated(indexOfToken._1,
+				tokens.tokens(indexOfToken._1).updated(indexOfToken._2, newToken)
+			)
+		)
 		
 		GameState(board, newTokens)
 	}

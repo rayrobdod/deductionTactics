@@ -31,8 +31,17 @@ class GameStateTest extends FunSpec {
 						initialState.tokens.tokens(0)(0),
 						initialState.board.space(1,1)
 				)
-				assertResult(initialState.tokens.tokens(0)(0).currentSpace)(initialState.board.space(0,0))
-				assertResult(initialState.tokens.tokens(0)(0).currentSpace)(initialState.board.space(1,1))
+				assertResult(initialState.board.space(0,0))(initialState.tokens.tokens(0)(0).currentSpace)
+			}
+			it ("Should not move other tokens"){
+				val initialState = genSimpleGameState()
+				val afterState = initialState.tokenMove(0,
+						initialState.tokens.tokens(0)(0),
+						initialState.board.space(1,1)
+				)
+				assertResult(afterState.board.space(0,2))(afterState.tokens.tokens(0)(1).currentSpace)
+				assertResult(afterState.board.space(2,0))(afterState.tokens.tokens(1)(0).currentSpace)
+				assertResult(afterState.board.space(2,2))(afterState.tokens.tokens(1)(1).currentSpace)
 			}
 			it ("Should have a moved token in the result"){
 				val initialState = genSimpleGameState()
@@ -40,8 +49,33 @@ class GameStateTest extends FunSpec {
 						initialState.tokens.tokens(0)(0),
 						initialState.board.space(1,1)
 				)
-				assertResult(afterState.tokens.tokens(0)(0).currentSpace)(afterState.board.space(0,0))
-				assertResult(afterState.tokens.tokens(0)(0).currentSpace)(afterState.board.space(1,1))
+				assertResult(afterState.board.space(1,1))(afterState.tokens.tokens(0)(0).currentSpace)
+			}
+			it ("Should change the number of spaces a token can move afterwards"){
+				val initialState = genSimpleGameState()
+				val afterState = initialState.tokenMove(0,
+						initialState.tokens.tokens(0)(0),
+						initialState.board.space(1,1)
+				)
+				assertResult(1)(afterState.tokens.tokens(0)(0).canMoveThisTurn)
+			}
+			it ("Should reject a move that's too far away"){
+				intercept[IllegalArgumentException] {
+					val initialState = genSimpleGameState()
+					val afterState = initialState.tokenMove(0,
+							initialState.tokens.tokens(0)(0),
+							initialState.board.space(2,2)
+					)
+				}
+			}
+			it ("Should reject a move by the wrong player"){
+				intercept[IllegalArgumentException] {
+					val initialState = genSimpleGameState()
+					val afterState = initialState.tokenMove(1,
+							initialState.tokens.tokens(0)(0),
+							initialState.board.space(1,1)
+					)
+				}
 			}
 			
 			
