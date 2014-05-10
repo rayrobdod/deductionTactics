@@ -95,11 +95,11 @@ object Directions
 	/**
 	 * The directions one would move to go from fromSpace to toSpace
 	 */
-	def pathDirections(fromSpace:StrictRectangularSpace[SpaceClass], toSpace:StrictRectangularSpace[SpaceClass]):Seq[Direction] =
+	def pathDirections(movingToken:Token, fromSpace:StrictRectangularSpace[SpaceClass], toSpace:StrictRectangularSpace[SpaceClass]):Seq[Direction] =
 	{
 		import com.rayrobdod.boardGame.Space
 		
-		val path2:Seq[Space[SpaceClass]] = fromSpace.pathTo(toSpace, SpaceClass.attackSpaceCost)
+		val path2:Seq[Space[SpaceClass]] = fromSpace.pathTo(toSpace, fromSpace.typeOfSpace.canAttack(movingToken))
 		val path:Seq[StrictRectangularSpace[SpaceClass]] = path2.map{_.asInstanceOf[StrictRectangularSpace[SpaceClass]]}
 		
 		val pathDirections = path.zip(path.head +: path).map({(next:StrictRectangularSpace[SpaceClass], curr:StrictRectangularSpace[SpaceClass]) =>
