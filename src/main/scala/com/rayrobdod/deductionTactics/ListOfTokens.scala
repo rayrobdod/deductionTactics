@@ -29,6 +29,18 @@ final class ListOfTokens (
 ) {
 	def aliveTokens() = tokens.map{_.filter(ListOfTokens.aliveFilter)}
 	
+	/** Since the other ListOfTokens are no longer around to provide this method
+	 * @version a.6.0
+	 */
+	def alivePlayerTokens(player:Int) = tokens(player).filter(ListOfTokens.aliveFilter)
+
+	/** Since the other ListOfTokens are no longer around to provide this method
+	 * @version a.6.0
+	 */
+	def aliveNotPlayerTokens(player:Int) = {
+		tokens.zipWithIndex.filter(_._2 != player).map{_._1}
+				.map{_.filter(ListOfTokens.aliveFilter)}
+	}
 	
 	
 	/** 
