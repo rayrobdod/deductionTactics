@@ -144,7 +144,7 @@ package object ai
 			val speedSpaces = moveRangeOf(token)
 			
 			val tokenRange = token.tokenClass.map{_.range}.getOrElse(0)
-			val rangeSpaces = speedSpaces.map{_.spacesWithin(tokenRange, fromSpace.typeOfSpace.canAttack(token, listOfTokens))}.flatten
+			val rangeSpaces = speedSpaces.map{_.spacesWithin(tokenRange, AttackCostFunction)}.flatten
 			
 			rangeSpaces
 		}
@@ -161,7 +161,7 @@ package object ai
 			val startSpace = token.currentSpace
 			
 			val tokenSpeed = token.tokenClass.map{_.speed}.filter{(x:Int) => token.currentStatus.exists{_ == Sleep}}.getOrElse(0)
-			val speedSpaces = startSpace.spacesWithin(tokenSpeed, _.typeOfSpace.canEnter(token, listOfTokens)).toSet
+			val speedSpaces = startSpace.spacesWithin(tokenSpeed, MoveToCostFunction).toSet
 			
 			speedSpaces
 		}

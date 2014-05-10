@@ -17,6 +17,7 @@
 */
 package com.rayrobdod
 
+import com.rayrobdod.boardGame.{Space => BoardGameSpace}
 
 /**
  * classes for DeductionTactics
@@ -87,5 +88,17 @@ package object deductionTactics
 		writer.write("}");
 		
 		writer.toString();
+	}
+	
+	
+	final class AttackCostFunction(t:Token, l:ListOfTokens) extends BoardGameSpace.CostFunction[SpaceClass] {
+		override def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
+			to.typeOfSpace.canAttack(t,l)(from, to)
+		}
+	}
+	final class MoveToCostFunction(t:Token, l:ListOfTokens) extends BoardGameSpace.CostFunction[SpaceClass] {
+		override def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
+			to.typeOfSpace.canEnter(t,l)(from, to)
+		}
 	}
 }

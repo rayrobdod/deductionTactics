@@ -43,7 +43,7 @@ final class BlindAttackAI extends PlayerAI
 			def distance(a:(Token, Token)):Int = distance(a._1, a._2)
 			def distance(a:Token, b:Token):Int = a.currentSpace.distanceTo(
 					b.currentSpace,
-					a.currentSpace.typeOfSpace.canEnter(a, gameState.tokens)
+					MoveToCostFunction
 			)
 			
 			def compare(a:(Token, Token), b:(Token, Token)) =

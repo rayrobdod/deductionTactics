@@ -30,27 +30,22 @@ import scala.collection.immutable.{Seq, Set, BitSet}
  * @author Raymond Dodge
  * @version a.5.0
  */
-final class PlayerTurnCycler(val players:Seq[Player], var timeBetweenTurns:Int = 500) extends Runnable
+final class PlayerTurnCycler(val players:Seq[PlayerAI], val initialState:GameState, var timeBetweenTurns:Int = 500) extends Runnable
 {
-	private var gameContinues:Boolean = true
-	def gameEnded = !gameContinues
+	var currentState:GameState = initialState
+	def gameEnded = (remainingPlayers.size == 1)
 	
-	def run() =
-	{
+	def run() = {
 		var i:Int = 0
-		while(gameContinues)
-		{
-			players(i).takeTurn()
-			i = remainingPlayers.filter{_>i}.headOption.getOrElse{remainingPlayers.head}
-			
-			gameContinues = remainingPlayers.size > 1
-		}
 		
-		remainingPlayers.foreach{players(_).victoryReaction.map{a => a()}}
+		while(!gameEnded) {
+			players(i).takeTurn()
+			
+		}
 	}
 	
 	def remainingPlayers:Set[Int] = {
-		val t:ListOfTokens = players(0).tokens
+		val t:ListOfTokens = currentState.tokens
 		
 		BitSet.empty ++ t.aliveTokens.zipWithIndex.filter{_._1.length != 0}.map{_._2}
 	}
