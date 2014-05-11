@@ -20,6 +20,7 @@ package ai
 
 import com.rayrobdod.boardGame.Space
 import com.rayrobdod.boardGame.{RectangularField => Field}
+import scala.collection.immutable.Seq
 import scala.collection.mutable.PriorityQueue
 import LoggerInitializer.{blindAttackAILogger => Logger}
 import java.util.logging.Level
@@ -35,15 +36,15 @@ import java.util.logging.Level
 final class BlindAttackAI extends PlayerAI
 {
 	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
-	def buildTeam(size:Int) = randomTeam(size)
+	override def buildTeam(size:Int) = randomTeam(size)
 	
-	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		
 		implicit object TokenPairOrdering extends Ordering[(Token, Token)] {
 			def distance(a:(Token, Token)):Int = distance(a._1, a._2)
 			def distance(a:Token, b:Token):Int = a.currentSpace.distanceTo(
 					b.currentSpace,
-					MoveToCostFunction
+					new MoveToCostFunction(a, gameState.tokens)
 			)
 			
 			def compare(a:(Token, Token), b:(Token, Token)) =
@@ -65,9 +66,9 @@ final class BlindAttackAI extends PlayerAI
 		)}.tupled)
 	}
 	
-	def initialize(player:Int, initialState:GameState):Memo = ""
+	override def initialize(player:Int, initialState:GameState):Memo = ""
 	
-	def notifyTurn(player:Int, actions:Seq[GameState.Action], memo:Memo):Memo = memo
+	override def notifyTurn(player:Int, actions:Seq[GameState.Action], memo:Memo):Memo = memo
 	
 	def canEquals(other:Any) = {other.isInstanceOf[BlindAttackAI]}
 	override def equals(other:Any) = {

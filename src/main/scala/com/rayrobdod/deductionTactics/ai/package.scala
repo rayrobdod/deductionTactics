@@ -53,80 +53,6 @@ package object ai
 	 */
 	def randomTeam(teamSize:Int):Seq[TokenClass] = randomTeam(teamSize, Random)
 	
-	/**
-	 * A standard attack observer that will update a SuspiciounsTokenClass when a token attacks
-	 * 
-	 * Add as Be___AttackedReaction to the target token.
-	 * @version a.5.2
-	 */
-	final class StandardObserveAttacks(target:Token, allTokens:ListOfTokens)
-			extends Token.StatusAttackedReactionType with Token.DamageAttackedReactionType
-	{
-		def apply(status:Status, attackerSpace:Space) = {
-			val targetSpace = target.currentSpace
-			val attacker = allTokens.tokens.flatten.find{_.currentSpace == attackerSpace}
-			
-			attacker match {
-				case Some(attacker2:Token) => {
-					val range = attackerSpace.distanceTo(targetSpace, attacker2, PhysicalStrikeCost)
-					val attackerClass = attacker2.tokenClass
-					
-					attackerClass.atkStatus = Some(status)
-					
-					if (range > attackerClass.range.getOrElse(0) && range < 5) {
-						attackerClass.range = Some(range)
-					}
-				}
-				case _ => {}
-			}
-		}
-		
-		def apply(element:Element, kind:Weaponkind, damage:Int, attackerSpace:Space) = {
-			val targetSpace = target.currentSpace
-			val attacker = allTokens.tokens.flatten.find{_.currentSpace == attackerSpace}
-			
-			attacker match {
-				case Some(attacker2:Token) => {
-					val range = attackerSpace.distanceTo(targetSpace, attacker2, PhysicalStrikeCost)
-					val attackerClass = attacker2.tokenClass
-					
-					attackerClass.atkElement = Some(element)
-					attackerClass.atkWeapon = Some(kind)
-					
-					if (range > attackerClass.range.getOrElse(0) && range < 5) {
-						attackerClass.range = Some(range)
-					}
-				}
-				case _ => {}
-			}
-		}
-	}
-	
-	/**
-	 * A standard movement observer that will update a SuspiciounsTokenClass when a token moves
-	 * 
-	 * One per enemy token. Parameter is that token. Add to that token and at least one player.
-	 * @version a.5.2
-	 */
-	final class StandardObserveMovement(token:Token)
-				extends AFunction2[Space, Boolean, Unit] with Function0[Unit]
-	{
-		private var countThisTurn = 0;
-		
-		override def apply():Unit = {
-				if (countThisTurn > token.tokenClass.speed.getOrElse(0))
-				{
-					token.tokenClass.speed = Some(countThisTurn)
-					somLogger.fine("Recording token's movement: " + countThisTurn);
-				}
-				countThisTurn = 0;
-		}
-		
-		override def apply(e:Space, b:Boolean) = {
-				countThisTurn = countThisTurn + 1
-				somLogger.finer("Incremented token's movement");
-		}
-	}
 	
 	
 	
@@ -137,14 +63,17 @@ package object ai
 	 * determines the spaces a token can attack
 	 * @version a.6.0
 	 */
-	object attackRangeOf extends Function1[Token, Set[Space[SpaceClass]]] 
+	object attackRangeOf 
 	{
-		def apply(token:Token) =
+		def apply(token:Token, list:ListOfTokens) =
 		{
-			val speedSpaces = moveRangeOf(token)
+			val speedSpaces = moveRangeOf(token, list)
 			
 			val tokenRange = token.tokenClass.map{_.range}.getOrElse(0)
-			val rangeSpaces = speedSpaces.map{_.spacesWithin(tokenRange, AttackCostFunction)}.flatten
+			val rangeSpaces = speedSpaces.map{_.spacesWithin(
+					tokenRange,
+					new AttackCostFunction(token, list)
+			)}.flatten
 			
 			rangeSpaces
 		}
@@ -154,14 +83,17 @@ package object ai
 	 * determines the spaces a token can move to
 	 * @version a.6.0
 	 */
-	object moveRangeOf extends Function1[Token, Set[Space[SpaceClass]]] 
+	object moveRangeOf 
 	{
-		def apply(token:Token, listOfTokens:ListOfTokens) =
+		def apply(token:Token, list:ListOfTokens) =
 		{
 			val startSpace = token.currentSpace
 			
 			val tokenSpeed = token.tokenClass.map{_.speed}.filter{(x:Int) => token.currentStatus.exists{_ == Sleep}}.getOrElse(0)
-			val speedSpaces = startSpace.spacesWithin(tokenSpeed, MoveToCostFunction).toSet
+			val speedSpaces = startSpace.spacesWithin(
+					tokenSpeed, 
+					new MoveToCostFunction(token, list)
+			).toSet
 			
 			speedSpaces
 		}

@@ -40,7 +40,7 @@ class MenuBar() extends JMenuBar
 		
 		a.add(myMenuItem("New Game", 'n', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
-				com.rayrobdod.deductionTactics.main.Main.startNewGame
+		//		com.rayrobdod.deductionTactics.main.Main.startNewGame
 			}
 		}))
 		

@@ -84,21 +84,14 @@ object Main extends App
 	
 	private def buildTeams(ais:Seq[PlayerAI], field:RectangularField[SpaceClass], tokenPositions:Seq[Seq[(Int, Int)]]) =
 	{
-		val tokenClasses = ais.map{_.buildTeam}
+		val tokenClasses = ais.zip(tokenPositions.map{_.length}).map({(p:PlayerAI, l:Int) => p.buildTeam(l)}.tupled)
 				// limit number of tokens to number of availiable spaces.
 				.zip(tokenPositions).map({(x:Seq[TokenClass],y:Seq[_]) => x.take(y.size)}.tupled)
-		val canonTokens = tokenClasses.map{_.map{new Token(_)}}
-		val mirrorTokens = canonTokens.map{_.map{new MirrorToken(_)}}
+		val tokens = tokenClasses.map{_.map{new Token(_)}}
 		
-		val canonListTokens = new ListOfTokens(canonTokens)
+		val tokensList = new ListOfTokens(canonTokens)
 		
 		
-		canonTokens.foreach{(seq:Seq[Token]) => {
-			SpaceClass.tokens.tokens = SpaceClass.tokens.tokens :+ seq;
-		}}
-		allTokens.foreach{(x:Token) => {
-			x.selectedReactions_+=(new UnselectOtherTokens(x,allTokens)) 
-		}}
 		
 		canonTokens.zip(tokenPositions).map(
 			{(x:Seq[Token], y:Seq[(Int, Int)]) => x.zip(y)}.tupled

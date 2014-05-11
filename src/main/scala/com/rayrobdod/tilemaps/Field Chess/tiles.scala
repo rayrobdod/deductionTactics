@@ -35,7 +35,7 @@ import com.rayrobdod.deductionTactics.SpaceClass
  * be hard-coded relatively easily.
  * @author Raymond Dodge
  * @since a.4.1
- * @version a.5.2
+ * @version a.6.0
  */
 object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 {

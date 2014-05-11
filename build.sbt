@@ -46,15 +46,16 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 	def accept(n:File) = {
 		val abPath = n.getAbsolutePath().replace('\\', '/')
 		(
-			(abPath contains "/deductionTactics/ai/") ||
-			(abPath contains "/deductionTactics/swingView/HumanSuspicionsPanel") ||
-			(abPath contains "/deductionTactics/swingView/MoveTokenMouseListener") ||
-			(abPath contains "/deductionTactics/swingView/TokenComponentController") ||
-			(abPath contains "/deductionTactics/swingView/ChooserFrame") ||
+			((abPath contains "/deductionTactics/ai/") && !(abPath contains "SwingInt") && !(abPath contains "Blind") && !(abPath contains "package")) ||
 			(abPath contains "/deductionTactics/consoleView/") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface_CFN.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithConsoleViewport.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala")
+			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala") ||
+			(abPath contains "com/rayrobdod/deductionTactics/swingView/HumanSuspicionsPanel.scala") ||
+			(abPath contains "com/rayrobdod/deductionTactics/swingView/MoveTokenMouseListener.scala") ||
+			(abPath contains "com/rayrobdod/deductionTactics/swingView/TokenComponentController.scala") ||
+			(abPath contains "com/rayrobdod/deductionTactics/swingView/ChooserFrame.scala") ||
+			(abPath contains "com/rayrobdod/deductionTactics/main/Main.scala")
 		)
 	}
 }

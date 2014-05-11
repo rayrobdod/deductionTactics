@@ -109,8 +109,11 @@ object BoardGamePanel {
 	
 	/* ... ... ... */
 	def currentTilesheet:RectangularTilesheet[SpaceClass] = {
+		val size = AvailibleTilesheetListModel.getSize()
+		val pref = myPrefs.getInt(tilesheetPrefsKey, 0)
+		
 		AvailibleTilesheetListModel.getElementAt(
-			myPrefs.getInt(tilesheetPrefsKey, 0)
+			math.min(size - 1, pref)
 		)
 	}
 	

@@ -15,10 +15,10 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.ai
+package com.rayrobdod.deductionTactics
+package ai
 
 import scala.collection.immutable.Seq
-import scala.collection.mutable.{Map => MMap}
 import com.rayrobdod.boardGame.{Space}
 import com.rayrobdod.deductionTactics.{PlayerAI, Token}
 import java.awt.event.{ActionListener, ActionEvent}
@@ -28,13 +28,9 @@ import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace}
 
 import com.rayrobdod.deductionTactics.swingView.{
 			BoardGamePanel,
-			ShowHumanSuspicionsPanelMouseListener,
-			HighlightMovableSpacesReaction,
 			TeamBuilderPanel,
-			MoveTokenMouseListener,
 			MenuBar,
 			SellectAttackTypePanel,
-			SelectTokenOnSpaceMouseListener,
 			InputFrame
 }
 
@@ -50,45 +46,25 @@ final class SwingInterface extends PlayerAI
 {
 	val endOfTurnLock = new Object();
 	
-	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
-		playerButtons(player).setEnabled(true)
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		
-		endOfTurnLock.synchronized( endOfTurnLock.wait() );
+		endOfTurnLock.synchronized{ endOfTurnLock.wait() };
+		
+		Nil
 	}
 	
-	def initialize(player:Player, field:Field)
+	def initialize(player:Int, initialState:GameState):Memo =
 	{
-		val tokens = player.tokens
-		val panel = new BoardGamePanel(tokens, field)
+		val tokens = initialState.tokens
+		val panel = new BoardGamePanel(tokens, initialState.board)
 		val frame = new JFrame("Deduction Tactics")		
 		frame.setJMenuBar(new MenuBar)
 		frame.getContentPane add panel
 		
 		val attackTypeSelector = new SellectAttackTypePanel()
 		
-		tokens.otherTokens.flatten.foreach{(x:Token) =>
-			val reaction = new HighlightMovableSpacesReaction(x, panel, player.tokens);
-			x.selectedReactions_+=(reaction)
-			x.moveReactions_+={(x,y) => reaction()}
-		}
-		tokens.myTokens.foreach{(x:Token) =>
-			val reaction = new HighlightMovableSpacesReaction(x, panel, player.tokens);
-			x.selectedReactions_+=(reaction)
-			x.moveReactions_+={(x,y) => reaction()}
-			
-			x.tryDamageAttackedReactions_+={(x) => reaction()}
-			x.tryStatusAttackedReactions_+={(x) => reaction()}
-			
-			player.addEndTurnReaction(reaction)
-			player.addStartTurnReaction(reaction)
-		}
-		field.spaces.flatten.foreach{(s:RectangularSpace) => 
-			panel.centerpiece.addMouseListenerToSpace(s, new SelectTokenOnSpaceMouseListener(s, player.tokens))
-			panel.centerpiece.addMouseListenerToSpace(s, new MoveTokenMouseListener(player, s, attackTypeSelector))
-		}
 		
 		val endOfTurnButton = new JButton("End Turn")
-		playerButtons += ((player, endOfTurnButton))
 		endOfTurnButton.addActionListener(new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				endOfTurnButton.setEnabled(false)
@@ -96,15 +72,6 @@ final class SwingInterface extends PlayerAI
 			}
 		})
 		
-		player.addVictoryReaction{() =>
-			// TODO: make work
-			val label = new JLabel("Victor!")
-			
-			panel.centerpiece add label
-			label.setLocation(200, 200)
-			label.setFont(label.getFont.deriveFont(24f))
-			panel.centerpiece.repaint()
-		}
 		
 		val southPanel = new JPanel()
 		southPanel.add(attackTypeSelector)
@@ -114,9 +81,10 @@ final class SwingInterface extends PlayerAI
 		frame.pack()
 		frame.validate()
 		frame.setVisible(true)
+		frame
 	}
 	
-	def buildTeam = {
+	override def buildTeam(teamSize:Int) = {
 		val buildingLock = new Object()
 		val teamBuilder = new TeamBuilderPanel()
 		
@@ -135,6 +103,8 @@ final class SwingInterface extends PlayerAI
 		frame.setVisible(false)
 		teamBuilder.currentSelection
 	}
+	
+	override def notifyTurn(player:Int, actions:Seq[GameState.Action], memo:Memo):Memo = memo
 	
 	// hopefully, animations will work eventually and that will
 	// inform a player of what's going on.
