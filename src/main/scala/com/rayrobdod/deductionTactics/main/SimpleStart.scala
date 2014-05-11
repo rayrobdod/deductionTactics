@@ -27,7 +27,19 @@ import com.rayrobdod.deductionTactics.ai._
  */
 object SimpleStart extends App {
 	
-	val players = Seq(new BlindAttackAI, new SwingInterface)
+	val players = Seq(new SwingInterface, new BlindAttackAI)
+	
+	val myTokenClass = Some(new TokenClassBlunt("Sample",
+			BodyTypes.Humanoid,
+			Elements.Fire,
+			Weaponkinds.Bladekind,
+			Statuses.Burn,
+			3, 1,
+			Directions.Left,
+			Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
+			Statuses.Burn
+	))
+	
 	val initialState = {
 		val field = RectangularField( Seq(
 				Seq( FreePassageSpaceClass.apply, FreePassageSpaceClass.apply, FreePassageSpaceClass.apply),
@@ -35,8 +47,14 @@ object SimpleStart extends App {
 				Seq( FreePassageSpaceClass.apply, FreePassageSpaceClass.apply, FreePassageSpaceClass.apply)
 		))
 		val tokens = new ListOfTokens( Seq(
-			Seq( new Token(field.space(0,0)), new Token(field.space(0,2)) ),
-			Seq( new Token(field.space(2,0)), new Token(field.space(2,2)) )
+			Seq(
+				new Token(currentSpace = field.space(0,0), tokenClass = myTokenClass),
+				new Token(currentSpace = field.space(0,2), tokenClass = myTokenClass)
+			),
+			Seq(
+				new Token(currentSpace = field.space(2,0), tokenClass = myTokenClass),
+				new Token(currentSpace = field.space(2,2), tokenClass = myTokenClass)
+			)
 		))
 		
 		GameState(field, tokens)

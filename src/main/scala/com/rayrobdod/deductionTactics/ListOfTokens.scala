@@ -52,15 +52,7 @@ final class ListOfTokens (
 			if (x._2 == playerNumber) {
 				x._1
 			} else {
-				x._1.map{(t:Token) => new Token(
-					currentSpace = t.currentSpace,
-					currentHitpoints = t.currentHitpoints,
-					currentStatus = t.currentStatus,
-					currentStatusTurnsLeft = t.currentStatusTurnsLeft,
-					tokenClass = None,
-					canMoveThisTurn = t.canMoveThisTurn,
-					canAttackThisTurn = t.canAttackThisTurn
-				)}
+				x._1.map{(t:Token) => t.copy(tokenClass = None)}
 			}
 		})
 	}

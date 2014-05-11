@@ -34,9 +34,9 @@ final class PlayerTurnCycler(val players:Seq[PlayerAI], val initialState:GameSta
 {
 	def run() = {
 		var currentState:GameState = initialState
-		def gameEnded = (remainingPlayers(currentState).size == 1)
+		def gameEnded = {remainingPlayers(currentState).size == 1}
 		var playerOfCurrentTurn:Int = 0
-		var memos = players.zipWithIndex.map({(p:PlayerAI,i:Int) => p.initialize(i, initialState)}.tupled)
+		var memos = players.zipWithIndex.map({(p:PlayerAI,i:Int) => p.initialize(i, initialState.copy(tokens = initialState.tokens.hideTokenClasses(i)))}.tupled)
 		
 		while(!gameEnded) {
 			val playerSeenState = GameState(
@@ -47,10 +47,16 @@ final class PlayerTurnCycler(val players:Seq[PlayerAI], val initialState:GameSta
 			val actions = players(playerOfCurrentTurn)
 					.takeTurn(playerOfCurrentTurn, playerSeenState, memos)
 			
-			actions.foreach{_ match {
-				case GameState.TokenMove(t, s) => currentState = currentState.tokenMove(playerOfCurrentTurn, t, s)
-				case _ => {}
-			}}
+			currentState = actions.foldLeft(currentState){(state, a) =>
+				try {
+					a match {
+						case GameState.TokenMove(t, s) => state.tokenMove(playerOfCurrentTurn, t, s)
+						case _ => state
+					}
+				} catch {
+					case e:IllegalArgumentException => state
+				}
+			}
 						
 		}
 	}
