@@ -17,6 +17,7 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
+import com.rayrobdod.deductionTactics.SpaceClass
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet}
 import java.awt.{Window, Dialog}
 import javax.swing.{JPanel, JList, JLabel, JTextField}
@@ -30,7 +31,7 @@ import com.rayrobdod.swing.GridBagConstraintsFactory
  */
 class OptionsPanel extends JPanel
 {
-	val currentTilesheet = new JList[RectangularTilesheet](AvailibleTilesheetListModel)
+	val currentTilesheet = new JList[RectangularTilesheet[SpaceClass]](AvailibleTilesheetListModel)
 	currentTilesheet.setCellRenderer(TilesheetListRenderer)
 	currentTilesheet.setSelectedValue(BoardGamePanel.currentTilesheet, true)
 	

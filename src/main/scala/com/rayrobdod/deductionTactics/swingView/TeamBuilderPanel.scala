@@ -31,7 +31,7 @@ import javax.swing.ScrollPaneConstants.{
 import javax.swing.BoxLayout.{Y_AXIS => boxYAxis, X_AXIS => boxXAxis}
 import java.awt.BorderLayout
 import java.awt.event.{ActionListener, ActionEvent}
-import com.rayrobdod.deductionTactics.{PlayerAI, TokenClass, CannonicalTokenClass}
+import com.rayrobdod.deductionTactics.{PlayerAI, TokenClass}
 import com.rayrobdod.swing.{MapToNameAndIconCellRenderer, ScalaSeqListModel}
 import scala.collection.immutable.Seq
 import scala.collection.JavaConversions.iterableAsScalaIterable
@@ -42,15 +42,15 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
  */
 class TeamBuilderPanel extends JPanel
 {
-	private val currentSelectionModel = new DefaultListModel[CannonicalTokenClass]()
-	def currentSelection:Seq[CannonicalTokenClass] = (Seq.empty ++ currentSelectionModel.toArray).asInstanceOf[Seq[CannonicalTokenClass]]
+	private val currentSelectionModel = new DefaultListModel[TokenClass]()
+	def currentSelection:Seq[TokenClass] = (Seq.empty ++ currentSelectionModel.toArray).asInstanceOf[Seq[TokenClass]]
 	
-	val currentSelectionList = new JList[CannonicalTokenClass](currentSelectionModel)
+	val currentSelectionList = new JList[TokenClass](currentSelectionModel)
 	currentSelectionList.setCellRenderer(FullTokenClassListRenderer)
 	currentSelectionList.setBackground(null)
-	currentSelectionList.setPrototypeCellValue(CannonicalTokenClass.allKnown.head)
+	currentSelectionList.setPrototypeCellValue(TokenClass.allKnown.head)
 	
-	val allTokenClassesList = new JList(new ScalaSeqListModel(CannonicalTokenClass.allKnown))
+	val allTokenClassesList = new JList(new ScalaSeqListModel(TokenClass.allKnown))
 	allTokenClassesList.setCellRenderer(FullTokenClassListRenderer)
 	allTokenClassesList.setBackground(null)
 	allTokenClassesList.setLayoutOrientation(JList.VERTICAL_WRAP)

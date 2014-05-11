@@ -17,7 +17,8 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
-import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularTilesheetLoader}
+import com.rayrobdod.boardGame.swingView.{RectangularTilesheet}
+import com.rayrobdod.deductionTactics.SpaceClass
 import javax.swing.{AbstractListModel, DefaultListCellRenderer,
 		JList, ListCellRenderer, JLabel}
 
@@ -27,11 +28,11 @@ import javax.swing.{AbstractListModel, DefaultListCellRenderer,
  * @author Raymond Dodge
  * @version a.5.3
  */
-object TilesheetListRenderer extends ListCellRenderer[RectangularTilesheet]
+object TilesheetListRenderer extends ListCellRenderer[RectangularTilesheet[SpaceClass]]
 {
 	private val back:ListCellRenderer[java.lang.Object] = new DefaultListCellRenderer()
 	
-	def getListCellRendererComponent(list:JList[_ <: RectangularTilesheet], value:RectangularTilesheet, index:Int,
+	def getListCellRendererComponent(list:JList[_ <: RectangularTilesheet[SpaceClass]], value:RectangularTilesheet[SpaceClass], index:Int,
 			isSelected:Boolean, cellHasFocus:Boolean) =
 	{
 		back.getListCellRendererComponent(

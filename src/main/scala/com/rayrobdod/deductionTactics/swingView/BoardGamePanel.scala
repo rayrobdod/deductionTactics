@@ -37,7 +37,7 @@ import javax.swing.BoxLayout
  * @author Raymond Dodge
  * @version a.5.1
  */
-class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JPanel
+class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField[SpaceClass]) extends JPanel
 {
 	setLayout(new BorderLayout)
 	
@@ -48,7 +48,7 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 		
 		val fieldComp = new FieldComponent(tilesheetInfo,field)
 		
-		val controller = new TokenComponentController(fieldComp, tokens)
+	//	val controller = new TokenComponentController(fieldComp, tokens)
 		
 		fieldComp
 	}
@@ -58,24 +58,9 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField) extends JP
 		container.setLayout(new BoxLayout(container, boxYAxis))
 		
 		val tokenPanels = onePlayersTokenList.map{new TokenPanel(_)}
-		tokenPanels.foreach{(t:TokenPanel) =>
-			t.token match {
-				case mt:MirrorToken => {
-					t remove t.tokenClass
-					t add (new HumanSuspicionsPanel(mt.tokenClass) {
-							setBackground(null)
-					})
-				}
-				case _ => {}
-			}
-		}
+		// ???
 		tokenPanels.foreach{container add _}
 		
-		tokenPanels.foreach{(panel:TokenPanel) => 
-			tokens.tokens.flatten.foreach{(token:Token) =>
-				token.updateReactions_+=(panel.UpdateAct)
-			}
-		}
 		
 		container
 	}
@@ -123,13 +108,13 @@ object BoardGamePanel {
 	}
 	
 	/* ... ... ... */
-	def currentTilesheet:RectangularTilesheet = {
+	def currentTilesheet:RectangularTilesheet[SpaceClass] = {
 		AvailibleTilesheetListModel.getElementAt(
 			myPrefs.getInt(tilesheetPrefsKey, 0)
 		)
 	}
 	
-	def currentTilesheet_=(x:RectangularTilesheet) {
+	def currentTilesheet_=(x:RectangularTilesheet[SpaceClass]) {
 		val index = tilesheets.indexOf(x);
 		myPrefs.putInt(tilesheetPrefsKey, index);
 	}

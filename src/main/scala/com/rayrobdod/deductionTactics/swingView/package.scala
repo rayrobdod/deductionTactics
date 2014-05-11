@@ -193,15 +193,15 @@ package object swingView
 	
 	/**
 	 * Creates an undetailed icon which matches some of the traits of the TokenClass
-	 * @version 2013 Jun 30
+	 * @version a.6.0
 	 */
-	def generateGenericIcon(tokenClass:TokenClass) =
+	def generateGenericIcon(atkElement:Option[Element], atkWeapon:Option[Weaponkind]) =
 	{
-		val fileName = tokenClass.atkWeapon.map{genericTokenClassFile(_)}.getOrElse(
+		val fileName = atkWeapon.map{genericTokenClassFile(_)}.getOrElse(
 				"/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/Gray shirt.png")
 		val base = ImageIO.read(this.getClass().getResource(fileName))
 		
-		tokenClass.atkElement.foreach{(elem:Element) => 
+		atkElement.foreach{(elem:Element) => 
 			(0 until base.getWidth).foreach{(x:Int) => 
 				(0 until base.getHeight).foreach{(y:Int) => 
 					if (base.getRGB(x,y) == 0xFF949494) {base.setRGB(x,y,elementToColor(elem).brighter.getRGB)}
@@ -225,7 +225,7 @@ package object swingView
 		import scala.collection.JavaConversions.iterableAsScalaIterable
 		import com.rayrobdod.util.services.ResourcesServiceLoader
 		
-		val a:Seq[URL] = new ResourcesServiceLoader(CannonicalTokenClass.SERVICE).toSeq
+		val a:Seq[URL] = new ResourcesServiceLoader(TokenClass.SERVICE).toSeq
 		
 		// Binary version
 		val b:Seq[Map[String, Icon]] = a.map{(jsonPath:URL) =>
@@ -246,7 +246,7 @@ package object swingView
 	 */
 	def tokenClassToIcon(tokenClass:TokenClass) = {
 		tokenClassNameToIcon.getOrElse(tokenClass.name,
-				generateGenericIcon(tokenClass))
+				generateGenericIcon(Option(tokenClass.atkElement), Option(tokenClass.atkWeapon)))
 	}
 	
 	/** @since a.5.0 */
@@ -275,7 +275,7 @@ package object swingView
 	 * Would thought this could have a more immediate use
 	 * @version a.5.3
 	 */
-	final val AvailibleTilesheetListModel:ListModel[RectangularTilesheet] = new ScalaSeqListModel(tilesheets)
+	final val AvailibleTilesheetListModel:ListModel[RectangularTilesheet[SpaceClass]] = new ScalaSeqListModel(tilesheets)
 	
 	
 	

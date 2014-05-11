@@ -17,9 +17,8 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
-import com.rayrobdod.deductionTactics.{CannonicalToken, Player}
-import com.rayrobdod.boardGame.{Space,
-		PhysicalStrikeCost, TokenMovementCost}
+import com.rayrobdod.deductionTactics.{Token}
+import com.rayrobdod.boardGame.{Space}
 import java.awt.event.{MouseAdapter, MouseEvent}
 
 /**
@@ -45,7 +44,7 @@ class MoveTokenMouseListener(owner:Player, space:Space, attackType:SellectAttack
 	
 	private var activeToken = owner.tokens.myTokens.head
 	
-	owner.tokens.myTokens.foreach{(token:CannonicalToken) =>
+	owner.tokens.myTokens.foreach{(token:Token) =>
 		token.selectedReactions_+={(isSelected) =>
 			if (isSelected) activeToken = token
 		}

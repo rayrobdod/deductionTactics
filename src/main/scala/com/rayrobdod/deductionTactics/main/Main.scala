@@ -82,24 +82,18 @@ object Main extends App
 		aiChooserFrame.setVisible(true)
 	}
 	
-	private def buildTeams(ais:Seq[PlayerAI], field:RectangularField, tokenPositions:Seq[Seq[(Int, Int)]]) =
+	private def buildTeams(ais:Seq[PlayerAI], field:RectangularField[SpaceClass], tokenPositions:Seq[Seq[(Int, Int)]]) =
 	{
 		val tokenClasses = ais.map{_.buildTeam}
 				// limit number of tokens to number of availiable spaces.
-				.zip(tokenPositions).map({(x:Seq[CannonicalTokenClass],y:Seq[_]) => x.take(y.size)}.tupled)
-		val canonTokens = tokenClasses.map{_.map{new CannonicalToken(_)}}
+				.zip(tokenPositions).map({(x:Seq[TokenClass],y:Seq[_]) => x.take(y.size)}.tupled)
+		val canonTokens = tokenClasses.map{_.map{new Token(_)}}
 		val mirrorTokens = canonTokens.map{_.map{new MirrorToken(_)}}
 		
-		val canonListTokens = new CannonicalListOfTokens(canonTokens)
-		val playerListOfTokens = canonTokens.zip(mirrorTokens).map{(
-			(canon:Seq[CannonicalToken], mirror:Seq[MirrorToken]) => {
-				new PlayerListOfTokens(canon, mirrorTokens diff Seq(mirror))
-			}
-		).tupled}
-		val allTokens = (canonTokens ++ mirrorTokens).flatten
+		val canonListTokens = new ListOfTokens(canonTokens)
 		
 		
-		canonTokens.foreach{(seq:Seq[CannonicalToken]) => {
+		canonTokens.foreach{(seq:Seq[Token]) => {
 			SpaceClass.tokens.tokens = SpaceClass.tokens.tokens :+ seq;
 		}}
 		allTokens.foreach{(x:Token) => {
@@ -107,8 +101,8 @@ object Main extends App
 		}}
 		
 		canonTokens.zip(tokenPositions).map(
-			{(x:Seq[CannonicalToken], y:Seq[(Int, Int)]) => x.zip(y)}.tupled
-		).flatten.foreach({(t:CannonicalToken, p:(Int,Int)) => 
+			{(x:Seq[Token], y:Seq[(Int, Int)]) => x.zip(y)}.tupled
+		).flatten.foreach({(t:Token, p:(Int,Int)) => 
 			t.requestMoveTo(field.space(p._1, p._2))
 		}.tupled)
 		
@@ -118,8 +112,8 @@ object Main extends App
 			player.ai.initialize(player, field)
 		})
 		
-		players.zip(canonTokens).foreach({(p:Player, ts:Seq[CannonicalToken]) => {
-			ts.foreach{(t:CannonicalToken) => {
+		players.zip(canonTokens).foreach({(p:Player, ts:Seq[Token]) => {
+			ts.foreach{(t:Token) => {
 				p.addStartTurnReaction(t.TurnStartReaction)
 				p.addEndTurnReaction(t.TurnEndReaction)
 				p.addStartTurnReaction(new t.StatusAct(p.tokens))

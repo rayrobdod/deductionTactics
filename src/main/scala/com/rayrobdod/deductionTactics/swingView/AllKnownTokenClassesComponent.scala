@@ -19,7 +19,7 @@ package com.rayrobdod.deductionTactics.swingView
 
 import javax.swing.{JPanel, JComponent}
 import java.awt.{FlowLayout, Container, Dimension}
-import com.rayrobdod.deductionTactics.{TokenClass, CannonicalTokenClass}
+import com.rayrobdod.deductionTactics.{TokenClass}
 import scala.collection.immutable.Seq
 
 /**
@@ -37,7 +37,7 @@ class AllKnownTokenClassesComponent extends JPanel
 		this.revalidate()
 	}
 	
-	private def tokenClassPanels:Seq[JComponent] = CannonicalTokenClass.allKnown.map(tokenClassToComponent)
+	private def tokenClassPanels:Seq[JComponent] = TokenClass.allKnown.map(tokenClassToComponent)
 	
 	this.setLayout(new FlowLayout(){
 		override def preferredLayoutSize(c:Container) = minimumLayoutSize(c)
