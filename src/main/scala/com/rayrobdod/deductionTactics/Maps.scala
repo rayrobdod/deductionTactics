@@ -77,14 +77,14 @@ object Maps {
 		layoutTable
 	}
 	
-	private def getSpaceClassLayout(index:Int, tokens:ListOfTokens):Seq[Seq[SpaceClass]] = {
+	private def getSpaceClassLayout(index:Int):Seq[Seq[SpaceClass]] = {
 		val strings = getStringLayout(index)
 		
-		strings.map{_.map{(s) => new SpaceClassFactory(tokens)(s)}}
+		strings.map{_.map{(s) => SpaceClassFactory(s)}}
 	}
 	
-	def getMap(index:Int, tokens:ListOfTokens):RectangularField[SpaceClass] = {
-		RectangularField(getSpaceClassLayout(index, tokens))
+	def getMap(index:Int):RectangularField[SpaceClass] = {
+		RectangularField(getSpaceClassLayout(index))
 	}
 	
 	def possiblePlayers(index:Int):Set[Int] = {

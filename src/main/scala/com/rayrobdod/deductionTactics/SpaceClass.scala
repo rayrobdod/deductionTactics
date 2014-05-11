@@ -129,7 +129,7 @@ import SpaceClass._
 /**
  * @since a.6.0
  */
-class SpaceClassFactory(tokens:ListOfTokens) {
+object SpaceClassFactory {
 	
 	def apply(reference:String):SpaceClass = reference match {
 		case " " => UniPassageSpaceClass.apply
