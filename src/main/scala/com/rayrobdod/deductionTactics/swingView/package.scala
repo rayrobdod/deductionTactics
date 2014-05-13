@@ -268,8 +268,8 @@ package object swingView
 	}
 	
 	
-	import com.rayrobdod.boardGame.swingView.{RectangularTilesheet /* , RectangularTilesheetLoader */}
-	val tilesheets = Seq(FieldChessTilesheet) // new RectangularTilesheetLoader("com.rayrobdod.deductionTactics.view.tilesheet").toSeq
+	import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularTilesheetLoader }
+	val tilesheets = new RectangularTilesheetLoader("com.rayrobdod.deductionTactics.view.tilesheet", SpaceClassMatcherFactory).toSeq
 	/**
 	 * A ListModel of all tilesheets.
 	 * Would thought this could have a more immediate use
