@@ -38,7 +38,7 @@ final class BlindAttackAI extends PlayerAI
 	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
 	override def buildTeam(size:Int) = randomTeam(size)
 	
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo):GameState.Action = {
 		
 		implicit object TokenPairOrdering extends Ordering[(Token, Token)] {
 			def distance(a:(Token, Token)):Int = distance(a._1, a._2)
@@ -60,15 +60,21 @@ final class BlindAttackAI extends PlayerAI
 			}}
 		}
 		
-		Seq.empty ++ queue.flatMap({(myToken:Token, hisToken:Token) => Seq(
+		(Seq.empty ++ queue.flatMap({(myToken:Token, hisToken:Token) => Seq(
 			GameState.TokenMove(myToken, hisToken.currentSpace),
 			GameState.TokenAttackDamage(myToken, hisToken)
-		)}.tupled)
+		)}.tupled)).head
 	}
 	
 	override def initialize(player:Int, initialState:GameState):Memo = ""
 	
-	override def notifyTurn(player:Int, actions:Seq[GameState.Action], memo:Memo):Memo = memo
+	override def notifyTurn(
+		player:Int,
+		action:GameState.Action,
+		beforeState:GameState,
+		afterState:GameState,
+		memo:Memo
+	):Memo = memo
 	
 	def canEquals(other:Any) = {other.isInstanceOf[BlindAttackAI]}
 	override def equals(other:Any) = {

@@ -44,18 +44,16 @@ final class PlayerTurnCycler(val players:Seq[PlayerAI], val initialState:GameSta
 					currentState.tokens.hideTokenClasses(playerOfCurrentTurn)
 			)
 			
-			val actions = players(playerOfCurrentTurn)
+			val action = players(playerOfCurrentTurn)
 					.takeTurn(playerOfCurrentTurn, playerSeenState, memos)
 			
-			currentState = actions.foldLeft(currentState){(state, a) =>
-				try {
-					a match {
-						case GameState.TokenMove(t, s) => state.tokenMove(playerOfCurrentTurn, t, s)
-						case _ => state
-					}
-				} catch {
-					case e:IllegalArgumentException => state
+			currentState = try {
+				action match {
+					case GameState.TokenMove(t, s) => currentState.tokenMove(playerOfCurrentTurn, t, s)
+					case _ => currentState
 				}
+			} catch {
+				case e:IllegalArgumentException => currentState
 			}
 						
 		}

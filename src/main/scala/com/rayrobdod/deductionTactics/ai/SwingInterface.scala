@@ -46,11 +46,11 @@ final class SwingInterface extends PlayerAI
 {
 	val endOfTurnLock = new Object();
 	
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo):GameState.Action = {
 		
 		endOfTurnLock.synchronized{ endOfTurnLock.wait() };
 		
-		Nil
+		GameState.EndOfTurn
 	}
 	
 	def initialize(player:Int, initialState:GameState):Memo =
@@ -104,7 +104,13 @@ final class SwingInterface extends PlayerAI
 		teamBuilder.currentSelection
 	}
 	
-	override def notifyTurn(player:Int, actions:Seq[GameState.Action], memo:Memo):Memo = memo
+	override def notifyTurn(
+		player:Int,
+		action:GameState.Action,
+		beforeState:GameState,
+		afterState:GameState,
+		memo:Memo
+	):Memo = memo
 	
 	// hopefully, animations will work eventually and that will
 	// inform a player of what's going on.

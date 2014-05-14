@@ -45,12 +45,24 @@ abstract class PlayerAI {
 	 * The engine calls this to make a player take its turn.
 	 * The turn ends when this method returns to its caller.
 	 */
-	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action]
+	def takeTurn(player:Int, gameState:GameState, memo:Memo):GameState.Action
 	
 	/**
 	 * Notification of what another player did on its turn.
+	 * 
+	 * @param player the player who took an action
+	 * @param action the Action taken
+	 * @param beforeState the state before the action was taken
+	 * @param afterState the state after the action was taken
+	 * @param memo the memo
 	 */
-	def notifyTurn(player:Int, actions:Seq[GameState.Action], memo:Memo):Memo
+	def notifyTurn(
+		player:Int,
+		action:GameState.Action,
+		beforeState:GameState,
+		afterState:GameState,
+		memo:Memo
+	):Memo
 	
 	/**
 	 * called once at the start of the game to allow the
