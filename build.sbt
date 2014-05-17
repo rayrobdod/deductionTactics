@@ -54,7 +54,8 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 			(abPath contains "com/rayrobdod/deductionTactics/swingView/HumanSuspicionsPanel.scala") ||
 			(abPath contains "com/rayrobdod/deductionTactics/swingView/MoveTokenMouseListener.scala") ||
 			(abPath contains "com/rayrobdod/deductionTactics/swingView/ChooserFrame.scala") ||
-			(abPath contains "com/rayrobdod/deductionTactics/main/Main.scala")
+			(abPath contains "com/rayrobdod/deductionTactics/main/Main.scala") ||
+			false
 		)
 	}
 }

@@ -68,7 +68,7 @@ final case class GameState (
  * @since a.6.0
  */
 object GameState {
-	sealed class Action
+	sealed trait Action
 	
 	case class TokenMove(token:Token, space:Space[SpaceClass]) extends Action
 	case class TokenAttackDamage(attacker:Token, attackee:Token) extends Action

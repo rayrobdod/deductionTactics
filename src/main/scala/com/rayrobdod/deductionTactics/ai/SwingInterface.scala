@@ -81,7 +81,8 @@ final class SwingInterface extends PlayerAI
 		frame.pack()
 		frame.validate()
 		frame.setVisible(true)
-		frame
+		
+		panel
 	}
 	
 	override def buildTeam(teamSize:Int) = {
@@ -110,7 +111,30 @@ final class SwingInterface extends PlayerAI
 		beforeState:GameState,
 		afterState:GameState,
 		memo:Memo
-	):Memo = memo
+	):Memo = {
+		val memo2 = memo.asInstanceOf[BoardGamePanel]
+		
+		action match {
+			case GameState.TokenMove(t, s) =>
+				val index = beforeState.tokens.indexOf(t)
+				val tokenComp = memo2.tokenComps(index)
+				tokenComp.moveToSpace(s)
+				
+			case GameState.TokenAttackDamage(a, d) =>
+				// TODO
+				None
+			case GameState.TokenAttackStatus(a, d) =>
+				// TODO
+				None
+			case GameState.EndOfTurn =>
+				None
+			case _ =>
+				None
+		}
+		
+		
+		memo2
+	}
 	
 	// hopefully, animations will work eventually and that will
 	// inform a player of what's going on.

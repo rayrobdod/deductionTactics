@@ -19,6 +19,7 @@ package com.rayrobdod.deductionTactics
 package main
 
 import scala.collection.immutable.{Seq, Set, BitSet}
+import PlayerTurnCycler._
 
 /**
  * Iterates through the players, handing out turns to each in turn.
@@ -42,31 +43,51 @@ final class PlayerTurnCycler(
 		var playerOfCurrentTurn:Int = 0
 		var memos = players.zipWithIndex.map({(p:PlayerAI,i:Int) => p.initialize(i, initialState.copy(tokens = initialState.tokens.hideTokenClasses(i)))}.tupled)
 		
+		// tart first player's turn
+		currentState = startTurn(currentState, playerOfCurrentTurn)
+		
 		while(!gameEnded) {
-			val playerSeenState = GameState(
-					currentState.board,
-					currentState.tokens.hideTokenClasses(playerOfCurrentTurn)
-			)
+			val playerSeenState = asSeenByPlayer(currentState, playerOfCurrentTurn)
+			
 			
 			val action = players(playerOfCurrentTurn)
 					.takeTurn(playerOfCurrentTurn, playerSeenState, memos)
+			
+			System.out.println(action)
 			
 			//
 			// You'd think scala would allow
 			// {{{ a = try { calcResult() } catch { case _ => None} }}}
 			// but apparently not.
 			try {
-				action match {
+				val newState = action match {
 					case GameState.TokenMove(t, s) =>
-						currentState = currentState.tokenMove(playerOfCurrentTurn, t, s)
-					case _ =>
-						currentState = currentState
+						Some(currentState.tokenMove(playerOfCurrentTurn, t, s))
+					case GameState.TokenAttackDamage(a, d) =>
+						// TODO
+						None
+					case GameState.TokenAttackStatus(a, d) =>
+						// TODO
+						None
+					case GameState.EndOfTurn =>
+						val a = endTurn(currentState)
+						playerOfCurrentTurn = (playerOfCurrentTurn + 1) % currentState.tokens.tokens.size
+						Some(startTurn(currentState, playerOfCurrentTurn))
 				}
+				newState.foreach{(a:GameState) =>
+					players.zipWithIndex.foreach({(p:PlayerAI, i:Int) =>
+						
+						val beforeView = asSeenByPlayer(currentState, i)
+						val afterView  = asSeenByPlayer(a, i)
+						
+						memos = memos.updated(i, p.notifyTurn(i, action, beforeView, afterView, memos(i)))
+					}.tupled)
+				}
+				currentState = newState.getOrElse(currentState)
+				
 			} catch {
-				case e:IllegalArgumentException =>
-					currentState = currentState
+				case e:IllegalArgumentException => {}
 			}
-			
 		}
 	}
 	
@@ -75,4 +96,28 @@ final class PlayerTurnCycler(
 		
 		BitSet.empty ++ t.aliveTokens.zipWithIndex.filter{_._1.length != 0}.map{_._2}
 	}
+}
+
+
+object PlayerTurnCycler {
+	
+	def asSeenByPlayer(gs:GameState, player:Int):GameState = {
+		GameState(gs.board, gs.tokens.hideTokenClasses(player))
+	}
+	
+	def startTurn(gs:GameState, playerNumber:Int):GameState = GameState(
+		gs.board,
+		new ListOfTokens(gs.tokens.tokens.zipWithIndex.map{(x) =>
+			if (x._2 == playerNumber) {
+				x._1.map{(t) => t.startOfTurn}
+			} else {
+				x._1
+			}
+		})
+	)
+	def endTurn(gs:GameState):GameState = GameState(
+		gs.board,
+		new ListOfTokens(gs.tokens.tokens.map{_.map{_.endOfTurn}})
+	)
+	
 }

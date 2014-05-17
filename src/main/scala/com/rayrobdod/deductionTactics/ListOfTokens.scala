@@ -43,9 +43,17 @@ final class ListOfTokens (
 	}
 	
 	
-	/** 
-	 * @since a.6.0 
-	 */
+	/**  @since a.6.0 */
+	def indexOf(t:Token) = {
+		tokens.zipWithIndex.flatMap{(a) =>
+			a._1.zipWithIndex.map{(b) => (( ((a._2, b._2)), b._1 ))}
+		}.find{_._2 == t}.map{_._1}.getOrElse{((-1,-1))}
+	}
+	/**  @since a.6.0 */
+	def tokens(i:(Int, Int)):Token = tokens(i._1)(i._2)
+	
+	
+	/**  @since a.6.0 */
 	def hideTokenClasses(playerNumber:Int):ListOfTokens = {
 		
 		new ListOfTokens(this.tokens.zipWithIndex.map{(x) =>

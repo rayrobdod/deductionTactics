@@ -54,16 +54,41 @@ final class BlindAttackAI extends PlayerAI
 		}
 		
 		val queue = new PriorityQueue ++= gameState.tokens.tokens(player).flatMap{(myToken:Token) =>
-			gameState.tokens.tokens.flatten.map{(hisToken:Token) =>
-			{
+			gameState.tokens.tokens.flatten.map{(hisToken:Token) => {
 				(myToken, hisToken)
 			}}
 		}
 		
-		(Seq.empty ++ queue.flatMap({(myToken:Token, hisToken:Token) => Seq(
-			GameState.TokenMove(myToken, hisToken.currentSpace),
+		val actions:Seq[GameState.Action] = Seq.empty ++ (
+			queue.flatMap({(myToken:Token, hisToken:Token) =>
+				val path = myToken.currentSpace.pathTo(
+					hisToken.currentSpace,
+					new MoveToCostFunction(myToken, gameState.tokens)
+				)
+				
+				path.map{(s) => GameState.TokenMove(myToken, s)}
+			}.tupled)
+				
+		) ++ queue.map({(myToken:Token, hisToken:Token) =>
 			GameState.TokenAttackDamage(myToken, hisToken)
-		)}.tupled)).head
+		}.tupled)
+		
+		// return the first legal move
+		
+		actions.filter{_ match {
+			case GameState.TokenMove(t:Token, s:Space[_]) =>
+				val distance = t.currentSpace.distanceTo(s, new MoveToCostFunction(t, gameState.tokens))
+				
+				System.out.print("\t")
+				System.out.println(distance, t.canMoveThisTurn)
+			
+				0 < distance && distance <= t.canMoveThisTurn
+			case GameState.TokenAttackDamage(m:Token, o:Token) =>
+				val distance = m.currentSpace.distanceTo(o.currentSpace, new AttackCostFunction(m, gameState.tokens))
+				
+				false // m.canAttackThisTurn && distance < m.tokenClass.map{_.range}.getOrElse(0)
+			case _ => false
+		}}.headOption.getOrElse(GameState.EndOfTurn)
 	}
 	
 	override def initialize(player:Int, initialState:GameState):Memo = ""

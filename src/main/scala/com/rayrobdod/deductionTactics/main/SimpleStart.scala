@@ -27,14 +27,14 @@ import com.rayrobdod.deductionTactics.ai._
  */
 object SimpleStart extends App {
 	
-	val players = Seq(new SwingInterface, new BlindAttackAI)
+	val players = Seq(new BlindAttackAI, new SwingInterface)
 	
 	val myTokenClass = Some(new TokenClassBlunt("Sample",
 			BodyTypes.Humanoid,
 			Elements.Fire,
 			Weaponkinds.Bladekind,
 			Statuses.Burn,
-			3, 1,
+			1, 1,
 			Directions.Left,
 			Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
 			Statuses.Burn
