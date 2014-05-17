@@ -23,6 +23,7 @@ import java.awt.{BorderLayout, GridLayout}
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
 import com.rayrobdod.boardGame.swingView.{RectangularFieldComponent => FieldComponent, RectangularTilesheet}
 import scala.collection.immutable.Seq
+import javax.swing.event.{AncestorListener, AncestorEvent}
 import javax.swing.ScrollPaneConstants.{
 		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
@@ -30,12 +31,12 @@ import javax.swing.ScrollPaneConstants.{
 		HORIZONTAL_SCROLLBAR_AS_NEEDED => scrollHorizontalAsNeeded
 }
 import javax.swing.BoxLayout.{Y_AXIS => boxYAxis}
-import javax.swing.BoxLayout
+import javax.swing.{BoxLayout, Icon}
 
 
 /**
  * @author Raymond Dodge
- * @version a.5.1
+ * @version a.6.0
  */
 class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField[SpaceClass]) extends JPanel
 {
@@ -45,13 +46,40 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField[SpaceClass]
 	val centerpiece = 
 	{
 		val tilesheetInfo = BoardGamePanel.currentTilesheet
-		
-		val fieldComp = new FieldComponent(tilesheetInfo,field)
-		
-	//	val controller = new TokenComponentController(fieldComp, tokens)
-		
-		fieldComp
+		new FieldComponent(tilesheetInfo,field)
 	}
+	
+	
+	/** @since a.6.0 */
+	val tokenComps:Map[(Int, Int), TokenComponent] = {
+		val a:Seq[((Int, Int), TokenComponent)] = tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
+			ts.zipWithIndex.map({(t:Token, j:Int) =>
+				(( ((i, j)), new TokenComponent(
+					centerpiece,
+					t.tokenClass.map{(tc) =>
+						tokenClassToIcon(tc)
+					}.getOrElse{generateGenericIcon(None, None)}
+				) ))
+			}.tupled)
+		}.tupled)
+		a.toMap
+	}
+	
+	tokenComps.values.foreach{centerpiece.tokenLayer.add(_)}
+	this.addAncestorListener(new AncestorListener() {
+		
+		override def ancestorAdded(e:AncestorEvent) {
+			tokenComps.foreach{(a) => a._2.moveToSpace(
+				tokens.tokens(a._1._1)(a._1._2).currentSpace
+			)}
+			BoardGamePanel.this.removeAncestorListener(this)
+		}
+		
+		override def ancestorMoved(e:AncestorEvent) {}  
+		override def  ancestorRemoved (e:AncestorEvent) {}  
+	})
+	
+	
 	
 	val playerTokenLists = tokens.tokens.map{(onePlayersTokenList:Seq[Token]) =>
 		val container = new JPanel()

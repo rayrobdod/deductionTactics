@@ -195,7 +195,7 @@ package object swingView
 	 * Creates an undetailed icon which matches some of the traits of the TokenClass
 	 * @version a.6.0
 	 */
-	def generateGenericIcon(atkElement:Option[Element], atkWeapon:Option[Weaponkind]) =
+	def generateGenericIcon(atkElement:Option[Element], atkWeapon:Option[Weaponkind]):Icon =
 	{
 		val fileName = atkWeapon.map{genericTokenClassFile(_)}.getOrElse(
 				"/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/Gray shirt.png")
@@ -244,7 +244,7 @@ package object swingView
 	/**
 	 * @since a.5.1
 	 */
-	def tokenClassToIcon(tokenClass:TokenClass) = {
+	def tokenClassToIcon(tokenClass:TokenClass):Icon = {
 		tokenClassNameToIcon.getOrElse(tokenClass.name,
 				generateGenericIcon(Option(tokenClass.atkElement), Option(tokenClass.atkWeapon)))
 	}

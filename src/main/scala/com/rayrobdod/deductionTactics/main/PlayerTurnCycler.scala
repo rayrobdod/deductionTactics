@@ -30,9 +30,13 @@ import scala.collection.immutable.{Seq, Set, BitSet}
  * @author Raymond Dodge
  * @version a.5.0
  */
-final class PlayerTurnCycler(val players:Seq[PlayerAI], val initialState:GameState, var timeBetweenTurns:Int = 500) extends Runnable
-{
-	def run() = {
+final class PlayerTurnCycler(
+		val players:Seq[PlayerAI],
+		val initialState:GameState,
+		var timeBetweenTurns:Int = 500
+) extends Runnable {
+	
+	def run() {
 		var currentState:GameState = initialState
 		def gameEnded = {remainingPlayers(currentState).size == 1}
 		var playerOfCurrentTurn:Int = 0
@@ -47,15 +51,22 @@ final class PlayerTurnCycler(val players:Seq[PlayerAI], val initialState:GameSta
 			val action = players(playerOfCurrentTurn)
 					.takeTurn(playerOfCurrentTurn, playerSeenState, memos)
 			
-			currentState = try {
+			//
+			// You'd think scala would allow
+			// {{{ a = try { calcResult() } catch { case _ => None} }}}
+			// but apparently not.
+			try {
 				action match {
-					case GameState.TokenMove(t, s) => currentState.tokenMove(playerOfCurrentTurn, t, s)
-					case _ => currentState
+					case GameState.TokenMove(t, s) =>
+						currentState = currentState.tokenMove(playerOfCurrentTurn, t, s)
+					case _ =>
+						currentState = currentState
 				}
 			} catch {
-				case e:IllegalArgumentException => currentState
+				case e:IllegalArgumentException =>
+					currentState = currentState
 			}
-						
+			
 		}
 	}
 	

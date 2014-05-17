@@ -12,7 +12,7 @@ crossScalaVersions ++= Seq("2.9.1", "2.9.2", "2.9.3", "2.10.3", "2.11.0-M4")
 
 exportJars := true
 
-mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
+mainClass := Some("com.rayrobdod.deductionTactics.main.SimpleStart")
 
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "SNAPSHOT")
 

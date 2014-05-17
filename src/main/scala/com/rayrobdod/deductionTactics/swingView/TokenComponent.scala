@@ -43,6 +43,7 @@ final class TokenComponent(
 
 ) extends BoardGameTokenComponent(fieldComp) {
 	this.setIcon(mainIcon)
+	this.setSize(mainIcon.getIconWidth, mainIcon.getIconHeight)
 	
 	final def beAttacked(element:Element, kind:Weaponkind) {
 		val animation = TokenComponent.BeAttackedAnimation(element, kind)
