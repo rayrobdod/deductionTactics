@@ -22,6 +22,7 @@ import Weaponkinds.Weaponkind
 import Statuses.Status
 import scala.collection.mutable.Buffer
 import com.rayrobdod.boardGame.{Space,
+		StrictRectangularSpace,
 		Token => BoardGameToken}
 
 /**
@@ -31,7 +32,7 @@ import com.rayrobdod.boardGame.{Space,
  */
 final case class Token (
 	override val currentSpace:Space[SpaceClass],
-	val currentHitpoints:Int = 256,
+	val currentHitpoints:Int = Token.maximumHitpoints,
 	val currentStatus:Option[Status] = None,
 	val currentStatusTurnsLeft:Int = 0,
 	val tokenClass:Option[TokenClass] = None,
@@ -39,8 +40,6 @@ final case class Token (
 	val canMoveThisTurn:Int = 0,
 	val canAttackThisTurn:Boolean = false
 ) extends BoardGameToken[SpaceClass](currentSpace) {
-	final val maximumHitpoints:Int = 256
-	final val baseDamage:Int = 8
 	
 	final def startOfTurn():Token = {
 		val newStatus = currentStatus.filter{(a) => currentStatusTurnsLeft >= 0}
@@ -67,4 +66,55 @@ final case class Token (
 			false
 		)
 	}
+	
+	final def takeDamage(attacker:Token, ts:ListOfTokens):Token = {
+		val attackeeClass = this.tokenClass.get
+		val attackerClass = attacker.tokenClass.get
+		
+		
+		val path = Directions.pathDirections(attacker.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]], this.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]], attacker, ts)
+		val weakDir = this.tokenClass.get.weakDirection
+		val directionMultiplier = weakDir.weaknessMultiplier(path)
+		
+		val multiplier = attackeeClass.weakWeapon(attackerClass.atkWeapon) *
+				(if (currentStatus == attackeeClass.weakStatus) {2} else {1}) *
+				(directionMultiplier) *
+				(attackeeClass.atkElement.damageModifier(attackerClass.atkElement));
+				
+		val damageDone = (if (multiplier > 8) {320} else {Token.baseDamage * multiplier}).intValue
+		
+		this.copy(currentHitpoints = currentHitpoints - damageDone)
+	}
+	
+	
+	
+	final def beAfflictedByStatus():Token = {
+		currentStatus match {
+			case None => this
+			case Some(Statuses.Sleep) =>
+				this.copy(canMoveThisTurn = 0)
+			case Some(Statuses.Snake) =>
+				this.copy(canMoveThisTurn = 1, currentHitpoints = this.currentHitpoints - Token.baseDamage)
+			case Some(Statuses.Blind) =>
+				this.copy(canAttackThisTurn = false)
+			case Some(Statuses.Burn) =>
+				this.copy(currentHitpoints = this.currentHitpoints - 2 * Token.baseDamage)
+			case Some(Statuses.Confuse) =>
+				// TODO: the randomized movement thing
+				this //		(1 to 3).foldLeft(currentSpace)(moveToRandomSpace)
+			case Some(Statuses.Neuro) => 
+				// TODO: The randomized movement thing
+				this.copy(currentHitpoints = this.currentHitpoints - Token.baseDamage)
+			case Some(Statuses.Heal) =>
+				this.copy(currentHitpoints = this.currentHitpoints + Token.baseDamage)
+			case _ =>
+				throw new IllegalStateException("I do not know how to respond to a " + currentStatus)
+		}
+	}
+}
+
+
+object Token {
+	final val maximumHitpoints:Int = 256
+	final val baseDamage:Int = 8
 }

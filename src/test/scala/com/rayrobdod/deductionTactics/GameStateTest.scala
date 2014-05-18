@@ -80,6 +80,32 @@ class GameStateTest extends FunSpec {
 			
 			
 		}
+		describe ("tokenAttackDamage") {
+			it ("Should not mutate the initial state"){
+				val initialState = genSimpleGameState()
+				val afterState = initialState.tokenAttackDamage(0,
+						initialState.tokens.tokens(0)(0),
+						initialState.tokens.tokens(1)(0)
+				)
+				assertResult(Token.maximumHitpoints)(initialState.tokens.tokens(1)(0).currentHitpoints)
+			}
+			it ("Should deal damage to the attackee"){
+				val initialState = genSimpleGameState()
+				val afterState = initialState.tokenAttackDamage(0,
+						initialState.tokens.tokens(0)(0),
+						initialState.tokens.tokens(1)(0)
+				)
+				assertResult(Token.maximumHitpoints - Token.baseDamage / 2)(afterState.tokens.tokens(1)(0).currentHitpoints)
+			}
+			it ("Should use up the Attacker's attack "){
+				val initialState = genSimpleGameState()
+				val afterState = initialState.tokenAttackDamage(0,
+						initialState.tokens.tokens(0)(0),
+						initialState.tokens.tokens(1)(0)
+				)
+				assertResult(false)(afterState.tokens.tokens(0)(0).canAttackThisTurn)
+			}
+		}
 	}
 	
 	
@@ -100,7 +126,17 @@ class GameStateTest extends FunSpec {
 		new Token(
 			currentSpace = field.space(x,y),
 			canMoveThisTurn = 3,
-			canAttackThisTurn = true
+			canAttackThisTurn = true,
+			tokenClass = Some(new TokenClassBlunt("Sample",
+					BodyTypes.Humanoid,
+					Elements.Fire,
+					Weaponkinds.Bladekind,
+					Statuses.Burn,
+					3, 3,
+					Directions.Left,
+					Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
+					Statuses.Burn
+			))
 		)
 	}
 }

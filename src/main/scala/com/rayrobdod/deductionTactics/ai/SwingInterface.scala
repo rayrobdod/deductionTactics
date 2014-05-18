@@ -107,7 +107,7 @@ final class SwingInterface extends PlayerAI
 	
 	override def notifyTurn(
 		player:Int,
-		action:GameState.Action,
+		action:GameState.Result,
 		beforeState:GameState,
 		afterState:GameState,
 		memo:Memo
@@ -115,20 +115,17 @@ final class SwingInterface extends PlayerAI
 		val memo2 = memo.asInstanceOf[BoardGamePanel]
 		
 		action match {
-			case GameState.TokenMove(t, s) =>
-				val index = beforeState.tokens.indexOf(t)
+			case GameState.TokenMoveResult(index, s) =>
 				val tokenComp = memo2.tokenComps(index)
 				tokenComp.moveToSpace(s)
 				
-			case GameState.TokenAttackDamage(a, d) =>
+			case GameState.TokenAttackDamageResult(a, d, e, k) =>
 				// TODO
 				None
-			case GameState.TokenAttackStatus(a, d) =>
+			case GameState.TokenAttackStatusResult(a, d, s) =>
 				// TODO
 				None
 			case GameState.EndOfTurn =>
-				None
-			case _ =>
 				None
 		}
 		

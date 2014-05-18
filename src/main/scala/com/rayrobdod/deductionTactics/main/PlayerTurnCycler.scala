@@ -19,6 +19,8 @@ package com.rayrobdod.deductionTactics
 package main
 
 import scala.collection.immutable.{Seq, Set, BitSet}
+import LoggerInitializer.{turnCyclerLogger => Logger}
+import java.util.logging.Level
 import PlayerTurnCycler._
 
 /**
@@ -29,7 +31,7 @@ import PlayerTurnCycler._
  * @param timeBetweenTurns a delay between turns incase the turns are moving too quickly.
  * 
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
 final class PlayerTurnCycler(
 		val players:Seq[PlayerAI],
@@ -43,7 +45,7 @@ final class PlayerTurnCycler(
 		var playerOfCurrentTurn:Int = 0
 		var memos = players.zipWithIndex.map({(p:PlayerAI,i:Int) => p.initialize(i, initialState.copy(tokens = initialState.tokens.hideTokenClasses(i)))}.tupled)
 		
-		// tart first player's turn
+		// start first player's turn
 		currentState = startTurn(currentState, playerOfCurrentTurn)
 		
 		while(!gameEnded) {
@@ -53,7 +55,7 @@ final class PlayerTurnCycler(
 			val action = players(playerOfCurrentTurn)
 					.takeTurn(playerOfCurrentTurn, playerSeenState, memos)
 			
-			System.out.println(action)
+			Logger.finer(action.getClass.getName)
 			
 			//
 			// You'd think scala would allow
@@ -64,8 +66,7 @@ final class PlayerTurnCycler(
 					case GameState.TokenMove(t, s) =>
 						Some(currentState.tokenMove(playerOfCurrentTurn, t, s))
 					case GameState.TokenAttackDamage(a, d) =>
-						// TODO
-						None
+						Some(currentState.tokenAttackDamage(playerOfCurrentTurn, a, d))
 					case GameState.TokenAttackStatus(a, d) =>
 						// TODO
 						None
@@ -74,13 +75,24 @@ final class PlayerTurnCycler(
 						playerOfCurrentTurn = (playerOfCurrentTurn + 1) % currentState.tokens.tokens.size
 						Some(startTurn(currentState, playerOfCurrentTurn))
 				}
+				val result = action match {
+					case GameState.TokenMove(t, s) =>
+						GameState.TokenMoveResult( currentState.tokens.indexOf(t), s)
+					case GameState.TokenAttackDamage(a, d) =>
+						GameState.TokenAttackDamageResult( currentState.tokens.indexOf(a), currentState.tokens.indexOf(d), a.tokenClass.get.atkElement, a.tokenClass.get.atkWeapon)
+					case GameState.TokenAttackStatus(a, d) =>
+						GameState.TokenAttackStatusResult( currentState.tokens.indexOf(a), currentState.tokens.indexOf(d), a.tokenClass.get.atkStatus)
+					case GameState.EndOfTurn =>
+						GameState.EndOfTurn
+				}
+				
 				newState.foreach{(a:GameState) =>
 					players.zipWithIndex.foreach({(p:PlayerAI, i:Int) =>
 						
 						val beforeView = asSeenByPlayer(currentState, i)
 						val afterView  = asSeenByPlayer(a, i)
 						
-						memos = memos.updated(i, p.notifyTurn(i, action, beforeView, afterView, memos(i)))
+						memos = memos.updated(i, p.notifyTurn(i, result, beforeView, afterView, memos(i)))
 					}.tupled)
 				}
 				currentState = newState.getOrElse(currentState)

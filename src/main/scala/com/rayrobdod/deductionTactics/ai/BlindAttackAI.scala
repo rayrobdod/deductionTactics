@@ -53,8 +53,8 @@ final class BlindAttackAI extends PlayerAI
 			}
 		}
 		
-		val queue = new PriorityQueue ++= gameState.tokens.tokens(player).flatMap{(myToken:Token) =>
-			gameState.tokens.tokens.flatten.map{(hisToken:Token) => {
+		val queue = new PriorityQueue ++= gameState.tokens.alivePlayerTokens(player).flatMap{(myToken:Token) =>
+			gameState.tokens.aliveNotPlayerTokens(player).flatten.map{(hisToken:Token) => {
 				(myToken, hisToken)
 			}}
 		}
@@ -79,14 +79,15 @@ final class BlindAttackAI extends PlayerAI
 			case GameState.TokenMove(t:Token, s:Space[_]) =>
 				val distance = t.currentSpace.distanceTo(s, new MoveToCostFunction(t, gameState.tokens))
 				
-				System.out.print("\t")
-				System.out.println(distance, t.canMoveThisTurn)
-			
+				Logger.finer( ((distance, t.canMoveThisTurn)).toString )
+				
 				0 < distance && distance <= t.canMoveThisTurn
 			case GameState.TokenAttackDamage(m:Token, o:Token) =>
 				val distance = m.currentSpace.distanceTo(o.currentSpace, new AttackCostFunction(m, gameState.tokens))
 				
-				false // m.canAttackThisTurn && distance < m.tokenClass.map{_.range}.getOrElse(0)
+				Logger.finer( ((m.canAttackThisTurn, distance, m.tokenClass.map{_.range}.getOrElse(-1))).toString )
+				
+				m.canAttackThisTurn && (distance <= m.tokenClass.map{_.range}.getOrElse(-1))
 			case _ => false
 		}}.headOption.getOrElse(GameState.EndOfTurn)
 	}
@@ -95,7 +96,7 @@ final class BlindAttackAI extends PlayerAI
 	
 	override def notifyTurn(
 		player:Int,
-		action:GameState.Action,
+		action:GameState.Result,
 		beforeState:GameState,
 		afterState:GameState,
 		memo:Memo

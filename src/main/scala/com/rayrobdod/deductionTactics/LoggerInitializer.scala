@@ -32,10 +32,10 @@ private[deductionTactics] object LoggerInitializer
 	cannonicalTokenLogger.addHandler(finerConsoleHander)
 	cannonicalTokenLogger.setLevel(Level.WARNING)
 	
-	val cannonicalTokenMovementLogger = Logger.getLogger(
-			"com.rayrobdod.deductionTactics.CannonicalToken~RequestMove")
-	cannonicalTokenMovementLogger.addHandler(finerConsoleHander)
-	cannonicalTokenMovementLogger.setLevel(Level.WARNING)
+	val turnCyclerLogger = Logger.getLogger(
+			"com.rayrobdod.deductionTactics.PlayerTurnCycler")
+	turnCyclerLogger.addHandler(finerConsoleHander)
+	turnCyclerLogger.setLevel(Level.FINER)
 	
 	val elementsLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.Elements")
@@ -55,7 +55,7 @@ private[deductionTactics] object LoggerInitializer
 	val blindAttackAILogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.BlindAttackAI")
 	blindAttackAILogger.addHandler(finerConsoleHander)
-	blindAttackAILogger.setLevel(Level.WARNING)
+	blindAttackAILogger.setLevel(Level.FINER)
 	
 	val sleepAbuserAILogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.SleepAbuserAI")

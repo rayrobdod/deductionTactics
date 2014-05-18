@@ -58,7 +58,7 @@ abstract class PlayerAI {
 	 */
 	def notifyTurn(
 		player:Int,
-		action:GameState.Action,
+		action:GameState.Result,
 		beforeState:GameState,
 		afterState:GameState,
 		memo:Memo
