@@ -120,9 +120,13 @@ final class SwingInterface extends PlayerAI
 				tokenComp.moveToSpace(s)
 				
 			case GameState.TokenAttackDamageResult(a, d, e, k) =>
-				// TODO
+				val tokenComp = memo2.tokenComps(d)
+				tokenComp.beAttacked(e,k)
+				
 				None
 			case GameState.TokenAttackStatusResult(a, d, s) =>
+				val tokenComp = memo2.tokenComps(d)
+				tokenComp.beAttacked(s)
 				// TODO
 				None
 			case GameState.EndOfTurn =>

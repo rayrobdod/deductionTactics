@@ -55,7 +55,7 @@ private[deductionTactics] object LoggerInitializer
 	val blindAttackAILogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.BlindAttackAI")
 	blindAttackAILogger.addHandler(finerConsoleHander)
-	blindAttackAILogger.setLevel(Level.FINER)
+	blindAttackAILogger.setLevel(Level.WARNING)
 	
 	val sleepAbuserAILogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.SleepAbuserAI")

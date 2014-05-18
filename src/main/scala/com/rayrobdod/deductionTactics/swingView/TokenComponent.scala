@@ -57,7 +57,7 @@ final class TokenComponent(
 			def animationEnded(e:AnimationEndedEvent) =
 					TokenComponent.this.setIcon(mainIcon)
 		})
-		new Thread(animation).run()
+		new Thread(animation).start()
 		// TODO: also do the text raising thing
 	}
 	
@@ -73,7 +73,7 @@ final class TokenComponent(
 			def animationEnded(e:AnimationEndedEvent) =
 					TokenComponent.this.setIcon(mainIcon)
 		})
-		new Thread(animation).run()
+		new Thread(animation).start()
 	}
 	
 }

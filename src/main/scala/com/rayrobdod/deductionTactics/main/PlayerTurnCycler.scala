@@ -66,7 +66,10 @@ final class PlayerTurnCycler(
 					case GameState.TokenMove(t, s) =>
 						Some(currentState.tokenMove(playerOfCurrentTurn, t, s))
 					case GameState.TokenAttackDamage(a, d) =>
-						Some(currentState.tokenAttackDamage(playerOfCurrentTurn, a, d))
+						val dIndex = playerSeenState.tokens.indexOf(d)
+						val d2 = currentState.tokens.tokens(dIndex)
+						
+						Some(currentState.tokenAttackDamage(playerOfCurrentTurn, a, d2))
 					case GameState.TokenAttackStatus(a, d) =>
 						// TODO
 						None
@@ -77,11 +80,23 @@ final class PlayerTurnCycler(
 				}
 				val result = action match {
 					case GameState.TokenMove(t, s) =>
-						GameState.TokenMoveResult( currentState.tokens.indexOf(t), s)
+						GameState.TokenMoveResult(
+							playerSeenState.tokens.indexOf(t),
+							s
+						)
 					case GameState.TokenAttackDamage(a, d) =>
-						GameState.TokenAttackDamageResult( currentState.tokens.indexOf(a), currentState.tokens.indexOf(d), a.tokenClass.get.atkElement, a.tokenClass.get.atkWeapon)
+						GameState.TokenAttackDamageResult(
+							playerSeenState.tokens.indexOf(a),
+							playerSeenState.tokens.indexOf(d),
+							a.tokenClass.get.atkElement,
+							a.tokenClass.get.atkWeapon
+						)
 					case GameState.TokenAttackStatus(a, d) =>
-						GameState.TokenAttackStatusResult( currentState.tokens.indexOf(a), currentState.tokens.indexOf(d), a.tokenClass.get.atkStatus)
+						GameState.TokenAttackStatusResult(
+							playerSeenState.tokens.indexOf(a),
+							playerSeenState.tokens.indexOf(d),
+							a.tokenClass.get.atkStatus
+						)
 					case GameState.EndOfTurn =>
 						GameState.EndOfTurn
 				}
