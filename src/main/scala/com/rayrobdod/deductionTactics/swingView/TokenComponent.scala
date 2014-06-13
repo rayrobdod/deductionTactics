@@ -54,8 +54,10 @@ final class TokenComponent(
 		
 		animIcon.addRepaintOnNextFrameListener(this)
 		animation.addAnimationEndedListener(new AnimationEndedListener() {
-			def animationEnded(e:AnimationEndedEvent) =
+			def animationEnded(e:AnimationEndedEvent) = {
+					System.out.println("Animation Ended")
 					TokenComponent.this.setIcon(mainIcon)
+			}
 		})
 		new Thread(animation).start()
 		// TODO: also do the text raising thing

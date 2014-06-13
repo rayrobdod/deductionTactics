@@ -40,17 +40,27 @@ import com.rayrobdod.deductionTactics.swingView.{
  * they are are equal to each other
  *
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
 final class SwingInterface extends PlayerAI
 {
 	val endOfTurnLock = new Object();
+	var takeTurnReturnValue:Option[GameState.Action] = None
 	
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo):GameState.Action = {
 		
-		endOfTurnLock.synchronized{ endOfTurnLock.wait() };
+		val a = memo.asInstanceOf[SwingInterfaceMemo]
+		a.endOfTurnButton.setEnabled(true)
 		
-		GameState.EndOfTurn
+		return endOfTurnLock.synchronized{
+			while (takeTurnReturnValue == None) { 
+				endOfTurnLock.wait()
+			}
+			
+			val retVal = takeTurnReturnValue.get
+			takeTurnReturnValue = None
+			retVal
+		}
 	}
 	
 	def initialize(player:Int, initialState:GameState):Memo =
@@ -67,8 +77,11 @@ final class SwingInterface extends PlayerAI
 		val endOfTurnButton = new JButton("End Turn")
 		endOfTurnButton.addActionListener(new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
-				endOfTurnButton.setEnabled(false)
-				endOfTurnLock.synchronized( endOfTurnLock.notifyAll() );
+				endOfTurnLock.synchronized{
+					endOfTurnButton.setEnabled(false)
+					takeTurnReturnValue = Some(GameState.EndOfTurn)
+					endOfTurnLock.notifyAll()
+				}
 			}
 		})
 		
@@ -82,7 +95,7 @@ final class SwingInterface extends PlayerAI
 		frame.validate()
 		frame.setVisible(true)
 		
-		panel
+		SwingInterfaceMemo(panel, attackTypeSelector, endOfTurnButton)
 	}
 	
 	override def buildTeam(teamSize:Int) = {
@@ -112,7 +125,7 @@ final class SwingInterface extends PlayerAI
 		afterState:GameState,
 		memo:Memo
 	):Memo = {
-		val memo2 = memo.asInstanceOf[BoardGamePanel]
+		val memo2 = memo.asInstanceOf[SwingInterfaceMemo].panel
 		
 		action match {
 			case GameState.TokenMoveResult(index, s) =>
@@ -133,8 +146,7 @@ final class SwingInterface extends PlayerAI
 				None
 		}
 		
-		
-		memo2
+		memo
 	}
 	
 	// hopefully, animations will work eventually and that will
@@ -150,3 +162,9 @@ final class SwingInterface extends PlayerAI
 	
 	override def toString = this.getClass.getName
 }
+
+final case class SwingInterfaceMemo (
+	panel:BoardGamePanel,
+	attackTypeSelector:SellectAttackTypePanel,
+	endOfTurnButton:JButton
+)

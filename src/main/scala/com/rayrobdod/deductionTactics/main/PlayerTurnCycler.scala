@@ -53,7 +53,7 @@ final class PlayerTurnCycler(
 			
 			
 			val action = players(playerOfCurrentTurn)
-					.takeTurn(playerOfCurrentTurn, playerSeenState, memos)
+					.takeTurn(playerOfCurrentTurn, playerSeenState, memos(playerOfCurrentTurn))
 			
 			Logger.finer(action.getClass.getName)
 			
