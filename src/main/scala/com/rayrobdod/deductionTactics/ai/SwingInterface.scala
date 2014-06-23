@@ -31,6 +31,7 @@ import com.rayrobdod.deductionTactics.swingView.{
 			TeamBuilderPanel,
 			MenuBar,
 			SellectAttackTypePanel,
+			MoveTokenMouseListener,
 			InputFrame
 }
 
@@ -72,6 +73,21 @@ final class SwingInterface extends PlayerAI
 		frame.getContentPane add panel
 		
 		val attackTypeSelector = new SellectAttackTypePanel()
+		val activeToken = new swingView.SharedActiveTokenProperty()
+		activeToken.value = tokens.tokens(player).head
+		
+		def writeGameAction = {(x:GameState.Action) => 
+			endOfTurnLock.synchronized {
+				takeTurnReturnValue = Option(x)
+				endOfTurnLock.notifyAll
+			}
+		}
+		
+		initialState.board.spaces.flatten.foreach{(s:Space[SpaceClass]) =>
+			panel.centerpiece.addMouseListenerToSpace(s,
+				new MoveTokenMouseListener(player, {() => tokens}, s, attackTypeSelector, writeGameAction, activeToken)
+			)
+		}
 		
 		
 		val endOfTurnButton = new JButton("End Turn")
@@ -84,6 +100,8 @@ final class SwingInterface extends PlayerAI
 				}
 			}
 		})
+		
+		//addMouseListenerToSpace(space:Space[A], l:MouseListener):Any
 		
 		
 		val southPanel = new JPanel()

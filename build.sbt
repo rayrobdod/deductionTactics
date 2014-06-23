@@ -52,7 +52,6 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithConsoleViewport.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala") ||
 			(abPath contains "com/rayrobdod/deductionTactics/swingView/HumanSuspicionsPanel.scala") ||
-			(abPath contains "com/rayrobdod/deductionTactics/swingView/MoveTokenMouseListener.scala") ||
 			(abPath contains "com/rayrobdod/deductionTactics/swingView/ChooserFrame.scala") ||
 			(abPath contains "com/rayrobdod/deductionTactics/main/Main.scala") ||
 			false
