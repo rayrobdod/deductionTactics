@@ -77,3 +77,13 @@ class MoveTokenMouseListener(
 final class SharedActiveTokenProperty {
 	var value:Token = null
 }
+
+/**
+ * 
+ * @todo utilities? JavaFX Property?
+ */
+final class ListOfTokensProperty extends Function0[ListOfTokens] {
+	var value:ListOfTokens = null
+	
+	def apply = value
+}

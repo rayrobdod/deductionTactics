@@ -83,9 +83,12 @@ final class SwingInterface extends PlayerAI
 			}
 		}
 		
+		val tokensProp = new swingView.ListOfTokensProperty
+		tokensProp.value = initialState.tokens
+		
 		initialState.board.spaces.flatten.foreach{(s:Space[SpaceClass]) =>
 			panel.centerpiece.addMouseListenerToSpace(s,
-				new MoveTokenMouseListener(player, {() => tokens}, s, attackTypeSelector, writeGameAction, activeToken)
+				new MoveTokenMouseListener(player, tokensProp, s, attackTypeSelector, writeGameAction, activeToken)
 			)
 		}
 		
@@ -113,7 +116,12 @@ final class SwingInterface extends PlayerAI
 		frame.validate()
 		frame.setVisible(true)
 		
-		SwingInterfaceMemo(panel, attackTypeSelector, endOfTurnButton)
+		SwingInterfaceMemo(
+				panel,
+				attackTypeSelector,
+				tokensProp,
+				endOfTurnButton
+		)
 	}
 	
 	override def buildTeam(teamSize:Int) = {
@@ -164,6 +172,8 @@ final class SwingInterface extends PlayerAI
 				None
 		}
 		
+		memo.asInstanceOf[SwingInterfaceMemo].currentTokens.value = afterState.tokens
+		
 		memo
 	}
 	
@@ -184,5 +194,6 @@ final class SwingInterface extends PlayerAI
 final case class SwingInterfaceMemo (
 	panel:BoardGamePanel,
 	attackTypeSelector:SellectAttackTypePanel,
+	currentTokens:swingView.ListOfTokensProperty,
 	endOfTurnButton:JButton
 )
