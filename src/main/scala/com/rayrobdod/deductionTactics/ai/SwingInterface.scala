@@ -32,6 +32,7 @@ import com.rayrobdod.deductionTactics.swingView.{
 			MenuBar,
 			SellectAttackTypePanel,
 			MoveTokenMouseListener,
+			HighlightMovableSpacesLayer,
 			InputFrame
 }
 
@@ -83,12 +84,23 @@ final class SwingInterface extends PlayerAI
 			}
 		}
 		
+		val hilightLayer = new HighlightMovableSpacesLayer(panel.centerpiece)
+		panel.centerpiece.add(hilightLayer, 0)
+		
 		val tokensProp = new swingView.ListOfTokensProperty
 		tokensProp.value = initialState.tokens
 		
 		initialState.board.spaces.flatten.foreach{(s:Space[SpaceClass]) =>
 			panel.centerpiece.addMouseListenerToSpace(s,
-				new MoveTokenMouseListener(player, tokensProp, s, attackTypeSelector, writeGameAction, activeToken)
+				new MoveTokenMouseListener(
+						player,
+						tokensProp,
+						s,
+						attackTypeSelector,
+						(t:Token, l:ListOfTokens) => hilightLayer.update(t, l, initialState.board),
+						writeGameAction,
+						activeToken
+				)
 			)
 		}
 		
@@ -104,7 +116,6 @@ final class SwingInterface extends PlayerAI
 			}
 		})
 		
-		//addMouseListenerToSpace(space:Space[A], l:MouseListener):Any
 		
 		
 		val southPanel = new JPanel()

@@ -30,6 +30,7 @@ class MoveTokenMouseListener(
 		tokens:Function0[ListOfTokens],
 		space:Space[SpaceClass],
 		attackType:SellectAttackTypePanel,
+		onSelectedTokenChanged:Function2[Token, ListOfTokens, Any],
 		writeGameAction:Function1[GameState.Action, Any],
 		activeToken:SharedActiveTokenProperty
 ) extends MouseAdapter {
@@ -43,6 +44,7 @@ class MoveTokenMouseListener(
 			if (tokenOnThisSpace.isDefined) {
 				System.out.println("Token selected")
 				activeToken.value = tokenOnThisSpace.get
+				onSelectedTokenChanged(tokenOnThisSpace.get, tokens.apply)
 			} else {
 				System.out.println("No token  to select")
 				// do nothing
@@ -79,7 +81,7 @@ final class SharedActiveTokenProperty {
 }
 
 /**
- * 
+ * So that all the TokenMouseListeners can be updated when the ListOfTOkens changes
  * @todo utilities? JavaFX Property?
  */
 final class ListOfTokensProperty extends Function0[ListOfTokens] {
