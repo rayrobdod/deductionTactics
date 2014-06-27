@@ -59,27 +59,35 @@ final class HighlightMovableSpacesLayer(fv:FieldViewer[SpaceClass]) extends JCom
 	
 	
 	
-	def update(selectedToken:Token, list:ListOfTokens, field:RectangularField[SpaceClass]) = {
+	def update(selectedTokenOption:Option[Token], list:ListOfTokens, field:RectangularField[SpaceClass]) = {
 		
-		val tokenMaxSpeed = selectedToken.tokenClass.map{_.speed}.getOrElse(0)
-		val tokenMaxRange = selectedToken.tokenClass.map{_.range}.getOrElse(0)
-		val tokenCurSpeed = selectedToken.canMoveThisTurn
-		val tokenCurRange = tokenMaxRange // the computation for curRangeSpaces checks for this
-		
-		val atf = new AttackCostFunction(selectedToken, list)
-		val mcf = new MoveToCostFunction(selectedToken, list)
-		
-		val curSpeedSpaces = selectedToken.currentSpace.spacesWithin(tokenCurSpeed, mcf) - selectedToken.currentSpace
-		val curRangeSpaces = if (selectedToken.canAttackThisTurn) {(curSpeedSpaces + selectedToken.currentSpace).map{_.spacesWithin(tokenMaxRange, atf)}.flatten -- curSpeedSpaces - selectedToken.currentSpace} else {Seq.empty}
-		val maxSpeedSpaces = selectedToken.currentSpace.spacesWithin(tokenMaxSpeed, mcf) -- curSpeedSpaces - selectedToken.currentSpace
-		val maxRangeSpaces = (maxSpeedSpaces + selectedToken.currentSpace).map{_.spacesWithin(tokenMaxRange, atf)}.flatten -- maxSpeedSpaces -- curSpeedSpaces - selectedToken.currentSpace
-		
-		val spaceToShape = {(x:Space[SpaceClass]) => fv.spaceLocation(x)}
-		
-		this.currentSpeeds = Seq.empty ++ curSpeedSpaces.map(spaceToShape)
-		this.currentRanges = Seq.empty ++ curRangeSpaces.map(spaceToShape)
-		this.maximumSpeeds = Seq.empty ++ maxSpeedSpaces.map(spaceToShape)
-		this.maximumRanges = Seq.empty ++ maxRangeSpaces.map(spaceToShape)
+		selectedTokenOption.foreach{(selectedToken) =>
+			val tokenMaxSpeed = selectedToken.tokenClass.map{_.speed}.getOrElse(0)
+			val tokenMaxRange = selectedToken.tokenClass.map{_.range}.getOrElse(0)
+			val tokenCurSpeed = selectedToken.canMoveThisTurn
+			val tokenCurRange = tokenMaxRange // the computation for curRangeSpaces checks for this
+			
+			val atf = new AttackCostFunction(selectedToken, list)
+			val mcf = new MoveToCostFunction(selectedToken, list)
+			
+			val curSpeedSpaces = selectedToken.currentSpace.spacesWithin(tokenCurSpeed, mcf) - selectedToken.currentSpace
+			val curRangeSpaces = if (selectedToken.canAttackThisTurn) {(curSpeedSpaces + selectedToken.currentSpace).map{_.spacesWithin(tokenMaxRange, atf)}.flatten -- curSpeedSpaces - selectedToken.currentSpace} else {Seq.empty}
+			val maxSpeedSpaces = selectedToken.currentSpace.spacesWithin(tokenMaxSpeed, mcf) -- curSpeedSpaces - selectedToken.currentSpace
+			val maxRangeSpaces = (maxSpeedSpaces + selectedToken.currentSpace).map{_.spacesWithin(tokenMaxRange, atf)}.flatten -- maxSpeedSpaces -- curSpeedSpaces - selectedToken.currentSpace
+			
+			val spaceToShape = {(x:Space[SpaceClass]) => fv.spaceLocation(x)}
+			
+			this.currentSpeeds = Seq.empty ++ curSpeedSpaces.map(spaceToShape)
+			this.currentRanges = Seq.empty ++ curRangeSpaces.map(spaceToShape)
+			this.maximumSpeeds = Seq.empty ++ maxSpeedSpaces.map(spaceToShape)
+			this.maximumRanges = Seq.empty ++ maxRangeSpaces.map(spaceToShape)
+		} 
+		selectedTokenOption.getOrElse{
+			this.currentSpeeds = Seq.empty
+			this.currentRanges = Seq.empty
+			this.maximumSpeeds = Seq.empty
+			this.maximumRanges = Seq.empty
+		}
 		
 		this.repaint();
 	}

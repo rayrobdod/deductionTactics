@@ -47,6 +47,11 @@ private[deductionTactics] object LoggerInitializer
 	tokenClassDecoderLogger.addHandler(finerConsoleHander)
 	tokenClassDecoderLogger.setLevel(Level.WARNING)
 	
+	val mouseListenerLogger = Logger.getLogger(
+			"com.rayrobdod.deductionTactics.swingView.MoveTokenMouseListener")
+	mouseListenerLogger.addHandler(finerConsoleHander)
+	mouseListenerLogger.setLevel(Level.FINER)
+	
 	val observeMovementLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.StandardObserveMovement")
 	observeMovementLogger.addHandler(finerConsoleHander)

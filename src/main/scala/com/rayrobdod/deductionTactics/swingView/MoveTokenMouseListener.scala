@@ -20,6 +20,7 @@ package swingView
 
 import com.rayrobdod.boardGame.{Space}
 import java.awt.event.{MouseAdapter, MouseEvent}
+import LoggerInitializer.{mouseListenerLogger => Logger}
 
 /**
  * @author Raymond Dodge
@@ -30,7 +31,7 @@ class MoveTokenMouseListener(
 		tokens:Function0[ListOfTokens],
 		space:Space[SpaceClass],
 		attackType:SellectAttackTypePanel,
-		onSelectedTokenChanged:Function2[Token, ListOfTokens, Any],
+		onSelectedTokenChanged:Function2[Option[Token], ListOfTokens, Any],
 		writeGameAction:Function1[GameState.Action, Any],
 		activeToken:SharedActiveTokenProperty
 ) extends MouseAdapter {
@@ -41,29 +42,27 @@ class MoveTokenMouseListener(
 		// TODO: right click, rather than any other than button1
 		if (e.getButton() != MouseEvent.BUTTON1) {
 			
-			if (tokenOnThisSpace.isDefined) {
-				System.out.println("Token selected")
-				activeToken.value = tokenOnThisSpace.get
-				onSelectedTokenChanged(tokenOnThisSpace.get, tokens.apply)
-			} else {
-				System.out.println("No token  to select")
-				// do nothing
-			}
-			
+			Logger.fine("Token selected")
+			activeToken.value = tokenOnThisSpace
+			onSelectedTokenChanged(tokenOnThisSpace, tokens.apply)
 			
 		} else if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
 			// if clicked on a token, attack. Else, move.
 			
 			if (tokenOnThisSpace.isDefined) {
-				System.out.println("Token Attack")
-				writeGameAction(
-					attackType.requestAttackForType(activeToken.value, tokenOnThisSpace.get)
-				)
+				Logger.fine("Token Attack")
+				activeToken.value.foreach{(t:Token) =>
+					writeGameAction(
+						attackType.requestAttackForType(t, tokenOnThisSpace.get)
+					)
+				}
 			} else {
-				System.out.println("Token Move")
-				writeGameAction(
-					GameState.TokenMove(activeToken.value, space)
-				)
+				Logger.fine("Token Move")
+				activeToken.value.foreach{(t:Token) =>
+					writeGameAction(
+						GameState.TokenMove(t, space)
+					)
+				}
 			}
 		}
 	}
@@ -77,7 +76,7 @@ class MoveTokenMouseListener(
  * @todo utilities? JavaFX Property?
  */
 final class SharedActiveTokenProperty {
-	var value:Token = null
+	var value:Option[Token] = null
 }
 
 /**
