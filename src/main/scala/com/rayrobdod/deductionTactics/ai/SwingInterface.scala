@@ -68,7 +68,7 @@ final class SwingInterface extends PlayerAI
 	def initialize(player:Int, initialState:GameState):Memo =
 	{
 		val tokens = initialState.tokens
-		val panel = new BoardGamePanel(tokens, initialState.board)
+		val panel = new BoardGamePanel(tokens, player, initialState.board)
 		val frame = new JFrame("Deduction Tactics")		
 		frame.setJMenuBar(new MenuBar)
 		frame.getContentPane add panel

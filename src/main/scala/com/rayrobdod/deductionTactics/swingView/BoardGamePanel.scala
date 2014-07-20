@@ -38,7 +38,7 @@ import javax.swing.{BoxLayout, Icon}
  * @author Raymond Dodge
  * @version a.6.0
  */
-class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField[SpaceClass]) extends JPanel
+class BoardGamePanel(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[SpaceClass]) extends JPanel
 {
 	setLayout(new BorderLayout)
 	
@@ -81,30 +81,32 @@ class BoardGamePanel(tokens:ListOfTokens, val field:RectangularField[SpaceClass]
 	
 	
 	
-	val playerTokenLists = tokens.tokens.map{(onePlayersTokenList:Seq[Token]) =>
-		val container = new JPanel()
-		container.setLayout(new BoxLayout(container, boxYAxis))
-		
-		val tokenPanels = onePlayersTokenList.map{new TokenPanel(_)}
-		// ???
-		tokenPanels.foreach{container add _}
-		
-		
-		container
+	val tokenPanels:Map[(Int, Int), TokenPanel] = {
+		val a:Seq[((Int, Int), TokenPanel)] = tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
+			ts.zipWithIndex.map({(t:Token, j:Int) =>
+				(( ((i, j)), new TokenPanel(t) ))
+			}.tupled)
+		}.tupled)
+		a.toMap
+	}
+	private val gridColCount = tokenPanels.map{_._1._2}.max + 1
+	private val gridRowCount = tokenPanels.map{_._1._1}.max + 1
+	
+	private val westPanel = new JPanel(new GridLayout(gridColCount, 1))
+	private val eastPanel = new JPanel(new GridLayout(gridColCount, gridRowCount - 1))
+	tokenPanels.toSeq.sortBy{(x) => x._1._2 * 256 + x._1._1}.foreach{
+		(x) => (if (x._1._1 == playerNumber) {westPanel} else {eastPanel}).add(x._2)
 	}
 	
-	val eastPanel = new JPanel(new GridLayout(1,playerTokenLists.length - 1))
-	playerTokenLists.tail.foreach{eastPanel.add(_)}
-	
 	// make so that pack doesn't cause a screen-consuming size
-	val westScrollPane = new JScrollPane(playerTokenLists(0),
+	private val westScrollPane = new JScrollPane(westPanel,
 			scrollVerticalAlways, scrollHorizontalNever)
 	westScrollPane.setPreferredSize(new java.awt.Dimension(westScrollPane.getPreferredSize().width + 5, 1))
-	val eastScrollPane = new JScrollPane(eastPanel,
+	private val eastScrollPane = new JScrollPane(eastPanel,
 			scrollVerticalAlways, scrollHorizontalAsNeeded)
 	eastScrollPane.setPreferredSize(new java.awt.Dimension(westScrollPane.getPreferredSize().width + 5, 1))
 	
-	val centerScrollPane = new JScrollPane(centerpiece,
+	private val centerScrollPane = new JScrollPane(centerpiece,
 			scrollVerticalAsNeeded, scrollHorizontalAsNeeded)
 	
 	this.add(centerScrollPane, BorderLayout.CENTER)
