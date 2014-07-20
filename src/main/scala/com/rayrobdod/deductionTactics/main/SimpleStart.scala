@@ -34,26 +34,22 @@ object SimpleStart extends App {
 			Elements.Fire,
 			Weaponkinds.Bladekind,
 			Statuses.Burn,
-			1, 1,
+			1, 2,
 			Directions.Left,
 			Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
 			Statuses.Burn
 	))
 	
 	val initialState = {
-		val field = RectangularField( Seq(
-				Seq( FreePassageSpaceClass.apply, FreePassageSpaceClass.apply, FreePassageSpaceClass.apply),
-				Seq( FreePassageSpaceClass.apply, FreePassageSpaceClass.apply, FreePassageSpaceClass.apply),
-				Seq( FreePassageSpaceClass.apply, FreePassageSpaceClass.apply, FreePassageSpaceClass.apply)
-		))
+		val field = RectangularField( Seq.fill(4,4)(UniPassageSpaceClass.apply) )
 		val tokens = new ListOfTokens( Seq(
 			Seq(
 				new Token(currentSpace = field.space(0,0), tokenClass = myTokenClass),
-				new Token(currentSpace = field.space(0,2), tokenClass = myTokenClass)
+				new Token(currentSpace = field.space(0,3), tokenClass = myTokenClass)
 			),
 			Seq(
-				new Token(currentSpace = field.space(2,0), tokenClass = myTokenClass),
-				new Token(currentSpace = field.space(2,2), tokenClass = myTokenClass)
+				new Token(currentSpace = field.space(3,0), tokenClass = myTokenClass),
+				new Token(currentSpace = field.space(3,3), tokenClass = myTokenClass)
 			)
 		))
 		

@@ -218,7 +218,7 @@ object UniPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
 	)
 	def unapply(a:SpaceClass) = a match {
 		case SpaceClass("Single Passage",
-			ConstantCostFunctionFactory(_:SinglePassageCostFunction),
+			SinglePassageCostFunctionFactory,
 			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
 		) => (atkCost == normalPassage)
 		case _ => false

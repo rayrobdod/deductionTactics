@@ -62,20 +62,24 @@ final class PlayerTurnCycler(
 			// {{{ a = try { calcResult() } catch { case _ => None} }}}
 			// but apparently not.
 			try {
-				val newState = action match {
+				val newState:Option[GameState] = action match {
 					case GameState.TokenMove(t, s) =>
+						Logger.finer("Token Move")
 						Some(currentState.tokenMove(playerOfCurrentTurn, t, s))
 					case GameState.TokenAttackDamage(a, d) =>
 						val dIndex = playerSeenState.tokens.indexOf(d)
 						val d2 = currentState.tokens.tokens(dIndex)
 						
+						Logger.finer("Token Attack for Damage")
 						Some(currentState.tokenAttackDamage(playerOfCurrentTurn, a, d2))
 					case GameState.TokenAttackStatus(a, d) =>
 						// TODO
+						Logger.finer("Token Attack for Status")
 						None
 					case GameState.EndOfTurn =>
 						val a = endTurn(currentState)
 						playerOfCurrentTurn = (playerOfCurrentTurn + 1) % currentState.tokens.tokens.size
+						Logger.finer("End of Turn")
 						Some(startTurn(currentState, playerOfCurrentTurn))
 				}
 				val result = action match {
@@ -103,6 +107,7 @@ final class PlayerTurnCycler(
 				
 				newState.foreach{(a:GameState) =>
 					players.zipWithIndex.foreach({(p:PlayerAI, i:Int) =>
+						Logger.finer("Notifying Player " + i)
 						
 						val beforeView = asSeenByPlayer(currentState, i)
 						val afterView  = asSeenByPlayer(a, i)

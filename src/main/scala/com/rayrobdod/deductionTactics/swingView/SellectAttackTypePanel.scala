@@ -38,7 +38,7 @@ class SellectAttackTypePanel extends JPanel
 	
 	def requestAttackForType(attacker:Token, defender:Token) =
 	{
-		if (forTypeGroup.getSelection == forStatus.getModel) {
+		if (forTypeGroup.getSelection == forDamage.getModel) {
 			GameState.TokenAttackDamage(attacker, defender)
 		} else {
 			// See if having neither button selected is possible
