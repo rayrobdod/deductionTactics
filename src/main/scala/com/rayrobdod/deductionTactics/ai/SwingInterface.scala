@@ -176,12 +176,14 @@ final class SwingInterface extends PlayerAI
 			case GameState.TokenAttackDamageResult(a, d, e, k) =>
 				val tokenComp = panel.tokenComps(d)
 				tokenComp.beAttacked(e,k)
+				panel.resetTokenPanels(afterState.tokens)
 				System.out.println("Token was attacked")
 				
 				None
 			case GameState.TokenAttackStatusResult(a, d, s) =>
 				val tokenComp = panel.tokenComps(d)
 				tokenComp.beAttacked(s)
+				panel.resetTokenPanels(afterState.tokens)
 				// TODO
 				None
 			case GameState.EndOfTurn =>

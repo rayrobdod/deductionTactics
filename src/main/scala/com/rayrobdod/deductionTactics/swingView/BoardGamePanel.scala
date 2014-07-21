@@ -81,22 +81,14 @@ class BoardGamePanel(tokens:ListOfTokens, playerNumber:Int, val field:Rectangula
 	
 	
 	
-	val tokenPanels:Map[(Int, Int), TokenPanel] = {
-		val a:Seq[((Int, Int), TokenPanel)] = tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
-			ts.zipWithIndex.map({(t:Token, j:Int) =>
-				(( ((i, j)), new TokenPanel(t) ))
-			}.tupled)
-		}.tupled)
-		a.toMap
-	}
-	private val gridColCount = tokenPanels.map{_._1._2}.max + 1
-	private val gridRowCount = tokenPanels.map{_._1._1}.max + 1
+	private var m_tokenPanels:Map[(Int, Int), TokenPanel] = Map.empty[(Int, Int), TokenPanel]
+	def tokenPanels:Map[(Int, Int), TokenPanel] = this.m_tokenPanels
+	private val gridColCount = tokenComps.map{_._1._2}.max + 1
+	private val gridRowCount = tokenComps.map{_._1._1}.max + 1
 	
 	private val westPanel = new JPanel(new GridLayout(gridColCount, 1))
 	private val eastPanel = new JPanel(new GridLayout(gridColCount, gridRowCount - 1))
-	tokenPanels.toSeq.sortBy{(x) => x._1._2 * 256 + x._1._1}.foreach{
-		(x) => (if (x._1._1 == playerNumber) {westPanel} else {eastPanel}).add(x._2)
-	}
+	this.resetTokenPanels(tokens)
 	
 	// make so that pack doesn't cause a screen-consuming size
 	private val westScrollPane = new JScrollPane(westPanel,
@@ -112,6 +104,25 @@ class BoardGamePanel(tokens:ListOfTokens, playerNumber:Int, val field:Rectangula
 	this.add(centerScrollPane, BorderLayout.CENTER)
 	this.add(westScrollPane, BorderLayout.WEST)
 	this.add(eastScrollPane, BorderLayout.EAST)
+	
+	
+	def resetTokenPanels(tokens:ListOfTokens) = {
+		val a:Seq[((Int, Int), TokenPanel)] = tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
+			ts.zipWithIndex.map({(t:Token, j:Int) =>
+				(( ((i, j)), new TokenPanel(t) ))
+			}.tupled)
+		}.tupled)
+		m_tokenPanels = a.toMap
+		
+		westPanel.removeAll()
+		eastPanel.removeAll()
+		tokenPanels.toSeq.sortBy{(x) => x._1._2 * 256 + x._1._1}.foreach{(x) =>
+			(if (x._1._1 == playerNumber) {westPanel} else {eastPanel}).add(x._2)
+		}
+		
+		eastPanel.revalidate()
+		westPanel.revalidate()
+	}
 }
 
 /**
