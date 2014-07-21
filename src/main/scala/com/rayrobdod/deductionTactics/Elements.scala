@@ -37,14 +37,6 @@ object Elements {
 			}
 		}
 		
-		def compare(other:Element):Int = {
-			val damageModifier = this.damageModifier(other)
-			
-			if (damageModifier > 1) {-1}
-			else if (damageModifier < 1) {1}
-			else {0}
-		}
-		
 		override def toString = "com.rayrobdod.deductionTactics.Elements." + name
 	}
 	
