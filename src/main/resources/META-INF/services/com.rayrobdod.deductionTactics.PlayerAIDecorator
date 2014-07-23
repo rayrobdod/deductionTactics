@@ -5,8 +5,8 @@
 #com.rayrobdod.deductionTactics.ai.WithNetworkServer
 
 ### Team Choosing algorythm overrides
-#com.rayrobdod.deductionTactics.ai.WithRandomTeam
-#com.rayrobdod.deductionTactics.ai.WithArbitraryTeam
+com.rayrobdod.deductionTactics.ai.WithRandomTeam
+com.rayrobdod.deductionTactics.ai.WithArbitraryTeam
 
 
 ### user interface stuff
