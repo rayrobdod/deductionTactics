@@ -1,18 +1,18 @@
 ### Helpers
-com.rayrobdod.deductionTactics.ai.WithAutorecord
+#com.rayrobdod.deductionTactics.ai.WithAutorecord
 
 # isn't this a 'user interface stuff'
-com.rayrobdod.deductionTactics.ai.WithNetworkServer
+#com.rayrobdod.deductionTactics.ai.WithNetworkServer
 
 ### Team Choosing algorythm overrides
-com.rayrobdod.deductionTactics.ai.WithRandomTeam
-com.rayrobdod.deductionTactics.ai.WithArbitraryTeam
+#com.rayrobdod.deductionTactics.ai.WithRandomTeam
+#com.rayrobdod.deductionTactics.ai.WithArbitraryTeam
 
 
 ### user interface stuff
-com.rayrobdod.deductionTactics.ai.WithSound
-com.rayrobdod.deductionTactics.ai.WithSwingViewport
+#com.rayrobdod.deductionTactics.ai.WithSound
+#com.rayrobdod.deductionTactics.ai.WithSwingViewport
 #com.rayrobdod.deductionTactics.ai.WithConsoleViewport
 
-com.rayrobdod.deductionTactics.ai.WithConsoleEventPrinting
+#com.rayrobdod.deductionTactics.ai.WithConsoleEventPrinting
 

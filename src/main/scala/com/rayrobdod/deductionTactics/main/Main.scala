@@ -25,7 +25,7 @@ import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
 import scala.collection.immutable.Seq
 import javax.swing.{JFrame, JButton, JPanel, JCheckBox, BorderFactory}
 import java.awt.event.{ActionEvent, ActionListener}
-import com.rayrobdod.boardGame.{RectangularField}
+import com.rayrobdod.boardGame.{RectangularField, Space}
 
 
 /**
@@ -84,36 +84,20 @@ object Main extends App
 	
 	private def buildTeams(ais:Seq[PlayerAI], field:RectangularField[SpaceClass], tokenPositions:Seq[Seq[(Int, Int)]]) =
 	{
-		val tokenClasses = ais.zip(tokenPositions.map{_.length}).map({(p:PlayerAI, l:Int) => p.buildTeam(l)}.tupled)
-				// limit number of tokens to number of availiable spaces.
-				.zip(tokenPositions).map({(x:Seq[TokenClass],y:Seq[_]) => x.take(y.size)}.tupled)
-		val tokens = tokenClasses.map{_.map{new Token(_)}}
+		val tokenClasses:Seq[Seq[TokenClass]] = ais.zip(tokenPositions.map{_.length}).map({(p:PlayerAI, l:Int) => p.buildTeam(l)}.tupled)
+		val TokenClassToSpaceIndex:Seq[Seq[(TokenClass, (Int, Int))]] = tokenClasses.zip(tokenPositions).map({(x:Seq[TokenClass],y:Seq[(Int, Int)]) => x.zip(y)}.tupled)
+		val tokenClassToSpace:Seq[Seq[(Option[TokenClass], Space[SpaceClass])]] = TokenClassToSpaceIndex.map{_.map{(x) => ((Option(x._1), field.space(x._2._1, x._2._2) ))}}
+		// limit number of tokens to number of availiable spaces.
 		
-		val tokensList = new ListOfTokens(canonTokens)
-		
-		
-		
-		canonTokens.zip(tokenPositions).map(
-			{(x:Seq[Token], y:Seq[(Int, Int)]) => x.zip(y)}.tupled
-		).flatten.foreach({(t:Token, p:(Int,Int)) => 
-			t.requestMoveTo(field.space(p._1, p._2))
-		}.tupled)
+		val tokens = new ListOfTokens( tokenClassToSpace.map{_.map{(x) => new Token(x._2, tokenClass = x._1)}} )
 		
 		
-		val players = playerListOfTokens.zip(ais).map({new Player(_, _)}.tupled)
-		players.foreach({(player:Player) =>
-			player.ai.initialize(player, field)
-		})
+		val initialState = GameState(field, tokens)
 		
-		players.zip(canonTokens).foreach({(p:Player, ts:Seq[Token]) => {
-			ts.foreach{(t:Token) => {
-				p.addStartTurnReaction(t.TurnStartReaction)
-				p.addEndTurnReaction(t.TurnEndReaction)
-				p.addStartTurnReaction(new t.StatusAct(p.tokens))
-			}}
-		}}.tupled)
+		
+		
 		
 		// run, meaning this returns when PlayerTurnCycler returns
-		new PlayerTurnCycler(players).run()
+		new PlayerTurnCycler(ais, initialState).run()
 	}
 }

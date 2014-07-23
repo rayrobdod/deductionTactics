@@ -1,15 +1,15 @@
 ### Interfaces the player can use
 com.rayrobdod.deductionTactics.ai.SwingInterface
-com.rayrobdod.deductionTactics.ai.ConsoleInterface
+#com.rayrobdod.deductionTactics.ai.ConsoleInterface
 
 ### Computer opponents
 com.rayrobdod.deductionTactics.ai.BlindAttackAI
-com.rayrobdod.deductionTactics.ai.SleepAbuserAI
-com.rayrobdod.deductionTactics.ai.GangUpAI
-com.rayrobdod.deductionTactics.ai.FieldPotentialAI
+#com.rayrobdod.deductionTactics.ai.SleepAbuserAI
+#com.rayrobdod.deductionTactics.ai.GangUpAI
+#com.rayrobdod.deductionTactics.ai.FieldPotentialAI
 
 ### A network client that recieves commands over the net
-com.rayrobdod.deductionTactics.ai.NetworkClient
+#com.rayrobdod.deductionTactics.ai.NetworkClient
 
 ### cheating computer opponents
-com.rayrobdod.deductionTactics.ai.RepeatAttackCheater
+#com.rayrobdod.deductionTactics.ai.RepeatAttackCheater
