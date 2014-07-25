@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics
 package consoleView
 
-import com.rayrobdod.boardGame.{Space, SpaceClass}
+import com.rayrobdod.boardGame.{Space}
 import scala.runtime.{AbstractFunction1 => Function1}
 
 /**
@@ -26,12 +26,11 @@ import scala.runtime.{AbstractFunction1 => Function1}
  * @since 2012 Dec 20
  * @version a.5.2
  */
-class SpaceInfoPrinter(tokens:ListOfTokens) extends Function1[Space,Unit]
+object SpaceInfoPrinter
 {
 	private def out = System.out
 	
-	def apply(space:Space) = {
-		val tokenOnSpace = tokens.aliveTokens.flatten.find{_.currentSpace == space};
+	def apply(space:Space[SpaceClass]) = {
 		val spaceClass:SpaceClass = space.typeOfSpace;
 		
 		out.print("Type of space: ");

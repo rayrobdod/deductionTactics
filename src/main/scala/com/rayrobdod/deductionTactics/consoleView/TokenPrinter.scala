@@ -36,6 +36,6 @@ object TokenPrinter extends Function1[Token,Unit]
 		out.print(' ');
 		out.println(token.currentStatusTurnsLeft)
 		
-		TokenClassPrinter(token.tokenClass)
+		token.tokenClass.foreach{(x) => TokenClassPrinter(x)}
 	}
 }

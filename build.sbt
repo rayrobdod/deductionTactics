@@ -52,11 +52,13 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 				!(abPath contains "Blind") &&
 				!(abPath contains "Team") &&
 				!(abPath contains "Sound") &&
+				!(abPath contains "Sound") &&
+				!(abPath contains "WithConsoleEventPrinting") &&
 				!(abPath contains "package")
 			) ||
-			(abPath contains "/deductionTactics/consoleView/") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface_CFN.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithConsoleViewport.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/BoardNavigator.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala") ||
 			(abPath contains "com/rayrobdod/deductionTactics/swingView/HumanSuspicionsPanel.scala") ||
 			(abPath contains "com/rayrobdod/deductionTactics/swingView/ChooserFrame.scala") ||

@@ -14,5 +14,5 @@ com.rayrobdod.deductionTactics.ai.WithSound
 com.rayrobdod.deductionTactics.ai.WithSwingViewport
 #com.rayrobdod.deductionTactics.ai.WithConsoleViewport
 
-#com.rayrobdod.deductionTactics.ai.WithConsoleEventPrinting
+com.rayrobdod.deductionTactics.ai.WithConsoleEventPrinting
 

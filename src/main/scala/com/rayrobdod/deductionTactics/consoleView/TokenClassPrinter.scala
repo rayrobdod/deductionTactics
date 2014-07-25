@@ -42,28 +42,28 @@ object TokenClassPrinter extends Function1[TokenClass,Unit]
 		out.println(tokenClass.name);
 		
 		out.print("Speed: ");
-		out.print(tokenClass.speed.getOrElse(0));
+		out.print(tokenClass.speed);
 		out.print("  Range: ");
-		out.println(tokenClass.range.getOrElse(0));
+		out.println(tokenClass.range);
 		
 		out.print("Attack:   ")
-		out.print(tokenClass.atkElement.map{getName}.getOrElse{elseString});
+		out.print(tokenClass.atkElement.name);
 		out.print("; ");
-		out.print(tokenClass.atkWeapon.map{getName}.getOrElse{elseString});
+		out.print(tokenClass.atkWeapon.name);
 		out.print("; ");
-		out.println(tokenClass.atkStatus.map{getName}.getOrElse{elseString});
+		out.println(tokenClass.atkStatus.name);
 		
 		out.print("Weakness: ")
-		out.print(tokenClass.weakDirection.map{getName}.getOrElse{elseString});
+		out.print(tokenClass.weakDirection.name);
 		out.print("; ");
 		out.print(getWeakWeapon(tokenClass));
 		out.print("; ");
-		out.println(tokenClass.weakStatus.map{getName}.getOrElse{elseString});
+		out.println(tokenClass.weakStatus.name);
 	}
 	
 	private def getWeakWeapon(tokenClass:TokenClass) = {
 		val maxWeakness = tokenClass.weakWeapon.map{
-				(x) => (( x._1, x._2.getOrElse(0f) ))
+				(x) => (( x._1, x._2 ))
 		}.maxBy{_._2}
 		
 		if (maxWeakness._2 == 0f) {
