@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{Space}
+import com.rayrobdod.boardGame.{Space, RectangularSpace}
 import com.rayrobdod.boardGame.{RectangularField => Field}
 import com.rayrobdod.deductionTactics.Statuses.Sleep
 import scala.collection.immutable.Set
@@ -42,22 +42,22 @@ class SleepAbuserAI extends PlayerAI
 		val tokens = gameState.tokens
 		val aliveEnemies = tokens.aliveNotPlayerTokens(player).flatten
 		
-		val enemyAttackRange = aliveEnemies.map(attackRangeOf).flatten
+		val enemyAttackRange = aliveEnemies.map{x => attackRangeOf(x, tokens)}.flatten
 		
 		tokens.alivePlayerTokens(player).flatMap{(myToken:Token) =>
 			
-			val myRange = attackRangeOf(myToken)
-			val myReach = moveRangeOf(myToken)
+			val myRange = attackRangeOf(myToken, tokens)
+			val myReach = moveRangeOf(myToken, tokens)
 			val attackableOtherTokens = aliveEnemies.filter{myRange contains _.currentSpace}
 			
 			if (attackableOtherTokens.isEmpty)
 			{	// wants to be out of enemy range
-				retreatFromEnemy(player, myToken, enemyAttackRange)
+				retreatFromEnemy(myToken, tokens, enemyAttackRange)
 			}
 			else
 			{	// wants to attack enemy
 				moveToAndStrikeEnemy(player, myToken, attackableOtherTokens)
-				retreatFromEnemy(player, myToken, enemyAttackRange)
+				retreatFromEnemy(myToken, tokens, enemyAttackRange)
 			}
 		}
 	}
@@ -68,20 +68,15 @@ class SleepAbuserAI extends PlayerAI
 		Random.shuffle(allWithSleep ++ allWithSleep).take(teamSize)
 	}
 	
-	def initialize(player:Player, field:Field) = {
-		// setup recorders
-		player.tokens.tokens.flatten.foreach{(mine:Token) =>
-			val attacks = new StandardObserveAttacks(mine, player.tokens)
-			
-			mine.beDamageAttackedReactions_+=(attacks)
-			mine.beStatusAttackedReactions_+=(attacks)
-		}
-		player.tokens.otherTokens.flatten.foreach{(other:Token) =>
-			val movement = new StandardObserveMovement(other)
-			other.moveReactions_+=(movement)
-			player.addStartTurnReaction(movement)
-		}
-	}
+	override def initialize(player:Int, initialState:GameState):Memo = {""}
+	
+	override def notifyTurn(
+		player:Int,
+		action:GameState.Result,
+		beforeState:GameState,
+		afterState:GameState,
+		memo:Memo
+	):Memo = "" // TODO: record information
 	
 	override def toString = this.getClass.getName
 	
@@ -89,10 +84,10 @@ class SleepAbuserAI extends PlayerAI
 	
 	
 	
-	def fleeSpace(currentSpace:Space, fleeFrom:Space):Space =
+	def fleeSpace(currentSpace:Space[SpaceClass], fleeFrom:Space[SpaceClass]):Space[SpaceClass] =
 	{
 		currentSpace match {
-			case rs:RectangularSpace => {
+			case rs:RectangularSpace[SpaceClass] => {
 				if (fleeFrom == rs.down) {rs.up.get}
 				else if (fleeFrom == rs.up) {rs.down.get}
 				else if (fleeFrom == rs.right) {rs.left.get}
@@ -104,12 +99,12 @@ class SleepAbuserAI extends PlayerAI
 	}
 	
 	/**  a subroutine of the takeTurn method */
-	def retreatFromEnemy(player:Player, myToken:Token, enemyRange:Seq[Space])
+	def retreatFromEnemy(myToken:Token, tokens:ListOfTokens, enemyRange:Seq[Space[SpaceClass]])
 	{
 		Logger.entering("com.rayrobdod.deductionTactics.ai.SleepAbuserAI",
-				"retreatFromEnemy", Seq(player, myToken, "enemyRange"))
+				"retreatFromEnemy", Seq(myToken, tokens, "enemyRange"))
 		
-		val myMoveRange = moveRangeOf(myToken)
+		val myMoveRange = moveRangeOf(myToken, tokens)
 		val safeZone = myMoveRange -- enemyRange
 		
 		{
@@ -150,12 +145,12 @@ class SleepAbuserAI extends PlayerAI
 			}
 		}
 		
-		myToken.requestMoveTo(moveTo)
+		GameState.TokenMove(myToken, moveTo)
 		
 	}
 	
 	/**  a subroutine of the takeTurn method */
-	def moveToAndStrikeEnemy(player:Player, myToken:Token, attackableOtherTokens:Seq[Token])
+	def moveToAndStrikeEnemy(myToken:Token, attackableOtherTokens:Seq[Token])
 	{
 		val awakeAttackableOtherTokens = attackableOtherTokens.filter{_.currentStatus != Some(Sleep)}
 		Logger.finer("Attackable: " + attackableOtherTokens)
