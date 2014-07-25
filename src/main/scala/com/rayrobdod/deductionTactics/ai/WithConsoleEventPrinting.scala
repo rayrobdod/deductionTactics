@@ -73,7 +73,7 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 		BoardPrinter.apply(outStream, afterState.tokens, afterState.board, Option(player))
 		outStream.println()
 		outStream.println()
-		val baseLogOut = GameStateResultToMesage(action) +: baseLogIn
+		val baseLogOut = GameStateResultToMesage(action, tokensToLetters(afterState.tokens, Option(player))) +: baseLogIn
 		baseLogOut.foreach{x => outStream.println(x)}
 		
 		
@@ -81,13 +81,13 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 	}
 	
 	
-	def GameStateResultToMesage(x:GameState.Result):String = x match {
+	def GameStateResultToMesage(x:GameState.Result, tokenIndexToChar:Function1[(Int, Int), Char]):String = x match {
 		case GameState.TokenMoveResult(tokenIndex, space) =>
-				"Token " + tokenIndex + " moved"
+				"Token " + tokenIndexToChar(tokenIndex) + " moved"
 		case GameState.TokenAttackDamageResult(attackerIndex, attackeeIndex, elem, kind) =>
-				"Token " + attackerIndex + " dealt " + elem + " " + kind + " damage to Token " + attackeeIndex
+				"Token " + tokenIndexToChar(attackerIndex) + " dealt " + elem.name + " " + kind.name + " damage to Token " + tokenIndexToChar(attackeeIndex)
 		case GameState.TokenAttackStatusResult(attackerIndex, attackeeIndex, status) =>
-				"Token " + attackerIndex + " inflicted " + status +  " on Token " + attackeeIndex
+				"Token " + tokenIndexToChar(attackerIndex) + " inflicted " + status.name +  " on Token " + tokenIndexToChar(attackeeIndex)
 		case _ =>
 			x.toString
 	}
