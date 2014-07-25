@@ -50,6 +50,7 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 	private val tallGrassLight = new Color(56, 232, 91);
 	private val tallGrassDark  = new Color(64, 223, 99);
 	private val transColor = new Color(0,0,0,0);
+	private val otherColor = new Color(0,0,0);
 	
 	def name = "Field Chess";
 	
@@ -66,6 +67,7 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 					case FlyingPassageSpaceClass() => waterDark
 					case FirePassageSpaceClass()   => lavaDark
 					case SlowPassageSpaceClass()   => tallGrassDark
+					case _ => otherColor
 				}
 			} else {
 				s match {
@@ -77,6 +79,7 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 					case FlyingPassageSpaceClass() => waterLight
 					case FirePassageSpaceClass()   => lavaLight
 					case SlowPassageSpaceClass()   => tallGrassLight
+					case _ => otherColor
 				}
 			}
 	}

@@ -242,7 +242,7 @@ object ImpassibleSpaceClass extends SpaceClassMatcher[SpaceClass] {
 		case SpaceClass("Impassible",
 			MaxCostFunctionFactory(
 				ConstantCostFunctionFactory(ConstantCostFunction(moveCost)),
-				ConstantCostFunctionFactory(_:SinglePassageCostFunction)
+				SinglePassageCostFunctionFactory
 			),
 			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
 		) => (moveCost == impossiblePassage) && (atkCost == impossiblePassage)
@@ -268,7 +268,7 @@ object AttackOnlySpaceClass extends SpaceClassMatcher[SpaceClass] {
 		case SpaceClass("Attack-only",
 			MaxCostFunctionFactory(
 				ConstantCostFunctionFactory(ConstantCostFunction(moveCost)),
-				ConstantCostFunctionFactory(_:SinglePassageCostFunction)
+				SinglePassageCostFunctionFactory
 			),
 			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
 		) => (moveCost == impossiblePassage) && (atkCost == normalPassage)
@@ -293,7 +293,7 @@ object FlyingPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
 		case SpaceClass("Flying Passage",
 			MaxCostFunctionFactory(
 				IsFlyingCostFunctionFactory,
-				ConstantCostFunctionFactory(_:SinglePassageCostFunction)
+				SinglePassageCostFunctionFactory
 			),
 			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
 		) => (atkCost == normalPassage)
@@ -318,7 +318,7 @@ object FirePassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
 		case SpaceClass("Fire Passage",
 			MaxCostFunctionFactory(
 				IsElementCostFunctionFactory(Elements.Fire),
-				ConstantCostFunctionFactory(_:SinglePassageCostFunction)
+				SinglePassageCostFunctionFactory
 			),
 			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
 		) => (atkCost == normalPassage)
@@ -344,7 +344,7 @@ object SlowPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
 		case SpaceClass("Slow Passage",
 			MaxCostFunctionFactory(
 				ConstantCostFunctionFactory(ConstantCostFunction(moveCost)),
-				ConstantCostFunctionFactory(_:SinglePassageCostFunction)
+				SinglePassageCostFunctionFactory
 			),
 			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
 		) => (moveCost == normalPassage * 2) && (atkCost == normalPassage)
