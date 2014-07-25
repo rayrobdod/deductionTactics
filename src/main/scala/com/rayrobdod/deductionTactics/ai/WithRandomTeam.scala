@@ -25,6 +25,7 @@ import com.rayrobdod.boardGame.{RectangularField => Field}
  * a random one using the package randomTeam method
  *
  * @author Raymond Dodge
+ * @version a.6.0
  */
 final class WithRandomTeam(val base:PlayerAI) extends PlayerAI
 {

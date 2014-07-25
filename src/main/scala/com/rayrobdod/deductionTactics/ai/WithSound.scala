@@ -29,7 +29,7 @@ import com.rayrobdod.boardGame.{RectangularField => Field, Space}
  * Only has one sound so far...
  *
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
 final class WithSound(val base:PlayerAI) extends PlayerAI
 {

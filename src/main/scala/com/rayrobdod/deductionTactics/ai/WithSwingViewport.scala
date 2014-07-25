@@ -28,6 +28,7 @@ import com.rayrobdod.deductionTactics.swingView.{BoardGamePanel, MenuBar, Highli
  * only matches.
  *
  * @author Raymond Dodge
+ * @version a.6.0
  */
 final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 {
