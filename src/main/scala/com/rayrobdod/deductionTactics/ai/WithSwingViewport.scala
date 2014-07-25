@@ -18,9 +18,9 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{RectangularField => Field}
+import com.rayrobdod.boardGame.{Space, RectangularField => Field}
 import javax.swing.JFrame
-import com.rayrobdod.deductionTactics.swingView.BoardGamePanel
+import com.rayrobdod.deductionTactics.swingView.{BoardGamePanel, MenuBar, HighlightMovableSpacesLayer}
 
 /**
  * A decorator for PlayerAIs. It provides a viewport to a player
@@ -32,28 +32,110 @@ import com.rayrobdod.deductionTactics.swingView.BoardGamePanel
 final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 {
 	/** Forwards command to base */
-	def takeTurn(player:Player) = base.takeTurn(player)
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo) =
+			base.takeTurn(player, gameState, memo.asInstanceOf[Tuple2[_,_]]._1)
 	/** Forwards command to base */
-	def buildTeam = base.buildTeam
+	override def buildTeam(size:Int) = base.buildTeam(size)
+	
+	
 	
 	/** Forwards command to base, then creates a new JFrame with a BoardGamePanel */
-	def initialize(player:Player, field:Field) = {
-		base.initialize(player, field)
+	def initialize(player:Int, initialState:GameState):Memo =
+	{
+		val tokens = initialState.tokens
+		val panel = new BoardGamePanel(tokens, player, initialState.board)
+		val frame = new JFrame("Deduction Tactics")		
+		frame.setJMenuBar(new MenuBar)
+		frame.getContentPane add panel
 		
-		new JFrame("Deduction Tactics - Observer"){
-			add(new BoardGamePanel(player.tokens, field))
-			pack()
-			setVisible(true)
+		val activeToken = new swingView.SharedActiveTokenProperty()
+		activeToken.value = None
+		
+		val hilightLayer = new HighlightMovableSpacesLayer(panel.centerpiece)
+		panel.centerpiece.add(hilightLayer, 0)
+		
+		
+		val tokensProp = new swingView.ListOfTokensProperty
+		tokensProp.value = initialState.tokens
+		
+		
+		
+		
+		
+		frame.pack()
+		frame.validate()
+		frame.setVisible(true)
+		
+		((
+			base.initialize(player, initialState),
+			SwingInterfaceMemo(
+					panel = panel,
+					hilightLayer = hilightLayer,
+					attackTypeSelector = new swingView.SellectAttackTypePanel(),
+					selectedToken = activeToken,
+					currentTokens = tokensProp,
+					endOfTurnButton = new javax.swing.JButton("XXXX")
+			)
+		))
+	}
+	
+	
+	
+	/**  */
+	override def notifyTurn(
+		player:Int,
+		action:GameState.Result,
+		beforeState:GameState,
+		afterState:GameState,
+		memo:Memo
+	):Memo = {
+		val memo3 = memo.asInstanceOf[Tuple2[_, _]]
+		base.notifyTurn(player, action, beforeState, afterState, memo3._1)
+		val memo2 = memo3._2.asInstanceOf[SwingInterfaceMemo]
+		val panel = memo2.panel
+		
+		System.out.println("WithSwingViewport was notified")
+		action match {
+			case GameState.TokenMoveResult(index, s) =>
+				val tokenComp = panel.tokenComps(index)
+				tokenComp.moveToSpace(s)
+				
+			case GameState.TokenAttackDamageResult(a, d, e, k) =>
+				val tokenComp = panel.tokenComps(d)
+				tokenComp.beAttacked(e,k)
+				panel.resetTokenPanels(afterState.tokens)
+				System.out.println("Token was attacked")
+				
+				None
+			case GameState.TokenAttackStatusResult(a, d, s) =>
+				val tokenComp = panel.tokenComps(d)
+				tokenComp.beAttacked(s)
+				panel.resetTokenPanels(afterState.tokens)
+				// TODO
+				None
+			case GameState.EndOfTurn =>
+				None
 		}
+		
+		
+		memo2.selectedToken.value = {
+			// this assumes that the board doesn't change.
+			val space = memo2.selectedToken.value.map{_.currentSpace}
+			afterState.tokens.tokens.flatten.find{_.currentSpace == space}
+		}
+		memo2.currentTokens.value = afterState.tokens
+		memo2.hilightLayer.update(memo2.selectedToken.value, afterState.tokens, afterState.board)
+		
+		memo
 	}
 	
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[WithRandomTeam]}
+	def canEquals(other:Any) = {other.isInstanceOf[WithSwingViewport]}
 	override def equals(other:Any) = {
-		this.canEquals(other) && other.asInstanceOf[WithRandomTeam].canEquals(this) &&
-				this.base == other.asInstanceOf[WithRandomTeam].base
+		this.canEquals(other) && other.asInstanceOf[WithSwingViewport].canEquals(this) &&
+				this.base == other.asInstanceOf[WithSwingViewport].base
 	}
 	override def hashCode = base.hashCode * 7 + 23
 	

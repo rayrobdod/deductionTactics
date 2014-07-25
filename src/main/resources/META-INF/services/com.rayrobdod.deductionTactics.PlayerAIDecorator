@@ -10,8 +10,8 @@ com.rayrobdod.deductionTactics.ai.WithArbitraryTeam
 
 
 ### user interface stuff
-#com.rayrobdod.deductionTactics.ai.WithSound
-#com.rayrobdod.deductionTactics.ai.WithSwingViewport
+com.rayrobdod.deductionTactics.ai.WithSound
+com.rayrobdod.deductionTactics.ai.WithSwingViewport
 #com.rayrobdod.deductionTactics.ai.WithConsoleViewport
 
 #com.rayrobdod.deductionTactics.ai.WithConsoleEventPrinting
