@@ -51,8 +51,8 @@ class BoardGamePanel(tokens:ListOfTokens, playerNumber:Int, val field:Rectangula
 	
 	
 	/** @since a.6.0 */
-	val tokenComps:Map[(Int, Int), TokenComponent] = {
-		val a:Seq[((Int, Int), TokenComponent)] = tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
+	val tokenComps:Map[TokenIndex, TokenComponent] = {
+		val a:Seq[(TokenIndex, TokenComponent)] = tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
 			ts.zipWithIndex.map({(t:Token, j:Int) =>
 				(( ((i, j)), new TokenComponent(
 					centerpiece,
@@ -81,8 +81,8 @@ class BoardGamePanel(tokens:ListOfTokens, playerNumber:Int, val field:Rectangula
 	
 	
 	
-	private var m_tokenPanels:Map[(Int, Int), TokenPanel] = Map.empty[(Int, Int), TokenPanel]
-	def tokenPanels:Map[(Int, Int), TokenPanel] = this.m_tokenPanels
+	private var m_tokenPanels:Map[TokenIndex, TokenPanel] = Map.empty[TokenIndex, TokenPanel]
+	def tokenPanels:Map[TokenIndex, TokenPanel] = this.m_tokenPanels
 	private val gridColCount = tokenComps.map{_._1._2}.max + 1
 	private val gridRowCount = tokenComps.map{_._1._1}.max + 1
 	
@@ -107,7 +107,7 @@ class BoardGamePanel(tokens:ListOfTokens, playerNumber:Int, val field:Rectangula
 	
 	
 	def resetTokenPanels(tokens:ListOfTokens) = {
-		val a:Seq[((Int, Int), TokenPanel)] = tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
+		val a:Seq[(TokenIndex, TokenPanel)] = tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
 			ts.zipWithIndex.map({(t:Token, j:Int) =>
 				(( ((i, j)), new TokenPanel(t) ))
 			}.tupled)

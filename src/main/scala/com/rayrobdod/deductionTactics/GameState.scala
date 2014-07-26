@@ -32,7 +32,7 @@ final case class GameState (
 	
 	def tokenMove(player:Int, token:Token, space:Space[SpaceClass]):GameState = {
 		
-		val indexOfToken:(Int, Int) = {
+		val indexOfToken:TokenIndex = {
 			val a:Seq[Seq[Token]] = tokens.tokens
 			val b:Seq[(Seq[(Token, Int)], Int)] = a.map{_.zipWithIndex}.zipWithIndex
 			val c:Seq[(Token, Int, Int)] = b.flatMap({(st:Seq[(Token, Int)], i:Int) =>
@@ -116,8 +116,8 @@ object GameState {
 	
 	sealed trait Result
 	
-	case class TokenMoveResult(tokenIndex:(Int, Int), space:Space[SpaceClass]) extends Result
-	case class TokenAttackDamageResult(attackerIndex:(Int, Int), attackeeIndex:(Int, Int), elem:Element, kind:Weaponkind) extends Result
-	case class TokenAttackStatusResult(attackerIndex:(Int, Int), attackeeIndex:(Int, Int), status:Status) extends Result
+	case class TokenMoveResult(tokenIndex:TokenIndex, space:Space[SpaceClass]) extends Result
+	case class TokenAttackDamageResult(attackerIndex:TokenIndex, attackeeIndex:TokenIndex, elem:Element, kind:Weaponkind) extends Result
+	case class TokenAttackStatusResult(attackerIndex:TokenIndex, attackeeIndex:TokenIndex, status:Status) extends Result
 	
 }

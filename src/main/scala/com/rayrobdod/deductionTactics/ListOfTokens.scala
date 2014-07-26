@@ -50,7 +50,7 @@ final class ListOfTokens (
 		}.find{_._2 == t}.map{_._1}.getOrElse{((-1,-1))}
 	}
 	/**  @since a.6.0 */
-	def tokens(i:(Int, Int)):Token = tokens(i._1)(i._2)
+	def tokens(i:TokenIndex):Token = tokens(i._1)(i._2)
 	
 	
 	/**  @since a.6.0 */
