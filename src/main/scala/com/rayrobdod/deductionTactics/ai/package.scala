@@ -63,9 +63,7 @@ package object ai
 	 * determines the spaces a token can attack
 	 * @version a.6.0
 	 */
-	object attackRangeOf 
-	{
-		def apply(token:Token, list:ListOfTokens) =
+	def attackRangeOf(token:Token, list:ListOfTokens) =
 		{
 			val speedSpaces = moveRangeOf(token, list)
 			
@@ -77,15 +75,12 @@ package object ai
 			
 			rangeSpaces
 		}
-	}
 
 	/**
 	 * determines the spaces a token can move to
 	 * @version a.6.0
 	 */
-	object moveRangeOf 
-	{
-		def apply(token:Token, list:ListOfTokens) =
+	def moveRangeOf(token:Token, list:ListOfTokens) =
 		{
 			val startSpace = token.currentSpace
 			
@@ -97,5 +92,4 @@ package object ai
 			
 			speedSpaces
 		}
-	}
 }
