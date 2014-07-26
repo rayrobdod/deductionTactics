@@ -31,11 +31,13 @@ object TokenPrinter extends Function1[Token,Unit]
 	
 	def apply(token:Token) = {
 		out.print(token.currentHitpoints);
-		out.print("/256  ");
+		out.print("/");
+		out.print(Token.maximumHitpoints);
+		out.print("  ");
 		out.print(token.currentStatus.map{_.name}.getOrElse{"No Status"});
 		out.print(' ');
 		out.println(token.currentStatusTurnsLeft)
 		
-		TokenClassPrinter(token.tokenClass)
+		token.tokenClass.foreach{(x) => TokenClassPrinter(x)}
 	}
 }

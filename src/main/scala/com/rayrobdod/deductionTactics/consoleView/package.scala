@@ -27,19 +27,29 @@ package object consoleView
 	/**
 	 * @throws IllegalArgumentException if tokens has more tokens than this has letters reserved for
 	 */
-	def tokensToLetters(tokens:ListOfTokens):Map[Token, Char] = {
+	def tokensToLetters(tokens:ListOfTokens, myTeamOpt:Option[Int]):Map[TokenIndex, Char] = {
 		val myChars = '0' to '9'
 		val enemyChars = ('a' to 'z') ++ ('A' to 'Z')
 		
-		val returnValue:Map[Token, Char] = tokens match {
-			case x:PlayerListOfTokens =>
-				(x.myTokens.zip(myChars) ++ x.otherTokens.flatten.zip(enemyChars)).toMap
-			case _ =>
-				tokens.tokens.flatten.zip(enemyChars).toMap
-		}
+		val tokensToEnemyChars = tokens.tokens.flatten.zip(enemyChars).toMap
 		
-		if (tokens.tokens.flatten.size != returnValue.size)
+		if (tokens.tokens.flatten.size != tokensToEnemyChars.size)
 			throw new IllegalArgumentException("list of tokens contained more tokens than this is capable of supporting.")
+		
+		
+		val returnValue:Map[TokenIndex, Char] = {
+			tokens.tokens.zipWithIndex.map({(ts:Seq[Token], i:Int) =>
+				ts.zipWithIndex.map({(t:Token, j:Int) =>
+					(( ((i,j)), 
+						if (myTeamOpt == Option(i)) {
+							myChars(j)
+						} else {
+							tokensToEnemyChars(t)
+						}
+					))
+				}.tupled)
+			}.tupled)
+		}.flatten.toMap
 		
 		return returnValue;
 	}

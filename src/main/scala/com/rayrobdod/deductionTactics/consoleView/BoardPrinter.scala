@@ -37,12 +37,12 @@ object BoardPrinter{
 		case _ => scala.Console.BLACK_B
 	}
 	
-	def spaceStrings(tokens:ListOfTokens, field:RectangularField, cursor:Option[Space] = None, selected:Option[Token] = None):Seq[Seq[String]] = {
-		field.spaces.map{_.map{(space:Space) =>
+	def spaceStrings(tokens:ListOfTokens, field:RectangularField[SpaceClass], team:Option[Int], cursor:Option[Space[SpaceClass]] = None, selected:Option[TokenIndex] = None):Seq[Seq[String]] = {
+		field.spaces.map{_.map{(space:Space[SpaceClass]) =>
 			val tokenOnSpace = tokens.aliveTokens.flatten.filter{_.currentSpace == space}.headOption
 			
 			val spaceClassColor = spaceToString(space.typeOfSpace)
-			val tokenString = tokenOnSpace.map{tokensToLetters(tokens)}.getOrElse{' '}
+			val tokenString = tokenOnSpace.map{tokens.indexOf}.map{tokensToLetters(tokens, team)}.getOrElse{' '}
 			val cursorColor = cursor.filter{_ == space}.map{x => scala.Console.BLINK}.getOrElse("\u001b[25m") // blink off
 			val tokenColor = if (tokenOnSpace == selected && tokenOnSpace != None) {scala.Console.BOLD} else {"\u001b[21m"}
 			
@@ -54,11 +54,10 @@ object BoardPrinter{
 	//val (tl, tr, bl, br, horiz, vert) = ('┏', '┓', '┗', '┛', '━', '┃')
 	private val (tl, tr, bl, br, horiz, vert) = (',', '.', '`', '\'', '-', '|')
 
-	def apply(out:PrintStream, tokens:ListOfTokens, field:RectangularField, cursor:Option[Space] = None, selected:Option[Token] = None) {
-		val strings = spaceStrings(tokens, field, cursor, selected)
+	def apply(out:PrintStream, tokens:ListOfTokens, field:RectangularField[SpaceClass], team:Option[Int], cursor:Option[Space[SpaceClass]] = None, selected:Option[TokenIndex] = None) {
+		val strings = spaceStrings(tokens, field, team, cursor, selected)
 		
 		strings.flatten.foreach{ x => System.out.print( x ) }
-		out.println( scala.Console.RESET )
 	}
 }
 

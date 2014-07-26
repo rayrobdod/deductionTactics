@@ -21,37 +21,111 @@ package ai
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.Status
+import java.io.PrintStream
 import com.rayrobdod.boardGame.{RectangularField => Field, Token => BoardGameToken, Space}
+import com.rayrobdod.deductionTactics.consoleView._
 
 /**
  * A decorator for PlayerAIs. It prints to console events that happen
  *
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
 final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 {
 	/** Forwards command to base */
-	def takeTurn(player:Player) = base.takeTurn(player)
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo) =
+			base.takeTurn(player, gameState, memo.asInstanceOf[Tuple5[_,_,_,_,_]]._1)
 	/** Forwards command to base */
-	def buildTeam = base.buildTeam
+	override def buildTeam(size:Int) = base.buildTeam(size)
+	
+	
 	
 	/** Forwards command to base, then creates a new JFrame with a BoardGamePanel */
-	def initialize(player:Player, field:Field) = {
-		base.initialize(player, field)
+	def initialize(player:Int, initialState:GameState):Memo =
+	{
+		val activeToken = new SharedActiveTokenProperty
+		val currentState = new SharedGameStateProperty(initialState)
+		val outStream = System.out
 		
-		player.tokens.tokens.flatten.zipWithIndex.foreach({(t:Token, i:Int) =>
-			import WithConsoleEventPrinting._
-			val name = "Token " + i
-			
-			t.moveReactions_+=( new PrintMove(name) )
-			t.selectedReactions_+=( new PrintBeSelected(name) )
-			
-			t.diedReactions_+=( new PrintDied(name) )
-			t.updateReactions_+=( new PrintUpdate(name) )
-			t.beDamageAttackedReactions_+=( new PrintDamageAttack(name) )
-			t.beStatusAttackedReactions_+=( new PrintStatusAttack(name) )
-		}.tupled)
+		val t = new Thread(new TokenSelector(
+			player,
+			initialState,
+			System.in,
+			{(index:Option[TokenIndex]) =>
+				activeToken.value = index
+				printEverything(outStream, player, currentState.value, activeToken, Nil )
+			}
+		), "WithConsoleEventPrinting.Input")
+		t.setDaemon(true)
+		t.start()
+		
+		((
+			base.initialize(player, initialState),
+			Nil,
+			outStream,
+			currentState,
+			activeToken
+		))
+	}
+	
+	
+	
+	/**  */
+	override def notifyTurn(
+		player:Int,
+		action:GameState.Result,
+		beforeState:GameState,
+		afterState:GameState,
+		memo:Memo
+	):Memo = {
+		val memoAsTuple = memo.asInstanceOf[Tuple5[_, _, _, _, _]]
+		val baseMemoIn = memoAsTuple._1
+		val baseMemoOut = base.notifyTurn(player, action, beforeState, afterState, baseMemoIn)
+		
+		val baseLogIn = memoAsTuple._2.asInstanceOf[Seq[_]].map{_.toString}
+		val outStream = memoAsTuple._3.asInstanceOf[PrintStream]
+		val sharedState = memoAsTuple._4.asInstanceOf[SharedGameStateProperty]
+		val sharedToken = memoAsTuple._5.asInstanceOf[SharedActiveTokenProperty]
+		
+		sharedState.value = afterState
+		val baseLogOut = (GameStateResultToMesage(action, tokensToLetters(afterState.tokens, Option(player))) +: baseLogIn).take(10)
+		printEverything(outStream, player, afterState, sharedToken, baseLogOut )
+		
+		
+		(( baseMemoOut, baseLogOut, outStream, sharedState, sharedToken))
+	}
+	
+	private def printEverything(
+		outStream:PrintStream,
+		player:Int,
+		afterState:GameState,
+		sharedToken:SharedActiveTokenProperty,
+		eventLog:Seq[String]
+	
+	) {
+		outStream.println( controlCursorToTop )
+		outStream.println( controlClearRest )
+		BoardPrinter.apply(outStream, afterState.tokens, afterState.board, Option(player), None, sharedToken.value)
+		outStream.println( scala.Console.RESET )
+		outStream.println()
+		sharedToken.value.foreach{(x:TokenIndex) =>
+			TokenPrinter(afterState.tokens.tokens(x))
+		}
+		outStream.println()
+		eventLog.foreach{x => outStream.println(x)}
+	}
+	
+	
+	private def GameStateResultToMesage(x:GameState.Result, tokenIndexToChar:Function1[TokenIndex, Char]):String = x match {
+		case GameState.TokenMoveResult(tokenIndex, space) =>
+				"Token " + tokenIndexToChar(tokenIndex) + " moved"
+		case GameState.TokenAttackDamageResult(attackerIndex, attackeeIndex, elem, kind) =>
+				"Token " + tokenIndexToChar(attackerIndex) + " dealt " + elem.name + " " + kind.name + " damage to Token " + tokenIndexToChar(attackeeIndex)
+		case GameState.TokenAttackStatusResult(attackerIndex, attackeeIndex, status) =>
+				"Token " + tokenIndexToChar(attackerIndex) + " inflicted " + status.name +  " on Token " + tokenIndexToChar(attackeeIndex)
+		case _ =>
+			x.toString
 	}
 	
 	
@@ -67,57 +141,3 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 	override def toString = base.toString + " with " + this.getClass.getName
 }
 
-object WithConsoleEventPrinting {
-	val out = System.out
-	import scala.runtime.{AbstractFunction2 => AFunction2, AbstractFunction1 => AFunction1}
-	
-	final class PrintBeSelected(tokenName:String) extends AFunction1[Boolean, Unit] with BoardGameToken.SelectedReactionType {
-		def apply(b:Boolean) = {
-			out.print(tokenName)
-			out.print(": Selected(")
-			out.print(b)
-			out.println(")")
-		}
-	}
-	
-	final class PrintMove(tokenName:String) extends AFunction2[Space, Boolean, Unit] with BoardGameToken.MoveReactionType {
-		def apply(s:Space, b:Boolean) = {
-			out.print(tokenName)
-			out.println(": Moved(-, -)")
-		}
-	}
-	
-	final class PrintUpdate(tokenName:String) extends Function0[Unit] {
-		def apply() = {
-			out.print(tokenName)
-			out.println(": Update")
-		}
-	}
-	
-	final class PrintDamageAttack(tokenName:String) extends Token.DamageAttackedReactionType {
-		def apply(atkElem:Element, atkKind:Weaponkind, damage:Int, attackerSpace:Space):Unit = {
-			out.print(tokenName)
-			out.print(": DamageAttack(")
-			out.print(atkElem)
-			out.print(", ")
-			out.print(atkKind)
-			out.println(", -)")
-		}
-	}
-	
-	final class PrintStatusAttack(tokenName:String) extends Token.StatusAttackedReactionType {
-		def apply(atkStatus:Status, attackerSpace:Space):Unit = {
-			out.print(tokenName)
-			out.print(": StatusAttack(")
-			out.print(atkStatus)
-			out.println(", -)")
-		}
-	}
-	
-	final class PrintDied(tokenName:String) extends Function0[Unit] {
-		def apply() = {
-			out.print(tokenName)
-			out.println(": Died")
-		}
-	}
-}
