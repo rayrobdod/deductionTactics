@@ -69,8 +69,10 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 		val outStream = memoAsTuple._3.asInstanceOf[PrintStream]
 		
 		
-		outStream.println( scala.Console.RESET )
+		outStream.println( controlCursorToTop )
+		outStream.println( controlClearRest )
 		BoardPrinter.apply(outStream, afterState.tokens, afterState.board, Option(player))
+		outStream.println( scala.Console.RESET )
 		outStream.println()
 		outStream.println()
 		val baseLogOut = GameStateResultToMesage(action, tokensToLetters(afterState.tokens, Option(player))) +: baseLogIn
