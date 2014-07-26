@@ -18,6 +18,8 @@
 package com.rayrobdod.deductionTactics
 // http://en.wikipedia.org/wiki/Blackboard_system
 
+import BodyTypes.BodyType
+import Directions.Direction
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.{Status, Sleep}
@@ -98,4 +100,25 @@ package object ai
 			speedSpaces
 		}
 	}
+	
+	
+	/** @version a.6.0 */
+	case class Blackboard(
+		val attacks:Seq[GameState.Result],
+		val finalConclusions:Map[(Int, Int), TokenClassSuspision]
+	)
+	
+	/** @version a.6.0 */
+	case class TokenClassSuspision(
+		val body:Option[BodyType] = None,
+		val atkElement:Option[Element] = None,
+		val atkWeapon:Option[Weaponkind] = None,
+		val atkStatus:Option[Status] = None,
+		val range:Option[Int] = None,
+		val speed:Option[Int] = None,
+		
+		val weakDirection:Option[Direction] = None,
+		val weakWeapon:Map[Weaponkind,Option[Float]] = Weaponkinds.values.map{((_, None))}.toMap,
+		val weakStatus:Option[Status] = None
+	)
 }
