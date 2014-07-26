@@ -25,14 +25,14 @@ final class TokenSelector (
 	val player:Int,
 	var currentState:GameState,
 	val inStream:InputStream,
-	val reprint:Function1[Option[(Int, Int)], Unit]
+	val reprint:Function1[Option[TokenIndex], Unit]
 ) extends Runnable {
 	var shouldStop:Boolean = false
 	
 	def run() {
 		while (! shouldStop) {
 			val c = inStream.read.toChar
-			val charToTokenIndex:Map[Char, (Int, Int)] = tokensToLetters(currentState.tokens, Some(player)).map{x => ((x._2, x._1))}.toMap
+			val charToTokenIndex:Map[Char, TokenIndex] = tokensToLetters(currentState.tokens, Some(player)).map{_.swap}.toMap
 			if (charToTokenIndex.contains(c)) {
 				val tokenIndex = charToTokenIndex.get(c)
 				reprint(tokenIndex)
@@ -50,7 +50,7 @@ final class TokenSelector (
  * @todo utilities? JavaFX Property?
  */
 final class SharedActiveTokenProperty {
-	var value:Option[(Int, Int)] = None
+	var value:Option[TokenIndex] = None
 }
 
 /**

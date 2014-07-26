@@ -25,6 +25,8 @@ import com.rayrobdod.boardGame.{Space => BoardGameSpace}
  */
 package object deductionTactics
 {
+	type TokenIndex = Tuple2[Int, Int]
+	
 	/** Returns a formatted version number for this package based on a found MANIFEST.MF */
 	def VERSION = {
 		val v = java.lang.Package.getPackage("com.rayrobdod.deductionTactics").getImplementationVersion();

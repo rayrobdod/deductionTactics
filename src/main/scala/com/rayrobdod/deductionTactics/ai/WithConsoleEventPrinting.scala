@@ -52,7 +52,7 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 			player,
 			initialState,
 			System.in,
-			{(index:Option[(Int, Int)]) =>
+			{(index:Option[TokenIndex]) =>
 				activeToken.value = index
 				printEverything(outStream, player, currentState.value, activeToken, Nil )
 			}
@@ -109,7 +109,7 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 		BoardPrinter.apply(outStream, afterState.tokens, afterState.board, Option(player), None, sharedToken.value)
 		outStream.println( scala.Console.RESET )
 		outStream.println()
-		sharedToken.value.foreach{(x:(Int, Int)) =>
+		sharedToken.value.foreach{(x:TokenIndex) =>
 			TokenPrinter(afterState.tokens.tokens(x))
 		}
 		outStream.println()
@@ -117,7 +117,7 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 	}
 	
 	
-	private def GameStateResultToMesage(x:GameState.Result, tokenIndexToChar:Function1[(Int, Int), Char]):String = x match {
+	private def GameStateResultToMesage(x:GameState.Result, tokenIndexToChar:Function1[TokenIndex, Char]):String = x match {
 		case GameState.TokenMoveResult(tokenIndex, space) =>
 				"Token " + tokenIndexToChar(tokenIndex) + " moved"
 		case GameState.TokenAttackDamageResult(attackerIndex, attackeeIndex, elem, kind) =>
