@@ -21,13 +21,19 @@ package ai
 import com.rayrobdod.boardGame.{Space, RectangularSpace}
 import com.rayrobdod.boardGame.{RectangularField => Field}
 import com.rayrobdod.deductionTactics.Statuses.Sleep
-import scala.collection.immutable.Set
+import scala.collection.immutable.{Seq, Set, Map}
 import LoggerInitializer.{sleepAbuserAILogger => Logger}
 import scala.math.Ordering
 import scala.util.Random
 
 /**
  * An AI that will use the sleep status to its advantage
+ *
+ * The basic idea behind this strategy is
+ *   1. Approach cautiously
+ *   2. Strike with a Sleep status when given the opportunity
+ *   3. Keep out of enemy's range, and attack each turn until sleep wears off
+ *   *. Repeat
  *
  * @author Raymond Dodge
  * @version a.5.0
@@ -52,12 +58,12 @@ class SleepAbuserAI extends PlayerAI
 			
 			if (attackableOtherTokens.isEmpty)
 			{	// wants to be out of enemy range
-				retreatFromEnemy(myToken, tokens, enemyAttackRange)
+				retreatFromEnemy(player, myToken, tokens, enemyAttackRange)
 			}
 			else
 			{	// wants to attack enemy
 				moveToAndStrikeEnemy(player, myToken, attackableOtherTokens)
-				retreatFromEnemy(myToken, tokens, enemyAttackRange)
+				retreatFromEnemy(player, myToken, tokens, enemyAttackRange)
 			}
 		}
 	}
@@ -68,7 +74,17 @@ class SleepAbuserAI extends PlayerAI
 		Random.shuffle(allWithSleep ++ allWithSleep).take(teamSize)
 	}
 	
-	override def initialize(player:Int, initialState:GameState):Memo = {""}
+	override def initialize(player:Int, initialState:GameState):Memo = {
+		((
+			new Blackboard(Seq.empty[GameState.Result],
+				initialState.tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
+					ts.zipWithIndex.map({(t:Token, j:Int) =>
+						(( ((i, j)), new TokenClassSuspision() ))
+					}.tupled)
+				}.tupled).toMap
+			)
+		))
+	}
 	
 	override def notifyTurn(
 		player:Int,
@@ -99,7 +115,7 @@ class SleepAbuserAI extends PlayerAI
 	}
 	
 	/**  a subroutine of the takeTurn method */
-	def retreatFromEnemy(myToken:Token, tokens:ListOfTokens, enemyRange:Seq[Space[SpaceClass]])
+	def retreatFromEnemy(player:Int, myToken:Token, tokens:ListOfTokens, enemyRange:Seq[Space[SpaceClass]])
 	{
 		Logger.entering("com.rayrobdod.deductionTactics.ai.SleepAbuserAI",
 				"retreatFromEnemy", Seq(myToken, tokens, "enemyRange"))
@@ -108,16 +124,16 @@ class SleepAbuserAI extends PlayerAI
 		val safeZone = myMoveRange -- enemyRange
 		
 		{
-			val targetableByToSpace = myMoveRange.groupBy{(rangeSpace:Space) => 
-				player.tokens.aliveOtherTokens.flatten.count{attackRangeOf(_) contains rangeSpace}
+			val targetableByToSpace = myMoveRange.groupBy{(rangeSpace:Space[SpaceClass]) => 
+				tokens.aliveNotPlayerTokens(player).flatten.count{attackRangeOf(_, tokens) contains rangeSpace}
 			}
 			Logger.finer("Zones: " + targetableByToSpace)
 		}
 		
 		val moveTo = if (safeZone.isEmpty) {
 			// is in as few token's ranges as possible
-			val targetableByToSpace = myMoveRange.groupBy{(rangeSpace:Space) => 
-				player.tokens.aliveOtherTokens.flatten.count{attackRangeOf(_) contains rangeSpace}
+			val targetableByToSpace = myMoveRange.groupBy{(rangeSpace:Space[SpaceClass]) => 
+				tokens.aliveNotPlayerTokens(player).flatten.count{attackRangeOf(_, tokens) contains rangeSpace}
 			}
 			Logger.finer("Zones: " + targetableByToSpace)
 			val safestZone = targetableByToSpace.minBy{_._1}._2
@@ -136,8 +152,8 @@ class SleepAbuserAI extends PlayerAI
 			// safezone space closest to any enemy token
 			Logger.finer("Safe Zone")
 			
-			safeZone.minBy{(mySpace:Space) =>
-				val closestToken = player.tokens.aliveOtherTokens.flatten.minBy{(hisToken:Token) =>
+			safeZone.minBy{(mySpace:Space[SpaceClass]) =>
+				val closestToken = tokens.aliveNotPlayerTokens(player).flatten.minBy{(hisToken:Token) =>
 					mySpace.distanceTo(hisToken.currentSpace, hisToken, TokenMovementCost)
 				}
 				
