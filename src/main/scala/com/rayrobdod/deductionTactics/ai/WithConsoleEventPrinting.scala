@@ -35,7 +35,7 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 {
 	/** Forwards command to base */
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo) =
-			base.takeTurn(player, gameState, memo.asInstanceOf[Tuple3[_,_,_]]._1)
+			base.takeTurn(player, gameState, memo.asInstanceOf[Tuple5[_,_,_,_,_]]._1)
 	/** Forwards command to base */
 	override def buildTeam(size:Int) = base.buildTeam(size)
 	
@@ -44,10 +44,28 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 	/** Forwards command to base, then creates a new JFrame with a BoardGamePanel */
 	def initialize(player:Int, initialState:GameState):Memo =
 	{
+		val activeToken = new SharedActiveTokenProperty
+		val currentState = new SharedGameStateProperty(initialState)
+		val outStream = System.out
+		
+		val t = new Thread(new TokenSelector(
+			player,
+			initialState,
+			System.in,
+			{(index:Option[(Int, Int)]) =>
+				activeToken.value = index
+				printEverything(outStream, player, currentState.value, activeToken, Nil )
+			}
+		), "WithConsoleEventPrinting.Input")
+		t.setDaemon(true)
+		t.start()
+		
 		((
 			base.initialize(player, initialState),
 			Nil,
-			System.out
+			outStream,
+			currentState,
+			activeToken
 		))
 	}
 	
@@ -61,29 +79,45 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 		afterState:GameState,
 		memo:Memo
 	):Memo = {
-		val memoAsTuple = memo.asInstanceOf[Tuple3[_, _, _]]
+		val memoAsTuple = memo.asInstanceOf[Tuple5[_, _, _, _, _]]
 		val baseMemoIn = memoAsTuple._1
 		val baseMemoOut = base.notifyTurn(player, action, beforeState, afterState, baseMemoIn)
 		
 		val baseLogIn = memoAsTuple._2.asInstanceOf[Seq[_]].map{_.toString}
 		val outStream = memoAsTuple._3.asInstanceOf[PrintStream]
+		val sharedState = memoAsTuple._4.asInstanceOf[SharedGameStateProperty]
+		val sharedToken = memoAsTuple._5.asInstanceOf[SharedActiveTokenProperty]
+		
+		sharedState.value = afterState
+		val baseLogOut = (GameStateResultToMesage(action, tokensToLetters(afterState.tokens, Option(player))) +: baseLogIn).take(10)
+		printEverything(outStream, player, afterState, sharedToken, baseLogOut )
 		
 		
+		(( baseMemoOut, baseLogOut, outStream, sharedState, sharedToken))
+	}
+	
+	private def printEverything(
+		outStream:PrintStream,
+		player:Int,
+		afterState:GameState,
+		sharedToken:SharedActiveTokenProperty,
+		eventLog:Seq[String]
+	
+	) {
 		outStream.println( controlCursorToTop )
 		outStream.println( controlClearRest )
-		BoardPrinter.apply(outStream, afterState.tokens, afterState.board, Option(player))
+		BoardPrinter.apply(outStream, afterState.tokens, afterState.board, Option(player), None, sharedToken.value)
 		outStream.println( scala.Console.RESET )
 		outStream.println()
+		sharedToken.value.foreach{(x:(Int, Int)) =>
+			TokenPrinter(afterState.tokens.tokens(x))
+		}
 		outStream.println()
-		val baseLogOut = GameStateResultToMesage(action, tokensToLetters(afterState.tokens, Option(player))) +: baseLogIn
-		baseLogOut.foreach{x => outStream.println(x)}
-		
-		
-		(( baseMemoOut, baseLogOut.take(5), outStream))
+		eventLog.foreach{x => outStream.println(x)}
 	}
 	
 	
-	def GameStateResultToMesage(x:GameState.Result, tokenIndexToChar:Function1[(Int, Int), Char]):String = x match {
+	private def GameStateResultToMesage(x:GameState.Result, tokenIndexToChar:Function1[(Int, Int), Char]):String = x match {
 		case GameState.TokenMoveResult(tokenIndex, space) =>
 				"Token " + tokenIndexToChar(tokenIndex) + " moved"
 		case GameState.TokenAttackDamageResult(attackerIndex, attackeeIndex, elem, kind) =>
