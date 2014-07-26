@@ -140,9 +140,9 @@ class SleepAbuserAI extends PlayerAI
 			Logger.finer("Safest Zone Number: " + targetableByToSpace.minBy{_._1}._1)
 			
 			
-			safestZone.minBy{(mySpace:Space) =>
-				val closestToken = player.tokens.aliveOtherTokens.flatten.minBy{(hisToken:Token) =>
-					mySpace.distanceTo(hisToken.currentSpace, hisToken, TokenMovementCost)
+			safestZone.minBy{(mySpace:Space[SpaceClass]) =>
+				val closestToken = tokens.aliveNotPlayerTokens(player).flatten.minBy{(hisToken:Token) =>
+					mySpace.distanceTo(hisToken.currentSpace, new MoveToCostFunction(token, tokens))
 				}
 				
 				mySpace.distanceTo(closestToken.currentSpace, closestToken, TokenMovementCost)
@@ -154,10 +154,10 @@ class SleepAbuserAI extends PlayerAI
 			
 			safeZone.minBy{(mySpace:Space[SpaceClass]) =>
 				val closestToken = tokens.aliveNotPlayerTokens(player).flatten.minBy{(hisToken:Token) =>
-					mySpace.distanceTo(hisToken.currentSpace, hisToken, TokenMovementCost)
+					mySpace.distanceTo(hisToken.currentSpace, new MoveToCostFunction(myToken, tokens))
 				}
 				
-				mySpace.distanceTo(closestToken.currentSpace, closestToken, TokenMovementCost)
+				mySpace.distanceTo(closestToken.currentSpace, new MoveToCostFunction(myToken, tokens))
 			}
 		}
 		
@@ -173,10 +173,10 @@ class SleepAbuserAI extends PlayerAI
 		Logger.finer("AwakeAttackable: " + awakeAttackableOtherTokens)
 			
 		val targetChoices = if (!awakeAttackableOtherTokens.isEmpty) {awakeAttackableOtherTokens} else {attackableOtherTokens}
-		val target = targetChoices.minBy{(x:Token) => myToken.currentSpace.distanceTo(x.currentSpace, myToken, TokenMovementCost)}
+		val target = targetChoices.minBy{(x:Token) => myToken.currentSpace.distanceTo(x.currentSpace, new MoveToCostFunction(myToken, tokens))}
 		Logger.finer("target: " + target)
 		
-		val moveToChoices = moveRangeOf(myToken).filter{(x:Space) => 
+		val moveToChoices = moveRangeOf(myToken, tokens).filter{(x:Space[SpaceClass]) =>
 			x.spacesWithin(myToken.tokenClass.range.get, myToken, PhysicalStrikeCost) contains target.currentSpace
 		} // choose item closest to me while furthest from target.
 		val moveTo = moveToChoices.maxBy{(x:Space) =>
@@ -186,7 +186,7 @@ class SleepAbuserAI extends PlayerAI
 		Logger.finer("moveTo: " + moveTo + "; distance to enemy: " + 
 				moveTo.distanceTo(target.currentSpace, myToken, PhysicalStrikeCost) +
 				"; distance from self: " +
-				myToken.currentSpace.distanceTo(moveTo, myToken, TokenMovementCost))
+				myToken.currentSpace.distanceTo(moveTo, new MoveToCostFunction(myToken, tokens)))
 		
 		myToken.requestMoveTo(moveTo)
 		if (target.currentStatus == None)
