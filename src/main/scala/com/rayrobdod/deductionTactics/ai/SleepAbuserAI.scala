@@ -47,8 +47,8 @@ class SleepAbuserAI extends PlayerAI
 	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		val tokens = gameState.tokens
 		val aliveEnemies = tokens.aliveNotPlayerTokens(player).flatten
-		
 		val enemyAttackRange = aliveEnemies.map{x => attackRangeOf(x, tokens)}.flatten
+		
 		
 		tokens.alivePlayerTokens(player).flatMap{(myToken:Token) =>
 			
@@ -62,10 +62,10 @@ class SleepAbuserAI extends PlayerAI
 			}
 			else
 			{	// wants to attack enemy
-				moveToAndStrikeEnemy(player, myToken, attackableOtherTokens)
+				moveToAndStrikeEnemy(myToken, attackableOtherTokens, tokens) ++:
 				retreatFromEnemy(player, myToken, tokens, enemyAttackRange)
 			}
-		}
+		} :+ GameState.EndOfTurn
 	}
 	
 	def buildTeam(teamSize:Int) = {
@@ -103,7 +103,7 @@ class SleepAbuserAI extends PlayerAI
 	def fleeSpace(currentSpace:Space[SpaceClass], fleeFrom:Space[SpaceClass]):Space[SpaceClass] =
 	{
 		currentSpace match {
-			case rs:RectangularSpace[SpaceClass] => {
+			case rs:RectangularSpace[_] => {
 				if (fleeFrom == rs.down) {rs.up.get}
 				else if (fleeFrom == rs.up) {rs.down.get}
 				else if (fleeFrom == rs.right) {rs.left.get}
@@ -114,8 +114,8 @@ class SleepAbuserAI extends PlayerAI
 		}
 	}
 	
-	/**  a subroutine of the takeTurn method */
-	def retreatFromEnemy(player:Int, myToken:Token, tokens:ListOfTokens, enemyRange:Seq[Space[SpaceClass]])
+	/** returns a sequence of actions that will cause a token to retreat to a safe space */
+	def retreatFromEnemy(player:Int, myToken:Token, tokens:ListOfTokens, enemyRange:Seq[Space[SpaceClass]]):Seq[GameState.Action] = 
 	{
 		Logger.entering("com.rayrobdod.deductionTactics.ai.SleepAbuserAI",
 				"retreatFromEnemy", Seq(myToken, tokens, "enemyRange"))
@@ -142,10 +142,10 @@ class SleepAbuserAI extends PlayerAI
 			
 			safestZone.minBy{(mySpace:Space[SpaceClass]) =>
 				val closestToken = tokens.aliveNotPlayerTokens(player).flatten.minBy{(hisToken:Token) =>
-					mySpace.distanceTo(hisToken.currentSpace, new MoveToCostFunction(token, tokens))
+					mySpace.distanceTo(hisToken.currentSpace, new MoveToCostFunction(myToken, tokens))
 				}
 				
-				mySpace.distanceTo(closestToken.currentSpace, closestToken, TokenMovementCost)
+				mySpace.distanceTo(closestToken.currentSpace, new MoveToCostFunction(myToken, tokens))
 			}
 			
 		} else {
@@ -161,37 +161,40 @@ class SleepAbuserAI extends PlayerAI
 			}
 		}
 		
-		GameState.TokenMove(myToken, moveTo)
-		
+		Seq( GameState.TokenMove(myToken, moveTo) )
 	}
 	
-	/**  a subroutine of the takeTurn method */
-	def moveToAndStrikeEnemy(myToken:Token, attackableOtherTokens:Seq[Token])
+	/** returns a sequence of actions that will cause a token to attack an enemy token */
+	def moveToAndStrikeEnemy(myToken:Token, attackableOtherTokens:Seq[Token], allTokens:ListOfTokens):Seq[GameState.Action] = 
 	{
 		val awakeAttackableOtherTokens = attackableOtherTokens.filter{_.currentStatus != Some(Sleep)}
 		Logger.finer("Attackable: " + attackableOtherTokens)
 		Logger.finer("AwakeAttackable: " + awakeAttackableOtherTokens)
 			
 		val targetChoices = if (!awakeAttackableOtherTokens.isEmpty) {awakeAttackableOtherTokens} else {attackableOtherTokens}
-		val target = targetChoices.minBy{(x:Token) => myToken.currentSpace.distanceTo(x.currentSpace, new MoveToCostFunction(myToken, tokens))}
+		val target = targetChoices.minBy{(x:Token) => myToken.currentSpace.distanceTo(x.currentSpace, new MoveToCostFunction(myToken, allTokens))}
 		Logger.finer("target: " + target)
 		
-		val moveToChoices = moveRangeOf(myToken, tokens).filter{(x:Space[SpaceClass]) =>
-			x.spacesWithin(myToken.tokenClass.range.get, myToken, PhysicalStrikeCost) contains target.currentSpace
+		val moveToChoices = moveRangeOf(myToken, allTokens).filter{(x:Space[SpaceClass]) =>
+			x.spacesWithin(myToken.tokenClass.get.range, new AttackCostFunction(myToken, allTokens)) contains target.currentSpace
 		} // choose item closest to me while furthest from target.
-		val moveTo = moveToChoices.maxBy{(x:Space) =>
-			x.distanceTo(target.currentSpace, myToken, PhysicalStrikeCost) -
-			myToken.currentSpace.distanceTo(x, myToken, TokenMovementCost)
+		val moveTo = moveToChoices.maxBy{(x:Space[SpaceClass]) =>
+			x.distanceTo(target.currentSpace, new AttackCostFunction(myToken, allTokens)) -
+			myToken.currentSpace.distanceTo(x, new AttackCostFunction(myToken, allTokens))
 		}
 		Logger.finer("moveTo: " + moveTo + "; distance to enemy: " + 
-				moveTo.distanceTo(target.currentSpace, myToken, PhysicalStrikeCost) +
+				moveTo.distanceTo(target.currentSpace, new AttackCostFunction(myToken, allTokens)) +
 				"; distance from self: " +
-				myToken.currentSpace.distanceTo(moveTo, new MoveToCostFunction(myToken, tokens)))
+				myToken.currentSpace.distanceTo(moveTo, new MoveToCostFunction(myToken, allTokens)))
 		
-		myToken.requestMoveTo(moveTo)
-		if (target.currentStatus == None)
-			myToken.tryAttackStatus(target)
-		else
-			myToken.tryAttackDamage(target)
+		
+		Seq( 
+			GameState.TokenMove(myToken, moveTo),
+			if (target.currentStatus == None) {
+				GameState.TokenAttackStatus(myToken, target)
+			} else {
+				GameState.TokenAttackDamage(myToken, target)
+			}
+		)
 	}
 }
