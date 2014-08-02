@@ -34,7 +34,7 @@ object TokenPrinter extends Function1[Token,Unit]
 		out.print("/");
 		out.print(Token.maximumHitpoints);
 		out.print("  ");
-		out.print(token.currentStatus.map{_.name}.getOrElse{"No Status"});
+		out.print(token.currentStatus.name);
 		out.print(' ');
 		out.println(token.currentStatusTurnsLeft)
 		

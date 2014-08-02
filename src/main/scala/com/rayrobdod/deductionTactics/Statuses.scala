@@ -24,6 +24,7 @@ import scala.collection.immutable.{Seq, Set}
  * 
  * May in the future contain what the status does
  * @author Raymond Dodge
+ * @todo move status effect effects from [[Token.beAfflictedByStatus()]] to here
  */
 object Statuses {
 	/** Might as well be an Enumeration value at this point */
@@ -45,8 +46,10 @@ object Statuses {
 	val Snake = new Status(5, "Snake")
 	/** undamage (given that you can't attack partners...) */
 	val Heal = new Status(6, "Heal")
+	/** do nothing (so that this doesn't have to be an option) */
+	val Normal = new Status(7, "Normal")
 	
-	def values = Seq[Status](Sleep, Burn, Blind, Confuse, Neuro, Snake, Heal)
+	def values = Seq[Status](Sleep, Burn, Blind, Confuse, Neuro, Snake, Heal, Normal)
 	def apply(x:Int) = values(x) //.find{_.id == x}.get
 	
 	def withName(s:String) = {

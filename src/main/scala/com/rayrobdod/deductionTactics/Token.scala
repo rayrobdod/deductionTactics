@@ -33,7 +33,7 @@ import com.rayrobdod.boardGame.{Space,
 final case class Token (
 	override val currentSpace:Space[SpaceClass],
 	val currentHitpoints:Int = Token.maximumHitpoints,
-	val currentStatus:Option[Status] = None,
+	val currentStatus:Status = Statuses.Normal,
 	val currentStatusTurnsLeft:Int = 0,
 	val tokenClass:Option[TokenClass] = None,
 	
@@ -42,7 +42,7 @@ final case class Token (
 ) extends BoardGameToken[SpaceClass](currentSpace) {
 	
 	final def startOfTurn():Token = {
-		val newStatus = currentStatus.filter{(a) => currentStatusTurnsLeft >= 0}
+		val newStatus = if (currentStatusTurnsLeft >= 0) {currentStatus} else {Statuses.Normal}
 		
 		new Token(
 			currentSpace,
@@ -87,25 +87,25 @@ final case class Token (
 	}
 	
 	
-	
+	/** @todo move status effects into status class */
 	final def beAfflictedByStatus():Token = {
 		currentStatus match {
-			case None => this
-			case Some(Statuses.Sleep) =>
+			case Statuses.Normal => this
+			case Statuses.Sleep =>
 				this.copy(canMoveThisTurn = 0)
-			case Some(Statuses.Snake) =>
+			case Statuses.Snake =>
 				this.copy(canMoveThisTurn = 1, currentHitpoints = this.currentHitpoints - Token.baseDamage)
-			case Some(Statuses.Blind) =>
+			case Statuses.Blind =>
 				this.copy(canAttackThisTurn = false)
-			case Some(Statuses.Burn) =>
+			case Statuses.Burn =>
 				this.copy(currentHitpoints = this.currentHitpoints - 2 * Token.baseDamage)
-			case Some(Statuses.Confuse) =>
+			case Statuses.Confuse =>
 				// TODO: the randomized movement thing
 				this //		(1 to 3).foldLeft(currentSpace)(moveToRandomSpace)
-			case Some(Statuses.Neuro) => 
+			case Statuses.Neuro => 
 				// TODO: The randomized movement thing
 				this.copy(currentHitpoints = this.currentHitpoints - Token.baseDamage)
-			case Some(Statuses.Heal) =>
+			case Statuses.Heal =>
 				this.copy(currentHitpoints = this.currentHitpoints + Token.baseDamage)
 			case _ =>
 				throw new IllegalStateException("I do not know how to respond to a " + currentStatus)
