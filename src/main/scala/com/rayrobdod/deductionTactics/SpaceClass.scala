@@ -57,17 +57,17 @@ object SpaceClass {
 	type CostFunctionFactory = Function2[Token, ListOfTokens, CostFunction]
 	
 	final case class ConstantCostFunction(cost:Int) extends CostFunction {
-		override def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = cost
+		override def apply(from:BoardGameSpace[_ <: SpaceClass], to:BoardGameSpace[_ <: SpaceClass]):Int = cost
 	}
 	final class SinglePassageCostFunction(tokens:ListOfTokens) extends CostFunction {
-		override def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
+		override def apply(from:BoardGameSpace[_ <: SpaceClass], to:BoardGameSpace[_ <: SpaceClass]):Int = {
 			
 			val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.find{_.currentSpace == to}
 			tokenOnThis.map{(a) => impossiblePassage}.getOrElse{normalPassage}
 		}
 	}
 	final case class MaxCostFunction(a:CostFunction, b:CostFunction) extends CostFunction {
-		override def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
+		override def apply(from:BoardGameSpace[_ <: SpaceClass], to:BoardGameSpace[_ <: SpaceClass]):Int = {
 			return math.max(a(from, to), b(from, to))
 		}
 	}
@@ -80,7 +80,7 @@ object SpaceClass {
 	
 	object FriendPassageCostFunctionFactory extends CostFunctionFactory {
 		override def apply(myToken:Token, tokens:ListOfTokens):CostFunction = new CostFunction() {
-			def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
+			def apply(from:BoardGameSpace[_ <: SpaceClass], to:BoardGameSpace[_ <: SpaceClass]):Int = {
 				val myTeam = tokens.tokens.zipWithIndex.find{_._1.contains(myToken)}.map{_._2}
 				val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.find{
 						_.currentSpace.typeOfSpace == to
