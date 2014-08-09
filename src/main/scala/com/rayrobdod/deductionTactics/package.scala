@@ -94,12 +94,12 @@ package object deductionTactics
 	
 	
 	final class AttackCostFunction(t:Token, l:ListOfTokens) extends BoardGameSpace.CostFunction[SpaceClass] {
-		override def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
+		override def apply(from:BoardGameSpace[_ <: SpaceClass], to:BoardGameSpace[_ <: SpaceClass]):Int = {
 			to.typeOfSpace.canAttack(t,l)(from, to)
 		}
 	}
 	final class MoveToCostFunction(t:Token, l:ListOfTokens) extends BoardGameSpace.CostFunction[SpaceClass] {
-		override def apply(from:BoardGameSpace[SpaceClass], to:BoardGameSpace[SpaceClass]):Int = {
+		override def apply(from:BoardGameSpace[_ <: SpaceClass], to:BoardGameSpace[_ <: SpaceClass]):Int = {
 			to.typeOfSpace.canEnter(t,l)(from, to)
 		}
 	}
