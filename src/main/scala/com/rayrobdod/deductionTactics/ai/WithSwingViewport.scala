@@ -95,7 +95,6 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 		val memo2 = memo3._2.asInstanceOf[SwingInterfaceMemo]
 		val panel = memo2.panel
 		
-		System.out.println("WithSwingViewport was notified")
 		action match {
 			case GameState.TokenMoveResult(index, s) =>
 				val tokenComp = panel.tokenComps(index)

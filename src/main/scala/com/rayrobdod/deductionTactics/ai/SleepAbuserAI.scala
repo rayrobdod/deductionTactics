@@ -49,6 +49,7 @@ class SleepAbuserAI extends PlayerAI
 		val aliveEnemies = tokens.aliveNotPlayerTokens(player).flatten
 		val enemyAttackRange = aliveEnemies.map{x => attackRangeOf(x, tokens)}.flatten
 		
+		Logger.finer("Enemy Range: " + enemyAttackRange.size)
 		
 		tokens.alivePlayerTokens(player).flatMap{(myToken:Token) =>
 			
@@ -118,13 +119,15 @@ class SleepAbuserAI extends PlayerAI
 	def retreatFromEnemy(player:Int, myToken:Token, tokens:ListOfTokens, enemyRange:Seq[Space[SpaceClass]]):Seq[GameState.Action] = 
 	{
 		Logger.entering("com.rayrobdod.deductionTactics.ai.SleepAbuserAI",
-				"retreatFromEnemy", Seq(myToken, tokens, "enemyRange"))
+				"retreatFromEnemy", Seq(myToken.tokenClass.get.name, "tokens{}", "enemyRange"))
 		
 		val myMoveRange = moveRangeOf(myToken, tokens)
 		val safeZone = myMoveRange -- enemyRange
 		
+		Logger.finer("myMoveRange: " + myMoveRange.size)
+		
 		{
-			val targetableByToSpace = myMoveRange.groupBy{(rangeSpace:Space[SpaceClass]) => 
+			val targetableByToSpace = myMoveRange.groupBy{(rangeSpace:Space[SpaceClass]) =>
 				tokens.aliveNotPlayerTokens(player).flatten.count{attackRangeOf(_, tokens) contains rangeSpace}
 			}
 			Logger.finer("Zones: " + targetableByToSpace)

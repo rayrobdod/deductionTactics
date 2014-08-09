@@ -167,7 +167,6 @@ final class SwingInterface extends PlayerAI
 		val memo2 = memo.asInstanceOf[SwingInterfaceMemo]
 		val panel = memo2.panel
 		
-		System.out.println("SwingInterface was notified")
 		action match {
 			case GameState.TokenMoveResult(index, s) =>
 				val tokenComp = panel.tokenComps(index)

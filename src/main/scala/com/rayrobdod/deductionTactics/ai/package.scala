@@ -92,6 +92,7 @@ package object ai
 			val startSpace = token.currentSpace
 			
 			val tokenSpeed = token.tokenClass.map{_.speed}.filter{(x:Int) => token.currentStatus.exists{_ == Sleep}}.getOrElse(0)
+			System.out.println(tokenSpeed)
 			val speedSpaces = startSpace.spacesWithin(
 					tokenSpeed, 
 					new MoveToCostFunction(token, list)
