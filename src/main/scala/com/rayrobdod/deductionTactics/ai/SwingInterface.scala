@@ -49,7 +49,7 @@ final class SwingInterface extends PlayerAI
 	val endOfTurnLock = new Object();
 	var takeTurnReturnValue:Option[GameState.Action] = None
 	
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo):GameState.Action = {
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		
 		val a = memo.asInstanceOf[SwingInterfaceMemo]
 		a.endOfTurnButton.setEnabled(true)
@@ -61,7 +61,7 @@ final class SwingInterface extends PlayerAI
 			
 			val retVal = takeTurnReturnValue.get
 			takeTurnReturnValue = None
-			retVal
+			Seq(retVal)
 		}
 	}
 	

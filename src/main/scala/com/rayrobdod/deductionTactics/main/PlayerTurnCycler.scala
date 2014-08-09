@@ -52,73 +52,82 @@ final class PlayerTurnCycler(
 			val playerSeenState = asSeenByPlayer(currentState, playerOfCurrentTurn)
 			
 			
-			val action = players(playerOfCurrentTurn)
-					.takeTurn(playerOfCurrentTurn, playerSeenState, memos(playerOfCurrentTurn))
+			val actionSeq = {
+				val a = players(playerOfCurrentTurn)
+						.takeTurn(playerOfCurrentTurn, playerSeenState, memos(playerOfCurrentTurn))
+				if (a.contains(GameState.EndOfTurn)) {
+					 a.take(a.indexOf(GameState.EndOfTurn) + 1)
+				} else {
+					a
+				}
+			}
 			
-			Logger.finer(action.getClass.getName)
+			Logger.finer(actionSeq.map{_.getClass.getName}.toString)
 			
 			//
 			// You'd think scala would allow
 			// {{{ a = try { calcResult() } catch { case _ => None} }}}
 			// but apparently not.
-			try {
-				val newState:Option[GameState] = action match {
-					case GameState.TokenMove(t, s) =>
-						Logger.finer("Token Move")
-						Some(currentState.tokenMove(playerOfCurrentTurn, t, s))
-					case GameState.TokenAttackDamage(a, d) =>
-						val dIndex = playerSeenState.tokens.indexOf(d)
-						val d2 = currentState.tokens.tokens(dIndex)
-						
-						Logger.finer("Token Attack for Damage")
-						Some(currentState.tokenAttackDamage(playerOfCurrentTurn, a, d2))
-					case GameState.TokenAttackStatus(a, d) =>
-						// TODO
-						Logger.finer("Token Attack for Status")
-						None
-					case GameState.EndOfTurn =>
-						val a = endTurn(currentState)
-						playerOfCurrentTurn = (playerOfCurrentTurn + 1) % currentState.tokens.tokens.size
-						Logger.finer("End of Turn")
-						Some(startTurn(currentState, playerOfCurrentTurn))
+			actionSeq.foreach{(action) =>
+				try {
+					val newState:Option[GameState] = action match {
+						case GameState.TokenMove(t, s) =>
+							Logger.finer("Token Move")
+							Some(currentState.tokenMove(playerOfCurrentTurn, t, s))
+						case GameState.TokenAttackDamage(a, d) =>
+							val dIndex = playerSeenState.tokens.indexOf(d)
+							val d2 = currentState.tokens.tokens(dIndex)
+							
+							Logger.finer("Token Attack for Damage")
+							Some(currentState.tokenAttackDamage(playerOfCurrentTurn, a, d2))
+						case GameState.TokenAttackStatus(a, d) =>
+							// TODO
+							Logger.finer("Token Attack for Status")
+							None
+						case GameState.EndOfTurn =>
+							val a = endTurn(currentState)
+							playerOfCurrentTurn = (playerOfCurrentTurn + 1) % currentState.tokens.tokens.size
+							Logger.finer("End of Turn")
+							Some(startTurn(currentState, playerOfCurrentTurn))
+					}
+					val result = action match {
+						case GameState.TokenMove(t, s) =>
+							GameState.TokenMoveResult(
+								playerSeenState.tokens.indexOf(t),
+								s
+							)
+						case GameState.TokenAttackDamage(a, d) =>
+							GameState.TokenAttackDamageResult(
+								playerSeenState.tokens.indexOf(a),
+								playerSeenState.tokens.indexOf(d),
+								a.tokenClass.get.atkElement,
+								a.tokenClass.get.atkWeapon
+							)
+						case GameState.TokenAttackStatus(a, d) =>
+							GameState.TokenAttackStatusResult(
+								playerSeenState.tokens.indexOf(a),
+								playerSeenState.tokens.indexOf(d),
+								a.tokenClass.get.atkStatus
+							)
+						case GameState.EndOfTurn =>
+							GameState.EndOfTurn
+					}
+					
+					newState.foreach{(a:GameState) =>
+						players.zipWithIndex.foreach({(p:PlayerAI, i:Int) =>
+							Logger.finer("Notifying Player " + i)
+							
+							val beforeView = asSeenByPlayer(currentState, i)
+							val afterView  = asSeenByPlayer(a, i)
+							
+							memos = memos.updated(i, p.notifyTurn(i, result, beforeView, afterView, memos(i)))
+						}.tupled)
+					}
+					currentState = newState.getOrElse(currentState)
+					
+				} catch {
+					case e:IllegalArgumentException => {}
 				}
-				val result = action match {
-					case GameState.TokenMove(t, s) =>
-						GameState.TokenMoveResult(
-							playerSeenState.tokens.indexOf(t),
-							s
-						)
-					case GameState.TokenAttackDamage(a, d) =>
-						GameState.TokenAttackDamageResult(
-							playerSeenState.tokens.indexOf(a),
-							playerSeenState.tokens.indexOf(d),
-							a.tokenClass.get.atkElement,
-							a.tokenClass.get.atkWeapon
-						)
-					case GameState.TokenAttackStatus(a, d) =>
-						GameState.TokenAttackStatusResult(
-							playerSeenState.tokens.indexOf(a),
-							playerSeenState.tokens.indexOf(d),
-							a.tokenClass.get.atkStatus
-						)
-					case GameState.EndOfTurn =>
-						GameState.EndOfTurn
-				}
-				
-				newState.foreach{(a:GameState) =>
-					players.zipWithIndex.foreach({(p:PlayerAI, i:Int) =>
-						Logger.finer("Notifying Player " + i)
-						
-						val beforeView = asSeenByPlayer(currentState, i)
-						val afterView  = asSeenByPlayer(a, i)
-						
-						memos = memos.updated(i, p.notifyTurn(i, result, beforeView, afterView, memos(i)))
-					}.tupled)
-				}
-				currentState = newState.getOrElse(currentState)
-				
-			} catch {
-				case e:IllegalArgumentException => {}
 			}
 		}
 	}
