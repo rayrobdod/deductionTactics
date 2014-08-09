@@ -8,14 +8,18 @@ import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
  * A console application that can let a user navigate a RectangularField
  * @author Raymond Dodge
  * @since a.5.1
- * @version a.5.1
+ * @version a.6.0
  */
-class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Runnable {
-	val out:java.io.PrintStream = System.out
-	val in:java.io.InputStream = System.in
+class BoardNavigator(
+		val player:Option[Int],
+		var currentState:GameState,
+		val setNextAction:Function1[GameState.Action, Unit],
+		val out:java.io.PrintStream = System.out,
+		val in:java.io.InputStream = System.in
+) extends Runnable {
 	
-	private var current:RectangularSpace = field.space(0,0);
-	private var selected:Option[Token] = None;
+	private var currentSpace:RectangularSpace[SpaceClass] = currentState.board.space(0,0);
+	private var selected:Option[TokenIndex] = None;
 	private var continue:Boolean = true;
 	
 	private val PressUp     = 'w';
@@ -33,14 +37,14 @@ class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Ru
 		
 		while (continue) {
 			out print controlCursorToTop
-			BoardPrinter.apply(out, tokens, field, Some(current), selected)
+			BoardPrinter.apply(out, currentState.tokens, currentState.board, player, Some(currentSpace), selected)
 			out println ""
 			out println controlClearRest
 			
-			(new SpaceInfoPrinter(tokens)).apply(current)
+			SpaceInfoPrinter(currentSpace)
 			out println ""
 			
-			val tokenOnSpace = tokens.aliveTokens.flatten.filter{_.currentSpace == current}.headOption
+			val tokenOnSpace = currentState.tokens.aliveTokens.flatten.filter{_.currentSpace == currentSpace}.headOption
 			tokenOnSpace.foreach{TokenPrinter}
 			out.println()
 			// print info about current space
@@ -49,21 +53,25 @@ class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Ru
 			
 			val char = in.read(); 
 			
-			if (char == PressUp)     current = current.up.getOrElse(current).asInstanceOf[RectangularSpace]
-			if (char == PressLeft)   current = current.left.getOrElse(current).asInstanceOf[RectangularSpace]
-			if (char == PressDown)   current = current.down.getOrElse(current).asInstanceOf[RectangularSpace]
-			if (char == PressRight)  current = current.right.getOrElse(current).asInstanceOf[RectangularSpace]
-			if (char == PressNextTurn) endOfTurnReactions.foreach{x => x()}
+			if (char == PressUp)     currentSpace = currentSpace.up.getOrElse(currentSpace).asInstanceOf[RectangularSpace[SpaceClass]]
+			if (char == PressLeft)   currentSpace = currentSpace.left.getOrElse(currentSpace).asInstanceOf[RectangularSpace[SpaceClass]]
+			if (char == PressDown)   currentSpace = currentSpace.down.getOrElse(currentSpace).asInstanceOf[RectangularSpace[SpaceClass]]
+			if (char == PressRight)  currentSpace = currentSpace.right.getOrElse(currentSpace).asInstanceOf[RectangularSpace[SpaceClass]]
+			if (char == PressNextTurn) setNextAction(GameState.EndOfTurn)
 			if (char == PressQuit)   System.exit(0)
 			if (char == PressSelect) { tokenOnSpace match {
-				case None => selected match {
-					case Some(x:CannonicalToken) => x.requestMoveTo(current)
-					case _ => {}
-				}
-				case Some(x:CannonicalToken) => x.beSelected(true)
-				case Some(other:MirrorToken) => selected match {
-					case Some(mine:CannonicalToken) => mine.tryAttackDamage(other)
-					case _ => {}
+				case None =>
+					selected.map{(x) => currentState.tokens.tokens(x)}.foreach{(x) => setNextAction(GameState.TokenMove(x, currentSpace))}
+				case Some(target:Token) => {
+					val targetIndex = currentState.tokens.indexOf(target)
+					
+					if (Option(targetIndex._1) == player) {
+						// if the target belongs to this character, select it
+						this.selected = Option(targetIndex)
+					} else {
+						// otherwise, attack the target
+						selected.foreach{(sel) => setNextAction(GameState.TokenAttackDamage(currentState.tokens.tokens(sel), target))}
+					}
 				}
 			}}
 		}
@@ -71,23 +79,5 @@ class BoardNavigator(tokens:ListOfTokens, val field:RectangularField) extends Ru
 		System.out.println("End of game")
 	}
 	
-	val endOfTurnReactions:Buffer[Function0[Any]] = Buffer.empty
-	def addEndOfTurnReaction(f:Function0[Any]) = endOfTurnReactions += f
 	
-	object EndOfGameListener extends Function0[Unit] {
-		def apply() {
-			continue = false;
-		}
-	}
-	
-	import scala.runtime.{AbstractFunction1 => AFunction1}
-	class SelectedListener(t:Token) extends AFunction1[Boolean, Unit] {
-		def apply(b:Boolean) {
-			if (b) {
-				selected = Some(t)
-			} else if (selected.filter{t == _}.isDefined) {
-				selected = None
-			}
-		}
-	}
 }

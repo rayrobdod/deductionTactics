@@ -17,7 +17,7 @@
 */
 package com.rayrobdod.deductionTactics.ai
 
-import com.rayrobdod.deductionTactics.{PlayerAI, Token}
+import com.rayrobdod.deductionTactics.{PlayerAI, Token, GameState}
 import com.rayrobdod.boardGame.{RectangularField => Field}
 import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
 
@@ -26,44 +26,80 @@ import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
  * 
  * Requires ANSI escape codes to work. Is not reusable.
  * @author Raymond Dodge
- * @version a.5.1
+ * @version a.6.0
  */
 final class ConsoleInterface extends PlayerAI
 {
-	private val endOfTurnLock = new Object();
 	
-	def takeTurn(player:Player) {
-		endOfTurnLock.synchronized( endOfTurnLock.wait() );
-	}
-	
-	def initialize(player:Int, initialState:GameState):Memo = {
-		val runner = new BoardNavigator(player.tokens, field)
-		
-		player.addVictoryReaction(runner.EndOfGameListener)
-		player.addDefeatReaction (runner.EndOfGameListener)
-		
-		runner.addEndOfTurnReaction({() =>
-			endOfTurnLock.synchronized( endOfTurnLock.notifyAll() );
-		})
-		player.tokens.tokens.flatten.foreach{(t:Token) => 
-			t.selectedReactions_+=(new runner.SelectedListener(t))
-		}
-		
-		new Thread(runner, "ConsoleInterface").start()
-	}
 	
 	def buildTeam(size:Int) = {
 		// TODO: actual prompts
 		randomTeam(size)
 	}
 	
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo):GameState.Action = {
+		val a = memo.asInstanceOf[ConsoleInterfaceMemo]
+		
+		return a.takeTurnReturnValueLock.synchronized{
+			while (a.takeTurnReturnValue == None) { 
+				a.takeTurnReturnValueLock.wait()
+			}
+			
+			val retVal = a.takeTurnReturnValue.get
+			a.takeTurnReturnValue = None
+			retVal
+		}
+	}
+	
+	def initialize(player:Int, initialState:GameState):Memo = {
+		val memo = new ConsoleInterfaceMemo(player, initialState)
+		
+		new Thread(memo.runner, "ConsoleInterface").start()
+		return memo
+	}
+	
+	override def notifyTurn(
+		player:Int,
+		action:GameState.Result,
+		beforeState:GameState,
+		afterState:GameState,
+		memo:Memo
+	):Memo = {
+		val memo2:ConsoleInterfaceMemo = memo.asInstanceOf[ConsoleInterfaceMemo]
+		
+		memo2.runner.currentState = afterState
+		
+		memo2
+	}
 	
 	
 	
-	// use default equals
 	
+	
+	def canEquals(other:Any) = {other.isInstanceOf[ConsoleInterface]}
+	override def equals(other:Any) = {
+		// no instance variables to test
+		this.canEquals(other) && other.asInstanceOf[ConsoleInterface].canEquals(this)
+	}
 	// arbitrary number (17)
 	override def hashCode = 13
 	
 	override def toString = this.getClass.getName
+}
+
+final class ConsoleInterfaceMemo(
+		player:Int,
+		initialState:GameState
+) {
+	val takeTurnReturnValueLock = new Object();
+	var takeTurnReturnValue:Option[GameState.Action] = None
+	
+	val runner = new BoardNavigator(
+			Option(player),
+			initialState,
+			{(x:GameState.Action) => this.takeTurnReturnValueLock.synchronized{
+				this.takeTurnReturnValue = Option(x)
+				this.takeTurnReturnValueLock.notifyAll
+			}}
+	)
 }
