@@ -43,7 +43,7 @@ object BoardPrinter{
 			
 			val spaceClassColor = spaceToString(space.typeOfSpace)
 			val tokenString = tokenOnSpace.map{tokens.indexOf}.map{tokensToLetters(tokens, team)}.getOrElse{' '}
-			val cursorColor = cursor.filter{_ == space}.map{x => scala.Console.BLINK}.getOrElse("\u001b[25m") // blink off
+			val cursorColor = cursor.filter{_ == space}.map{x => "\u001b[4m"}.getOrElse("\u001b[24m") // underline
 			val tokenColor = if (selected.map{tokens.tokens(_)} == tokenOnSpace) {scala.Console.BOLD} else {"\u001b[21m"}
 			
 			scala.Console.RESET + cursorColor + spaceClassColor + tokenColor + tokenString
