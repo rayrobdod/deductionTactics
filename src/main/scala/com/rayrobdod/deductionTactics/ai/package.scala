@@ -18,6 +18,8 @@
 package com.rayrobdod.deductionTactics
 // http://en.wikipedia.org/wiki/Blackboard_system
 
+import BodyTypes.BodyType
+import Directions.Direction
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.{Status, Sleep}
@@ -64,32 +66,63 @@ package object ai
 	 * @version a.6.0
 	 */
 	def attackRangeOf(token:Token, list:ListOfTokens) =
-		{
+	{
+		if (token.currentStatus.exists{_ == Statuses.Blind}) {
+			Set.empty
+		} else {
+			
 			val speedSpaces = moveRangeOf(token, list)
-			
 			val tokenRange = token.tokenClass.map{_.range}.getOrElse(0)
-			val rangeSpaces = speedSpaces.map{_.spacesWithin(
-					tokenRange,
-					new AttackCostFunction(token, list)
+		
+			speedSpaces.map{_.spacesWithin(
+				tokenRange,
+				new AttackCostFunction(token, list)
 			)}.flatten
-			
-			rangeSpaces
 		}
+	}
 
 	/**
 	 * determines the spaces a token can move to
 	 * @version a.6.0
 	 */
 	def moveRangeOf(token:Token, list:ListOfTokens) =
-		{
-			val startSpace = token.currentSpace
-			
-			val tokenSpeed = token.tokenClass.map{_.speed}.filter{(x:Int) => token.currentStatus == Sleep}.getOrElse(0)
-			val speedSpaces = startSpace.spacesWithin(
-					tokenSpeed, 
-					new MoveToCostFunction(token, list)
-			).toSet
-			
-			speedSpaces
+	{
+		def statusSpeedLimit = token.currentStatus match {
+			case Some(Statuses.Snake) => 1
+			case Some(Statuses.Sleep) => 0
+			case _ => 1000
 		}
+		
+		val startSpace = token.currentSpace
+		val tokenSpeed = math.min(statusSpeedLimit,
+				token.tokenClass.map{_.speed}.getOrElse(0)
+		)
+		
+		val tokenSpeed = token.tokenClass.map{_.speed}.filter{(x:Int) => token.currentStatus == Sleep}.getOrElse(0)
+		startSpace.spacesWithin(
+				tokenSpeed, 
+				new MoveToCostFunction(token, list)
+		).toSet
+	}
+	
+	
+	/** @version a.6.0 */
+	case class Blackboard(
+		val attacks:Seq[GameState.Result],
+		val finalConclusions:Map[(Int, Int), TokenClassSuspision]
+	)
+	
+	/** @version a.6.0 */
+	case class TokenClassSuspision(
+		val body:Option[BodyType] = None,
+		val atkElement:Option[Element] = None,
+		val atkWeapon:Option[Weaponkind] = None,
+		val atkStatus:Option[Status] = None,
+		val range:Option[Int] = None,
+		val speed:Option[Int] = None,
+		
+		val weakDirection:Option[Direction] = None,
+		val weakWeapon:Map[Weaponkind,Option[Float]] = Weaponkinds.values.map{((_, None))}.toMap,
+		val weakStatus:Option[Status] = None
+	)
 }

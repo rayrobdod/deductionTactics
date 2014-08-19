@@ -4,7 +4,7 @@ com.rayrobdod.deductionTactics.ai.ConsoleInterface
 
 ### Computer opponents
 com.rayrobdod.deductionTactics.ai.BlindAttackAI
-#com.rayrobdod.deductionTactics.ai.SleepAbuserAI
+com.rayrobdod.deductionTactics.ai.SleepAbuserAI
 #com.rayrobdod.deductionTactics.ai.GangUpAI
 #com.rayrobdod.deductionTactics.ai.FieldPotentialAI
 

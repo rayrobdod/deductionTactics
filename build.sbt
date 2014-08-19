@@ -50,6 +50,7 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 				(abPath contains "/deductionTactics/ai/") &&
 				!(abPath contains "Swing") &&
 				!(abPath contains "Blind") &&
+				!(abPath contains "Sleep") &&
 				!(abPath contains "Team") &&
 				!(abPath contains "Sound") &&
 				!(abPath contains "Sound") &&

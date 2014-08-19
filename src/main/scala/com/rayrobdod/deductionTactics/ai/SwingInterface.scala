@@ -49,7 +49,7 @@ final class SwingInterface extends PlayerAI
 	val endOfTurnLock = new Object();
 	var takeTurnReturnValue:Option[GameState.Action] = None
 	
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo):GameState.Action = {
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		
 		val a = memo.asInstanceOf[SwingInterfaceMemo]
 		a.endOfTurnButton.setEnabled(true)
@@ -61,7 +61,7 @@ final class SwingInterface extends PlayerAI
 			
 			val retVal = takeTurnReturnValue.get
 			takeTurnReturnValue = None
-			retVal
+			Seq(retVal)
 		}
 	}
 	
@@ -167,7 +167,6 @@ final class SwingInterface extends PlayerAI
 		val memo2 = memo.asInstanceOf[SwingInterfaceMemo]
 		val panel = memo2.panel
 		
-		System.out.println("SwingInterface was notified")
 		action match {
 			case GameState.TokenMoveResult(index, s) =>
 				val tokenComp = panel.tokenComps(index)

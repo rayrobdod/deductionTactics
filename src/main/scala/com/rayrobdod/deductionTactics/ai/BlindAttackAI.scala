@@ -38,7 +38,7 @@ final class BlindAttackAI extends PlayerAI
 	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
 	override def buildTeam(size:Int) = randomTeam(size)
 	
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo):GameState.Action = {
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		
 		implicit object TokenPairOrdering extends Ordering[(Token, Token)] {
 			def distance(a:(Token, Token)):Int = distance(a._1, a._2)
@@ -75,21 +75,23 @@ final class BlindAttackAI extends PlayerAI
 		
 		// return the first legal move
 		
-		actions.filter{_ match {
-			case GameState.TokenMove(t:Token, s:Space[_]) =>
-				val distance = t.currentSpace.distanceTo(s, new MoveToCostFunction(t, gameState.tokens))
-				
-				Logger.finer( ((distance, t.canMoveThisTurn)).toString )
-				
-				0 < distance && distance <= t.canMoveThisTurn
-			case GameState.TokenAttackDamage(m:Token, o:Token) =>
-				val distance = m.currentSpace.distanceTo(o.currentSpace, new AttackCostFunction(m, gameState.tokens))
-				
-				Logger.finer( ((m.canAttackThisTurn, distance, m.tokenClass.map{_.range}.getOrElse(-1))).toString )
-				
-				m.canAttackThisTurn && (distance <= m.tokenClass.map{_.range}.getOrElse(-1))
-			case _ => false
-		}}.headOption.getOrElse(GameState.EndOfTurn)
+		Seq(
+			actions.filter{_ match {
+				case GameState.TokenMove(t:Token, s:Space[_]) =>
+					val distance = t.currentSpace.distanceTo(s, new MoveToCostFunction(t, gameState.tokens))
+					
+					Logger.finer( ((distance, t.canMoveThisTurn)).toString )
+					
+					0 < distance && distance <= t.canMoveThisTurn
+				case GameState.TokenAttackDamage(m:Token, o:Token) =>
+					val distance = m.currentSpace.distanceTo(o.currentSpace, new AttackCostFunction(m, gameState.tokens))
+					
+					Logger.finer( ((m.canAttackThisTurn, distance, m.tokenClass.map{_.range}.getOrElse(-1))).toString )
+					
+					m.canAttackThisTurn && (distance <= m.tokenClass.map{_.range}.getOrElse(-1))
+				case _ => false
+			}}.headOption.getOrElse(GameState.EndOfTurn)
+		)
 	}
 	
 	override def initialize(player:Int, initialState:GameState):Memo = ""
