@@ -67,17 +67,20 @@ package object ai
 	 */
 	object attackRangeOf 
 	{
-		def apply(token:Token, list:ListOfTokens) =
+		def apply(token:Token, list:ListOfTokens):Set[Space[SpaceClass]] =
 		{
-			val speedSpaces = moveRangeOf(token, list)
-			
-			val tokenRange = token.tokenClass.map{_.range}.getOrElse(0)
-			val rangeSpaces = speedSpaces.map{_.spacesWithin(
-					tokenRange,
-					new AttackCostFunction(token, list)
-			)}.flatten
-			
-			rangeSpaces
+			if (token.currentStatus.exists{_ == Statuses.Blind}) {
+				Set.empty
+			} else {
+				
+				val speedSpaces = moveRangeOf(token, list)
+				val tokenRange = token.tokenClass.map{_.range}.getOrElse(0)
+				
+				speedSpaces.map{_.spacesWithin(
+						tokenRange,
+						new AttackCostFunction(token, list)
+				)}.flatten
+			}
 		}
 	}
 
@@ -87,18 +90,23 @@ package object ai
 	 */
 	object moveRangeOf 
 	{
-		def apply(token:Token, list:ListOfTokens) =
+		def apply(token:Token, list:ListOfTokens):Set[Space[SpaceClass]] =
 		{
-			val startSpace = token.currentSpace
+			def statusSpeedLimit = token.currentStatus match {
+				case Some(Statuses.Snake) => 1
+				case Some(Statuses.Sleep) => 0
+				case _ => 1000
+			}
 			
-			val tokenSpeed = token.tokenClass.map{_.speed}.filter{(x:Int) => token.currentStatus.exists{_ == Sleep}}.getOrElse(0)
-			System.out.println(tokenSpeed)
-			val speedSpaces = startSpace.spacesWithin(
-					tokenSpeed, 
+			val startSpace = token.currentSpace
+			val tokenSpeed = math.min(statusSpeedLimit,
+					token.tokenClass.map{_.speed}.getOrElse(0)
+			)
+			
+			startSpace.spacesWithin(
+					tokenSpeed,
 					new MoveToCostFunction(token, list)
 			).toSet
-			
-			speedSpaces
 		}
 	}
 	
