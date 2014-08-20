@@ -53,7 +53,7 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 				!(abPath contains "Sleep") &&
 				!(abPath contains "Team") &&
 				!(abPath contains "Sound") &&
-				!(abPath contains "Sound") &&
+				!(abPath contains "WithAutorecord") &&
 				!(abPath contains "WithConsoleEventPrinting") &&
 				!(abPath contains "ConsoleInterface") &&
 				!(abPath contains "package")
