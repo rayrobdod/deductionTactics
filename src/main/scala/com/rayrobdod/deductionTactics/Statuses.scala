@@ -27,14 +27,13 @@ import scala.collection.immutable.{Seq, Set}
  * @todo move status effect effects from [[Token.beAfflictedByStatus()]] to here
  */
 object Statuses {
-	/** Might as well be an Enumeration value at this point */
 	final class Status(val id:Int, val name:String) {
 		override def toString = "com.rayrobdod.deductionTactics.Statuses." + name
 	}
 	
 	/** no move */
 	val Sleep = new Status(0, "Sleep")
-	/** damage */
+	/** major damage */
 	val Burn = new Status(1, "Burn")
 	/** can't attack */
 	val Blind = new Status(2, "Blind")
@@ -46,7 +45,9 @@ object Statuses {
 	val Snake = new Status(5, "Snake")
 	/** undamage (given that you can't attack partners...) */
 	val Heal = new Status(6, "Heal")
-	/** do nothing (so that this doesn't have to be an option) */
+	/** do nothing (so that currentStatus doesn't have to be an option)
+	 * @since a.6.0
+	 */
 	val Normal = new Status(7, "Normal")
 	
 	def values = Seq[Status](Sleep, Burn, Blind, Confuse, Neuro, Snake, Heal, Normal)

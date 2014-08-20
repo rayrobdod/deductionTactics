@@ -23,10 +23,9 @@ import com.rayrobdod.boardGame.{RectangularField, Space}
 import org.scalatest.{FunSuite, FunSpec}
 import org.scalatest.prop.PropertyChecks
 
-class makeIconFor extends FunSpec {
-			
+class MakeIconForTest extends FunSpec {
 	
-	describe ("provides an icon for everything") {
+	describe ("will not throw upon a call to makeIconFor") {
 		it ("Statuses") {
 			Statuses.values.map{swingView.makeIconFor(_)}
 		}

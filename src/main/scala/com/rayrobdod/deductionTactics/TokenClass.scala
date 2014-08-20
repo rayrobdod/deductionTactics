@@ -57,7 +57,10 @@ trait TokenClass
 	/** When a unit is attacked while suffering this status, the attack is strongest */
 	def weakStatus:Status
 	
-	override def toString = {
+	
+	/////////////////////////// Object Overrides //////////////////////////////
+	
+	override def toString:String = {
 		this.getClass.getName + " " +
 			"{ name: " + name +
 			"; body: " + body +
@@ -70,6 +73,30 @@ trait TokenClass
 			"; weakWeapon: " + weakWeapon +
 			"; weakStatus: " + weakStatus +
 			" }";
+	}
+	
+	override def hashCode:Int = {
+		(body.id << 28) + (atkElement.id) << 24 + (atkWeapon.id << 20) + (atkStatus.id << 16) +
+		(range << 12) + (speed << 8) + (weakDirection.id << 4) + (weakStatus.id << 0)
+	}
+	
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[TokenClass]}
+	
+	override def equals(other:Any):Boolean = {
+		if (! (this.canEquals(other))) { return false; }
+		val other2 = other.asInstanceOf[TokenClass]
+		if (! (other2.canEquals(this))) { return false; }
+		
+		other2.name == this.name &&
+				other2.body == this.body &&
+				other2.atkElement == this.atkElement &&
+				other2.atkWeapon == this.atkWeapon &&
+				other2.atkStatus == this.atkStatus &&
+				other2.range == this.range &&
+				other2.speed == this.speed &&
+				other2.weakDirection == this.weakDirection &&
+				other2.weakWeapon == this.weakWeapon &&
+				other2.weakStatus == this.weakStatus
 	}
 }
 
