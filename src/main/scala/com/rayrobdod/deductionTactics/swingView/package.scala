@@ -86,7 +86,7 @@ package object swingView
 	 * Makes an icon to represent an object
 	 * 
 	 * @author Raymond Dodge
-	 * @version 2013 Jun 14
+	 * @version a.6.0
 	 * @note I tried having a bunch of overloads, rather than one mega-match
 	 		but the compiler didn't seem to recognise some of the overloads
 	 */
@@ -101,8 +101,12 @@ package object swingView
 						+ e.name.toLowerCase + ".svg", size)
 				case e:Direction => makeSVGIcon("/com/rayrobdod/glyphs/direction/"
 						+ e.name.toLowerCase + ".svg", size)
-				case e:Status    => makeSVGIcon("/com/rayrobdod/glyphs/status/"
-						+ e.name.toLowerCase + ".svg", size)
+				case e:Status    => if(Statuses.Normal == e) {
+						makeSVGIcon("/com/rayrobdod/glyphs/unknown.svg", size)
+					} else {
+						makeSVGIcon("/com/rayrobdod/glyphs/status/"
+								+ e.name.toLowerCase + ".svg", size)
+					}
 				case e:Weaponkind => makeSVGIcon("/com/rayrobdod/glyphs/weapon/"
 						+ e.name.toLowerCase.dropRight(4) + ".svg", size)
 				
