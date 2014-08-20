@@ -50,19 +50,19 @@ class MoveRangeOfTest extends FunSpec {
 			assertResult(11)(moveRangeOf(token, list).size)
 		}
 		it ("A SnakeToxin'd Token has a speed of one") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Some(Statuses.Snake))
+			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Snake)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(5)(moveRangeOf(token, list).size)
 		}
 		it ("A Sleep'd Token has a speed of zero") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Some(Statuses.Sleep))
+			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Sleep)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(1)(moveRangeOf(token, list).size)
 		}
 		it ("A Burn'd Token has a full speed") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Some(Statuses.Burn))
+			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Burn)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(11)(moveRangeOf(token, list).size)
@@ -83,25 +83,25 @@ class MoveRangeOfTest extends FunSpec {
 			assertResult(15)(attackRangeOf(token, list).size)
 		}
 		it ("A SnakeToxin'd Token has a speed of one") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Some(Statuses.Snake))
+			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Snake)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(11)(attackRangeOf(token, list).size)
 		}
 		it ("A Sleep'd Token has a speed of zero") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Some(Statuses.Sleep))
+			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Sleep)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(5)(attackRangeOf(token, list).size)
 		}
 		it ("A Burn'd Token has a full speed") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Some(Statuses.Burn))
+			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Burn)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(15)(attackRangeOf(token, list).size)
 		}
 		it ("A Blind'd Token has a full speed") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Some(Statuses.Blind))
+			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Blind)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(0)(attackRangeOf(token, list).size)

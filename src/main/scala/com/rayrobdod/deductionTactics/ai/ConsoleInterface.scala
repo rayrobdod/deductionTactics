@@ -17,6 +17,7 @@
 */
 package com.rayrobdod.deductionTactics.ai
 
+import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.{PlayerAI, Token, GameState}
 import com.rayrobdod.boardGame.{RectangularField => Field}
 import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
@@ -37,10 +38,10 @@ final class ConsoleInterface extends PlayerAI
 		randomTeam(size)
 	}
 	
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo):GameState.Action = {
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		val a = memo.asInstanceOf[ConsoleInterfaceMemo]
 		
-		return a.takeTurnReturnValueLock.synchronized{
+		return Seq(a.takeTurnReturnValueLock.synchronized{
 			while (a.takeTurnReturnValue == None) { 
 				a.takeTurnReturnValueLock.wait()
 			}
@@ -48,7 +49,7 @@ final class ConsoleInterface extends PlayerAI
 			val retVal = a.takeTurnReturnValue.get
 			a.takeTurnReturnValue = None
 			retVal
-		}
+		})
 	}
 	
 	def initialize(player:Int, initialState:GameState):Memo = {

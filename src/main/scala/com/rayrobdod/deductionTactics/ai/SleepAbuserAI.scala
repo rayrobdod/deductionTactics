@@ -47,7 +47,7 @@ class SleepAbuserAI extends PlayerAI
 	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		val tokens = gameState.tokens
 		val aliveEnemies = tokens.aliveNotPlayerTokens(player).flatten
-		val enemyAttackRange = aliveEnemies.map{x => attackRangeOf(x, tokens)}.flatten
+		val enemyAttackRange = aliveEnemies.map{x => attackRangeOf(x, tokens)}
 		
 		Logger.finer("Enemy Range: " + enemyAttackRange.size)
 		
@@ -55,16 +55,16 @@ class SleepAbuserAI extends PlayerAI
 			
 			val myRange = attackRangeOf(myToken, tokens)
 			val myReach = moveRangeOf(myToken, tokens)
-			val attackableOtherTokens = aliveEnemies.filter{myRange contains _.currentSpace}
+			val attackableOtherTokens = aliveEnemies.filter{(x:Token) => myRange contains x.currentSpace}
 			
 			if (attackableOtherTokens.isEmpty)
 			{	// wants to be out of enemy range
-				retreatFromEnemy(player, myToken, tokens, enemyAttackRange)
+				retreatFromEnemy(player, myToken, tokens, enemyAttackRange.flatten)
 			}
 			else
 			{	// wants to attack enemy
 				moveToAndStrikeEnemy(myToken, attackableOtherTokens, tokens) ++:
-				retreatFromEnemy(player, myToken, tokens, enemyAttackRange)
+				retreatFromEnemy(player, myToken, tokens, enemyAttackRange.flatten)
 			}
 		} :+ GameState.EndOfTurn
 	}
