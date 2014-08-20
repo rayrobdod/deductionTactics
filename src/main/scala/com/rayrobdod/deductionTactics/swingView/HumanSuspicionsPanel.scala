@@ -45,7 +45,7 @@ class HumanSuspicionsPanel extends JPanel
 	
 	private class MyListModel[A](a:Seq[A]) extends ScalaSeqListModel[Option[A]](None +: a.map{Option(_)}) with AbstractComboBoxModel[Option[A]]
 	
-	val icon = new JLabel(generateGenericIcon(tokenClass))
+	val icon = new JLabel  ()//  (generateGenericIcon(tokenClass))
 	val name = new JLabel("???")
 	val range = new JSpinner(new SpinnerNumberModel(0,0,5,1))
 	val speed = new JSpinner(new SpinnerNumberModel(0,0,5,1))
