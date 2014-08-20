@@ -35,7 +35,6 @@ import com.rayrobdod.util.services.ClassServiceLoader
  * @todo trait instead of abstract class? Could it possibly hurt?
  */
 abstract class PlayerAI {
-	type Memo >: Any
 	
 	
 	/** Generates a team of tokens that this AI would like to use. */
@@ -45,7 +44,7 @@ abstract class PlayerAI {
 	 * The engine calls this to make a player take its turn.
 	 * The turn ends when this method returns to its caller.
 	 */
-	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action]
+	def takeTurn(player:Int, gameState:GameState, memo:ai.Memo):Seq[GameState.Action]
 	
 	/**
 	 * Notification of what another player did on its turn.
@@ -61,15 +60,15 @@ abstract class PlayerAI {
 		action:GameState.Result,
 		beforeState:GameState,
 		afterState:GameState,
-		memo:Memo
-	):Memo
+		memo:ai.Memo
+	):ai.Memo
 	
 	/**
 	 * called once at the start of the game to allow the
 	 * AI to set up additional listeners or setup an IO
 	 * or other such tasks.
 	 */
-	def initialize(player:Int, initialState:GameState):Memo
+	def initialize(player:Int, initialState:GameState):ai.Memo
 }
 
 /**

@@ -94,7 +94,7 @@ final class BlindAttackAI extends PlayerAI
 		)
 	}
 	
-	override def initialize(player:Int, initialState:GameState):Memo = ""
+	override def initialize(player:Int, initialState:GameState):Memo = new SimpleMemo
 	
 	override def notifyTurn(
 		player:Int,

@@ -118,7 +118,10 @@ package object swingView
 	 * @version 2013 Jun 14
 	 */
 	private def makeSVGIcon(resource:String, size:Int):Icon = {
+		if (resource == null) throw new NullPointerException("resource")
+		if (this.getClass().getResource(resource) == null) throw new NullPointerException("this.getClass().getResource(\"" + resource + "\")")
 		val uri = this.getClass().getResource(resource).toURI
+		if (uri == null) throw new NullPointerException("uri")
 		
 		val icon = new SVGIcon()
 		icon.setSvgURI(uri)

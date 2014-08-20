@@ -24,6 +24,7 @@ import Statuses.Status
 import java.io.PrintStream
 import com.rayrobdod.boardGame.{RectangularField => Field, Token => BoardGameToken, Space}
 import com.rayrobdod.deductionTactics.consoleView._
+import scala.collection.immutable.Seq
 
 /**
  * A decorator for PlayerAIs. It prints to console events that happen
@@ -33,9 +34,13 @@ import com.rayrobdod.deductionTactics.consoleView._
  */
 final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 {
+	/** Number of values kept in the event log */
+	private val maxEventsCount = 10
+	
+	
 	/** Forwards command to base */
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo) =
-			base.takeTurn(player, gameState, memo.asInstanceOf[Tuple5[_,_,_,_,_]]._1)
+			base.takeTurn(player, gameState, memo)
 	/** Forwards command to base */
 	override def buildTeam(size:Int) = base.buildTeam(size)
 	
@@ -60,13 +65,13 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 		t.setDaemon(true)
 		t.start()
 		
-		((
+		new ConsoleEventPrintingMemo(
 			base.initialize(player, initialState),
 			Nil,
 			outStream,
 			currentState,
 			activeToken
-		))
+		)
 	}
 	
 	
@@ -79,21 +84,28 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 		afterState:GameState,
 		memo:Memo
 	):Memo = {
-		val memoAsTuple = memo.asInstanceOf[Tuple5[_, _, _, _, _]]
-		val baseMemoIn = memoAsTuple._1
-		val baseMemoOut = base.notifyTurn(player, action, beforeState, afterState, baseMemoIn)
+		val memo2 = memo.asInstanceOf[ConsoleEventPrintingMemo]
+		val baseMemoOut = base.notifyTurn(player, action, beforeState, afterState, memo2.base)
 		
-		val baseLogIn = memoAsTuple._2.asInstanceOf[Seq[_]].map{_.toString}
-		val outStream = memoAsTuple._3.asInstanceOf[PrintStream]
-		val sharedState = memoAsTuple._4.asInstanceOf[SharedGameStateProperty]
-		val sharedToken = memoAsTuple._5.asInstanceOf[SharedActiveTokenProperty]
-		
-		sharedState.value = afterState
-		val baseLogOut = (GameStateResultToMesage(action, tokensToLetters(afterState.tokens, Option(player))) +: baseLogIn).take(10)
-		printEverything(outStream, player, afterState, sharedToken, baseLogOut )
+		val baseLogOut = (GameStateResultToMesage(action, tokensToLetters(afterState.tokens, Option(player))) +: memo2.baseLog).take(maxEventsCount)
 		
 		
-		(( baseMemoOut, baseLogOut, outStream, sharedState, sharedToken))
+		printEverything(
+			memo2.outStream,
+			player,
+			afterState,
+			memo2.sharedToken,
+			baseLogOut
+		)
+		
+		
+		new ConsoleEventPrintingMemo(
+			baseMemoOut,
+			memo2.baseLog,
+			memo2.outStream,
+			memo2.sharedState,
+			memo2.sharedToken
+		)
 	}
 	
 	private def printEverything(
@@ -139,5 +151,44 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 	override def hashCode = base.hashCode * 7 + 43
 	
 	override def toString = base.toString + " with " + this.getClass.getName
+}
+
+
+/**
+ * @version a.6.0
+ */
+final class ConsoleEventPrintingMemo(
+		val base:Memo,
+		val baseLog:Seq[String],
+		val outStream:PrintStream,
+		val sharedState:SharedGameStateProperty,
+		val sharedToken:SharedActiveTokenProperty
+) extends Memo {
+	
+	
+	override def attacks:Seq[GameState.Result] = base.attacks
+	override def suspisions:Map[(Int, Int), TokenClassSuspision] = base.suspisions
+	
+	override def addAttack(
+			r:GameState.Result
+	):ConsoleEventPrintingMemo =
+		new ConsoleEventPrintingMemo(
+			base.addAttack(r),
+			baseLog,
+			outStream,
+			sharedState,
+			sharedToken
+		)
+	override def updateSuspision(
+			key:(Int, Int),
+			value:TokenClassSuspision
+	):ConsoleEventPrintingMemo =
+		new ConsoleEventPrintingMemo(
+			base.updateSuspision(key, value),
+			baseLog,
+			outStream,
+			sharedState,
+			sharedToken
+		)
 }
 

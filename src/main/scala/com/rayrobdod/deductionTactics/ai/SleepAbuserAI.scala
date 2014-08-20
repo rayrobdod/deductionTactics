@@ -75,17 +75,7 @@ class SleepAbuserAI extends PlayerAI
 		Random.shuffle(allWithSleep ++ allWithSleep).take(teamSize)
 	}
 	
-	override def initialize(player:Int, initialState:GameState):Memo = {
-		((
-			new Blackboard(Seq.empty[GameState.Result],
-				initialState.tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
-					ts.zipWithIndex.map({(t:Token, j:Int) =>
-						(( ((i, j)), new TokenClassSuspision() ))
-					}.tupled)
-				}.tupled).toMap
-			)
-		))
-	}
+	override def initialize(player:Int, initialState:GameState):Memo = new SimpleMemo()
 	
 	override def notifyTurn(
 		player:Int,
@@ -93,7 +83,7 @@ class SleepAbuserAI extends PlayerAI
 		beforeState:GameState,
 		afterState:GameState,
 		memo:Memo
-	):Memo = "" // TODO: record information
+	):Memo = memo
 	
 	override def toString = this.getClass.getName
 	
@@ -170,7 +160,7 @@ class SleepAbuserAI extends PlayerAI
 	/** returns a sequence of actions that will cause a token to attack an enemy token */
 	def moveToAndStrikeEnemy(myToken:Token, attackableOtherTokens:Seq[Token], allTokens:ListOfTokens):Seq[GameState.Action] = 
 	{
-		val awakeAttackableOtherTokens = attackableOtherTokens.filter{_.currentStatus != Some(Sleep)}
+		val awakeAttackableOtherTokens = attackableOtherTokens.filter{_.currentStatus != Sleep}
 		Logger.finer("Attackable: " + attackableOtherTokens)
 		Logger.finer("AwakeAttackable: " + awakeAttackableOtherTokens)
 			
@@ -193,7 +183,7 @@ class SleepAbuserAI extends PlayerAI
 		
 		Seq( 
 			GameState.TokenMove(myToken, moveTo),
-			if (target.currentStatus == None) {
+			if (target.currentStatus == Statuses.Normal) {
 				GameState.TokenAttackStatus(myToken, target)
 			} else {
 				GameState.TokenAttackDamage(myToken, target)

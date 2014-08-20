@@ -106,10 +106,24 @@ package object ai
 	
 	
 	/** @version a.6.0 */
-	case class Blackboard(
-		val attacks:Seq[GameState.Result],
-		val finalConclusions:Map[(Int, Int), TokenClassSuspision]
-	)
+	trait Memo {
+		def attacks:Seq[GameState.Result]
+		def suspisions:Map[(Int, Int), TokenClassSuspision]
+		def addAttack(r:GameState.Result):Memo
+		def updateSuspision(key:(Int, Int), value:TokenClassSuspision):Memo
+	}
+	
+	
+	/** @version a.6.0 */
+	final class SimpleMemo(
+		val attacks:Seq[GameState.Result] = Nil,
+		val suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty
+	) extends Memo {
+		def addAttack(r:GameState.Result):SimpleMemo =
+				new SimpleMemo(r +: attacks, suspisions)
+		def updateSuspision(key:(Int, Int), value:TokenClassSuspision):SimpleMemo =
+				new SimpleMemo(attacks, suspisions + ((key, value)))
+	}
 	
 	/** @version a.6.0 */
 	case class TokenClassSuspision(

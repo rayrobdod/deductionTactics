@@ -34,7 +34,7 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 {
 	/** Forwards command to base */
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo) =
-			base.takeTurn(player, gameState, memo.asInstanceOf[Tuple2[_,_]]._1)
+			base.takeTurn(player, gameState, memo)
 	/** Forwards command to base */
 	override def buildTeam(size:Int) = base.buildTeam(size)
 	
@@ -67,17 +67,15 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 		frame.validate()
 		frame.setVisible(true)
 		
-		((
-			base.initialize(player, initialState),
-			SwingInterfaceMemo(
-					panel = panel,
-					hilightLayer = hilightLayer,
-					attackTypeSelector = new swingView.SellectAttackTypePanel(),
-					selectedToken = activeToken,
-					currentTokens = tokensProp,
-					endOfTurnButton = new javax.swing.JButton("XXXX")
-			)
-		))
+		SwingInterfaceMemo(
+				base = base.initialize(player, initialState), 
+				panel = panel,
+				hilightLayer = hilightLayer,
+				attackTypeSelector = new swingView.SellectAttackTypePanel(),
+				selectedToken = activeToken,
+				currentTokens = tokensProp,
+				endOfTurnButton = new javax.swing.JButton("XXXX")
+		)
 	}
 	
 	
@@ -90,9 +88,8 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 		afterState:GameState,
 		memo:Memo
 	):Memo = {
-		val memo3 = memo.asInstanceOf[Tuple2[_, _]]
-		base.notifyTurn(player, action, beforeState, afterState, memo3._1)
-		val memo2 = memo3._2.asInstanceOf[SwingInterfaceMemo]
+		val memo2 = memo.asInstanceOf[SwingInterfaceMemo]
+		val newMemoBase = base.notifyTurn(player, action, beforeState, afterState, memo2.base)
 		val panel = memo2.panel
 		
 		action match {
@@ -126,7 +123,15 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 		memo2.currentTokens.value = afterState.tokens
 		memo2.hilightLayer.update(memo2.selectedToken.value, afterState.tokens, afterState.board)
 		
-		memo
+		new SwingInterfaceMemo(
+			newMemoBase,
+			memo2.panel,
+			memo2.hilightLayer,
+			memo2.attackTypeSelector,
+			memo2.selectedToken,
+			memo2.currentTokens,
+			memo2.endOfTurnButton
+		)
 	}
 	
 	

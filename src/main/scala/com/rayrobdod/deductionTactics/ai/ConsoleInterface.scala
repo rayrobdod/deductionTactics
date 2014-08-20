@@ -26,7 +26,6 @@ import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
  * A PlayerAI for user interaction via console.
  * 
  * Requires ANSI escape codes to work. Is not reusable.
- * @author Raymond Dodge
  * @version a.6.0
  */
 final class ConsoleInterface extends PlayerAI
@@ -42,18 +41,18 @@ final class ConsoleInterface extends PlayerAI
 		val a = memo.asInstanceOf[ConsoleInterfaceMemo]
 		
 		return Seq(a.takeTurnReturnValueLock.synchronized{
-			while (a.takeTurnReturnValue == None) { 
+			while (a.takeTurnReturnValue.value == None) { 
 				a.takeTurnReturnValueLock.wait()
 			}
 			
-			val retVal = a.takeTurnReturnValue.get
-			a.takeTurnReturnValue = None
+			val retVal = a.takeTurnReturnValue.value.get
+			a.takeTurnReturnValue.value = None
 			retVal
 		})
 	}
 	
 	def initialize(player:Int, initialState:GameState):Memo = {
-		val memo = new ConsoleInterfaceMemo(player, initialState)
+		val memo = ConsoleInterfaceMemo(new SimpleMemo, player, initialState)
 		
 		new Thread(memo.runner, "ConsoleInterface").start()
 		return memo
@@ -88,19 +87,83 @@ final class ConsoleInterface extends PlayerAI
 	override def toString = this.getClass.getName
 }
 
+
+/**
+ * @version a.6.0
+ */
 final class ConsoleInterfaceMemo(
-		player:Int,
-		initialState:GameState
-) {
-	val takeTurnReturnValueLock = new Object();
-	var takeTurnReturnValue:Option[GameState.Action] = None
+		base:Memo,
+		val takeTurnReturnValueLock:Object,
+		var takeTurnReturnValue:TakeTurnRetValProperty,
+		val runner:BoardNavigator
+) extends Memo {
 	
-	val runner = new BoardNavigator(
-			Option(player),
-			initialState,
-			{(x:GameState.Action) => this.takeTurnReturnValueLock.synchronized{
-				this.takeTurnReturnValue = Option(x)
-				this.takeTurnReturnValueLock.notifyAll
-			}}
-	)
+	
+	override def attacks:Seq[GameState.Result] = base.attacks
+	override def suspisions:Map[(Int, Int), TokenClassSuspision] = base.suspisions
+	
+	override def addAttack(r:GameState.Result):ConsoleInterfaceMemo =
+		new ConsoleInterfaceMemo(
+			base.addAttack(r),
+			takeTurnReturnValueLock,
+			takeTurnReturnValue,
+			runner
+		)
+	override def updateSuspision(key:(Int, Int), value:TokenClassSuspision):ConsoleInterfaceMemo =
+		new ConsoleInterfaceMemo(
+			base.updateSuspision(key, value),
+			takeTurnReturnValueLock,
+			takeTurnReturnValue,
+			runner
+		)
+}
+
+/**
+ * @version a.6.0
+ */
+object ConsoleInterfaceMemo {
+	
+	def apply(
+			base:Memo,
+			player:Int,
+			initialState:GameState
+	):ConsoleInterfaceMemo = {
+		val takeTurnReturnValueLock = new Object
+		val takeTurnRetValProperty = new TakeTurnRetValProperty
+		val runner = new BoardNavigator(
+				Option(player),
+				initialState,
+				{(x:GameState.Action) => takeTurnReturnValueLock.synchronized{
+					takeTurnRetValProperty.value = Option(x)
+					takeTurnReturnValueLock.notifyAll
+				}}
+		)
+		
+		
+		new ConsoleInterfaceMemo(
+			base = base,
+			takeTurnReturnValueLock = takeTurnReturnValueLock,
+			takeTurnReturnValue = takeTurnRetValProperty,
+			runner = runner
+		)
+	}
+	
+	
+	def apply(
+			base:Memo,
+			takeTurnReturnValueLock:Object,
+			takeTurnReturnValue:TakeTurnRetValProperty,
+			runner:BoardNavigator
+	):ConsoleInterfaceMemo = { 
+		new ConsoleInterfaceMemo(
+			base = base,
+			takeTurnReturnValueLock = takeTurnReturnValueLock,
+			takeTurnReturnValue = takeTurnReturnValue,
+			runner = runner
+		)
+	}
+}
+
+final class TakeTurnRetValProperty {
+	var value:Option[GameState.Action] = None
 }
