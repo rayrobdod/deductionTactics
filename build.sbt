@@ -46,18 +46,13 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 	def accept(n:File) = {
 		val abPath = n.getAbsolutePath().replace('\\', '/')
 		(
-			(
-				(abPath contains "/deductionTactics/ai/") &&
-				!(abPath contains "Swing") &&
-				!(abPath contains "Blind") &&
-				!(abPath contains "Sleep") &&
-				!(abPath contains "Team") &&
-				!(abPath contains "Sound") &&
-				!(abPath contains "Sound") &&
-				!(abPath contains "WithConsoleEventPrinting") &&
-				!(abPath contains "ConsoleInterface") &&
-				!(abPath contains "package")
-			) ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/FieldPotentialAI.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/GangUpAI.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/RepeatAttackCheater.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/NetworkClient.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithAutorecord.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithNetworkServer.scala") ||
+			//
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface_CFN.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithConsoleViewport.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala") ||
