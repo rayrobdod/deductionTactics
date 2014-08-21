@@ -66,12 +66,13 @@ final class BlindAttackAI extends PlayerAI
 					new MoveToCostFunction(myToken, gameState.tokens)
 				)
 				
-				path.map{(s) => GameState.TokenMove(myToken, s)}
+				val moves = path.map{(s) => GameState.TokenMove(myToken, s)}
+				val attack = GameState.TokenAttackDamage(myToken, hisToken)
+				
+				moves :+ attack
 			}.tupled)
 				
-		) ++ queue.map({(myToken:Token, hisToken:Token) =>
-			GameState.TokenAttackDamage(myToken, hisToken)
-		}.tupled)
+		)
 		
 		// return the first legal move
 		
