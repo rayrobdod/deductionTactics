@@ -152,7 +152,7 @@ object PlayerTurnCycler {
 		gs.board,
 		new ListOfTokens(gs.tokens.tokens.zipWithIndex.map{(x) =>
 			if (x._2 == playerNumber) {
-				x._1.map{(t) => t.startOfTurn}
+				x._1.map{(t) => t.startOfTurn.beAfflictedByStatus}
 			} else {
 				x._1
 			}

@@ -115,6 +115,7 @@ final case class GameState (
 		
 		if (!attacker.canAttackThisTurn) { throw new IllegalArgumentException("Token has already attacked this turn") }
 		if (distance > attacker.tokenClass.get.range) { throw new IllegalArgumentException("Tokens are too far away!") }
+		if (attackee.currentStatus != Statuses.Normal) { throw new IllegalArgumentException("Token already has a status") }
 		
 		
 		val newAttacker = attacker.copy(

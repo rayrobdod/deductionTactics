@@ -42,7 +42,7 @@ final case class Token (
 ) extends BoardGameToken[SpaceClass](currentSpace) {
 	
 	final def startOfTurn():Token = {
-		val newStatus = if (currentStatusTurnsLeft >= 0) {currentStatus} else {Statuses.Normal}
+		val newStatus = if (currentStatusTurnsLeft > 1) {currentStatus} else {Statuses.Normal}
 		
 		new Token(
 			currentSpace,
