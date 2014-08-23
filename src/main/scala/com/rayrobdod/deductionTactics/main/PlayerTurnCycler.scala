@@ -81,9 +81,11 @@ final class PlayerTurnCycler(
 							Logger.finer("Token Attack for Damage")
 							Some(currentState.tokenAttackDamage(playerOfCurrentTurn, a, d2))
 						case GameState.TokenAttackStatus(a, d) =>
-							// TODO
-							Logger.finer("Token Attack for Status")
-							None
+							val dIndex = playerSeenState.tokens.indexOf(d)
+							val d2 = currentState.tokens.tokens(dIndex)
+							
+							Logger.finer("Token Attack for Damage")
+							Some(currentState.tokenAttackStatus(playerOfCurrentTurn, a, d2))
 						case GameState.EndOfTurn =>
 							val a = endTurn(currentState)
 							playerOfCurrentTurn = (playerOfCurrentTurn + 1) % currentState.tokens.tokens.size

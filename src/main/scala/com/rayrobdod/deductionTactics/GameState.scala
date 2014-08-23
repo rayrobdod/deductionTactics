@@ -100,6 +100,44 @@ final case class GameState (
 		GameState(board, newTokens)
 	}
 	
+	def tokenAttackStatus(player:Int, attacker:Token, attackee:Token):GameState = {
+		
+		val indexOfAttacker = this.tokens.indexOf(attacker)
+		val indexOfAttackee = this.tokens.indexOf(attackee)
+		
+		if (indexOfAttacker._1 != player) { throw new IllegalArgumentException("That's not your token!") }
+		if (indexOfAttackee._1 == player) { throw new IllegalArgumentException("Player owns attackee") }
+		
+		val distance = attacker.currentSpace.distanceTo(
+				attackee.currentSpace,
+				new AttackCostFunction(attacker, tokens)
+		)
+		
+		if (!attacker.canAttackThisTurn) { throw new IllegalArgumentException("Token has already attacked this turn") }
+		if (distance > attacker.tokenClass.get.range) { throw new IllegalArgumentException("Tokens are too far away!") }
+		
+		
+		val newAttacker = attacker.copy(
+			canAttackThisTurn = false
+		)
+		val newAttackee = attackee.copy(
+			currentStatus = attacker.tokenClass.get.atkStatus,
+			currentStatusTurnsLeft = 3
+		)
+		
+		
+		
+		val newTokens = new ListOfTokens(
+			tokens.tokens.updated(indexOfAttacker._1,
+				tokens.tokens(indexOfAttacker._1).updated(indexOfAttacker._2, newAttacker)
+			).updated(indexOfAttackee._1,
+				tokens.tokens(indexOfAttackee._1).updated(indexOfAttackee._2, newAttackee)
+			)
+		)
+		
+		GameState(board, newTokens)
+	}
+	
 }
 
 /**
