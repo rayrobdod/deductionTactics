@@ -52,6 +52,7 @@ final class SwingInterface extends PlayerAI
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		
 		val a = memo.asInstanceOf[SwingInterfaceMemo]
+		a.currentTokens.value = gameState.tokens
 		a.endOfTurnButton.setEnabled(true)
 		
 		return endOfTurnLock.synchronized{
