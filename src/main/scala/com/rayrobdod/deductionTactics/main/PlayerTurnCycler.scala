@@ -90,7 +90,7 @@ final class PlayerTurnCycler(
 							val a = endTurn(currentState)
 							playerOfCurrentTurn = (playerOfCurrentTurn + 1) % currentState.tokens.tokens.size
 							Logger.finer("End of Turn")
-							Some(startTurn(currentState, playerOfCurrentTurn))
+							Some(startTurn(endTurn(currentState), playerOfCurrentTurn))
 					}
 					val result = action match {
 						case GameState.TokenMove(t, s) =>
