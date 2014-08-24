@@ -117,7 +117,7 @@ package object ai
 	/** @version a.6.0 */
 	final class SimpleMemo(
 		val attacks:Seq[GameState.Result] = Nil,
-		val suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty
+		val suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty.withDefaultValue(new TokenClassSuspision)
 	) extends Memo {
 		def addAttack(r:GameState.Result):SimpleMemo =
 				new SimpleMemo(r +: attacks, suspisions)

@@ -17,19 +17,20 @@
 */
 package com.rayrobdod.deductionTactics.consoleView
 
+import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
 import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.{Token}
-import scala.runtime.{AbstractFunction1 => Function1}
+import scala.runtime.{AbstractFunction2 => Function2}
 
 /**
- * @author Raymond Dodge
+ * @version a.6.0
  */
-object TokenPrinter extends Function1[Token,Unit]
+object TokenPrinter extends Function2[Token, TokenClassSuspision, Unit]
 {
 	private def out = System.out
 	
 	
-	def apply(token:Token) = {
+	def apply(token:Token, susp:TokenClassSuspision) = {
 		out.print(token.currentHitpoints);
 		out.print("/");
 		out.print(Token.maximumHitpoints);
@@ -38,6 +39,9 @@ object TokenPrinter extends Function1[Token,Unit]
 		out.print(' ');
 		out.println(token.currentStatusTurnsLeft)
 		
-		token.tokenClass.foreach{(x) => TokenClassPrinter(x)}
+		token.tokenClass match {
+			case Some(x) => TokenClassPrinter(x)
+			case None => TokenClassPrinter(susp)
+		}
 	}
 }
