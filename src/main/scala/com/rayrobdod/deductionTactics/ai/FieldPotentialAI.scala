@@ -18,33 +18,31 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{Space}
-import com.rayrobdod.boardGame.{RectangularField => Field}
+import com.rayrobdod.boardGame.{Space, RectangularField, StrictRectangularSpace}
 import scala.collection.immutable.{Map, Set, Seq}
-import scala.collection.mutable.{Map => MMap}
 import LoggerInitializer.{fieldPotentialAiLogger => Logger}
 import java.util.logging.Level
 
 /**
  * An AI that first uses fuzzy logic to determine who, if anyone, to attack,
  * and then uses potential fields to determine how to attack and retreat.
- * @author Raymond Dodge
- * @version a.5.1
+ * @version a.6.0
  */
 final class FieldPotentialAI extends PlayerAI
 {
 	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
-	def buildTeam(size:Int) = randomTeam(size)
+	override def buildTeam(size:Int) = randomTeam(size)
 	
-	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
-		player.tokens.aliveMyTokens.foreach{(myToken:Token) =>
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
+		gameState.tokens.alivePlayerTokens(player).flatMap{(myToken:Token) =>
 			// Stage 1 : decide who if anyone to attack
 			val target:Option[Token] = {
 				
-				val otherToken = player.tokens.aliveOtherTokens.flatten.map{(x:Token) =>
+				val otherToken = gameState.tokens.aliveNotPlayerTokens(player).flatten.map{(x:Token) =>
 					import PotentialFieldAI$FuzzyLogic.shouldEngage;
+					val susp = memo.suspisions(gameState.tokens.indexOf(x))
 					
-					val a = shouldEngage(myToken, x);
+					val a = shouldEngage(myToken, x, susp, gameState.tokens);
 					((x, a))
 				}.maxBy{_._2}
 				
@@ -54,67 +52,63 @@ final class FieldPotentialAI extends PlayerAI
 			}
 			
 			// Stage 2 : pre-attack move
-			target.foreach{(x:Token) =>
-				myToken.requestMoveTo(
-					PotentialFieldAI$AttackField(myToken, x)
+			val move1 = target.map{(x:Token) =>
+				GameState.TokenMove(myToken,
+					PotentialFieldAI$AttackField(myToken, x, memo.suspisions(gameState.tokens.indexOf(x)), gameState.tokens)
 				)
-			}
+			}.toSeq
 			
 			// Stage 3 : attack
-			target.foreach{(x:Token) => 
-				myToken.tryAttackDamage(x)
-			}
+			val move2 = target.map{(x:Token) =>
+				GameState.TokenAttackDamage(myToken, x)
+			}.toSeq
 			
 			// Stage 4 : post-attack move
-			myToken.requestMoveTo(
-				PotentialFieldAI$RetreatField(myToken, player.tokens)
+			val move3 = GameState.TokenMove(myToken,
+				PotentialFieldAI$RetreatField(myToken, gameState.tokens, memo.suspisions, player)
 			)
-		}
+			
+			move1.toSeq ++ move2.toSeq :+ move3
+		} :+ GameState.EndOfTurn
 	}
 	
 	
 		
-	def initialize(player:Player, field:Field) = {
+	override def initialize(player:Int, initialState:GameState):Memo = {
 		// setup recorders
-		player.tokens.tokens.flatten.foreach{(mine:Token) =>
-			val attacks = new StandardObserveAttacks(mine, player.tokens)
-			
-			mine.beDamageAttackedReactions_+=(attacks)
-			mine.beStatusAttackedReactions_+=(attacks)
-		}
-		player.tokens.otherTokens.flatten.foreach{(other:Token) =>
-			val movement = new StandardObserveMovement(other)
-			other.moveReactions_+=(movement)
-			player.addStartTurnReaction(movement)
-		}
 		
 		if (Logger.isLoggable(Level.FINER)) {
 			import java.awt.event.{WindowEvent, WindowAdapter}
 			import javax.swing.{JFrame, JLabel}
 			
-			val frame = new JFrame("PotentialFieldAI$RetreatField") 
+			val list = initialState.tokens
+			
+			val frame:JFrame = new JFrame("PotentialFieldAI$RetreatField") 
 			frame.getContentPane.setLayout(
 				new java.awt.GridLayout(
-					field.spaces.size,
-					field.spaces(0).size
+					initialState.board.spaces.size,
+					initialState.board.spaces(0).size
 				)
 			)
 			
-			val token = player.tokens.myTokens(0)
-			val labels = field.spaces.flatten.map{(x) => (x, new JLabel("XXXX"))}
+			val token = list.alivePlayerTokens(player)(0)
+			val labels = initialState.board.spaces.flatten.map{(x) => (x, new JLabel("XXXX"))}
 			
 			labels.foreach{(x) => frame.getContentPane.add(x._2)}
-			player.addStartTurnReaction{new Player.StartTurnReactionType() {
-				def apply() {
-					val c = PotentialFieldAI$RetreatField.priorities(token, player.tokens, field.spaces.size)
-					labels.foreach{(x) => x._2.setText(c.getOrElse(x._1, "X").toString)}
-				}
-			}}
 			frame.setVisible(true);
 			frame.pack();
 		}
+		
+		new SimpleMemo
 	}
 	
+	override def notifyTurn(
+		player:Int,
+		action:GameState.Result,
+		beforeState:GameState,
+		afterState:GameState,
+		memo:Memo
+	):Memo = memo
 	
 	def canEquals(other:Any) = {other.isInstanceOf[FieldPotentialAI]}
 	override def equals(other:Any) = {
@@ -130,11 +124,11 @@ final class FieldPotentialAI extends PlayerAI
 private[ai] object PotentialFieldAI$FuzzyLogic {
 	import java.lang.Float.{POSITIVE_INFINITY => INF}
 	
-	class Distance(self:Token, other:Token) {
+	class Distance(self:Token, other:Token, list:ListOfTokens) {
 		private val speed:Float = self.tokenClass.map{_.speed}.get;
 		private val range:Float = self.tokenClass.map{_.range}.get;
 		// the '1000' is the cost for entering the token's current space. Technicalities.
-		private val distance = self.currentSpace.distanceTo(other.currentSpace, self, TokenMovementCost) - 999;
+		private val distance = self.currentSpace.distanceTo(other.currentSpace, new MoveToCostFunction(self, list)) - 999;
 		
 		val adjacent   = trapezoidalFunction(distance, -INF, -INF, range, range + .1f);
 		val close      = trapezoidalFunction(distance, range, range, speed/2, speed)
@@ -154,9 +148,8 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 		}
 	}
 	
-	class Advantage(selfT:Token, otherT:Token) {
+	class Advantage(selfT:Token, otherT:Token, otherClass:TokenClassSuspision) {
 		private val selfClass = selfT.tokenClass.get;
-		private val otherClass = otherT.tokenClass.get;
 		
 		val (self:Float, opponent:Float, even:Float, unknown:Float) = {
 			var strength:Float = 3;
@@ -165,7 +158,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 			var m_even     = 0f;
 			var m_unknown  = 0f;
 			
-			if (otherClass.isDefined) {
+			if (otherClass.atkElement.isDefined) {
 				val elemAd = selfClass.atkElement.damageModifier(otherClass.atkElement.get)
 				
 				if (elemAd >= 1f) {
@@ -180,7 +173,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 			}
 			
 			if (otherClass.weakWeapon(selfClass.atkWeapon).isDefined) {
-				val weapAd = otherClass.weakWeapon(selfClass.atkWeapon)
+				val weapAd = otherClass.weakWeapon(selfClass.atkWeapon).get
 				
 				if (weapAd >= 1f) {
 					m_self = m_self + weapAd - 1f;
@@ -194,7 +187,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 			}
 			
 			if (otherClass.atkWeapon.isDefined) {
-				val weapAd = selfClass.weakWeapon(otherClass.atkWeapon.get).get
+				val weapAd = selfClass.weakWeapon(otherClass.atkWeapon.get)
 				
 				if (weapAd >= 1f) {
 					m_opponent = m_opponent + weapAd - 1f;
@@ -241,11 +234,11 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 	
 	
 	
-	def shouldEngage(selfT:Token, otherT:Token):Float = {
+	def shouldEngage(selfT:Token, otherT:Token, otherSusp:TokenClassSuspision, list:ListOfTokens):Float = {
 		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$FuzzyLogic", "shouldEngage")
 		
-		val distance = new Distance(selfT, otherT);
-		val advantage = new Advantage(selfT, otherT);
+		val distance = new Distance(selfT, otherT, list);
+		val advantage = new Advantage(selfT, otherT, otherSusp);
 		val selfHealth = new Health(selfT);
 		val otherHealth = new Health(otherT);
 		
@@ -278,17 +271,22 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 }
 
 private[ai] object PotentialFieldAI$AttackField {
-	def apply(selfT:Token, otherT:Token):Space = {
+	def apply(selfT:Token, otherT:Token, otherSusp:TokenClassSuspision, tokens:ListOfTokens):Space[SpaceClass] = {
 		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$AttackField", "apply")
 		
-		val eligibleSpaces:Set[Space] = otherT.currentSpace.spacesWithin(
-				selfT.tokenClass.range.get, selfT, PhysicalStrikeCost
+		val eligibleSpaces:Set[Space[SpaceClass]] = otherT.currentSpace.spacesWithin(
+				selfT.tokenClass.get.range, new AttackCostFunction(selfT, tokens)
 		)
 		
-		val priorities:Set[(Space, Float)] = eligibleSpaces.map{(space:Space) =>
-			val b = if (otherT.tokenClass.weakDirection.isDefined) {
-				otherT.tokenClass.weakDirection.get.weaknessMultiplier(
-					Directions.pathDirections(selfT.currentSpace, otherT.currentSpace)
+		val priorities:Set[(Space[SpaceClass], Float)] = eligibleSpaces.map{(space:Space[SpaceClass]) =>
+			val b = if (otherSusp.weakDirection.isDefined) {
+				otherSusp.weakDirection.get.weaknessMultiplier(
+					Directions.pathDirections(
+							selfT.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]],
+							otherT.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]],
+							selfT,
+							tokens
+					)
 				)
 			} else {
 				// figure out the weakDirection
@@ -296,7 +294,7 @@ private[ai] object PotentialFieldAI$AttackField {
 			}
 			
 			val c:Float = b * selfT.currentSpace.distanceTo(
-				otherT.currentSpace, selfT, PhysicalStrikeCost
+				otherT.currentSpace, new AttackCostFunction(selfT, tokens)
 			);
 			
 			((space, c));
@@ -312,27 +310,27 @@ private[ai] object PotentialFieldAI$AttackField {
 }
 
 private[ai] object PotentialFieldAI$RetreatField {
-	def apply(selfT:Token, tokens:PlayerListOfTokens):Space = {
-		priorities(selfT, tokens).maxBy{_._2}._1
+	def apply(selfT:Token, tokens:ListOfTokens, susps:Map[(Int, Int), TokenClassSuspision], player:Int):Space[SpaceClass] = {
+		priorities(selfT, tokens, susps, player).maxBy{_._2}._1
 	}
 	
-	def priorities(selfT:Token, tokens:PlayerListOfTokens):Map[Space, Int] = {
-		this.priorities(selfT, tokens, selfT.canMoveThisTurn)
+	def priorities(selfT:Token, tokens:ListOfTokens, susps:Map[(Int, Int), TokenClassSuspision], player:Int):Map[Space[SpaceClass], Int] = {
+		this.priorities(selfT, tokens, susps, player, selfT.canMoveThisTurn)
 	}
 	
-	def priorities(selfT:Token, tokens:PlayerListOfTokens, range:Int):Map[Space, Int] = {
+	def priorities(selfT:Token, tokens:ListOfTokens, susps:Map[(Int, Int), TokenClassSuspision], player:Int, range:Int):Map[Space[SpaceClass], Int] = {
 		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$RetreatField", "priorities")
 		
-		val eligibleSpaces:Set[Space] = Option(selfT.currentSpace).map{_.spacesWithin(
-				range, selfT, TokenMovementCost
-		)}.getOrElse( Set.empty )
+		val eligibleSpaces:Set[Space[SpaceClass]] = moveRangeOf(selfT, tokens)
 		
-		val prioritiesEnemy:Seq[Set[(Space, Int)]] = tokens.aliveOtherTokens.flatten.map{(otherT:Token) =>
-			eligibleSpaces.map{(space:Space) => 
-				val range = otherT.tokenClass.range.getOrElse(1)
-				val speed = otherT.tokenClass.speed.getOrElse(3)
+		val prioritiesEnemy:Seq[Set[(Space[SpaceClass], Int)]] = tokens.aliveNotPlayerTokens(player).flatten.map{(otherT:Token) =>
+			eligibleSpaces.map{(space:Space[SpaceClass]) =>
+				val otherSusp = susps(tokens.indexOf(otherT))
+				
+				val range = otherSusp.range.getOrElse(1)
+				val speed = otherSusp.speed.getOrElse(3)
 				val distance = otherT.currentSpace.distanceTo(
-						space, otherT, TokenMovementCost);
+						space, new MoveToCostFunction(selfT, tokens));
 				//
 				val pri =
 					if (distance <= range) { 0 }
@@ -345,13 +343,13 @@ private[ai] object PotentialFieldAI$RetreatField {
 				(( space, pri ))
 			}
 		}
-		val prioritiesHerd:Seq[Set[(Space, Int)]] = tokens.aliveMyTokens.map{(otherT:Token) =>
+		val prioritiesHerd:Seq[Set[(Space[SpaceClass], Int)]] = tokens.alivePlayerTokens(player).map{(otherT:Token) =>
 			if (otherT == selfT) {
-				Set.empty[(Space, Int)]
+				Set.empty[(Space[SpaceClass], Int)]
 			} else {
-				eligibleSpaces.map{(space:Space) => 
+				eligibleSpaces.map{(space:Space[SpaceClass]) => 
 					val distance = space.distanceTo(
-							otherT.currentSpace, selfT, TokenMovementCost) - 999;
+							otherT.currentSpace, new MoveToCostFunction(selfT, tokens)) - 999;
 					//
 					val pri = distance match {
 						case 1 => 2
@@ -373,9 +371,9 @@ private[ai] object PotentialFieldAI$RetreatField {
 			Logger.finer(str2);
 		}
 		
-		val priorities = (prioritiesEnemy ++ prioritiesHerd).foldLeft(Map.empty[Space, Int]){
-			(a:Map[Space, Int], b:Set[(Space, Int)]) => b.foldLeft(a){
-				(y:Map[Space, Int], x:(Space, Int)) =>
+		val priorities = (prioritiesEnemy ++ prioritiesHerd).foldLeft(Map.empty[Space[SpaceClass], Int]){
+			(a:Map[Space[SpaceClass], Int], b:Set[(Space[SpaceClass], Int)]) => b.foldLeft(a){
+				(y:Map[Space[SpaceClass], Int], x:(Space[SpaceClass], Int)) =>
 					y + (( x._1, a.getOrElse(x._1, 0) + x._2 ))
 			}
 		}

@@ -46,7 +46,6 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 	def accept(n:File) = {
 		val abPath = n.getAbsolutePath().replace('\\', '/')
 		(
-			(abPath endsWith "com/rayrobdod/deductionTactics/ai/FieldPotentialAI.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/GangUpAI.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/RepeatAttackCheater.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/NetworkClient.scala") ||

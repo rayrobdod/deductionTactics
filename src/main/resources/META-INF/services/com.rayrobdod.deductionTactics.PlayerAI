@@ -6,7 +6,7 @@ com.rayrobdod.deductionTactics.ai.ConsoleInterface
 com.rayrobdod.deductionTactics.ai.BlindAttackAI
 com.rayrobdod.deductionTactics.ai.SleepAbuserAI
 #com.rayrobdod.deductionTactics.ai.GangUpAI
-#com.rayrobdod.deductionTactics.ai.FieldPotentialAI
+com.rayrobdod.deductionTactics.ai.FieldPotentialAI
 
 ### A network client that recieves commands over the net
 #com.rayrobdod.deductionTactics.ai.NetworkClient
