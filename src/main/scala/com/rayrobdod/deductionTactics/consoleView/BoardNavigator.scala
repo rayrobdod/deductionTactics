@@ -1,6 +1,7 @@
 package com.rayrobdod.deductionTactics
 package consoleView
 
+import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
 import scala.collection.mutable.Buffer
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
 
@@ -21,6 +22,7 @@ class BoardNavigator(
 	private var currentSpace:RectangularSpace[SpaceClass] = currentState.board.space(0,0);
 	private var selected:Option[TokenIndex] = None;
 	private var continue:Boolean = true;
+	var suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty
 	
 	private val PressUp     = 'w';
 	private val PressLeft   = 'a';
@@ -45,7 +47,9 @@ class BoardNavigator(
 			out println ""
 			
 			val tokenOnSpace = currentState.tokens.aliveTokens.flatten.filter{_.currentSpace == currentSpace}.headOption
-			tokenOnSpace.foreach{TokenPrinter}
+			val tokenIndex = tokenOnSpace.map{currentState.tokens.indexOf(_)}
+			val tokenSuspision = tokenIndex.map{suspisions(_)}.getOrElse(new TokenClassSuspision)
+			tokenOnSpace.foreach{TokenPrinter(_, tokenSuspision)}
 			out.println()
 			// print info about current space
 			

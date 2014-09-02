@@ -53,6 +53,7 @@ final class ConsoleInterface extends PlayerAI
 	
 	def initialize(player:Int, initialState:GameState):Memo = {
 		val memo = ConsoleInterfaceMemo(new SimpleMemo, player, initialState)
+		memo.runner.suspisions = memo.suspisions
 		
 		new Thread(memo.runner, "ConsoleInterface").start()
 		return memo
@@ -68,6 +69,7 @@ final class ConsoleInterface extends PlayerAI
 		val memo2:ConsoleInterfaceMemo = memo.asInstanceOf[ConsoleInterfaceMemo]
 		
 		memo2.runner.currentState = afterState
+		memo2.runner.suspisions = memo2.suspisions
 		
 		memo2
 	}
