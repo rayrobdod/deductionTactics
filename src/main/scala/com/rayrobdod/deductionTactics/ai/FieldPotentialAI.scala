@@ -54,7 +54,13 @@ final class FieldPotentialAI extends PlayerAI
 			// Stage 2 : pre-attack move
 			val move1 = target.map{(x:Token) =>
 				GameState.TokenMove(myToken,
-					PotentialFieldAI$AttackField(myToken, x, memo.suspisions(gameState.tokens.indexOf(x)), gameState.tokens)
+					PotentialFieldAI$AttackField(
+							myToken,
+							x,
+							memo.suspisions(gameState.tokens.indexOf(x)),
+							gameState.tokens,
+							memo.asInstanceOf[SimpleMemoWithDebugWindow].showFieldData
+					)
 				)
 			}.toSeq
 			
@@ -92,19 +98,19 @@ final class FieldPotentialAI extends PlayerAI
 			)
 			
 			val token = list.alivePlayerTokens(player)(0)
-			val labels = initialState.board.spaces.flatten.map{(x) => (x, new JLabel("XXXX"))}
+			val labels = initialState.board.spaces.flatten.map{(x) => (x, new JLabel("XXXX"))}.toMap[Space[SpaceClass], JLabel]
 			
 			labels.foreach{(x) => frame.getContentPane.add(x._2)}
 			frame.setVisible(true);
 			frame.pack();
 			
 			
-			new SimpleMemoWithDebugWindow(showFieldData = {(a:Space[SpaceClass],c:String) => 
-				
-			}
+			new SimpleMemoWithDebugWindow(showFieldData = {(a:Space[SpaceClass],c:String) =>
+				labels(a).setText(c)
+			})
+		} else {
+			new SimpleMemoWithDebugWindow
 		}
-		
-		new SimpleMemo
 	}
 	
 	override def notifyTurn(
@@ -276,7 +282,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 }
 
 private[ai] object PotentialFieldAI$AttackField {
-	def apply(selfT:Token, otherT:Token, otherSusp:TokenClassSuspision, tokens:ListOfTokens):Space[SpaceClass] = {
+	def apply(selfT:Token, otherT:Token, otherSusp:TokenClassSuspision, tokens:ListOfTokens, showFieldData:Function2[Space[SpaceClass], String, Any] = {(a,b) => }):Space[SpaceClass] = {
 		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$AttackField", "apply")
 		
 		val eligibleSpaces:Set[Space[SpaceClass]] = otherT.currentSpace.spacesWithin(
@@ -306,6 +312,8 @@ private[ai] object PotentialFieldAI$AttackField {
 		}
 		
 		if (Logger.isLoggable(Level.FINER)) {
+			priorities.map{a => ((a._1, a._2.toString))}.foreach{showFieldData.tupled}
+			
 			val str = priorities.map{_._2}.foldLeft(""){(str, x) => str + x + ' '}
 			Logger.finer(str);
 		}
@@ -396,11 +404,11 @@ private[ai] object PotentialFieldAI$RetreatField {
 /** @version a.6.0 */
 final class SimpleMemoWithDebugWindow(
 	val attacks:Seq[GameState.Result] = Nil,
-	val suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty.withDefaultValue(new TokenClassSuspision)
+	val suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty.withDefaultValue(new TokenClassSuspision),
 	val showFieldData:Function2[Space[SpaceClass], String, Any] = {(a,c) => }
 ) extends Memo {
-	def addAttack(r:GameState.Result):SimpleMemo =
+	def addAttack(r:GameState.Result):SimpleMemoWithDebugWindow =
 			new SimpleMemoWithDebugWindow(r +: attacks, suspisions, showFieldData)
-	def updateSuspision(key:(Int, Int), value:TokenClassSuspision):SimpleMemo =
+	def updateSuspision(key:(Int, Int), value:TokenClassSuspision):SimpleMemoWithDebugWindow =
 			new SimpleMemoWithDebugWindow(attacks, suspisions + ((key, value)), showFieldData)
 }
