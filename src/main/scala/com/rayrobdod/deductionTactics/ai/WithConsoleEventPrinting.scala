@@ -59,7 +59,7 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 			System.in,
 			{(index:Option[TokenIndex]) =>
 				activeToken.value = index
-				printEverything(outStream, player, currentState.value, activeToken, Nil )
+				printEverything(outStream, player, currentState.value, activeToken, Nil, Map.empty )
 			}
 		), "WithConsoleEventPrinting.Input")
 		t.setDaemon(true)
@@ -95,7 +95,8 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 			player,
 			afterState,
 			memo2.sharedToken,
-			baseLogOut
+			baseLogOut,
+			memo2.suspisions
 		)
 		
 		
@@ -113,8 +114,8 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 		player:Int,
 		afterState:GameState,
 		sharedToken:SharedActiveTokenProperty,
-		eventLog:Seq[String]
-	
+		eventLog:Seq[String],
+		suspisions:Map[(Int, Int), TokenClassSuspision]
 	) {
 		outStream.println( controlCursorToTop )
 		outStream.println( controlClearRest )
@@ -122,7 +123,7 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 		outStream.println( scala.Console.RESET )
 		outStream.println()
 		sharedToken.value.foreach{(x:TokenIndex) =>
-			TokenPrinter(afterState.tokens.tokens(x))
+			TokenPrinter(afterState.tokens.tokens(x), suspisions(x) )
 		}
 		outStream.println()
 		eventLog.foreach{x => outStream.println(x)}

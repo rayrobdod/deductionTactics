@@ -65,14 +65,14 @@ package object ai
 	 * determines the spaces a token can attack
 	 * @version a.6.0
 	 */
-	def attackRangeOf(token:Token, list:ListOfTokens):Set[Space[SpaceClass]] =
+	def attackRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspision = new TokenClassSuspision()):Set[Space[SpaceClass]] =
 	{
 		if (token.currentStatus == Statuses.Blind) {
 			Set.empty
 		} else {
 			
-			val speedSpaces = moveRangeOf(token, list)
-			val tokenRange = token.tokenClass.map{_.range}.getOrElse(0)
+			val speedSpaces = moveRangeOf(token, list, susp)
+			val tokenRange = token.tokenClass.map{_.range}.getOrElse(susp.range.getOrElse(0))
 		
 			speedSpaces.map{_.spacesWithin(
 				tokenRange,
@@ -85,7 +85,7 @@ package object ai
 	 * determines the spaces a token can move to
 	 * @version a.6.0
 	 */
-	def moveRangeOf(token:Token, list:ListOfTokens):Set[Space[SpaceClass]] =
+	def moveRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspision = new TokenClassSuspision()):Set[Space[SpaceClass]] =
 	{
 		def statusSpeedLimit = token.currentStatus match {
 			case Statuses.Snake => 1
@@ -95,7 +95,7 @@ package object ai
 		
 		val startSpace = token.currentSpace
 		val tokenSpeed = math.min(statusSpeedLimit,
-				token.tokenClass.map{_.speed}.getOrElse(0)
+				token.tokenClass.map{_.speed}.getOrElse(susp.speed.getOrElse(0))
 		)
 		
 		startSpace.spacesWithin(

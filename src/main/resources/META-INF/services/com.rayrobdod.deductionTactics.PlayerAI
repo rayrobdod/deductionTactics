@@ -11,5 +11,4 @@ com.rayrobdod.deductionTactics.ai.FieldPotentialAI
 ### A network client that recieves commands over the net
 #com.rayrobdod.deductionTactics.ai.NetworkClient
 
-### cheating computer opponents
-#com.rayrobdod.deductionTactics.ai.RepeatAttackCheater
+### cheating computer opponents; basically things that can exploit known bugs

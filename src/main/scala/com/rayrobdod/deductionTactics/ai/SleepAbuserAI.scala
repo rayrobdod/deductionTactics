@@ -36,9 +36,9 @@ import scala.util.Random
  *   *. Repeat
  *
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
-class SleepAbuserAI extends PlayerAI
+final class SleepAbuserAI extends PlayerAI
 {
 	/**
 	 * @pre all my tokens have the sleep atkStatus
@@ -47,24 +47,26 @@ class SleepAbuserAI extends PlayerAI
 	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		val tokens = gameState.tokens
 		val aliveEnemies = tokens.aliveNotPlayerTokens(player).flatten
-		val enemyAttackRange = aliveEnemies.map{x => attackRangeOf(x, tokens)}
+		val enemyAttackRange = aliveEnemies.map{x => attackRangeOf(x, tokens, memo.suspisions(tokens.indexOf(x)))}
 		
 		Logger.finer("Enemy Range: " + enemyAttackRange.size)
 		
 		tokens.alivePlayerTokens(player).flatMap{(myToken:Token) =>
 			
-			val myRange = attackRangeOf(myToken, tokens)
-			val myReach = moveRangeOf(myToken, tokens)
+			val susp = memo.suspisions(tokens.indexOf(myToken))
+			
+			val myRange = attackRangeOf(myToken, tokens, susp)
+			val myReach = moveRangeOf(myToken, tokens, susp)
 			val attackableOtherTokens = aliveEnemies.filter{(x:Token) => myRange contains x.currentSpace}
 			
 			if (attackableOtherTokens.isEmpty)
 			{	// wants to be out of enemy range
-				retreatFromEnemy(player, myToken, tokens, enemyAttackRange.flatten)
+				retreatFromEnemy(player, myToken, susp, tokens, enemyAttackRange.flatten)
 			}
 			else
 			{	// wants to attack enemy
-				moveToAndStrikeEnemy(myToken, attackableOtherTokens, tokens) ++:
-				retreatFromEnemy(player, myToken, tokens, enemyAttackRange.flatten)
+				moveToAndStrikeEnemy(myToken, susp, attackableOtherTokens, tokens) ++:
+				retreatFromEnemy(player, myToken, susp, tokens, enemyAttackRange.flatten)
 			}
 		} :+ GameState.EndOfTurn
 	}
@@ -106,19 +108,19 @@ class SleepAbuserAI extends PlayerAI
 	}
 	
 	/** returns a sequence of actions that will cause a token to retreat to a safe space */
-	def retreatFromEnemy(player:Int, myToken:Token, tokens:ListOfTokens, enemyRange:Seq[Space[SpaceClass]]):Seq[GameState.Action] = 
+	def retreatFromEnemy(player:Int, myToken:Token, susp:TokenClassSuspision, tokens:ListOfTokens, enemyRange:Seq[Space[SpaceClass]]):Seq[GameState.Action] = 
 	{
 		Logger.entering("com.rayrobdod.deductionTactics.ai.SleepAbuserAI",
 				"retreatFromEnemy", Seq(myToken.tokenClass.get.name, "tokens{}", "enemyRange"))
 		
-		val myMoveRange = moveRangeOf(myToken, tokens)
+		val myMoveRange = moveRangeOf(myToken, tokens, susp)
 		val safeZone = myMoveRange -- enemyRange
 		
 		Logger.finer("myMoveRange: " + myMoveRange.size)
 		
 		{
 			val targetableByToSpace = myMoveRange.groupBy{(rangeSpace:Space[SpaceClass]) =>
-				tokens.aliveNotPlayerTokens(player).flatten.count{attackRangeOf(_, tokens) contains rangeSpace}
+				tokens.aliveNotPlayerTokens(player).flatten.count{attackRangeOf(_, tokens, susp) contains rangeSpace}
 			}
 			Logger.finer("Zones: " + targetableByToSpace)
 		}
@@ -126,7 +128,7 @@ class SleepAbuserAI extends PlayerAI
 		val moveTo = if (safeZone.isEmpty) {
 			// is in as few token's ranges as possible
 			val targetableByToSpace = myMoveRange.groupBy{(rangeSpace:Space[SpaceClass]) => 
-				tokens.aliveNotPlayerTokens(player).flatten.count{attackRangeOf(_, tokens) contains rangeSpace}
+				tokens.aliveNotPlayerTokens(player).flatten.count{attackRangeOf(_, tokens, susp) contains rangeSpace}
 			}
 			Logger.finer("Zones: " + targetableByToSpace)
 			val safestZone = targetableByToSpace.minBy{_._1}._2
@@ -158,7 +160,7 @@ class SleepAbuserAI extends PlayerAI
 	}
 	
 	/** returns a sequence of actions that will cause a token to attack an enemy token */
-	def moveToAndStrikeEnemy(myToken:Token, attackableOtherTokens:Seq[Token], allTokens:ListOfTokens):Seq[GameState.Action] = 
+	def moveToAndStrikeEnemy(myToken:Token, susp:TokenClassSuspision, attackableOtherTokens:Seq[Token], allTokens:ListOfTokens):Seq[GameState.Action] = 
 	{
 		val awakeAttackableOtherTokens = attackableOtherTokens.filter{_.currentStatus != Sleep}
 		Logger.finer("Attackable: " + attackableOtherTokens)
@@ -168,7 +170,7 @@ class SleepAbuserAI extends PlayerAI
 		val target = targetChoices.minBy{(x:Token) => myToken.currentSpace.distanceTo(x.currentSpace, new MoveToCostFunction(myToken, allTokens))}
 		Logger.finer("target: " + target)
 		
-		val moveToChoices = moveRangeOf(myToken, allTokens).filter{(x:Space[SpaceClass]) =>
+		val moveToChoices = moveRangeOf(myToken, allTokens, susp).filter{(x:Space[SpaceClass]) =>
 			x.spacesWithin(myToken.tokenClass.get.range, new AttackCostFunction(myToken, allTokens)) contains target.currentSpace
 		} // choose item closest to me while furthest from target.
 		val moveTo = moveToChoices.maxBy{(x:Space[SpaceClass]) =>

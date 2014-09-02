@@ -42,7 +42,7 @@ class TokenPanel(val token:Token) extends JPanel
 	
 	setLayout(new GridBagLayout)
 	
-	val tokenClass = token.tokenClass.map{new TokenClassPanel(_)}.getOrElse{new javax.swing.JPanel()}
+	val tokenClass = token.tokenClass.map{new TokenClassPanel(_)}.getOrElse{new HumanSuspicionsPanel()}
 	val hitpoints = new JLabel(token.currentHitpoints + " / " + Token.maximumHitpoints) 
 	val status = new JLabel( makeIconFor(token.currentStatus, ICON_SIZE) )
 	val statusTurnsLeft = new JLabel("" + token.currentStatusTurnsLeft)
