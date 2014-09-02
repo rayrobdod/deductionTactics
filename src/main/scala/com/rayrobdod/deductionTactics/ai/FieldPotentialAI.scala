@@ -97,6 +97,11 @@ final class FieldPotentialAI extends PlayerAI
 			labels.foreach{(x) => frame.getContentPane.add(x._2)}
 			frame.setVisible(true);
 			frame.pack();
+			
+			
+			new SimpleMemoWithDebugWindow(showFieldData = {(a:Space[SpaceClass],c:String) => 
+				
+			}
 		}
 		
 		new SimpleMemo
@@ -282,8 +287,8 @@ private[ai] object PotentialFieldAI$AttackField {
 			val b = if (otherSusp.weakDirection.isDefined) {
 				otherSusp.weakDirection.get.weaknessMultiplier(
 					Directions.pathDirections(
-							selfT.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]],
-							otherT.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]],
+							selfT.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]],
+							otherT.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]],
 							selfT,
 							tokens
 					)
@@ -385,4 +390,17 @@ private[ai] object PotentialFieldAI$RetreatField {
 		
 		priorities;
 	}
+}
+
+
+/** @version a.6.0 */
+final class SimpleMemoWithDebugWindow(
+	val attacks:Seq[GameState.Result] = Nil,
+	val suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty.withDefaultValue(new TokenClassSuspision)
+	val showFieldData:Function2[Space[SpaceClass], String, Any] = {(a,c) => }
+) extends Memo {
+	def addAttack(r:GameState.Result):SimpleMemo =
+			new SimpleMemoWithDebugWindow(r +: attacks, suspisions, showFieldData)
+	def updateSuspision(key:(Int, Int), value:TokenClassSuspision):SimpleMemo =
+			new SimpleMemoWithDebugWindow(attacks, suspisions + ((key, value)), showFieldData)
 }
