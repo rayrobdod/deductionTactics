@@ -14,13 +14,13 @@ exportJars := true
 
 mainClass := Some("com.rayrobdod.deductionTactics.main.SimpleStart")
 
-libraryDependencies += ("com.rayrobdod" %% "utilities" % "SNAPSHOT")
+libraryDependencies += ("com.rayrobdod" %% "utilities" % "20140518")
 
 libraryDependencies += ("com.rayrobdod" %% "json" % "1.0.0")
 
 libraryDependencies += ("net.sf.opencsv" % "opencsv" % "2.3")
 
-libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0-SNAPSHOT")
+libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0-SNAPSHOT-20140809")
 
 
 
