@@ -23,7 +23,6 @@ import Weaponkinds.Weaponkind
 import Statuses.Status
 import javax.sound.sampled.AudioSystem
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.{RectangularField => Field, Space}
 
 /**
  * Only has one sound so far...

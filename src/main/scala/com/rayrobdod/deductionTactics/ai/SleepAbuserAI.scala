@@ -19,9 +19,8 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import com.rayrobdod.boardGame.{Space, RectangularSpace}
-import com.rayrobdod.boardGame.{RectangularField => Field}
 import com.rayrobdod.deductionTactics.Statuses.Sleep
-import scala.collection.immutable.{Seq, Set, Map}
+import scala.collection.immutable.Seq
 import LoggerInitializer.{sleepAbuserAILogger => Logger}
 import scala.math.Ordering
 import scala.util.Random

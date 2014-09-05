@@ -18,7 +18,6 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{RectangularField => Field}
 
 /**
  * A decorator for PlayerAIs. It adds a set of listeners to the tokens and

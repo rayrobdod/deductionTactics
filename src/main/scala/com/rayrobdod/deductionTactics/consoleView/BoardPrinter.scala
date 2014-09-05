@@ -20,8 +20,6 @@ package consoleView
 
 import com.rayrobdod.boardGame.{RectangularField, Space}
 import java.io.PrintStream
-import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
-import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
 
 /**
  * 

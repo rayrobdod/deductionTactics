@@ -19,7 +19,6 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import com.rayrobdod.boardGame.Space
-import com.rayrobdod.boardGame.{RectangularField => Field}
 import scala.collection.immutable.Seq
 import scala.collection.mutable.PriorityQueue
 import LoggerInitializer.{blindAttackAILogger => Logger}

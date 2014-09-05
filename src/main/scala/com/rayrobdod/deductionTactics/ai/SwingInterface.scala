@@ -22,9 +22,8 @@ import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.{Space}
 import com.rayrobdod.deductionTactics.{PlayerAI, Token}
 import java.awt.event.{ActionListener, ActionEvent}
-import javax.swing.{JButton, JFrame, JPanel, JLabel, JList}
+import javax.swing.{JButton, JFrame, JPanel}
 import java.awt.BorderLayout
-import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace}
 
 import com.rayrobdod.deductionTactics.swingView.{
 			BoardGamePanel,

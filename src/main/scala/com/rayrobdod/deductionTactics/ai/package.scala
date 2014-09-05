@@ -26,7 +26,7 @@ import Statuses.{Status, Sleep}
 
 import scala.util.Random
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.{Space}
+import com.rayrobdod.boardGame.Space
 import com.rayrobdod.deductionTactics.LoggerInitializer.{
 				observeMovementLogger => somLogger}
 import scala.runtime.{AbstractFunction1 => Function1, AbstractFunction2 => AFunction2}

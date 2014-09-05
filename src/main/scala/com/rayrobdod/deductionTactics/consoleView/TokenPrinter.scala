@@ -19,7 +19,7 @@ package com.rayrobdod.deductionTactics.consoleView
 
 import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
 import com.rayrobdod.deductionTactics.Statuses.Status
-import com.rayrobdod.deductionTactics.{Token}
+import com.rayrobdod.deductionTactics.Token
 import scala.runtime.{AbstractFunction2 => Function2}
 
 /**

@@ -19,7 +19,6 @@ package com.rayrobdod.deductionTactics.ai
 
 import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.{PlayerAI, Token, GameState}
-import com.rayrobdod.boardGame.{RectangularField => Field}
 import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
 
 /**

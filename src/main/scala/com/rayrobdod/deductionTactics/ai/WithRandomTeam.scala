@@ -18,7 +18,6 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{RectangularField => Field}
 
 /**
  * A decorator for PlayerAIs. It intercepts the buildTeam command and creates

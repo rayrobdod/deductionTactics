@@ -19,7 +19,6 @@ package com.rayrobdod.deductionTactics
 package consoleView
 
 import com.rayrobdod.boardGame.{Space}
-import scala.runtime.{AbstractFunction1 => Function1}
 
 /**
  * @author Raymond Dodge

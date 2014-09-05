@@ -19,7 +19,6 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import scala.util.Random
-import com.rayrobdod.boardGame.{RectangularField => Field}
 
 /**
  * A decorator for PlayerAIs. It intercepts the buildTeam command and creates

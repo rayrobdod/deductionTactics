@@ -22,7 +22,6 @@ import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.Status
 import java.io.PrintStream
-import com.rayrobdod.boardGame.{RectangularField => Field, Token => BoardGameToken, Space}
 import com.rayrobdod.deductionTactics.consoleView._
 import scala.collection.immutable.Seq
 

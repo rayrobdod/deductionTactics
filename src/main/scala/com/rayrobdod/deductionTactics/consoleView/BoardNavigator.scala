@@ -2,8 +2,7 @@ package com.rayrobdod.deductionTactics
 package consoleView
 
 import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
-import scala.collection.mutable.Buffer
-import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
+import com.rayrobdod.boardGame.{RectangularSpace}
 
 /**
  * A console application that can let a user navigate a RectangularField
