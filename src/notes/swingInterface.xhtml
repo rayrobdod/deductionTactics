@@ -1,0 +1,137 @@
+<?xml version="1.0" standalone="yes"?>
+<!DOCTYPE html>
+<html:html	xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:html="http://www.w3.org/1999/xhtml"
+			xmlns:math="http://www.w3.org/1998/Math/MathML"
+			xmlns:svg="http://www.w3.org/2000/svg"
+			xmlns:xlink="http://www.w3.org/1999/xlink">
+<html:head>
+	<html:title>Swing Interface</html:title>
+</html:head>
+<html:body>
+	<html:section><html:h1>Overview</html:h1>
+		<html:section><html:h1>Goals</html:h1>
+			<html:ul>
+				<html:li>User interaction with mouse</html:li>
+				<html:li>Providing information to a user</html:li>
+			</html:ul>
+		</html:section>
+		
+		<html:section><html:h1>Non-goals</html:h1>
+			<html:ul>
+				<html:li>Token or Board visuals (image)</html:li>
+			</html:ul>
+		</html:section>
+		
+		<html:section><html:h1>Not Sure</html:h1>
+			<html:ul>
+				<html:li>User interaction with keyboard</html:li>
+			</html:ul>
+		</html:section>
+	</html:section>
+
+	<html:section><html:h1>Frame</html:h1>
+		<html:p>In an inactive state, only the board is shown</html:p>
+		
+		<html:figure>
+			<svg:svg width="400" height="300" id="frame">
+				<svg:defs>
+					<svg:path id="mousePointer" d="M0,0 l3,10 3,-3 3,3 1,-1 -3,-3 3,-3 z" style="fill:white; stroke:black; stroke-width:1px;" />
+				</svg:defs>
+				
+				<svg:rect x="0" y="0" width="400" height="30" style="fill:#4040ff" />
+				<svg:text x="20" y="25" style="font-size:20px;">Deduction Tactics</svg:text>
+				<svg:rect x="2.5" y="32" width="395" height="265" style="fill:green; stroke: #4040ff; stroke-width:5px;" />
+				<svg:path d="M64,96 l-8,0 0,-20 c-4,0 -6,-6 -6,-10 c0,-4 4,-10 10,-10 c6,0 10,4 10,10 c0,4 -3,10 -6,10 z" />
+				<svg:path d="M64,192 l-8,0 0,-20 c-4,0 -6,-6 -6,-10 c0,-4 4,-10 10,-10 c6,0 10,4 10,10 c0,4 -3,10 -6,10 z" />
+				<svg:path d="M64,288 l-8,0 0,-20 c-4,0 -6,-6 -6,-10 c0,-4 4,-10 10,-10 c6,0 10,4 10,10 c0,4 -3,10 -6,10 z" />
+				<svg:path d="M352,96 l-8,0 0,-20 c-4,0 -6,-6 -6,-10 c0,-4 4,-10 10,-10 c6,0 10,4 10,10 c0,4 -3,10 -6,10 z" />
+				<svg:path d="M352,192 l-8,0 0,-20 c-4,0 -6,-6 -6,-10 c0,-4 4,-10 10,-10 c6,0 10,4 10,10 c0,4 -3,10 -6,10 z" />
+				<svg:path d="M352,288 l-8,0 0,-20 c-4,0 -6,-6 -6,-10 c0,-4 4,-10 10,-10 c6,0 10,4 10,10 c0,4 -3,10 -6,10 z" />
+			</svg:svg>
+			<html:figcaption>A neutral-state frame</html:figcaption>
+		</html:figure>
+	</html:section>
+
+	<html:section><html:h1>Mouse Hover</html:h1>
+		<html:p>[???: should something happen when the mouse hovers over a token?]</html:p>
+		
+		<html:figure>
+			<svg:svg width="400" height="300">
+				<svg:use xlink:href="#frame" />
+				<svg:use xlink:href="#mousePointer" x="62" y="70" />
+			</svg:svg>
+			<html:figcaption>A frame with a pointer hovering over a token</html:figcaption>
+		</html:figure>
+	</html:section>
+
+	<html:section><html:h1>Selecting a Token</html:h1>
+		<html:p>Left clicking an area will show a context menu.
+			The contents of the context menu depend upon what is selected
+			and what was clicked. Menus cascade; for example an attackable enemy
+			token space is always not move-to-able, so the menu will show the
+			"not-move-to-able space" options and the "enemy attackable token" options.
+			Selecting an option from the context menu executes that action.
+		</html:p>
+		
+		<dl>
+			<dt>Clicked: Own token</dt>
+				<dd>Select Token</dd>
+			<dt>Clicked: Enemy Token</dt>
+				<dd>Select Token</dd>
+			<dt>Selected: Own token; Clicked: space that token can move to</dt>
+				<dd>Move To Space</dd>
+			<dt>Selected: Own token; Clicked: space that token cannot move to</dt>
+				<dd>Move Towards Space</dd>
+			<dt>Selected: Own token; Clicked: enemy token that unit can reach without moving</dt>
+				<dd>Damage Attack Token</dd>
+				<dd>Status Attack Token</dd>
+			<dt>Selected: Own token; Clicked: enemy token that unit can reach with or without moving</dt>
+				<dd>Move towards and Damage Attack Token</dd>
+				<dd>Move towards and Status Attack Token</dd>
+		</dl>
+		
+		<html:p>Right clicking will perform the most common action on the context menu without showing the context menu.</html:p>
+		
+		
+		<html:figure>
+			<svg:svg width="400" height="300">
+				<svg:g id="frameWithSelected">
+					<svg:use xlink:href="#frame" />
+					<svg:path d="M2.5,32 v128 h96 v-32 h32 v-32 h32 v-32 h-32 v-32 z" style="fill:rgb(30%,30%,70%); fill:rgba(30%,30%,70%,0.7); " />
+					<svg:path d="M2.5,192 v-32 h96 v-32 h32 v-32 h32 v-32 h-32 v-32 h32 v32 h32 v32 h-32 v32 h-32 v32 h-32 v32 z" style="fill:rgba(70%,30%,30%, 0.7)" />
+					
+					<svg:rect x="245" y="220" width="150" height="75" style="fill:lightgrey;" />
+					<svg:text x="265" y="240">Flame Spearman</svg:text>
+					<svg:text x="255" y="262.5">Fire, Spear, Burn</svg:text>
+					<svg:text x="255" y="285">Left, Whip, Sleep</svg:text>
+				</svg:g>
+				
+				<svg:use xlink:href="#mousePointer" x="62" y="75" />
+			</svg:svg>
+			<html:figcaption>
+				A selected token. Range and Speed are shown on the field. Information is
+				shown in a box in the corner of the field opposite the token.
+			</html:figcaption>
+		</html:figure>
+		
+		
+		<html:figure>
+			<svg:svg width="400" height="300">
+				<svg:use xlink:href="#frameWithSelected" />
+				<svg:use xlink:href="#mousePointer" x="62" y="171" />
+				
+				<svg:rect x="80" y="170" width="160" height="85" style="fill:darkblue;" />
+				<svg:text x="85" y="190" style="fill:white;">Select Token</svg:text>
+				<svg:text x="85" y="210" style="fill:white;">Move Towards Space</svg:text>
+				<svg:text x="85" y="230" style="fill:white;">Damage Attack Token</svg:text>
+				<svg:text x="85" y="250" style="fill:white;">Status Attack Token</svg:text>
+			</svg:svg>
+			<html:figcaption>
+				A context menu, shown when an enemy in range of an owned, selected token
+				is clicked.
+			</html:figcaption>
+		</html:figure>
+	</html:section>
+</html:body>
+</html:html>
