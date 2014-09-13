@@ -87,30 +87,6 @@ final case class Token (
 	}
 	
 	
-	/** @todo move status effects into status class */
-	final def beAfflictedByStatus():Token = {
-		currentStatus match {
-			case Statuses.Normal => this
-			case Statuses.Sleep =>
-				this.copy(canMoveThisTurn = 0)
-			case Statuses.Snake =>
-				this.copy(canMoveThisTurn = 1, currentHitpoints = this.currentHitpoints - Token.baseDamage)
-			case Statuses.Blind =>
-				this.copy(canAttackThisTurn = false)
-			case Statuses.Burn =>
-				this.copy(currentHitpoints = this.currentHitpoints - 2 * Token.baseDamage)
-			case Statuses.Confuse =>
-				// TODO: the randomized movement thing
-				this //		(1 to 3).foldLeft(currentSpace)(moveToRandomSpace)
-			case Statuses.Neuro => 
-				// TODO: The randomized movement thing
-				this.copy(currentHitpoints = this.currentHitpoints - Token.baseDamage)
-			case Statuses.Heal =>
-				this.copy(currentHitpoints = this.currentHitpoints + Token.baseDamage)
-			case _ =>
-				throw new IllegalStateException("I do not know how to respond to a " + currentStatus)
-		}
-	}
 }
 
 

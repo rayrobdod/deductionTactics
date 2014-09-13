@@ -1,6 +1,6 @@
 /*
 	Deduction Tactics
-	Copyright (C) 2012-2013  Raymond Dodge
+	Copyright (C) 2012-2014  Raymond Dodge
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -23,32 +23,65 @@ import scala.collection.immutable.{Seq, Set}
  * An enumeration of statuses
  * 
  * May in the future contain what the status does
- * @author Raymond Dodge
- * @todo move status effect effects from [[Token.beAfflictedByStatus()]] to here
+ * @verion a.6.0
  */
 object Statuses {
-	final class Status(val id:Int, val name:String) {
+	abstract class Status(val id:Int, val name:String) {
 		override def toString = "com.rayrobdod.deductionTactics.Statuses." + name
+		
+		/**
+		 * Number of moves
+		 * @since a.6.0
+		 */
+		def randMovesPerTurn:Int = 0
+		/**
+		 * Returns a token that has gone through this status's effect,
+		 * not counting the random movement thing.
+		 * @since a.6.0
+		 */
+		def affect(t:Token):Token
 	}
 	
 	/** no move */
-	val Sleep = new Status(0, "Sleep")
+	val Sleep:Status = new Status(0, "Sleep") {
+		override def affect(t:Token) = t.copy(canMoveThisTurn = 0)
+	}
 	/** major damage */
-	val Burn = new Status(1, "Burn")
+	val Burn:Status = new Status(1, "Burn") {
+		override def affect(t:Token) =
+			t.copy(currentHitpoints = t.currentHitpoints - 2 * Token.baseDamage)
+	}
 	/** can't attack */
-	val Blind = new Status(2, "Blind")
+	val Blind:Status = new Status(2, "Blind") {
+		override def affect(t:Token) = t.copy(canAttackThisTurn = false)
+	}
 	/** move three space or attack before player given control */
-	val Confuse = new Status(3, "Confuse")
+	val Confuse:Status = new Status(3, "Confuse") {
+		override def randMovesPerTurn = 3
+		override def affect(t:Token) = t
+	}
 	/** damage + move a space or attack before player given control */
-	val Neuro = new Status(4, "Neuro")
+	val Neuro:Status = new Status(4, "Neuro"){
+		override def randMovesPerTurn = 1
+		override def affect(t:Token) =
+			t.copy(currentHitpoints = t.currentHitpoints - Token.baseDamage)
+	}
 	/** damage + move one space per turn max */
-	val Snake = new Status(5, "Snake")
+	val Snake:Status = new Status(5, "Snake") {
+		override def affect(t:Token) =
+			t.copy(canMoveThisTurn = 1, currentHitpoints = t.currentHitpoints - Token.baseDamage)
+	}
 	/** undamage (given that you can't attack partners...) */
-	val Heal = new Status(6, "Heal")
+	val Heal:Status = new Status(6, "Heal") {
+		override def affect(t:Token) =
+			t.copy(currentHitpoints = t.currentHitpoints + Token.baseDamage)
+	}
 	/** do nothing (so that currentStatus doesn't have to be an option)
 	 * @since a.6.0
 	 */
-	val Normal = new Status(7, "Normal")
+	val Normal:Status = new Status(7, "Normal") {
+		override def affect(t:Token) = t 	 
+	}
 	
 	def values = Seq[Status](Sleep, Burn, Blind, Confuse, Neuro, Snake, Heal, Normal)
 	def apply(x:Int) = values(x) //.find{_.id == x}.get
