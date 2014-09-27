@@ -96,10 +96,10 @@ final class SleepAbuserAI extends PlayerAI
 	{
 		currentSpace match {
 			case rs:RectangularSpace[_] => {
-				if (fleeFrom == rs.down) {rs.up.get}
-				else if (fleeFrom == rs.up) {rs.down.get}
-				else if (fleeFrom == rs.right) {rs.left.get}
-				else if (fleeFrom == rs.left) {rs.right.get}
+				if (Option(fleeFrom) == rs.down) {rs.up.get}
+				else if (Option(fleeFrom) == rs.up) {rs.down.get}
+				else if (Option(fleeFrom) == rs.right) {rs.left.get}
+				else if (Option(fleeFrom) == rs.left) {rs.right.get}
 				// default option, if somehow an adjacent space isn't adjacent
 				else {rs.adjacentSpaces.head}
 			}

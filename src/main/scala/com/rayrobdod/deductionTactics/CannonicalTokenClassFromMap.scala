@@ -73,7 +73,7 @@ final class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalT
 		case x:scala.collection.Map[_,_] => Map.empty ++ x
 		case x:java.util.Map[_,_] => Map.empty ++ mapAsScalaMap(x)
 //		case _ => Map.empty
-	}}.map{(kindValue:Pair[_,_]) => ((Weaponkinds.withName(kindValue._1.toString), asFloat(kindValue._2)))}
+	}}.map{(kindValue:Tuple2[_,_]) => ((Weaponkinds.withName(kindValue._1.toString), asFloat(kindValue._2)))}
 	
 	private def arbitraryDirection:Direction = {
 		val nameHash = this.name.hashCode

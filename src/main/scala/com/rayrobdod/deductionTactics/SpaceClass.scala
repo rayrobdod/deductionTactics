@@ -83,7 +83,7 @@ object SpaceClass {
 			def apply(from:BoardGameSpace[_ <: SpaceClass], to:BoardGameSpace[_ <: SpaceClass]):Int = {
 				val myTeam = tokens.tokens.zipWithIndex.find{_._1.contains(myToken)}.map{_._2}
 				val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.find{
-						_.currentSpace.typeOfSpace == to
+						_.currentSpace == to
 				}
 				val otherTeam = tokenOnThis.map{(other:Token) => 
 					tokens.tokens.zipWithIndex.find{_._1.contains(other)}.map{_._2}

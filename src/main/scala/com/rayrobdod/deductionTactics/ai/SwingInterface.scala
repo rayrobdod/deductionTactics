@@ -194,7 +194,7 @@ final class SwingInterface extends PlayerAI
 		memo2.selectedToken.value = {
 			// this assumes that the board doesn't change.
 			val space = memo2.selectedToken.value.map{_.currentSpace}
-			afterState.tokens.tokens.flatten.find{_.currentSpace == space}
+			afterState.tokens.tokens.flatten.find{x => Option(x.currentSpace) == space}
 		}
 		memo2.currentTokens.value = afterState.tokens
 		memo2.hilightLayer.update(memo2.selectedToken.value, afterState.tokens, afterState.board)
