@@ -22,7 +22,7 @@ import com.rayrobdod.deductionTactics.tokenClassToJSON
 import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
-import com.rayrobdod.deductionTactics.CannonicalTokenClass
+import com.rayrobdod.deductionTactics.TokenClass
 import com.rayrobdod.deductionTactics.CannonicalTokenClassDecoder
 	
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
@@ -42,7 +42,7 @@ object CompileTokenClassesToJson // extends scala.App
 {
 	def compile(sources:Seq[Path], outPath:Path) = {
 		
-		val classes:Seq[CannonicalTokenClass] = sources.map{(jsonPath:Path) => 
+		val classes:Seq[TokenClass] = sources.map{(jsonPath:Path) => 
 			val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
 			
 			val l = new ToScalaCollection(CannonicalTokenClassDecoder)
@@ -55,7 +55,7 @@ object CompileTokenClassesToJson // extends scala.App
 		val writer = Files.newBufferedWriter(outPath, UTF_8);
 		writer.write('[')
 		
-		classes.zipWithIndex.foreach({(tclass:CannonicalTokenClass, index:Int) =>
+		classes.zipWithIndex.foreach({(tclass:TokenClass, index:Int) =>
 			if (index != 0) writer.write(',')
 			writer.write( tokenClassToJSON(tclass) )
 		}.tupled)
