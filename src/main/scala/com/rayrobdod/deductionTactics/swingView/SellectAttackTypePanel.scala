@@ -18,11 +18,11 @@
 package com.rayrobdod.deductionTactics.swingView
 
 import javax.swing.{JPanel, JRadioButton, ButtonGroup}
-import com.rayrobdod.deductionTactics.{Token, CannonicalToken}
+import com.rayrobdod.deductionTactics.{Token, GameState}
 		
 /**
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
 class SellectAttackTypePanel extends JPanel
 {
@@ -36,16 +36,16 @@ class SellectAttackTypePanel extends JPanel
 	this.add(forDamage)
 	this.add(forStatus)
 	
-	def requestAttackForType(attacker:CannonicalToken, defender:Token) =
+	def requestAttackForType(attacker:Token, defender:Token) =
 	{
-		if (forTypeGroup.getSelection == forStatus.getModel) {
-			attacker.tryAttackStatus(defender)
+		if (forTypeGroup.getSelection == forDamage.getModel) {
+			GameState.TokenAttackDamage(attacker, defender)
 		} else {
 			// See if having neither button selected is possible
 			// before adding this
 			//forDamage.setSelected(true)
 			
-			attacker.tryAttackDamage(defender)
+			GameState.TokenAttackStatus(attacker, defender)
 		}
 	}
 }

@@ -22,11 +22,48 @@ import scala.collection.immutable.{Seq => ISeq, Map => IMap}
 
 /**
  * @author Raymond Dodge
- * @version 25 Jan 2012
+ * @version a.6.0
  */
-trait ListOfTokens {
-	def tokens():ISeq[ISeq[Token]]
+final class ListOfTokens (
+	val tokens:ISeq[ISeq[Token]]
+) {
 	def aliveTokens() = tokens.map{_.filter(ListOfTokens.aliveFilter)}
+	
+	/** Since the other ListOfTokens are no longer around to provide this method
+	 * @version a.6.0
+	 */
+	def alivePlayerTokens(player:Int) = tokens(player).filter(ListOfTokens.aliveFilter)
+
+	/** Since the other ListOfTokens are no longer around to provide this method
+	 * @version a.6.0
+	 */
+	def aliveNotPlayerTokens(player:Int) = {
+		tokens.zipWithIndex.filter(_._2 != player).map{_._1}
+				.map{_.filter(ListOfTokens.aliveFilter)}
+	}
+	
+	
+	/**  @since a.6.0 */
+	def indexOf(t:Token) = {
+		tokens.zipWithIndex.flatMap{(a) =>
+			a._1.zipWithIndex.map{(b) => (( ((a._2, b._2)), b._1 ))}
+		}.find{_._2 == t}.map{_._1}.getOrElse{((-1,-1))}
+	}
+	/**  @since a.6.0 */
+	def tokens(i:TokenIndex):Token = tokens(i._1)(i._2)
+	
+	
+	/**  @since a.6.0 */
+	def hideTokenClasses(playerNumber:Int):ListOfTokens = {
+		
+		new ListOfTokens(this.tokens.zipWithIndex.map{(x) =>
+			if (x._2 == playerNumber) {
+				x._1
+			} else {
+				x._1.map{(t:Token) => t.copy(tokenClass = None)}
+			}
+		})
+	}
 }
 
 object ListOfTokens {
@@ -40,36 +77,3 @@ object ListOfTokens {
 	}
 }
 
-/**
- * @author Raymond Dodge
- * @version 19 Jan 2012
- */
-class CannonicalListOfTokens(
-		val tokens:ISeq[ISeq[CannonicalToken]]
-) extends ListOfTokens
-
-/**
- * @author Raymond Dodge
- * @version 27 Nov 2012
- */
-class PlayerListOfTokens(
-		val myTokens:ISeq[CannonicalToken],
-		val otherTokens:ISeq[ISeq[MirrorToken]]
-) extends ListOfTokens {
-	def tokens():ISeq[ISeq[Token]] = myTokens +: otherTokens
-	
-	def aliveMyTokens = myTokens.filter(ListOfTokens.aliveFilter)
-	def aliveOtherTokens = otherTokens.map{_.filter(ListOfTokens.aliveFilter)}
-}
-
-/**
- * A list of tokens that can be mutated.
- * 
- * Exists because [[com.rayrobdod.deductionTactics.UnitAwareSpaceClass]]es
- * need to know where the tokens are despite being made before the tokens are made 
- * @author Raymond Dodge
- * @version 20 Mar 2012
- */
-class MutableListOfTokens extends ListOfTokens {
-	var tokens = ISeq.empty[ISeq[CannonicalToken]]
-}

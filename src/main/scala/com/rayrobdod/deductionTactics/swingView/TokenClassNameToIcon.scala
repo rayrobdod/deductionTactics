@@ -20,7 +20,7 @@ package com.rayrobdod.deductionTactics.swingView
 import javax.swing.{Icon, ImageIcon}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
-import com.rayrobdod.deductionTactics.{CannonicalTokenClass,
+import com.rayrobdod.deductionTactics.{TokenClass,
 		CannonicalTokenClassDecoder, Weaponkinds, CannonicalTokenClassBuilder, Elements}
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 	
@@ -113,7 +113,7 @@ class TokenClassNameToIconFromJson(sources:Seq[URL]) {
 			val icon = if (iconLoc.isDefined) {
 				loadIcon(iconLoc.get, 32)
 			} else {
-				generateGenericIcon(builder)
+				generateGenericIcon(builder.atkElement, builder.atkWeapon)
 			}
 			
 			(name, icon)
@@ -155,12 +155,7 @@ class TokenClassNameToIconFromBinary(sources:Seq[URL]) {
 				val icon = if (! imageLoc.isEmpty) {
 					loadIcon(imageLoc, 32)
 				} else {
-					generateGenericIcon({
-						val retVal = new com.rayrobdod.deductionTactics.SuspicionsTokenClass;
-						retVal.atkElement = atkElement
-						retVal.atkWeapon = atkWeapon
-						retVal
-					})
+					generateGenericIcon(atkElement, atkWeapon)
 				}
 				
 				((name, icon))

@@ -4,7 +4,7 @@ organization := "com.rayrobdod"
 
 organizationHomepage := Some(new URL("http://rayrobdod.name/"))
 
-version := "a.5.3-SNAPSHOT"
+version := "a.6.0-SNAPSHOT"
 
 scalaVersion := "2.9.3"
 
@@ -12,15 +12,15 @@ crossScalaVersions ++= Seq("2.9.1", "2.9.2", "2.9.3", "2.10.3", "2.11.0-M4")
 
 exportJars := true
 
-mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
+mainClass := Some("com.rayrobdod.deductionTactics.main.SimpleStart")
 
-libraryDependencies += ("com.rayrobdod" %% "utilities" % "SNAPSHOT")
+libraryDependencies += ("com.rayrobdod" %% "utilities" % "20140518")
 
 libraryDependencies += ("com.rayrobdod" %% "json" % "1.0.0")
 
 libraryDependencies += ("net.sf.opencsv" % "opencsv" % "2.3")
 
-libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "2.1.0-SNAPSHOT")
+libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0-SNAPSHOT-20140809")
 
 
 
@@ -46,9 +46,16 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 	def accept(n:File) = {
 		val abPath = n.getAbsolutePath().replace('\\', '/')
 		(
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/GangUpAI.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/NetworkClient.scala") ||
+			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithNetworkServer.scala") ||
+			//
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface_CFN.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithConsoleViewport.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala")
+			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala") ||
+			(abPath contains "com/rayrobdod/deductionTactics/swingView/ChooserFrame.scala") ||
+			(abPath contains "com/rayrobdod/deductionTactics/main/SimpleStart") ||
+			false
 		)
 	}
 }
@@ -127,10 +134,4 @@ artifactPath in Proguard <<= (artifactPath in Proguard, proguardType, version).a
 
 javaOptions in (Proguard, ProguardKeys.proguard) += "-Xmx2G"
 
-// anon-fun-reduce
-autoCompilerPlugins := true
-
-addCompilerPlugin("com.rayrobdod" %% "anon-fun-reduce" % "1.0.0")
-
-libraryDependencies += ("com.rayrobdod" %% "anon-fun-reduce" % "1.0.0")
 

@@ -15,39 +15,76 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.swingView
+package com.rayrobdod.deductionTactics
+package swingView
 
-import com.rayrobdod.deductionTactics.{CannonicalToken, Player}
-import com.rayrobdod.boardGame.{Space,
-		PhysicalStrikeCost, TokenMovementCost}
+import com.rayrobdod.boardGame.{Space}
 import java.awt.event.{MouseAdapter, MouseEvent}
+import LoggerInitializer.{mouseListenerLogger => Logger}
 
 /**
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
-class MoveTokenMouseListener(owner:Player, space:Space, attackType:SellectAttackTypePanel) extends MouseAdapter
-{
+class MoveTokenMouseListener(
+		player:Int,
+		tokens:Function0[ListOfTokens],
+		space:Space[SpaceClass],
+		attackType:SellectAttackTypePanel,
+		onSelectedTokenChanged:Function2[Option[Token], ListOfTokens, Any],
+		writeGameAction:Function1[GameState.Action, Any],
+		activeToken:SharedActiveTokenProperty
+) extends MouseAdapter {
+	
 	override def mouseClicked(e:MouseEvent) {
-		if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-			val tokenOnThisSpace = owner.tokens.aliveOtherTokens.flatten.find{_.currentSpace == space}
+		val tokenOnThisSpace = tokens().tokens.flatten.find{_.currentSpace == space}
+		
+		// TODO: right click, rather than any other than button1
+		if (e.getButton() != MouseEvent.BUTTON1) {
 			
-			// don't move if there is a unit on this space and it is not out of reach
-			if (!tokenOnThisSpace.isDefined || activeToken.currentSpace.distanceTo(
-					space, activeToken, PhysicalStrikeCost) > activeToken.tokenClass.range.get)
-			{
-				activeToken.requestMoveTo(space)
+			Logger.fine("Token selected")
+			activeToken.value = tokenOnThisSpace
+			onSelectedTokenChanged(tokenOnThisSpace, tokens.apply)
+			
+		} else if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+			// if clicked on a token, attack. Else, move.
+			
+			if (tokenOnThisSpace.isDefined) {
+				Logger.fine("Token Attack")
+				activeToken.value.foreach{(t:Token) =>
+					writeGameAction(
+						attackType.requestAttackForType(t, tokenOnThisSpace.get)
+					)
+				}
+			} else {
+				Logger.fine("Token Move")
+				activeToken.value.foreach{(t:Token) =>
+					writeGameAction(
+						GameState.TokenMove(t, space)
+					)
+				}
 			}
-			
-			tokenOnThisSpace.foreach{attackType.requestAttackForType(activeToken, _)}
 		}
 	}
 	
-	private var activeToken = owner.tokens.myTokens.head
+}
+
+
+
+/**
+ * So that all the TokenMouseListeners can agree on who the active token is
+ * @todo utilities? JavaFX Property?
+ */
+final class SharedActiveTokenProperty {
+	var value:Option[Token] = null
+}
+
+/**
+ * So that all the TokenMouseListeners can be updated when the ListOfTOkens changes
+ * @todo utilities? JavaFX Property?
+ */
+final class ListOfTokensProperty extends Function0[ListOfTokens] {
+	var value:ListOfTokens = null
 	
-	owner.tokens.myTokens.foreach{(token:CannonicalToken) =>
-		token.selectedReactions_+={(isSelected) =>
-			if (isSelected) activeToken = token
-		}
-	}
+	def apply = value
 }

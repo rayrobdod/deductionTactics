@@ -3,7 +3,7 @@ import Keys._
 import java.util.zip.{ZipInputStream, ZipOutputStream, ZipEntry}
 import com.rayrobdod.deductionTactics.meta.CompileTokenClassesToBinary
 import com.rayrobdod.deductionTactics.meta.GenerateBasicTokens
-import com.github.retronym.SbtOneJar
+//import com.github.retronym.SbtOneJar
 
 object DeductionTacticsBuild extends Build {
 	
@@ -67,7 +67,6 @@ object DeductionTacticsBuild extends Build {
 			settings = Defaults.defaultSettings ++
 					Seq(proguardTypeSetting) ++
 					compileTokensSettings ++
-					generateBasicTokens ++
-					SbtOneJar.oneJarSettings
+					generateBasicTokens
 	)
 }

@@ -1,0 +1,26 @@
+
+Deduction Tactics setup:
+1. Choose players and board
+*: Network players have to set up here; I see no other way
+2. for each player, choose a set from all tokenclasses up to amount allowed by board
+Replace 2 with:
+	1. For each AI, choose a set of tokenClasses - up to double allowed by board
+	2. Tell each ai which set of tokenClasses were chosen in previous step
+	3. for each ai, choose tokenClases from set created two steps ago up to number allowed by board
+3. Tell each player the initial state of the board
+4. First player takes first turn
+
+
+Would the players setting up asynchronously help?
+
+
+Networked Setup
+1. All players start ‘wizard’
+	*. leader chooses “start new game”, is shown an IP:PORT
+	*. others choose “join game”, enter IP:PORT of leader
+2. Leader chooses board
+*. Around here, from user perspective, the same flow as ‘normal’ starts
+3. for each player, choose a set from all tokenclasses up to amount allowed by board
+4. Tell each player the initial state of the board
+5. First player takes first turn
+

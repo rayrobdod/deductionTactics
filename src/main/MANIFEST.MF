@@ -1,5 +1,5 @@
 Manifest-Version: 1.0  
-Main-Class: com.rayrobdod.deductionTactics.main.Main
+Main-Class: com.rayrobdod.deductionTactics.main.SimpleStart
 Implementation-Vendor: Raymond Dodge
 Implementation-URL: http://rayrobdod.name/programming/java/programs/deductionTactics/
 Implementation-Title: Deduction Tactics

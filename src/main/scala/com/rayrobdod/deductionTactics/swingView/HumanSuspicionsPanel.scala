@@ -39,13 +39,13 @@ import javax.swing.event.{ChangeListener, ChangeEvent}
  * @author Raymond Dodge
  * @version a.5.2
  */
-class HumanSuspicionsPanel(tokenClass:SuspicionsTokenClass) extends JPanel
+class HumanSuspicionsPanel extends JPanel
 {
 	this.setLayout(new GridBagLayout)
 	
 	private class MyListModel[A](a:Seq[A]) extends ScalaSeqListModel[Option[A]](None +: a.map{Option(_)}) with AbstractComboBoxModel[Option[A]]
 	
-	val icon = new JLabel(generateGenericIcon(tokenClass))
+	val icon = new JLabel  ()//  (generateGenericIcon(tokenClass))
 	val name = new JLabel("???")
 	val range = new JSpinner(new SpinnerNumberModel(0,0,5,1))
 	val speed = new JSpinner(new SpinnerNumberModel(0,0,5,1))
@@ -61,13 +61,6 @@ class HumanSuspicionsPanel(tokenClass:SuspicionsTokenClass) extends JPanel
 	atkStatus.setRenderer(myCellRenderer)
 	weakStatus.setRenderer(myCellRenderer)
 	weakDirection.setRenderer(myCellRenderer)
-	range.addChangeListener(updateTokenClass)
-	speed.addChangeListener(updateTokenClass)
-	atkElement.addActionListener(updateTokenClass)
-	atkWeapon.addActionListener(updateTokenClass)
-	atkStatus.addActionListener(updateTokenClass)
-	weakStatus.addActionListener(updateTokenClass)
-	weakDirection.addActionListener(updateTokenClass)
 	atkElement.getModel.setSelectedItem(None)
 	atkWeapon.getModel.setSelectedItem(None)
 	atkStatus.getModel.setSelectedItem(None)
@@ -118,29 +111,4 @@ class HumanSuspicionsPanel(tokenClass:SuspicionsTokenClass) extends JPanel
 			label
 		}
 	}
-	
-	object updateTokenClass extends java.awt.event.ActionListener
-			with ChangeListener
-	{
-		override def stateChanged(e:ChangeEvent) = {
-			tokenClass.range = Some(HumanSuspicionsPanel.this.range.getValue.toString.toInt)
-			tokenClass.speed = Some(HumanSuspicionsPanel.this.speed.getValue.toString.toInt)
-			changeListeners.foreach{_.stateChanged(new ChangeEvent(HumanSuspicionsPanel.this))}
-		} 
-		
-		override def actionPerformed(e:java.awt.event.ActionEvent) = {
-			tokenClass.atkElement = HumanSuspicionsPanel.this.atkElement.getSelectedItem.asInstanceOf[Option[Element]]
-			tokenClass.atkWeapon  = HumanSuspicionsPanel.this.atkWeapon.getSelectedItem.asInstanceOf[Option[Weaponkind]]
-			tokenClass.atkStatus  = HumanSuspicionsPanel.this.atkStatus.getSelectedItem.asInstanceOf[Option[Status]]
-			tokenClass.weakStatus = HumanSuspicionsPanel.this.weakStatus.getSelectedItem.asInstanceOf[Option[Status]]
-			tokenClass.weakDirection = HumanSuspicionsPanel.this.weakDirection.getSelectedItem.asInstanceOf[Option[Direction]]
-			
-			HumanSuspicionsPanel.this.icon.setIcon( generateGenericIcon(tokenClass) )
-			changeListeners.foreach{_.stateChanged(new ChangeEvent(HumanSuspicionsPanel.this))}
-		}
-	}
-	
-	private var changeListeners = Seq.empty[ChangeListener]
-	def addChangeListener(x:ChangeListener)    { changeListeners = changeListeners :+ x }
-	def removeChangeListener(x:ChangeListener) { changeListeners = changeListeners diff Seq(x) }
 }

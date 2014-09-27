@@ -18,15 +18,15 @@
 package com.rayrobdod.deductionTactics
 // http://en.wikipedia.org/wiki/Blackboard_system
 
+import BodyTypes.BodyType
+import Directions.Direction
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.{Status, Sleep}
 
 import scala.util.Random
 import scala.collection.immutable.Seq
-import com.rayrobdod.deductionTactics.PlayerAI.teamSize
-import com.rayrobdod.boardGame.{PhysicalStrikeCost,
-			Space, TokenMovementCost}
+import com.rayrobdod.boardGame.Space
 import com.rayrobdod.deductionTactics.LoggerInitializer.{
 				observeMovementLogger => somLogger}
 import scala.runtime.{AbstractFunction1 => Function1, AbstractFunction2 => AFunction2}
@@ -41,124 +41,101 @@ package object ai
 	 * Chooses a team of token classes by shuffling the list of all
 	 * possible tokens and selecting the first howevermany.
 	 * @param random the RNG to use.
+	 * @version a.6.0
 	 */
-	def randomTeam(random:Random):Seq[CannonicalTokenClass] =
+	def randomTeam(teamSize:Int, random:Random):Seq[TokenClass] =
 	{
-		random.shuffle(CannonicalTokenClass.allKnown).take(teamSize)
+		random.shuffle(TokenClass.allKnown).take(teamSize)
 	}
 	
 	/**
 	 * Chooses a team of token classes by shuffling the list of all
 	 * possible tokens and selecting the first howevermany
+	 * @version a.6.0
 	 */
-	def randomTeam():Seq[CannonicalTokenClass] = randomTeam(Random)
+	def randomTeam(teamSize:Int):Seq[TokenClass] = randomTeam(teamSize, Random)
 	
-	/**
-	 * A standard attack observer that will update a SuspiciounsTokenClass when a token attacks
-	 * 
-	 * Add as Be___AttackedReaction to the target token.
-	 * @version a.5.2
-	 */
-	final class StandardObserveAttacks(target:Token, allTokens:ListOfTokens)
-			extends Token.StatusAttackedReactionType with Token.DamageAttackedReactionType
-	{
-		def apply(status:Status, attackerSpace:Space) = {
-			val targetSpace = target.currentSpace
-			val attacker = allTokens.tokens.flatten.find{_.currentSpace == attackerSpace}
-			
-			attacker match {
-				case Some(attacker2:MirrorToken) => {
-					val range = attackerSpace.distanceTo(targetSpace, attacker2, PhysicalStrikeCost)
-					val attackerClass = attacker2.tokenClass
-					
-					attackerClass.atkStatus = Some(status)
-					
-					if (range > attackerClass.range.getOrElse(0) && range < 5) {
-						attackerClass.range = Some(range)
-					}
-				}
-				case _ => {}
-			}
-		}
-		
-		def apply(element:Element, kind:Weaponkind, damage:Int, attackerSpace:Space) = {
-			val targetSpace = target.currentSpace
-			val attacker = allTokens.tokens.flatten.find{_.currentSpace == attackerSpace}
-			
-			attacker match {
-				case Some(attacker2:MirrorToken) => {
-					val range = attackerSpace.distanceTo(targetSpace, attacker2, PhysicalStrikeCost)
-					val attackerClass = attacker2.tokenClass
-					
-					attackerClass.atkElement = Some(element)
-					attackerClass.atkWeapon = Some(kind)
-					
-					if (range > attackerClass.range.getOrElse(0) && range < 5) {
-						attackerClass.range = Some(range)
-					}
-				}
-				case _ => {}
-			}
-		}
-	}
-	
-	/**
-	 * A standard movement observer that will update a SuspiciounsTokenClass when a token moves
-	 * 
-	 * One per enemy token. Parameter is that token. Add to that token and at least one player.
-	 * @version a.5.2
-	 */
-	final class StandardObserveMovement(token:MirrorToken)
-				extends AFunction2[Space, Boolean, Unit] with Function0[Unit]
-	{
-		private var countThisTurn = 0;
-		
-		override def apply():Unit = {
-				if (countThisTurn > token.tokenClass.speed.getOrElse(0))
-				{
-					token.tokenClass.speed = Some(countThisTurn)
-					somLogger.fine("Recording token's movement: " + countThisTurn);
-				}
-				countThisTurn = 0;
-		}
-		
-		override def apply(e:Space, b:Boolean) = {
-				countThisTurn = countThisTurn + 1
-				somLogger.finer("Incremented token's movement");
-		}
-	}
-
 	
 	
 	
 	
 	// TODO: other statuses can affect movement range or attack range
 	
-	/** determines the spaces a token can attack */
-	object attackRangeOf extends Function1[Token, Set[Space]] 
+	/**
+	 * determines the spaces a token can attack
+	 * @version a.6.0
+	 */
+	def attackRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspision = new TokenClassSuspision()):Set[Space[SpaceClass]] =
 	{
-		def apply(token:Token) =
-		{
-			val speedSpaces = moveRangeOf(token)
+		if (token.currentStatus == Statuses.Blind) {
+			Set.empty
+		} else {
 			
-			val tokenRange = token.tokenClass.range.getOrElse(0)
-			val rangeSpaces = speedSpaces.map{_.spacesWithin(tokenRange, token, PhysicalStrikeCost)}.flatten
-			
-			rangeSpaces
+			val speedSpaces = moveRangeOf(token, list, susp)
+			val tokenRange = token.tokenClass.map{_.range}.getOrElse(susp.range.getOrElse(0))
+		
+			speedSpaces.map{_.spacesWithin(
+				tokenRange,
+				new AttackCostFunction(token, list)
+			)}.flatten
 		}
 	}
 
-	/** determines the spaces a token can move to */
-	object moveRangeOf extends Function1[Token, Set[Space]] 
+	/**
+	 * determines the spaces a token can move to
+	 * @version a.6.0
+	 */
+	def moveRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspision = new TokenClassSuspision()):Set[Space[SpaceClass]] =
 	{
-		def apply(token:Token) =
-		{
-			val startSpace = token.currentSpace
-			
-			val tokenSpeed = token.tokenClass.speed.filter{(x:Int) => token.currentStatus.exists{_ == Sleep}}.getOrElse(0)
-			val speedSpaces = token.currentSpace.spacesWithin(tokenSpeed, token, TokenMovementCost).toSet
-			
-			speedSpaces
+		def statusSpeedLimit = token.currentStatus match {
+			case Statuses.Snake => 1
+			case Statuses.Sleep => 0
+			case _ => 1000
 		}
+		
+		val startSpace = token.currentSpace
+		val tokenSpeed = math.min(statusSpeedLimit,
+				token.tokenClass.map{_.speed}.getOrElse(susp.speed.getOrElse(0))
+		)
+		
+		startSpace.spacesWithin(
+				tokenSpeed, 
+				new MoveToCostFunction(token, list)
+		).toSet
 	}
+	
+	
+	/** @version a.6.0 */
+	trait Memo {
+		def attacks:Seq[GameState.Result]
+		def suspisions:Map[(Int, Int), TokenClassSuspision]
+		def addAttack(r:GameState.Result):Memo
+		def updateSuspision(key:(Int, Int), value:TokenClassSuspision):Memo
+	}
+	
+	
+	/** @version a.6.0 */
+	final class SimpleMemo(
+		val attacks:Seq[GameState.Result] = Nil,
+		val suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty.withDefaultValue(new TokenClassSuspision)
+	) extends Memo {
+		def addAttack(r:GameState.Result):SimpleMemo =
+				new SimpleMemo(r +: attacks, suspisions)
+		def updateSuspision(key:(Int, Int), value:TokenClassSuspision):SimpleMemo =
+				new SimpleMemo(attacks, suspisions + ((key, value)))
+	}
+	
+	/** @version a.6.0 */
+	case class TokenClassSuspision(
+		val body:Option[BodyType] = None,
+		val atkElement:Option[Element] = None,
+		val atkWeapon:Option[Weaponkind] = None,
+		val atkStatus:Option[Status] = None,
+		val range:Option[Int] = None,
+		val speed:Option[Int] = None,
+		
+		val weakDirection:Option[Direction] = None,
+		val weakWeapon:Map[Weaponkind,Option[Float]] = Weaponkinds.values.map{((_, None))}.toMap,
+		val weakStatus:Option[Status] = None
+	)
 }

@@ -31,7 +31,7 @@
 
 # Keep - Applications. Keep all application classes, along with their 'main'
 # methods.
--keepclasseswithmembers public class com.rayrobdod.deductionTactics.main.Main {
+-keepclasseswithmembers public class com.rayrobdod.deductionTactics.main.* {
     public static void main(java.lang.String[]);
 }
 

@@ -17,15 +17,13 @@
 */
 package com.rayrobdod.deductionTactics
 
-import scala.collection.immutable.{Seq => ISeq, Set}
-import scala.collection.mutable.{Seq => MSeq}
+import scala.collection.immutable.{Seq, Set}
 import scala.collection.JavaConversions.iterableAsScalaIterable
 import com.rayrobdod.util.services.{ResourcesServiceLoader, Services}
 import au.com.bytecode.opencsv.CSVReader;
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
-import com.rayrobdod.boardGame.{RectangularField, SpaceClassConstructor}
-import com.rayrobdod.boardGame.mapValuesFromObjectNameToSpaceClassConstructor
+import com.rayrobdod.boardGame.RectangularField
 import java.net.URL
 import java.nio.charset.StandardCharsets.UTF_8
 
@@ -37,16 +35,15 @@ import java.nio.charset.StandardCharsets.UTF_8
 // metadata
 // starting locations
 // tiles
-object Maps
-{
+object Maps {
 	private val SERVICE = "com.rayrobdod.deductionTactics.Maps"
 	
-	val names:ISeq[String] = {
-		ISeq.empty ++ Services.readServices(SERVICE);
+	val names:Seq[String] = {
+		Seq.empty ++ Services.readServices(SERVICE);
 	}
 	
-	val paths:ISeq[URL] = {
-		ISeq.empty ++ new ResourcesServiceLoader(SERVICE);
+	val paths:Seq[URL] = {
+		Seq.empty ++ new ResourcesServiceLoader(SERVICE);
 	}
 	
 	private def getMetadata(index:Int):Map[String, Any] = {
@@ -62,38 +59,32 @@ object Maps
 		metadataMap
 	}
 	
-	def getMap(index:Int):RectangularField = {
+	private def getStringLayout(index:Int):Seq[Seq[String]] = {
 		val metadataPath = Maps.paths(index)
 		val metadataMap = getMetadata(index)
 		
-		val letterToSpaceClassConsMap:Map[String,SpaceClassConstructor] = {
-			val path = new URL(metadataPath, metadataMap("classMap").toString)
-			val reader = new java.io.InputStreamReader(path.openStream(), UTF_8)
-			val listener = ToScalaCollection()
-			JSONParser.parse(listener, reader)
-			val letterToClassNameMap = listener.resultMap.mapValues{_.toString}
-			reader.close()
-			
-			letterToClassNameMap.mapValues{(objectName:String) => 
-				val clazz = Class.forName(objectName + "$")
-				val field = clazz.getField("MODULE$")
-				
-				field.get(null).asInstanceOf[SpaceClassConstructor]
-			}
-		}
-		
 		val layoutPath = new URL(metadataPath, metadataMap("layout").toString)
 		val layoutReader = new java.io.InputStreamReader(layoutPath.openStream(), UTF_8)
-		val layoutTable:ISeq[ISeq[SpaceClassConstructor]] = {
+		val layoutTable:Seq[Seq[String]] = {
 			val reader = new CSVReader(layoutReader);
 			val letterTable3 = reader.readAll();
-			val letterTable = ISeq.empty ++ letterTable3.map{ISeq.empty ++ _}
+			val letterTable = Seq.empty ++ letterTable3.map{Seq.empty ++ _}
 			
-			letterTable.map{_.map{letterToSpaceClassConsMap}}
+			letterTable
 		}
 		layoutReader.close()
 		
-		RectangularField.applySCC(layoutTable)
+		layoutTable
+	}
+	
+	private def getSpaceClassLayout(index:Int):Seq[Seq[SpaceClass]] = {
+		val strings = getStringLayout(index)
+		
+		strings.map{_.map{(s) => SpaceClassFactory(s)}}
+	}
+	
+	def getMap(index:Int):RectangularField[SpaceClass] = {
+		RectangularField(getSpaceClassLayout(index))
 	}
 	
 	def possiblePlayers(index:Int):Set[Int] = {
@@ -117,7 +108,7 @@ object Maps
 		startSpaceMap.keySet.map{ Integer.parseInt(_) }
 	}
 	
-	def startingPositions(index:Int, numPlayers:Int):ISeq[ISeq[(Int, Int)]] = {
+	def startingPositions(index:Int, numPlayers:Int):Seq[Seq[(Int, Int)]] = {
 		def asInt(any:Any):Int = {any match {
 			case x:Int => x
 			case x:Integer => x
@@ -143,11 +134,11 @@ object Maps
 			}
 		}
 		
-		val startSpaceMap:Map[String,ISeq[ISeq[(Int, Int)]]] = {
+		val startSpaceMap:Map[String,Seq[Seq[(Int, Int)]]] = {
 			startSpaceMapRaw.mapValues{_ match {
-				case x:ISeq[_] => x.map{_ match {
-					case y:ISeq[_] => y.map{_ match {
-						case ISeq(i:Any, j:Any) => {
+				case x:Seq[_] => x.map{_ match {
+					case y:Seq[_] => y.map{_ match {
+						case Seq(i:Any, j:Any) => {
 							((asInt(i), asInt(j)))
 						}
 					}}

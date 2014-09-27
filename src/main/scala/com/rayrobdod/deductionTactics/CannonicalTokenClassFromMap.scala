@@ -22,6 +22,7 @@ import Weaponkinds.Weaponkind
 import Statuses.Status
 import BodyTypes.BodyType
 import Directions.Direction
+import com.rayrobdod.deductionTactics.{TokenClass => CannonicalTokenClass}
 
 import scala.collection.Seq
 import scala.collection.immutable.{Map, Seq => ISeq}
@@ -38,16 +39,16 @@ final class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalT
 {
 	override def name = map("name").toString
 	
-	override def body = Some(BodyTypes.withName(map("body").toString))
+	override def body = BodyTypes.withName(map("body").toString)
 	
-	override def atkElement = Some(Elements.withName(map("element").toString))
-	override def atkWeapon = Some(Weaponkinds.withName(map("atkWeapon").toString))
-	override def atkStatus = Some(Statuses.withName(map("atkStatus").toString))
-	override def range = Some(asInt(map("range")))
-	override def speed = Some(asInt(map("speed")))
-	override def weakDirection = Some(asDirection(map("weakDirection")))
-	override def weakWeapon = asWeakWeaponMap(map("weakWeapon")).mapValues{Some(_)}
-	override def weakStatus = Some(Statuses.withName(map("weakStatus").toString))
+	override def atkElement = Elements.withName(map("element").toString)
+	override def atkWeapon = Weaponkinds.withName(map("atkWeapon").toString)
+	override def atkStatus = Statuses.withName(map("atkStatus").toString)
+	override def range = asInt(map("range"))
+	override def speed = asInt(map("speed"))
+	override def weakDirection = asDirection(map("weakDirection"))
+	override def weakWeapon = asWeakWeaponMap(map("weakWeapon"))
+	override def weakStatus = Statuses.withName(map("weakStatus").toString)
 	
 	
 	

@@ -22,70 +22,75 @@ import Weaponkinds.Weaponkind
 import Statuses.Status
 import scala.collection.mutable.Buffer
 import com.rayrobdod.boardGame.{Space,
+		StrictRectangularSpace,
 		Token => BoardGameToken}
 
 /**
  * 
  * @author Raymond Dodge
- * @version a.5.0 - removing actors dependency
+ * @version a.6.0
  */
-trait Token extends BoardGameToken
-{
-	def currentHitpoints:Int
-	def currentStatus:Option[Status]
-	def currentStatusTurnsLeft:Int
-	def tokenClass:TokenClass
+final case class Token (
+	override val currentSpace:Space[SpaceClass],
+	val currentHitpoints:Int = Token.maximumHitpoints,
+	val currentStatus:Status = Statuses.Normal,
+	val currentStatusTurnsLeft:Int = 0,
+	val tokenClass:Option[TokenClass] = None,
 	
-	def canMoveThisTurn:Int
-	def canAttackThisTurn:Boolean
+	val canMoveThisTurn:Int = 0,
+	val canAttackThisTurn:Boolean = false
+) extends BoardGameToken[SpaceClass](currentSpace) {
 	
-	final val maximumHitpoints:Int = 256
-	final val baseDamage:Int = 8
+	final def startOfTurn():Token = {
+		val newStatus = if (currentStatusTurnsLeft > 1) {currentStatus} else {Statuses.Normal}
+		
+		new Token(
+			currentSpace,
+			currentHitpoints,
+			newStatus,
+			currentStatusTurnsLeft - 1,
+			tokenClass,
+			tokenClass.map{_.speed}.getOrElse{0},
+			true
+		)
+	}
+	
+	final def endOfTurn():Token = {
+		new Token(
+			currentSpace,
+			currentHitpoints,
+			currentStatus,
+			currentStatusTurnsLeft,
+			tokenClass,
+			0,
+			false
+		)
+	}
+	
+	final def takeDamage(attacker:Token, ts:ListOfTokens):Token = {
+		val attackeeClass = this.tokenClass.get
+		val attackerClass = attacker.tokenClass.get
+		
+		
+		val path = Directions.pathDirections(attacker.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]], this.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]], attacker, ts)
+		val weakDir = this.tokenClass.get.weakDirection
+		val directionMultiplier = weakDir.weaknessMultiplier(path)
+		
+		val multiplier = attackeeClass.weakWeapon(attackerClass.atkWeapon) *
+				(if (currentStatus == attackeeClass.weakStatus) {2} else {1}) *
+				(directionMultiplier) *
+				(attackeeClass.atkElement.damageModifier(attackerClass.atkElement));
+				
+		val damageDone = (if (multiplier > 8) {320} else {Token.baseDamage * multiplier}).intValue
+		
+		this.copy(currentHitpoints = currentHitpoints - damageDone)
+	}
 	
 	
-	/**  figure out how to not need these */
-	def beAttacked(elem:Element, kind:Weaponkind, from:Space);
-	/**  figure out how to not need these */
-	def beAttacked(status:Status, from:Space);
-	
-	
-	
-	
-	
-	
-	
-	private val diedReactions:Buffer[() => Unit] = Buffer.empty;
-	def diedReactions_+=(a:() => Unit) = {diedReactions += a}
-	def diedReactions_-=(a:() => Unit) = {diedReactions -= a}
-	protected def triggerDiedReactions() = {diedReactions.foreach{a => a()}}
-	
-	private val updateReactions:Buffer[() => Unit] = Buffer.empty;
-	def updateReactions_+=(a:() => Unit) = {updateReactions += a}
-	def updateReactions_-=(a:() => Unit) = {updateReactions -= a}
-	protected def triggerUpdateReactions() = {updateReactions.foreach{a => a()}}
-	
-	private val beDamageAttackedReactions:Buffer[Token.DamageAttackedReactionType] = Buffer.empty;
-	def beDamageAttackedReactions_+=(a:Token.DamageAttackedReactionType) = {beDamageAttackedReactions += a}
-	def beDamageAttackedReactions_-=(a:Token.DamageAttackedReactionType) = {beDamageAttackedReactions -= a}
-	protected def triggerBeDamageAttackedReactions(b:Element, c:Weaponkind, e:Int, d:Space) = {beDamageAttackedReactions.foreach{a => a(b,c,e,d)}}
-
-	private val beStatusAttackedReactions:Buffer[Token.StatusAttackedReactionType] = Buffer.empty;
-	def beStatusAttackedReactions_+=(a:Token.StatusAttackedReactionType) = {beStatusAttackedReactions += a}
-	def beStatusAttackedReactions_-=(a:Token.StatusAttackedReactionType) = {beStatusAttackedReactions -= a}
-	protected def triggerBeStatusAttackedReactions(a:Status, b:Space) = {beStatusAttackedReactions.foreach{c => c(a,b)}}
 }
 
+
 object Token {
-	trait DamageAttackedReactionType {
-		def apply(
-			atkElem:Element,
-			atkKind:Weaponkind,
-			damage:Int,
-			attackerSpace:Space
-		):Unit;
-	}
-	
-	trait StatusAttackedReactionType {
-		def apply(atkStatus:Status, attackerSpace:Space):Unit;
-	}
+	final val maximumHitpoints:Int = 256
+	final val baseDamage:Int = 8
 }

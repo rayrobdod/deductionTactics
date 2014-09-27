@@ -18,24 +18,26 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{RectangularField => Field}
 
 /**
  * A decorator for PlayerAIs. It intercepts the buildTeam command and creates
  * a random one using the package randomTeam method
  *
  * @author Raymond Dodge
+ * @version a.6.0
  */
 final class WithRandomTeam(val base:PlayerAI) extends PlayerAI
 {
 	/** Forwards command to base */
-	def takeTurn(player:Player) = base.takeTurn(player)
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo) = base.takeTurn(player, gameState, memo)
 	/** chooses a team randomly */
-	def buildTeam = randomTeam()
+	override def buildTeam(size:Int) = randomTeam(size)
 	
 	/** Forwards command to base */
-	def initialize(player:Player, field:Field) = base.initialize(player, field)
-	
+	override def initialize(player:Int, initialState:GameState):Memo = base.initialize(player, initialState)
+	/** Forwards notify to base */
+	override def notifyTurn(player:Int, action:GameState.Result, beforeState:GameState, afterState:GameState, memo:Memo):Memo =
+				base.notifyTurn(player, action, beforeState, afterState, memo)
 	
 	
 	

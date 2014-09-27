@@ -18,10 +18,8 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-//import com.rayrobdod.deductionTactics.{PlayerAI, Player,
-//		CannonicalTokenClass, Token, RequestAttackForDamage, RequestMove}
-import com.rayrobdod.boardGame.{Space, TokenMovementCost}
-import com.rayrobdod.boardGame.{RectangularField => Field}
+import com.rayrobdod.boardGame.Space
+import scala.collection.immutable.Seq
 import scala.collection.mutable.PriorityQueue
 import LoggerInitializer.{blindAttackAILogger => Logger}
 import java.util.logging.Level
@@ -32,41 +30,79 @@ import java.util.logging.Level
  * and attack the closest enemy tokens.
  * 
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
-class BlindAttackAI extends PlayerAI
+final class BlindAttackAI extends PlayerAI
 {
 	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
-	def buildTeam = randomTeam()
+	override def buildTeam(size:Int) = randomTeam(size)
 	
-	def takeTurn(player:Player):Any =
-	{
-		implicit object TokenPairOrdering extends Ordering[(CannonicalToken, MirrorToken)]
-		{
-			def distance(a:(Token, Token)):Int = distance(a._1, a._2) 
-			def distance(a:Token, b:Token):Int = a.currentSpace.distanceTo(b.currentSpace, a, TokenMovementCost)
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
+		
+		implicit object TokenPairOrdering extends Ordering[(Token, Token)] {
+			def distance(a:(Token, Token)):Int = distance(a._1, a._2)
+			def distance(a:Token, b:Token):Int = a.currentSpace.distanceTo(
+					b.currentSpace,
+					new MoveToCostFunction(a, gameState.tokens)
+			)
 			
-			def compare(a:(CannonicalToken, MirrorToken), b:(CannonicalToken, MirrorToken)) =
+			def compare(a:(Token, Token), b:(Token, Token)) =
 			{
 				-(distance(a) compareTo distance(b))
 			}
 		}
 		
-		val queue = new PriorityQueue ++= player.tokens.aliveMyTokens.flatMap{(myToken:CannonicalToken) =>
-			player.tokens.aliveOtherTokens.flatten.map{(hisToken:MirrorToken) =>
-			{
+		val queue = new PriorityQueue ++= gameState.tokens.alivePlayerTokens(player).flatMap{(myToken:Token) =>
+			gameState.tokens.aliveNotPlayerTokens(player).flatten.map{(hisToken:Token) => {
 				(myToken, hisToken)
 			}}
 		}
 		
-		queue.foreach({(myToken:CannonicalToken, hisToken:MirrorToken) =>
-			myToken.requestMoveTo(hisToken.currentSpace)
-			myToken.tryAttackDamage(hisToken)
-		}.tupled)
+		val actions:Seq[GameState.Action] = Seq.empty ++ (
+			queue.flatMap({(myToken:Token, hisToken:Token) =>
+				val path = myToken.currentSpace.pathTo(
+					hisToken.currentSpace,
+					new MoveToCostFunction(myToken, gameState.tokens)
+				)
+				
+				val moves = path.map{(s) => GameState.TokenMove(myToken, s)}
+				val attack = GameState.TokenAttackDamage(myToken, hisToken)
+				
+				moves :+ attack
+			}.tupled)
+				
+		)
+		
+		// return the first legal move
+		
+		Seq(
+			actions.filter{_ match {
+				case GameState.TokenMove(t:Token, s:Space[_]) =>
+					val distance = t.currentSpace.distanceTo(s, new MoveToCostFunction(t, gameState.tokens))
+					
+					Logger.finer( ((distance, t.canMoveThisTurn)).toString )
+					
+					0 < distance && distance <= t.canMoveThisTurn
+				case GameState.TokenAttackDamage(m:Token, o:Token) =>
+					val distance = m.currentSpace.distanceTo(o.currentSpace, new AttackCostFunction(m, gameState.tokens))
+					
+					Logger.finer( ((m.canAttackThisTurn, distance, m.tokenClass.map{_.range}.getOrElse(-1))).toString )
+					
+					m.canAttackThisTurn && (distance <= m.tokenClass.map{_.range}.getOrElse(-1))
+				case _ => false
+			}}.headOption.getOrElse(GameState.EndOfTurn)
+		)
 	}
 	
-	def initialize(player:Player, field:Field) = {}
+	override def initialize(player:Int, initialState:GameState):Memo = new SimpleMemo
 	
+	override def notifyTurn(
+		player:Int,
+		action:GameState.Result,
+		beforeState:GameState,
+		afterState:GameState,
+		memo:Memo
+	):Memo = memo
 	
 	def canEquals(other:Any) = {other.isInstanceOf[BlindAttackAI]}
 	override def equals(other:Any) = {

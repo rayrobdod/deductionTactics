@@ -86,7 +86,7 @@ package object swingView
 	 * Makes an icon to represent an object
 	 * 
 	 * @author Raymond Dodge
-	 * @version 2013 Jun 14
+	 * @version a.6.0
 	 * @note I tried having a bunch of overloads, rather than one mega-match
 	 		but the compiler didn't seem to recognise some of the overloads
 	 */
@@ -101,8 +101,12 @@ package object swingView
 						+ e.name.toLowerCase + ".svg", size)
 				case e:Direction => makeSVGIcon("/com/rayrobdod/glyphs/direction/"
 						+ e.name.toLowerCase + ".svg", size)
-				case e:Status    => makeSVGIcon("/com/rayrobdod/glyphs/status/"
-						+ e.name.toLowerCase + ".svg", size)
+				case e:Status    => if(Statuses.Normal == e) {
+						makeSVGIcon("/com/rayrobdod/glyphs/unknown.svg", size)
+					} else {
+						makeSVGIcon("/com/rayrobdod/glyphs/status/"
+								+ e.name.toLowerCase + ".svg", size)
+					}
 				case e:Weaponkind => makeSVGIcon("/com/rayrobdod/glyphs/weapon/"
 						+ e.name.toLowerCase.dropRight(4) + ".svg", size)
 				
@@ -118,7 +122,10 @@ package object swingView
 	 * @version 2013 Jun 14
 	 */
 	private def makeSVGIcon(resource:String, size:Int):Icon = {
+		if (resource == null) throw new NullPointerException("resource")
+		if (this.getClass().getResource(resource) == null) throw new NullPointerException("this.getClass().getResource(\"" + resource + "\")")
 		val uri = this.getClass().getResource(resource).toURI
+		if (uri == null) throw new NullPointerException("uri")
 		
 		val icon = new SVGIcon()
 		icon.setSvgURI(uri)
@@ -193,15 +200,15 @@ package object swingView
 	
 	/**
 	 * Creates an undetailed icon which matches some of the traits of the TokenClass
-	 * @version 2013 Jun 30
+	 * @version a.6.0
 	 */
-	def generateGenericIcon(tokenClass:TokenClass) =
+	def generateGenericIcon(atkElement:Option[Element], atkWeapon:Option[Weaponkind]):Icon =
 	{
-		val fileName = tokenClass.atkWeapon.map{genericTokenClassFile(_)}.getOrElse(
+		val fileName = atkWeapon.map{genericTokenClassFile(_)}.getOrElse(
 				"/com/rayrobdod/deductionTactics/tokenClasses/sprites/generic/Gray shirt.png")
 		val base = ImageIO.read(this.getClass().getResource(fileName))
 		
-		tokenClass.atkElement.foreach{(elem:Element) => 
+		atkElement.foreach{(elem:Element) => 
 			(0 until base.getWidth).foreach{(x:Int) => 
 				(0 until base.getHeight).foreach{(y:Int) => 
 					if (base.getRGB(x,y) == 0xFF949494) {base.setRGB(x,y,elementToColor(elem).brighter.getRGB)}
@@ -225,7 +232,7 @@ package object swingView
 		import scala.collection.JavaConversions.iterableAsScalaIterable
 		import com.rayrobdod.util.services.ResourcesServiceLoader
 		
-		val a:Seq[URL] = new ResourcesServiceLoader(CannonicalTokenClass.SERVICE).toSeq
+		val a:Seq[URL] = new ResourcesServiceLoader(TokenClass.SERVICE).toSeq
 		
 		// Binary version
 		val b:Seq[Map[String, Icon]] = a.map{(jsonPath:URL) =>
@@ -244,9 +251,9 @@ package object swingView
 	/**
 	 * @since a.5.1
 	 */
-	def tokenClassToIcon(tokenClass:TokenClass) = {
+	def tokenClassToIcon(tokenClass:TokenClass):Icon = {
 		tokenClassNameToIcon.getOrElse(tokenClass.name,
-				generateGenericIcon(tokenClass))
+				generateGenericIcon(Option(tokenClass.atkElement), Option(tokenClass.atkWeapon)))
 	}
 	
 	/** @since a.5.0 */
@@ -268,14 +275,14 @@ package object swingView
 	}
 	
 	
-	import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularTilesheetLoader}
-	val tilesheets = new RectangularTilesheetLoader("com.rayrobdod.deductionTactics.view.tilesheet").toSeq
+	import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularTilesheetLoader }
+	val tilesheets = new RectangularTilesheetLoader("com.rayrobdod.deductionTactics.view.tilesheet", SpaceClassMatcherFactory).toSeq
 	/**
 	 * A ListModel of all tilesheets.
 	 * Would thought this could have a more immediate use
 	 * @version a.5.3
 	 */
-	final val AvailibleTilesheetListModel:ListModel[RectangularTilesheet] = new ScalaSeqListModel(tilesheets)
+	final val AvailibleTilesheetListModel:ListModel[RectangularTilesheet[SpaceClass]] = new ScalaSeqListModel(tilesheets)
 	
 	
 	

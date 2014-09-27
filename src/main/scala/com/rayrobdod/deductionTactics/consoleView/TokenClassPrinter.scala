@@ -23,12 +23,12 @@ import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.BodyTypes.BodyType
 import com.rayrobdod.deductionTactics.Directions.Direction
 
+import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
 import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds}
 import scala.runtime.{AbstractFunction1 => Function1}
 
 /**
- * @author Raymond Dodge
- * @version a.4.0
+ * @version a.6.0
  */
 object TokenClassPrinter extends Function1[TokenClass,Unit]
 {
@@ -42,28 +42,57 @@ object TokenClassPrinter extends Function1[TokenClass,Unit]
 		out.println(tokenClass.name);
 		
 		out.print("Speed: ");
-		out.print(tokenClass.speed.getOrElse(0));
+		out.print(tokenClass.speed);
 		out.print("  Range: ");
-		out.println(tokenClass.range.getOrElse(0));
+		out.println(tokenClass.range);
 		
 		out.print("Attack:   ")
-		out.print(tokenClass.atkElement.map{getName}.getOrElse{elseString});
+		out.print(tokenClass.atkElement.name);
 		out.print("; ");
-		out.print(tokenClass.atkWeapon.map{getName}.getOrElse{elseString});
+		out.print(tokenClass.atkWeapon.name);
 		out.print("; ");
-		out.println(tokenClass.atkStatus.map{getName}.getOrElse{elseString});
+		out.println(tokenClass.atkStatus.name);
 		
 		out.print("Weakness: ")
-		out.print(tokenClass.weakDirection.map{getName}.getOrElse{elseString});
+		out.print(tokenClass.weakDirection.name);
 		out.print("; ");
-		out.print(getWeakWeapon(tokenClass));
+		out.print(getWeakWeapon(tokenClass.weakWeapon));
 		out.print("; ");
-		out.println(tokenClass.weakStatus.map{getName}.getOrElse{elseString});
+		out.println(tokenClass.weakStatus.name);
 	}
 	
-	private def getWeakWeapon(tokenClass:TokenClass) = {
-		val maxWeakness = tokenClass.weakWeapon.map{
-				(x) => (( x._1, x._2.getOrElse(0f) ))
+	/**
+	 * @since a.6.0
+	 */
+	def apply(tokenClass:TokenClassSuspision) = {
+		out.println("???");
+		
+		out.print("Speed: ");
+		out.print(tokenClass.speed.getOrElse("?"));
+		out.print("  Range: ");
+		out.println(tokenClass.range.getOrElse("?"));
+		
+		out.print("Attack:   ")
+		out.print(tokenClass.atkElement.map{_.name}.getOrElse("?"));
+		out.print("; ");
+		out.print(tokenClass.atkWeapon.map{_.name}.getOrElse("?"));
+		out.print("; ");
+		out.println(tokenClass.atkStatus.map{_.name}.getOrElse("?"));
+		
+		out.print("Weakness: ")
+		out.print(tokenClass.weakDirection.map{_.name}.getOrElse("?"));
+		out.print("; ");
+		out.print(getWeakWeapon(tokenClass.weakWeapon.map{x => ((x._1, x._2.getOrElse(0f) ))}));
+		out.print("; ");
+		out.println(tokenClass.weakStatus.map{_.name}.getOrElse("?"));
+	}
+	
+	/**
+	 * @version a.6.0
+	 */
+	private def getWeakWeapon(weakWeapon:Map[Weaponkind,Float]) = {
+		val maxWeakness = weakWeapon.map{
+				(x) => (( x._1, x._2 ))
 		}.maxBy{_._2}
 		
 		if (maxWeakness._2 == 0f) {

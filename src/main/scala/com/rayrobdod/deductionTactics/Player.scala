@@ -17,77 +17,53 @@
 */
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.{RectangularField => Field, Space}
 import scala.collection.immutable.Seq
-import scala.collection.mutable.{Map, Buffer}
 import scala.collection.JavaConversions.iterableAsScalaIterable
-import java.util.ServiceLoader
-import com.rayrobdod.util.services.ClassServiceLoader
 
-
-/**
- * A Deduction Tactics player
- *
- * This is more of a data structure. To control the Player, one would use a PlayerAI.
- * 
- * @author Raymond Dodge
- * @version a.5.0 - no longer relies on actors
- */
-final class Player(val tokens:PlayerListOfTokens, val ai:PlayerAI)
-{
-	def takeTurn() = {
-		startTurnReaction.foreach{a => a()}
-		ai.takeTurn(this)
-		endTurnReaction.foreach{a => a()}
-	}
-	
-	val startTurnReaction:Buffer[Function0[Any]] = Buffer.empty
-	def addStartTurnReaction(f:Function0[Any]) = startTurnReaction += f
-	
-	val endTurnReaction:Buffer[Function0[Any]] = Buffer.empty
-	def addEndTurnReaction(f:Function0[Any]) = endTurnReaction += f
-	
-	val victoryReaction:Buffer[Function0[Any]] = Buffer.empty
-	def addVictoryReaction(f:Function0[Any]) = victoryReaction += f
-	
-	val defeatReaction:Buffer[Function0[Any]] = Buffer.empty
-	def addDefeatReaction(f:Function0[Any]) = defeatReaction += f
-	
-}
-
-object Player {
-	type StartTurnReactionType = Function0[Unit]
-	type EndTurnReactionType = Function0[Unit]
-	type VictoryReactionType = Function0[Unit]
-	type DefeatReactionType = Function0[Unit]
-}
 
 
 /**
  * An abstract class that  Player will poll when it is taking a turn to
  * determine how to act.
- *  
- * @author Raymond Dodge
- * @version a.5.0 - no longer relies on scala-swing
+ * 
+ * @version a.6.0
  * @todo trait instead of abstract class? Could it possibly hurt?
  */
-abstract class PlayerAI
-{
+abstract class PlayerAI {
+	
+	
 	/** Generates a team of tokens that this AI would like to use. */
-	def buildTeam:Seq[CannonicalTokenClass]
+	def buildTeam(size:Int):Seq[TokenClass]
 	
 	/**
 	 * The engine calls this to make a player take its turn.
 	 * The turn ends when this method returns to its caller.
 	 */
-	def takeTurn(player:Player):Any
+	def takeTurn(player:Int, gameState:GameState, memo:ai.Memo):Seq[GameState.Action]
+	
+	/**
+	 * Notification of what another player did on its turn.
+	 * 
+	 * @param player the player who took an action
+	 * @param action the Action taken
+	 * @param beforeState the state before the action was taken
+	 * @param afterState the state after the action was taken
+	 * @param memo the memo
+	 */
+	def notifyTurn(
+		player:Int,
+		action:GameState.Result,
+		beforeState:GameState,
+		afterState:GameState,
+		memo:ai.Memo
+	):ai.Memo
 	
 	/**
 	 * called once at the start of the game to allow the
 	 * AI to set up additional listeners or setup an IO
 	 * or other such tasks.
 	 */
-	def initialize(player:Player, field:Field):Any
+	def initialize(player:Int, initialState:GameState):ai.Memo
 }
 
 /**
@@ -102,11 +78,12 @@ abstract class PlayerAI
  * The decorators are listed in (a) file(s) in the classpath at
  * "/META-INF/services/com.rayrobdod.deductionTactics.PlayerAIDecorator".
  * The bases extends PlayerAI and have a one PlayerAI arg constructor
- * 
- * @author Raymond Dodge
  */
 object PlayerAI
 {
+	import java.util.ServiceLoader
+	import com.rayrobdod.util.services.ClassServiceLoader
+	
 	/** A service loader that lists the known PlayerAIs */
 	val baseServiceLoader = ServiceLoader.load[PlayerAI](classOf[PlayerAI])
 	
@@ -121,6 +98,4 @@ object PlayerAI
 	def decoratorServiceSeq:Seq[Class[_ <: PlayerAI]] = {
 		Seq.empty ++ iterableAsScalaIterable(decoratorServiceLoader)
 	}
-	
-	final def teamSize:Int = 5
 }

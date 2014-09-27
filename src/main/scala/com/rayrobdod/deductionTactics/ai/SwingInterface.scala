@@ -15,26 +15,23 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.ai
+package com.rayrobdod.deductionTactics
+package ai
 
 import scala.collection.immutable.Seq
-import scala.collection.mutable.{Map => MMap}
 import com.rayrobdod.boardGame.{Space}
-import com.rayrobdod.deductionTactics.{PlayerAI, Player, Token, CannonicalToken}
+import com.rayrobdod.deductionTactics.{PlayerAI, Token}
 import java.awt.event.{ActionListener, ActionEvent}
-import javax.swing.{JButton, JFrame, JPanel, JLabel, JList}
+import javax.swing.{JButton, JFrame, JPanel}
 import java.awt.BorderLayout
-import com.rayrobdod.boardGame.{RectangularField => Field, RectangularSpace}
 
 import com.rayrobdod.deductionTactics.swingView.{
 			BoardGamePanel,
-			ShowHumanSuspicionsPanelMouseListener,
-			HighlightMovableSpacesReaction,
 			TeamBuilderPanel,
-			MoveTokenMouseListener,
 			MenuBar,
 			SellectAttackTypePanel,
-			SelectTokenOnSpaceMouseListener,
+			MoveTokenMouseListener,
+			HighlightMovableSpacesLayer,
 			InputFrame
 }
 
@@ -44,68 +41,82 @@ import com.rayrobdod.deductionTactics.swingView.{
  * they are are equal to each other
  *
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
-sealed class SwingInterface extends PlayerAI
+final class SwingInterface extends PlayerAI
 {
-	val playerButtons = MMap[Player, JButton]()
 	val endOfTurnLock = new Object();
+	var takeTurnReturnValue:Option[GameState.Action] = None
 	
-	def takeTurn(player:Player) {
-		playerButtons(player).setEnabled(true)
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		
-		endOfTurnLock.synchronized( endOfTurnLock.wait() );
+		val a = memo.asInstanceOf[SwingInterfaceMemo]
+		a.currentTokens.value = gameState.tokens
+		a.endOfTurnButton.setEnabled(true)
+		
+		return endOfTurnLock.synchronized{
+			while (takeTurnReturnValue == None) { 
+				endOfTurnLock.wait()
+			}
+			
+			val retVal = takeTurnReturnValue.get
+			takeTurnReturnValue = None
+			Seq(retVal)
+		}
 	}
 	
-	def initialize(player:Player, field:Field)
+	def initialize(player:Int, initialState:GameState):Memo =
 	{
-		val tokens = player.tokens
-		val panel = new BoardGamePanel(tokens, field)
+		val tokens = initialState.tokens
+		val panel = new BoardGamePanel(tokens, player, initialState.board)
 		val frame = new JFrame("Deduction Tactics")		
 		frame.setJMenuBar(new MenuBar)
 		frame.getContentPane add panel
 		
 		val attackTypeSelector = new SellectAttackTypePanel()
+		val activeToken = new swingView.SharedActiveTokenProperty()
+		activeToken.value = None
 		
-		tokens.otherTokens.flatten.foreach{(x:Token) =>
-			val reaction = new HighlightMovableSpacesReaction(x, panel, player.tokens);
-			x.selectedReactions_+=(reaction)
-			x.moveReactions_+={(x,y) => reaction()}
+		def writeGameAction = {(x:GameState.Action) => 
+			endOfTurnLock.synchronized {
+				takeTurnReturnValue = Option(x)
+				endOfTurnLock.notifyAll
+			}
 		}
-		tokens.myTokens.foreach{(x:CannonicalToken) =>
-			val reaction = new HighlightMovableSpacesReaction(x, panel, player.tokens);
-			x.selectedReactions_+=(reaction)
-			x.moveReactions_+={(x,y) => reaction()}
-			
-			x.tryDamageAttackedReactions_+={(x) => reaction()}
-			x.tryStatusAttackedReactions_+={(x) => reaction()}
-			
-			player.addEndTurnReaction(reaction)
-			player.addStartTurnReaction(reaction)
+		
+		val hilightLayer = new HighlightMovableSpacesLayer(panel.centerpiece)
+		panel.centerpiece.add(hilightLayer, 0)
+		
+		val tokensProp = new swingView.ListOfTokensProperty
+		tokensProp.value = initialState.tokens
+		
+		initialState.board.spaces.flatten.foreach{(s:Space[SpaceClass]) =>
+			panel.centerpiece.addMouseListenerToSpace(s,
+				new MoveTokenMouseListener(
+						player,
+						tokensProp,
+						s,
+						attackTypeSelector,
+						(t:Option[Token], l:ListOfTokens) => hilightLayer.update(t, l, initialState.board),
+						writeGameAction,
+						activeToken
+				)
+			)
 		}
-		field.spaces.flatten.foreach{(s:RectangularSpace) => 
-			panel.centerpiece.addMouseListenerToSpace(s, new SelectTokenOnSpaceMouseListener(s, player.tokens))
-			panel.centerpiece.addMouseListenerToSpace(s, new MoveTokenMouseListener(player, s, attackTypeSelector))
-		}
+		
 		
 		val endOfTurnButton = new JButton("End Turn")
-		playerButtons += ((player, endOfTurnButton))
 		endOfTurnButton.addActionListener(new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
-				endOfTurnButton.setEnabled(false)
-				endOfTurnLock.synchronized( endOfTurnLock.notifyAll() );
+				endOfTurnLock.synchronized{
+					endOfTurnButton.setEnabled(false)
+					takeTurnReturnValue = Some(GameState.EndOfTurn)
+					endOfTurnLock.notifyAll()
+				}
 			}
 		})
 		
-		player.addVictoryReaction{() =>
-			// TODO: make work
-			val label = new JLabel("Victor!")
-			
-			panel.centerpiece add label
-			label.setLocation(200, 200)
-			label.setFont(label.getFont.deriveFont(24f))
-			panel.centerpiece.repaint()
-		}
+		
 		
 		val southPanel = new JPanel()
 		southPanel.add(attackTypeSelector)
@@ -115,9 +126,19 @@ sealed class SwingInterface extends PlayerAI
 		frame.pack()
 		frame.validate()
 		frame.setVisible(true)
+		
+		SwingInterfaceMemo(
+				base = new SimpleMemo,
+				panel = panel,
+				hilightLayer = hilightLayer,
+				attackTypeSelector = attackTypeSelector,
+				selectedToken = activeToken,
+				currentTokens = tokensProp,
+				endOfTurnButton = endOfTurnButton
+		)
 	}
 	
-	def buildTeam = {
+	override def buildTeam(teamSize:Int) = {
 		val buildingLock = new Object()
 		val teamBuilder = new TeamBuilderPanel()
 		
@@ -137,6 +158,50 @@ sealed class SwingInterface extends PlayerAI
 		teamBuilder.currentSelection
 	}
 	
+	override def notifyTurn(
+		player:Int,
+		action:GameState.Result,
+		beforeState:GameState,
+		afterState:GameState,
+		memo:Memo
+	):Memo = {
+		val memo2 = memo.asInstanceOf[SwingInterfaceMemo]
+		val panel = memo2.panel
+		
+		action match {
+			case GameState.TokenMoveResult(index, s) =>
+				val tokenComp = panel.tokenComps(index)
+				tokenComp.moveToSpace(s)
+				
+			case GameState.TokenAttackDamageResult(a, d, e, k) =>
+				val tokenComp = panel.tokenComps(d)
+				tokenComp.beAttacked(e,k)
+				panel.resetTokenPanels(afterState.tokens)
+				System.out.println("Token was attacked")
+				
+				None
+			case GameState.TokenAttackStatusResult(a, d, s) =>
+				val tokenComp = panel.tokenComps(d)
+				tokenComp.beAttacked(s)
+				panel.resetTokenPanels(afterState.tokens)
+				// TODO
+				None
+			case GameState.EndOfTurn =>
+				None
+		}
+		
+		
+		memo2.selectedToken.value = {
+			// this assumes that the board doesn't change.
+			val space = memo2.selectedToken.value.map{_.currentSpace}
+			afterState.tokens.tokens.flatten.find{_.currentSpace == space}
+		}
+		memo2.currentTokens.value = afterState.tokens
+		memo2.hilightLayer.update(memo2.selectedToken.value, afterState.tokens, afterState.board)
+		
+		memo
+	}
+	
 	// hopefully, animations will work eventually and that will
 	// inform a player of what's going on.
 	
@@ -149,4 +214,22 @@ sealed class SwingInterface extends PlayerAI
 	override def hashCode = 13
 	
 	override def toString = this.getClass.getName
+}
+
+final case class SwingInterfaceMemo (
+	base:Memo,
+	panel:BoardGamePanel,
+	hilightLayer:HighlightMovableSpacesLayer,
+	attackTypeSelector:SellectAttackTypePanel,
+	selectedToken:swingView.SharedActiveTokenProperty,
+	currentTokens:swingView.ListOfTokensProperty,
+	endOfTurnButton:JButton
+) extends Memo {
+	override def attacks:Seq[GameState.Result] = base.attacks
+	override def suspisions:Map[(Int, Int), TokenClassSuspision] = base.suspisions
+	
+	override def addAttack(r:GameState.Result):SwingInterfaceMemo =
+			this.copy(base.addAttack(r))
+	override def updateSuspision(key:(Int, Int), value:TokenClassSuspision):SwingInterfaceMemo =
+			this.copy(base.updateSuspision(key, value))
 }

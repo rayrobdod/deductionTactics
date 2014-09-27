@@ -112,7 +112,7 @@ object WeaponMultiplerSetterChooserFrameMaker
  * @version a.5.2
  */
 class ClassSynchonizerFrameMaker(
-			tokenClass:SuspicionsTokenClass,
+			tokenClass:TokenClass,
 			panel:JPanel
 	) extends MouseAdapter
 {
@@ -121,26 +121,14 @@ class ClassSynchonizerFrameMaker(
 		returnValue.setLocationRelativeTo(e.getComponent)
 	}
 	
-	def model = new ScalaSeqListModel[TokenClass]( CannonicalTokenClass.allKnown.filter(
+	def model = new ScalaSeqListModel[TokenClass]( TokenClass.allKnown.filter(
 					new TokenClassMatcher(tokenClass)) )
 	
 	def result = new ListSelectionListener() {
 		override def valueChanged(e:ListSelectionEvent)
 		{
-			val selected = CannonicalTokenClass.allKnown.filter(
+			val selected = TokenClass.allKnown.filter(
 					new TokenClassMatcher(tokenClass)).apply(e.getFirstIndex)
-			
-			tokenClass.name = selected.name
-			
-			tokenClass.body = selected.body
-			tokenClass.atkElement = selected.atkElement
-			tokenClass.atkWeapon = selected.atkWeapon
-			tokenClass.atkStatus = selected.atkStatus
-			tokenClass.weakStatus = selected.weakStatus
-			tokenClass.weakDirection = selected.weakDirection
-			tokenClass.speed = selected.speed
-			tokenClass.range = selected.range
-			tokenClass.weakWeapon = selected.weakWeapon
 			
 			
 			panel.revalidate()

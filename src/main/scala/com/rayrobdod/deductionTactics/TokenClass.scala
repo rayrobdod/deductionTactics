@@ -23,17 +23,13 @@ import Statuses.Status
 import BodyTypes.BodyType
 import Directions.Direction
 
-import scala.collection.immutable.{Map}
+import scala.collection.immutable.{Seq, Map}
 
 /**
  * A description of the attributes of a unit.
  * 
- * A [[com.rayrobdod.deductionTactics.CannonicalTokenClass]] is immutable and represents what the game
- * knows a unit to be like, while a [[com.rayrobdod.deductionTactics.SuspicionsTokenClass]] is a
- * player's guess at what a unit is like.
- * 
  * @author Raymond Dodge
- * @version a.5.0 - removing icons
+ * @version a.6.0
  */
 trait TokenClass
 {
@@ -41,27 +37,30 @@ trait TokenClass
 	def name:String
 	
 	/** A class's bodytype. */
-	def body:Option[BodyType]
+	def body:BodyType
 	
 	/** The element a unit attacks with. Also determines it's defenses against elements. */
-	def atkElement:Option[Element]
+	def atkElement:Element
 	/** The weapon a unit attacks with. */
-	def atkWeapon:Option[Weaponkind]
+	def atkWeapon:Weaponkind
 	/** The status a unit attacks with. */
-	def atkStatus:Option[Status]
+	def atkStatus:Status
 	/** How far away from itself a unit can attack. */
-	def range:Option[Int]
+	def range:Int
 	/** How far a unit can move in one turn. */
-	def speed:Option[Int]
+	def speed:Int
 	
 	/** When a unit is attacked from this direction, the attack is strongest */
-	def weakDirection:Option[Direction]
+	def weakDirection:Direction
 	/** The weaknesses when a unit is attacked form a type of weapon */
-	def weakWeapon:Map[Weaponkind,Option[Float]]
+	def weakWeapon:Map[Weaponkind,Float]
 	/** When a unit is attacked while suffering this status, the attack is strongest */
-	def weakStatus:Option[Status]
+	def weakStatus:Status
 	
-	override def toString = {
+	
+	/////////////////////////// Object Overrides //////////////////////////////
+	
+	override def toString:String = {
 		this.getClass.getName + " " +
 			"{ name: " + name +
 			"; body: " + body +
@@ -74,5 +73,108 @@ trait TokenClass
 			"; weakWeapon: " + weakWeapon +
 			"; weakStatus: " + weakStatus +
 			" }";
+	}
+	
+	override def hashCode:Int = {
+		(body.id << 28) + (atkElement.id) << 24 + (atkWeapon.id << 20) + (atkStatus.id << 16) +
+		(range << 12) + (speed << 8) + (weakDirection.id << 4) + (weakStatus.id << 0)
+	}
+	
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[TokenClass]}
+	
+	override def equals(other:Any):Boolean = {
+		if (! (this.canEquals(other))) { return false; }
+		val other2 = other.asInstanceOf[TokenClass]
+		if (! (other2.canEquals(this))) { return false; }
+		
+		other2.name == this.name &&
+				other2.body == this.body &&
+				other2.atkElement == this.atkElement &&
+				other2.atkWeapon == this.atkWeapon &&
+				other2.atkStatus == this.atkStatus &&
+				other2.range == this.range &&
+				other2.speed == this.speed &&
+				other2.weakDirection == this.weakDirection &&
+				other2.weakWeapon == this.weakWeapon &&
+				other2.weakStatus == this.weakStatus
+	}
+}
+
+
+
+
+/**
+ * A TokenClass that has all of its values defined
+ * directly in the constructor
+ * @author Raymond Dodge
+ * @version a.6.0
+ */
+final class TokenClassBlunt(
+	override val name:String,
+	
+	override val body:BodyType,
+	override val atkElement:Element,
+	override val atkWeapon:Weaponkind,
+	override val atkStatus:Status,
+	override val range:Int,
+	override val speed:Int,
+	
+	override val weakDirection:Direction,
+	override val weakWeapon:Map[Weaponkind,Float],
+	override val weakStatus:Status
+) extends TokenClass
+
+
+
+
+
+/**
+ * Loads token classes as a service.
+ * 
+ * @author Raymond Dodge
+ * @version a.6.0
+ */
+object TokenClass
+{
+	val SERVICE = "com.rayrobdod.deductionTactics.TokenClass"
+	
+	val allKnown:Seq[TokenClass] =
+	{
+		import scala.collection.JavaConversions.iterableAsScalaIterable
+		import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
+		import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
+		import com.rayrobdod.util.services.ResourcesServiceLoader
+		import java.nio.charset.StandardCharsets.UTF_8
+		import java.net.URL
+		
+		val a:Seq[URL] = Seq.empty ++ new ResourcesServiceLoader(SERVICE)
+		
+		// Binary version
+		val b:Seq[Seq[TokenClass]] = a.map{(jsonPath:URL) =>
+			if (jsonPath.toString.endsWith(".rrd-dt-tokenClass")) {
+			
+				val is = jsonPath.openStream()
+				val dis = new java.io.DataInputStream(is)
+				
+				val count = dis.readShort()
+				
+				val retVal = (1 to count).map{(a) =>
+					new CannonicalTokenClassFromBinary(dis)
+				}
+				dis.close();
+				retVal
+			} else { // assume JSON
+				val jsonReader = new java.io.InputStreamReader(jsonPath.openStream(), UTF_8)
+				
+				val l = new ToScalaCollection(CannonicalTokenClassDecoder)
+				JSONParser.parse(l, jsonReader)
+				jsonReader.close()
+				l.resultSeq
+			}
+		}
+		val e = b.flatten
+		
+		
+		Seq.empty ++ e
 	}
 }

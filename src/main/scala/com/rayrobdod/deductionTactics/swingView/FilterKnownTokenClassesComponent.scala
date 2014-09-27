@@ -21,7 +21,7 @@ import javax.swing.{JList, JButton, JPanel, JFrame, JScrollPane, BoxLayout}
 import javax.swing.BoxLayout.{Y_AXIS => boxYAxis}
 import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever}
-import com.rayrobdod.deductionTactics.{TokenClass, CannonicalTokenClass, SuspicionsTokenClass}
+import com.rayrobdod.deductionTactics.{TokenClass, CannonicalTokenClassBuilder => TokenClassBuilder }
 import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 
@@ -30,12 +30,12 @@ import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
  */
 class FilterKnownTokenClassesComponent extends JPanel
 {
-	val tokenClassesAndComps = CannonicalTokenClass.allKnown.map{(x:TokenClass) => (( x, new TokenClassPanel(x) ))}.toMap
+	val tokenClassesAndComps = TokenClass.allKnown.map{(x:TokenClass) => (( x, new TokenClassPanel(x) ))}.toMap
 	
 	this.setLayout(new BoxLayout(this, boxYAxis))
-	this.filter(new SuspicionsTokenClass)
+	this.filter(new TokenClassBuilder)
 	
-	def filter(tokenClass:TokenClass) {
+	def filter(tokenClass:TokenClassBuilder) {
 		val applicable = tokenClassesAndComps.filterKeys(new TokenClassMatcher(tokenClass))
 		
 		this.removeAll()
@@ -46,7 +46,7 @@ class FilterKnownTokenClassesComponent extends JPanel
 /**
  * @author Raymond Dodge
  */
-class TokenClassMatcher(template:TokenClass) extends Function1[TokenClass,Boolean]
+class TokenClassMatcher(template:TokenClassBuilder) extends Function1[TokenClass,Boolean]
 	{
 		def apply(tc:TokenClass) = {
 			(
@@ -68,8 +68,18 @@ class TokenClassMatcher(template:TokenClass) extends Function1[TokenClass,Boolea
 			!a.isDefined || !b.isDefined || (a.get == b.get) 
 		}
 		
+		private def eitherIsNoneOrBothAreEqual[A](a:Option[A], b:A) =
+		{
+			!a.isDefined || (a.get == b) 
+		}
+		
 		private def eitherIsNoneOrAIsLessThanOrEqualToB(a:Option[Int], b:Option[Int]) =
 		{
 			!a.isDefined || !b.isDefined || (a.get <= b.get) 
+		}
+		
+		private def eitherIsNoneOrAIsLessThanOrEqualToB(a:Option[Int], b:Int) =
+		{
+			!a.isDefined || (a.get <= b) 
 		}
 	}

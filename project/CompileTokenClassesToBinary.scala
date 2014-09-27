@@ -20,7 +20,7 @@ package com.rayrobdod.deductionTactics.meta
 import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
-import com.rayrobdod.deductionTactics.{CannonicalTokenClass,
+import com.rayrobdod.deductionTactics.{TokenClass,
 		CannonicalTokenClassDecoder, Weaponkinds}
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 	
@@ -45,7 +45,7 @@ object CompileTokenClassesToBinary // extends scala.App
 {
 	def compile(sources:Seq[Path], outPath:Path) = {
 		
-		val classes:Seq[CannonicalTokenClass] = sources.map{(jsonPath:Path) => 
+		val classes:Seq[TokenClass] = sources.map{(jsonPath:Path) => 
 			val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
 			
 			val l = new ToScalaCollection(CannonicalTokenClassDecoder)
@@ -62,19 +62,19 @@ object CompileTokenClassesToBinary // extends scala.App
 		
 		dos.writeShort(classes.length)
 		
-		classes.map{(tclass:CannonicalTokenClass) =>
+		classes.map{(tclass:TokenClass) =>
 			val name:Array[Byte] = (tclass.name.getBytes(UTF_8) ++: Seq.fill(nameLength)(0.byteValue)).toArray
 			dos.write(name, 0, nameLength);
-			dos.writeByte(tclass.atkElement.get.id.byteValue)
-			dos.writeByte(tclass.atkWeapon.get.id.byteValue)
-			dos.writeByte(tclass.atkStatus.get.id.byteValue)
-			dos.writeByte(tclass.body.get.id.byteValue)
-			dos.writeByte(tclass.range.get.byteValue)
-			dos.writeByte(tclass.speed.get.byteValue)
-			dos.writeByte(tclass.weakStatus.get.id.byteValue)
-			dos.writeByte(tclass.weakDirection.get.id.byteValue)
+			dos.writeByte(tclass.atkElement.id.byteValue)
+			dos.writeByte(tclass.atkWeapon.id.byteValue)
+			dos.writeByte(tclass.atkStatus.id.byteValue)
+			dos.writeByte(tclass.body.id.byteValue)
+			dos.writeByte(tclass.range.byteValue)
+			dos.writeByte(tclass.speed.byteValue)
+			dos.writeByte(tclass.weakStatus.id.byteValue)
+			dos.writeByte(tclass.weakDirection.id.byteValue)
 			Weaponkinds.values.foreach{(x:Weaponkind) =>
-				dos.writeFloat(tclass.weakWeapon(x).get.floatValue)
+				dos.writeFloat(tclass.weakWeapon(x).floatValue)
 			}
 			val imageLoc = (imageMap.map.getOrElse(tclass.name, "").getBytes(UTF_8) ++: Seq.fill(imageLocLength)(0.byteValue)).toArray;
 			dos.write(imageLoc, 0, imageLocLength);

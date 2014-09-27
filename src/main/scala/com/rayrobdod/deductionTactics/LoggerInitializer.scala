@@ -32,10 +32,10 @@ private[deductionTactics] object LoggerInitializer
 	cannonicalTokenLogger.addHandler(finerConsoleHander)
 	cannonicalTokenLogger.setLevel(Level.WARNING)
 	
-	val cannonicalTokenMovementLogger = Logger.getLogger(
-			"com.rayrobdod.deductionTactics.CannonicalToken~RequestMove")
-	cannonicalTokenMovementLogger.addHandler(finerConsoleHander)
-	cannonicalTokenMovementLogger.setLevel(Level.WARNING)
+	val turnCyclerLogger = Logger.getLogger(
+			"com.rayrobdod.deductionTactics.PlayerTurnCycler")
+	turnCyclerLogger.addHandler(finerConsoleHander)
+	turnCyclerLogger.setLevel(Level.WARNING)
 	
 	val elementsLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.Elements")
@@ -46,6 +46,11 @@ private[deductionTactics] object LoggerInitializer
 			"com.rayrobdod.deductionTactics.CannonicalTokenClassDecoder")
 	tokenClassDecoderLogger.addHandler(finerConsoleHander)
 	tokenClassDecoderLogger.setLevel(Level.WARNING)
+	
+	val mouseListenerLogger = Logger.getLogger(
+			"com.rayrobdod.deductionTactics.swingView.MoveTokenMouseListener")
+	mouseListenerLogger.addHandler(finerConsoleHander)
+	mouseListenerLogger.setLevel(Level.WARNING)
 	
 	val observeMovementLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.StandardObserveMovement")
@@ -60,7 +65,7 @@ private[deductionTactics] object LoggerInitializer
 	val sleepAbuserAILogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.SleepAbuserAI")
 	sleepAbuserAILogger.addHandler(finerConsoleHander)
-	sleepAbuserAILogger.setLevel(Level.WARNING)
+	sleepAbuserAILogger.setLevel(Level.FINER)
 	
 	val findWeaknessAILogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.FindWeaknessAI")
@@ -80,6 +85,6 @@ private[deductionTactics] object LoggerInitializer
 	val fieldPotentialAiLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.ai.FieldPotentialAI")
 	fieldPotentialAiLogger.addHandler(finerConsoleHander)
-	fieldPotentialAiLogger.setLevel(Level.WARNING)
+	fieldPotentialAiLogger.setLevel(Level.FINER)
 	
 }

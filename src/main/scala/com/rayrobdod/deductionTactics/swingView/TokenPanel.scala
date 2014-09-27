@@ -42,8 +42,8 @@ class TokenPanel(val token:Token) extends JPanel
 	
 	setLayout(new GridBagLayout)
 	
-	val tokenClass = new TokenClassPanel(token.tokenClass)
-	val hitpoints = new JLabel(token.currentHitpoints + " / " + token.maximumHitpoints) 
+	val tokenClass = token.tokenClass.map{new TokenClassPanel(_)}.getOrElse{new HumanSuspicionsPanel()}
+	val hitpoints = new JLabel(token.currentHitpoints + " / " + Token.maximumHitpoints) 
 	val status = new JLabel( makeIconFor(token.currentStatus, ICON_SIZE) )
 	val statusTurnsLeft = new JLabel("" + token.currentStatusTurnsLeft)
 	
@@ -58,72 +58,6 @@ class TokenPanel(val token:Token) extends JPanel
 	add(statusRow, GridBagConstraintsFactory( gridwidth = GridBagConstraints.REMAINDER ))
 	add(tokenClass, GridBagConstraintsFactory( gridwidth = GridBagConstraints.REMAINDER ))
 	
-	token.updateReactions_+=(UpdateAct)
-	/** add to all tokens and players */
-	object UpdateAct extends Function0[Unit] {
-		override def apply():Unit = {
-			hitpoints.setText(token.currentHitpoints + " / " + token.maximumHitpoints)
-			status.setIcon( makeIconFor(token.currentStatus, ICON_SIZE) )
-			statusTurnsLeft.setText("" + token.currentStatusTurnsLeft)
-		}
-	}
-	
-	token.selectedReactions_+=(SelectedAct)
-	/** Add to token */
-	object SelectedAct extends Function1[Boolean, Unit]
-	{
-		override def apply(x:Boolean):Unit = {
-			
-			TokenPanel.this.setBackground(if (x) {
-				new java.awt.Color(184, 207, 229)
-			} else {null})
-				
-			if (x) {
-				TokenPanel.this.scrollRectToVisible(
-					new java.awt.Rectangle(
-						new java.awt.Point(0,0),
-						TokenPanel.this.getSize()
-					)
-				)
-			}
-			
-		}
-	}
-	
-	this.addMouseListener(SelectMouseListener)
-	object SelectMouseListener extends MouseAdapter
-	{
-		override def mouseClicked(e:MouseEvent) = {
-			token.beSelected(true)
-		}
-	}
 }
 
 
-/**
- * @author Raymond Dodge
- * @version a.5.0
- */
-object TokenListRenderer extends ListCellRenderer[Token]
-{
-	/**
-	 *
-	 */
-	def getListCellRendererComponent(list:JList[_ <: Token], value:Token, index:Int,
-			isSelected:Boolean, cellHasFocus:Boolean) =
-	{
-		val returnValue = new TokenPanel(value)
-		returnValue.tokenClass.doLayout()
-		if (isSelected)
-		{
-			returnValue.setBackground(list.getSelectionBackground)
-			returnValue.statusRow.setBackground(list.getSelectionBackground)
-			returnValue.tokenClass.setBackground(list.getSelectionBackground)
-			returnValue.tokenClass.atkRow.setBackground(list.getSelectionBackground)
-			returnValue.tokenClass.weakRow.setBackground(list.getSelectionBackground)
-		}
-		value.beSelected(isSelected)
-		
-		returnValue
-	}
-}

@@ -21,71 +21,57 @@ package ai
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.Status
-import com.rayrobdod.boardGame.{RectangularField => Field, Space}
 import javax.sound.sampled.AudioSystem
+import scala.collection.immutable.Seq
 
 /**
  * Only has one sound so far...
  *
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
 final class WithSound(val base:PlayerAI) extends PlayerAI
 {
 	/** Forwards command to base */
-	def takeTurn(player:Player) = base.takeTurn(player)
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo) = base.takeTurn(player, gameState, memo)
 	/** Forwards command to base */
-	def buildTeam = base.buildTeam
+	override def initialize(player:Int, initialState:GameState):Memo = base.initialize(player, initialState)
+	/** Forwards notify to base */
+	override def buildTeam(size:Int):Seq[TokenClass] = base.buildTeam(size)
 	
-	/** */
-	def initialize(player:Player, field:Field) = {
-		base.initialize(player, field)
-		
-		player.tokens.tokens.flatten.foreach{
-				_.beDamageAttackedReactions_+=(WithSound.AttackSoundReaction)
+	
+	private val PREFIX = "/com/rayrobdod/deductionTactics/soundView/"
+	
+	override def notifyTurn(player:Int, action:GameState.Result, beforeState:GameState, afterState:GameState, memo:Memo):Memo = {
+		// TODO: sound depends on how hard the hit was?
+		// TODO: sound depends on element and kind of attack
+		// TODO: give some units a unique attack sound (very ?)
+		action match {
+			case x:GameState.TokenAttackDamageResult => {
+				val fileName = PREFIX + "Hits/Hit.wav"
+				val file = this.getClass().getResource(fileName)
+				
+				val audioIS = AudioSystem.getAudioInputStream(file)
+				val audioClip = AudioSystem.getClip()
+				
+				audioClip.open(audioIS)
+				
+				audioClip.start()
+			}
+			case _ => {}
 		}
+		
+		base.notifyTurn(player, action, beforeState, afterState, memo)
 	}
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[WithRandomTeam]}
+	def canEquals(other:Any) = {other.isInstanceOf[WithSound]}
 	override def equals(other:Any) = {
-		this.canEquals(other) && other.asInstanceOf[WithRandomTeam].canEquals(this) &&
-				this.base == other.asInstanceOf[WithRandomTeam].base
+		this.canEquals(other) && other.asInstanceOf[WithSound].canEquals(this) &&
+				this.base == other.asInstanceOf[WithSound].base
 	}
 	override def hashCode = base.hashCode * 7 + 37
 	
 	override def toString = base.toString + " with " + this.getClass.getName
 
-}
-
-/**
- * A container for stateless anonymous inner classes
- *
- * @author Raymond Dodge
- * @version a.5.0
- */
-object WithSound
-{
-	val PREFIX = "/com/rayrobdod/deductionTactics/soundView/"
-	
-	/**
-	 * A reaction that plays an audio clip when an action occurs.
-	 */
-	object AttackSoundReaction extends Token.DamageAttackedReactionType {
-		def apply(e:Element, k:Weaponkind, d:Int, s:Space):Unit = {
-			// TODO: sound depends on how hard the hit was?
-			// TODO: sound depends on element and kind of attack
-			// TODO: give some units a unique attack sound (very ?)
-			
-			val fileName = PREFIX + "Hits/Hit.wav"
-			val file = this.getClass().getResource(fileName)
-			
-			val audioIS = AudioSystem.getAudioInputStream(file)
-			val audioClip = AudioSystem.getClip()
-			
-			audioClip.open(audioIS)
-			
-			audioClip.start()
-		}
-	}
 }

@@ -25,7 +25,8 @@ import javax.swing.ScrollPaneConstants.{
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever
 }
 import javax.swing.SwingUtilities.getWindowAncestor
-import com.rayrobdod.deductionTactics.SuspicionsTokenClass
+import com.rayrobdod.deductionTactics.TokenClass
+import com.rayrobdod.deductionTactics.{CannonicalTokenClassBuilder => TokenClassBuilder}
 import java.awt.BorderLayout.{NORTH, SOUTH}
 		
 /**
@@ -39,7 +40,7 @@ class MenuBar() extends JMenuBar
 		
 		a.add(myMenuItem("New Game", 'n', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
-				com.rayrobdod.deductionTactics.main.Main.startNewGame
+		//		com.rayrobdod.deductionTactics.main.Main.startNewGame
 			}
 		}))
 		
@@ -95,7 +96,7 @@ class MenuBar() extends JMenuBar
 			}
 		}))
 		
-		a.add(myMenuItem("Filter Classes…", 'f', new ActionListener{
+		/* a.add(myMenuItem("Filter Classes…", 'f', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
 				
@@ -103,7 +104,7 @@ class MenuBar() extends JMenuBar
 				frame.add(new JScrollPane(display,
 						scrollVerticalAsNeeded, scrollHorizontalNever))
 					
-				val filterClass = new SuspicionsTokenClass
+				val filterClass = new TokenClassBuilder
 				val filterPanel = new HumanSuspicionsPanel(filterClass)
 				frame.add(filterPanel, NORTH)
 				filterPanel.addChangeListener(new ChangeListener(){
@@ -115,7 +116,7 @@ class MenuBar() extends JMenuBar
 				frame.setSize(250,600)
 				frame.setVisible(true)
 			}
-		}))
+		})) */
 		
 		a.add(myMenuItem("View Elements…", 'e', new ActionListener{
 			def actionPerformed(e:ActionEvent) = {

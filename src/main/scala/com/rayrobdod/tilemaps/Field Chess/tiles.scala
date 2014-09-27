@@ -24,7 +24,8 @@ import javax.swing.Icon
 import com.rayrobdod.boardGame.RectangularField
 import com.rayrobdod.swing.SolidColorIcon
 import com.rayrobdod.boardGame.swingView.RectangularTilesheet
-import com.rayrobdod.boardGame.{SpaceClass, Space}
+import com.rayrobdod.boardGame.Space
+import com.rayrobdod.deductionTactics.SpaceClass
 
 /**
  * A basic tilesheet that is both visually simplistic and versitile.
@@ -34,9 +35,9 @@ import com.rayrobdod.boardGame.{SpaceClass, Space}
  * be hard-coded relatively easily.
  * @author Raymond Dodge
  * @since a.4.1
- * @version a.5.2
+ * @version a.6.0
  */
-object FieldChessTilesheet extends RectangularTilesheet
+object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 {
 	private val waterLight = new Color(61, 215, 237);
 	private val waterDark  = new Color(69, 208, 228);
@@ -49,6 +50,7 @@ object FieldChessTilesheet extends RectangularTilesheet
 	private val tallGrassLight = new Color(56, 232, 91);
 	private val tallGrassDark  = new Color(64, 223, 99);
 	private val transColor = new Color(0,0,0,0);
+	private val otherColor = new Color(0,0,0);
 	
 	def name = "Field Chess";
 	
@@ -65,6 +67,7 @@ object FieldChessTilesheet extends RectangularTilesheet
 					case FlyingPassageSpaceClass() => waterDark
 					case FirePassageSpaceClass()   => lavaDark
 					case SlowPassageSpaceClass()   => tallGrassDark
+					case _ => otherColor
 				}
 			} else {
 				s match {
@@ -76,16 +79,17 @@ object FieldChessTilesheet extends RectangularTilesheet
 					case FlyingPassageSpaceClass() => waterLight
 					case FirePassageSpaceClass()   => lavaLight
 					case SlowPassageSpaceClass()   => tallGrassLight
+					case _ => otherColor
 				}
 			}
 	}
 	
-	def getIconFor(field:RectangularField, x:Int, y:Int, rng:Random):(Icon, Icon) = {
+	def getIconFor(field:RectangularField[_ <: SpaceClass], x:Int, y:Int, rng:Random):(Icon, Icon) = {
 		val useDarker = ((x + y) % 2) == 0
 		val center = spaceClassToColor(field.space(x,y).typeOfSpace, useDarker)
 		
-		def SpaceSeqToColor(x:Seq[Space]) = {
-			val x1 = x.map{(y:Space) => spaceClassToColor(y.typeOfSpace, useDarker)}
+		def SpaceSeqToColor(x:Seq[Space[_ <: SpaceClass]]) = {
+			val x1 = x.map{(y:Space[_ <: SpaceClass]) => spaceClassToColor(y.typeOfSpace, useDarker)}
 			Option(x1.head)
 					.filter{_ != center && x1.forall{_ == x1.head}}
 					.getOrElse(transColor)

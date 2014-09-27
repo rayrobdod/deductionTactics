@@ -25,7 +25,7 @@ import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
 import scala.collection.immutable.Seq
 import javax.swing.{JFrame, JButton, JPanel, JCheckBox, BorderFactory}
 import java.awt.event.{ActionEvent, ActionListener}
-import com.rayrobdod.boardGame.{RectangularField}
+import com.rayrobdod.boardGame.{RectangularField, Space}
 
 
 /**
@@ -82,51 +82,22 @@ object Main extends App
 		aiChooserFrame.setVisible(true)
 	}
 	
-	private def buildTeams(ais:Seq[PlayerAI], field:RectangularField, tokenPositions:Seq[Seq[(Int, Int)]]) =
+	private def buildTeams(ais:Seq[PlayerAI], field:RectangularField[SpaceClass], tokenPositions:Seq[Seq[(Int, Int)]]) =
 	{
-		val tokenClasses = ais.map{_.buildTeam}
-				// limit number of tokens to number of availiable spaces.
-				.zip(tokenPositions).map({(x:Seq[CannonicalTokenClass],y:Seq[_]) => x.take(y.size)}.tupled)
-		val canonTokens = tokenClasses.map{_.map{new CannonicalToken(_)}}
-		val mirrorTokens = canonTokens.map{_.map{new MirrorToken(_)}}
+		val tokenClasses:Seq[Seq[TokenClass]] = ais.zip(tokenPositions.map{_.length}).map({(p:PlayerAI, l:Int) => p.buildTeam(l)}.tupled)
+		val TokenClassToSpaceIndex:Seq[Seq[(TokenClass, (Int, Int))]] = tokenClasses.zip(tokenPositions).map({(x:Seq[TokenClass],y:Seq[(Int, Int)]) => x.zip(y)}.tupled)
+		val tokenClassToSpace:Seq[Seq[(Option[TokenClass], Space[SpaceClass])]] = TokenClassToSpaceIndex.map{_.map{(x) => ((Option(x._1), field.space(x._2._1, x._2._2) ))}}
+		// limit number of tokens to number of availiable spaces.
 		
-		val canonListTokens = new CannonicalListOfTokens(canonTokens)
-		val playerListOfTokens = canonTokens.zip(mirrorTokens).map{(
-			(canon:Seq[CannonicalToken], mirror:Seq[MirrorToken]) => {
-				new PlayerListOfTokens(canon, mirrorTokens diff Seq(mirror))
-			}
-		).tupled}
-		val allTokens = (canonTokens ++ mirrorTokens).flatten
+		val tokens = new ListOfTokens( tokenClassToSpace.map{_.map{(x) => new Token(x._2, tokenClass = x._1)}} )
 		
 		
-		canonTokens.foreach{(seq:Seq[CannonicalToken]) => {
-			SpaceClass.tokens.tokens = SpaceClass.tokens.tokens :+ seq;
-		}}
-		allTokens.foreach{(x:Token) => {
-			x.selectedReactions_+=(new UnselectOtherTokens(x,allTokens)) 
-		}}
-		
-		canonTokens.zip(tokenPositions).map(
-			{(x:Seq[CannonicalToken], y:Seq[(Int, Int)]) => x.zip(y)}.tupled
-		).flatten.foreach({(t:CannonicalToken, p:(Int,Int)) => 
-			t.requestMoveTo(field.space(p._1, p._2))
-		}.tupled)
+		val initialState = GameState(field, tokens)
 		
 		
-		val players = playerListOfTokens.zip(ais).map({new Player(_, _)}.tupled)
-		players.foreach({(player:Player) =>
-			player.ai.initialize(player, field)
-		})
 		
-		players.zip(canonTokens).foreach({(p:Player, ts:Seq[CannonicalToken]) => {
-			ts.foreach{(t:CannonicalToken) => {
-				p.addStartTurnReaction(t.TurnStartReaction)
-				p.addEndTurnReaction(t.TurnEndReaction)
-				p.addStartTurnReaction(new t.StatusAct(p.tokens))
-			}}
-		}}.tupled)
 		
 		// run, meaning this returns when PlayerTurnCycler returns
-		new PlayerTurnCycler(players).run()
+		new PlayerTurnCycler(ais, initialState).run()
 	}
 }

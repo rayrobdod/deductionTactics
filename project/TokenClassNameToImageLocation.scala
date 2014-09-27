@@ -20,8 +20,8 @@ package com.rayrobdod.deductionTactics.meta
 import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
-import com.rayrobdod.deductionTactics.{CannonicalTokenClass,
-		CannonicalTokenClassDecoder, Weaponkinds}
+import com.rayrobdod.deductionTactics.{TokenClass,
+		Weaponkinds}
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 	
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection

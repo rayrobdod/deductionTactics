@@ -108,8 +108,8 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 	{
 		this.icon.setIcon(tokenClassToIcon(tokenClass))
 		this.name.setText(tokenClass.name)
-		this.range.setText("Range: " + tokenClass.range.getOrElse("?"))
-		this.speed.setText("Speed: " + tokenClass.speed.getOrElse("?"))
+		this.range.setText("Range: " + tokenClass.range)
+		this.speed.setText("Speed: " + tokenClass.speed)
 		this.atkWeapon.setIcon( makeIconFor(tokenClass.atkWeapon, ICON_SIZE) )
 		// this.atkWeapon.setToolTipText( tokenClass.atkWeapon.map{_.name}.getOrElse("???") )
 		this.atkElement.setIcon( makeIconFor(tokenClass.atkElement, ICON_SIZE) )
@@ -128,7 +128,7 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 	
 	private def getWeakWeaponIcon() = {
 		val maxWeakness = tokenClass.weakWeapon.map{
-				(x) => (( x._1, x._2.getOrElse(0f) ))
+				(x) => (( x._1, x._2 ))
 		}.maxBy{_._2}
 		
 		if (maxWeakness._2 == 0f) {
@@ -144,10 +144,6 @@ object TokenClassPanel
 	class TokenWeakRangeModel(tokenClass:TokenClass, kind:Weaponkind)
 			extends DefaultBoundedRangeModel(10, 0, 5, 20)
 	{
-		(tokenClass.weakWeapon(kind)) match
-		{
-			case None => this.setValueIsAdjusting(true)
-			case Some(x:Float) => this.setValue((x * 10).intValue)
-		}
+		((tokenClass.weakWeapon(kind)) * 10).intValue
 	}
 }

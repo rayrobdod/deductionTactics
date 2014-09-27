@@ -18,39 +18,44 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{RectangularField => Field}
 
 /**
  * A decorator for PlayerAIs. It adds a set of listeners to the tokens and
  * player that can help determine various things about the tokens.
  *
  * @author Raymond Dodge
- * @version a.5.2
+ * @version a.6.0
  */
 final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 {
 	/** Forwards command to base */
-	def takeTurn(player:Player) = base.takeTurn(player)
+	def buildTeam(count:Int) = base.buildTeam(count)
 	/** Forwards command to base */
-	def buildTeam = base.buildTeam
+	def takeTurn(player:Int, gameState:GameState, memo:Memo) = base.takeTurn(player, gameState, memo)
+	/** Forwards command to base */
+	def initialize(player:Int, initialState:GameState) = base.initialize(player, initialState)
 	
-	/** Forwards command to base, then adds listeners as needed */
-	def initialize(player:Player, field:Field)
-	{
-		// set up interface
-		base.initialize(player, field)
+	/** responds to actions */
+	def notifyTurn(player:Int, action:GameState.Result, beforeState:GameState, afterState:GameState, memo:Memo):Memo = {
+		val a = base.notifyTurn(player, action, beforeState, afterState, memo)
+		val b = a.addAttack(action)
 		
-		// setup recorders
-		player.tokens.tokens.flatten.foreach{(mine:Token) =>
-			val attacks = new StandardObserveAttacks(mine, player.tokens)
-			
-			mine.beDamageAttackedReactions_+=(attacks)
-			mine.beStatusAttackedReactions_+=(attacks)
-		}
-		player.tokens.otherTokens.flatten.foreach{(other:MirrorToken) =>
-			val movement = new StandardObserveMovement(other)
-			other.moveReactions_+=(movement)
-			player.addStartTurnReaction(movement)
+		action match {
+			case GameState.TokenAttackDamageResult(attackerIndex, _, elem, kind) => {
+				
+				val oldSusp = b.suspisions.get(attackerIndex).getOrElse(new TokenClassSuspision)
+				val newSusp = oldSusp.copy(atkElement = Some(elem), atkWeapon = Some(kind))
+				
+				b.updateSuspision(attackerIndex, newSusp)
+			}
+			case GameState.TokenAttackStatusResult(attackerIndex, _, status) => {
+				
+				val oldSusp = b.suspisions.get(attackerIndex).getOrElse(new TokenClassSuspision)
+				val newSusp = oldSusp.copy(atkStatus = Some(status))
+				
+				b.updateSuspision(attackerIndex, newSusp)
+			}
+			case _ => {b}
 		}
 	}
 	

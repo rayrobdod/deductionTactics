@@ -15,25 +15,31 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.swingView
+package com.rayrobdod.deductionTactics
+package swing
 
-import com.rayrobdod.deductionTactics.ListOfTokens
-import com.rayrobdod.boardGame.Space
-import java.awt.event.{MouseAdapter, MouseEvent}
+import scala.collection.immutable.Seq
+import com.rayrobdod.boardGame.{RectangularField, Space}
+import org.scalatest.{FunSuite, FunSpec}
+import org.scalatest.prop.PropertyChecks
 
-/**
- * A MouseListener that will cause the token on the current space to be selected 
- * 
- * @author Raymond Dodge
- * @version a.5.0
- */
-class SelectTokenOnSpaceMouseListener(space:Space, tokens:ListOfTokens) extends MouseAdapter
-{
-	override def mouseClicked(e:MouseEvent) {
-		if (e.getClickCount() == 1 && e.getButton() == MouseEvent.BUTTON3) {
-			val tokenOnThisSpace = tokens.aliveTokens.flatten.find{_.currentSpace == space}
-			
-			tokenOnThisSpace.foreach{_.beSelected(true)}
+class MakeIconForTest extends FunSpec {
+	
+	describe ("will not throw upon a call to makeIconFor") {
+		it ("Statuses") {
+			Statuses.values.map{swingView.makeIconFor(_)}
+		}
+		it ("Elements") {
+			Elements.values.map{swingView.makeIconFor(_)}
+		}
+		it ("Weaponkinds") {
+			Weaponkinds.values.map{swingView.makeIconFor(_)}
+		}
+		it ("Directions") {
+			Directions.values.map{swingView.makeIconFor(_)}
+		}
+		it ("None") {
+			swingView.makeIconFor(None)
 		}
 	}
 }

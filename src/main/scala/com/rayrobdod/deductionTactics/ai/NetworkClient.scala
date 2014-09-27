@@ -88,7 +88,7 @@ class NetworkClient extends PlayerAI
 			val count = inS.nextInt
 			inS.nextLine // get rid of \n after count
 			val resultSeq = (1 to count).map{(x:Int) =>
-				CannonicalTokenClassDecoder.decode(inS.nextLine())
+				TokenClassDecoder.decode(inS.nextLine())
 			}
 			
 			NetworkClient.this.input = Some(inS)
@@ -111,13 +111,13 @@ class NetworkClient extends PlayerAI
 			
 			nextCommand match {
 				case NetworkClient.EndOfTurn => {}
-				case NetworkClient.RequestMove(t:CannonicalToken, s:Space) => {
+				case NetworkClient.RequestMove(t:Token, s:Space) => {
 					t.requestMoveTo(s)
 				}
-				case NetworkClient.RequestAttackForDamage(mine:CannonicalToken, other:Token) => {
+				case NetworkClient.RequestAttackForDamage(mine:Token, other:Token) => {
 					mine.tryAttackDamage(other)
 				}
-				case NetworkClient.RequestAttackForStatus(mine:CannonicalToken, other:Token) => {
+				case NetworkClient.RequestAttackForStatus(mine:Token, other:Token) => {
 					mine.tryAttackStatus(other)
 				}
 			}
@@ -144,9 +144,9 @@ object NetworkClient {
 	
 	/** AKA, the easy way out */
 	case object EndOfTurn
-	case class RequestMove(t:CannonicalToken, s:Space)
-	case class RequestAttackForDamage(mine:CannonicalToken, other:Token)
-	case class RequestAttackForStatus(mine:CannonicalToken, other:Token)
+	case class RequestMove(t:Token, s:Space)
+	case class RequestAttackForDamage(mine:Token, other:Token)
+	case class RequestAttackForStatus(mine:Token, other:Token)
 	
 	
 	def cfnFunctions(field:Field, player:Player) = Map(
@@ -154,8 +154,8 @@ object NetworkClient {
 		"MyTokens" -> {(i:Int) => player.tokens.myTokens(i)},
 		"OtherTokens" -> {(team:Int,i:Int) => player.tokens.otherTokens(team)(i)},
 		"Field" -> {(x:Int,y:Int) => field.space(x,y)},
-		"RequestMove" -> {(t:CannonicalToken, s:Space) => RequestMove(t,s)},
-		"RequestAttackForDamage" -> {(m:CannonicalToken, o:MirrorToken) => RequestAttackForDamage(m,o)},
-		"RequestAttackForStatus" -> {(m:CannonicalToken, o:MirrorToken) => RequestAttackForStatus(m,o)}
+		"RequestMove" -> {(t:Token, s:Space) => RequestMove(t,s)},
+		"RequestAttackForDamage" -> {(m:Token, o:Token) => RequestAttackForDamage(m,o)},
+		"RequestAttackForStatus" -> {(m:Token, o:Token) => RequestAttackForStatus(m,o)}
 	)
 }

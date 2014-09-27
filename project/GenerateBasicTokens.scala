@@ -31,7 +31,7 @@ import scala.collection.immutable.{Map, Seq}
 import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
-import com.rayrobdod.deductionTactics.CannonicalTokenClass
+import com.rayrobdod.deductionTactics.TokenClass
 
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
 import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
@@ -49,12 +49,12 @@ object GenerateBasicTokens
 {
 	case class ElementAttributes(unitName:String, atkStatus:Status)
 	case class WeaponkindAttributes(unitName:String, weakStatus:Status, weakWeapon:Map[Weaponkind, Double])
-	object CannonicalTokenClassOrdering extends Ordering[CannonicalTokenClass] {
-		def compare(a:CannonicalTokenClass, b:CannonicalTokenClass) = {
+	object TokenClassOrdering extends Ordering[TokenClass] {
+		def compare(a:TokenClass, b:TokenClass) = {
 			if (a.atkElement != b.atkElement) {
-				a.atkElement.get.id compareTo b.atkElement.get.id
+				a.atkElement.id compareTo b.atkElement.id
 			} else if (a.atkWeapon != b.atkWeapon) {
-				a.atkWeapon.get.id compareTo b.atkWeapon.get.id
+				a.atkWeapon.id compareTo b.atkWeapon.id
 			} else {
 				0
 			}
@@ -81,20 +81,20 @@ object GenerateBasicTokens
 		elements.map({( a:Element, b:ElementAttributes ) =>
 		weapons.map({( c:Weaponkind, d:WeaponkindAttributes) =>
 			
-			new CannonicalTokenClassBlunt(
+			new TokenClassBlunt(
 				name = b.unitName + " " + d.unitName,
-				atkElement = Some(a),
-				atkWeapon = Some(c),
-				atkStatus = Some(b.atkStatus),
-				weakWeapon = d.weakWeapon.mapValues{(x) => Some(x.toFloat)},
-				weakStatus = Some(d.weakStatus),
+				atkElement = a,
+				atkWeapon = c,
+				atkStatus = b.atkStatus,
+				weakWeapon = d.weakWeapon.mapValues{(x) => x.toFloat},
+				weakStatus = d.weakStatus,
 			
-				body = Some(BodyTypes.Humanoid),
-				range = Some(1),
-				speed = Some(3),
-				weakDirection = Some(DontCare)
+				body = BodyTypes.Humanoid,
+				range = 1,
+				speed = 3,
+				weakDirection = DontCare
 			)
-		}.tupled)}.tupled).flatten.toSeq.sorted(CannonicalTokenClassOrdering)
+		}.tupled)}.tupled).flatten.toSeq.sorted(TokenClassOrdering)
 	}
 	val nameToIcon:Function1[String, Option[String]] = {(className:String) =>
 		val base = """C:/Users/Raymond/Documents/Programming/Java/Games/DeductionTactics/src/main/resources"""
@@ -111,7 +111,7 @@ object GenerateBasicTokens
 		val writer = Files.newBufferedWriter(outPath, UTF_8);
 		writer.write('[')
 		
-		classes.zipWithIndex.foreach({(tclass:CannonicalTokenClass, index:Int) =>
+		classes.zipWithIndex.foreach({(tclass:TokenClass, index:Int) =>
 			if (index != 0) writer.write(',')
 			writer.write( tokenClassToJSON(tclass, nameToIcon) )
 		}.tupled)

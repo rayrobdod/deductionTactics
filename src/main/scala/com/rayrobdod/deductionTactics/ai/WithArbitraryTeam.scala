@@ -19,23 +19,26 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import scala.util.Random
-import com.rayrobdod.boardGame.{RectangularField => Field}
 
 /**
  * A decorator for PlayerAIs. It intercepts the buildTeam command and creates
  * a random one using the package randomTeam method
  *
  * @author Raymond Dodge
+ * @version a.6.0
  */
 final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 {
 	/** Forwards command to base */
-	def takeTurn(player:Player) = base.takeTurn(player)
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo) = base.takeTurn(player, gameState, memo)
 	/** Forwards command to base */
-	def initialize(player:Player, field:Field) = base.initialize(player, field)
+	override def initialize(player:Int, initialState:GameState):Memo = base.initialize(player, initialState)
+	/** Forwards notify to base */
+	override def notifyTurn(player:Int, action:GameState.Result, beforeState:GameState, afterState:GameState, memo:Memo):Memo =
+				base.notifyTurn(player, action, beforeState, afterState, memo)
 	
 	/** chooses a team randomly */
-	def buildTeam = {
+	def buildTeam(size:Int) = {
 		import javax.swing.JOptionPane.PLAIN_MESSAGE
 		
 		val pane = new javax.swing.JOptionPane;
@@ -48,16 +51,16 @@ final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 		dialog.setVisible(true);
 		val input = pane.getInputValue.hashCode
 		
-		ai.randomTeam(new Random(input))
+		ai.randomTeam(size, new Random(input))
 	}
 	
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[WithRandomTeam]}
+	def canEquals(other:Any) = {other.isInstanceOf[WithArbitraryTeam]}
 	override def equals(other:Any) = {
-		this.canEquals(other) && other.asInstanceOf[WithRandomTeam].canEquals(this) &&
-				this.base == other.asInstanceOf[WithRandomTeam].base
+		this.canEquals(other) && other.asInstanceOf[WithArbitraryTeam].canEquals(this) &&
+				this.base == other.asInstanceOf[WithArbitraryTeam].base
 	}
 	override def hashCode = base.hashCode * 7 + 23
 	
