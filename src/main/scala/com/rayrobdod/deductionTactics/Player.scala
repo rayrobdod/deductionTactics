@@ -17,20 +17,15 @@
 */
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.{RectangularField => Field, Space}
 import scala.collection.immutable.Seq
-import scala.collection.mutable.{Map, Buffer}
 import scala.collection.JavaConversions.iterableAsScalaIterable
-import java.util.ServiceLoader
-import com.rayrobdod.util.services.ClassServiceLoader
 
 
 
 /**
  * An abstract class that  Player will poll when it is taking a turn to
  * determine how to act.
- *  
- * @author Raymond Dodge
+ * 
  * @version a.6.0
  * @todo trait instead of abstract class? Could it possibly hurt?
  */
@@ -83,11 +78,12 @@ abstract class PlayerAI {
  * The decorators are listed in (a) file(s) in the classpath at
  * "/META-INF/services/com.rayrobdod.deductionTactics.PlayerAIDecorator".
  * The bases extends PlayerAI and have a one PlayerAI arg constructor
- * 
- * @author Raymond Dodge
  */
 object PlayerAI
 {
+	import java.util.ServiceLoader
+	import com.rayrobdod.util.services.ClassServiceLoader
+	
 	/** A service loader that lists the known PlayerAIs */
 	val baseServiceLoader = ServiceLoader.load[PlayerAI](classOf[PlayerAI])
 	
