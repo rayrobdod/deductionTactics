@@ -46,7 +46,6 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 	def accept(n:File) = {
 		val abPath = n.getAbsolutePath().replace('\\', '/')
 		(
-			(abPath endsWith "com/rayrobdod/deductionTactics/ai/FieldPotentialAI.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/GangUpAI.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/NetworkClient.scala") ||
 			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithNetworkServer.scala") ||
@@ -135,11 +134,4 @@ artifactPath in Proguard <<= (artifactPath in Proguard, proguardType, version).a
 
 javaOptions in (Proguard, ProguardKeys.proguard) += "-Xmx2G"
 
-
-// anon-fun-reduce
-autoCompilerPlugins := true
-
-addCompilerPlugin("com.rayrobdod" %% "anon-fun-reduce" % "1.0.0")
-
-libraryDependencies += ("com.rayrobdod" %% "anon-fun-reduce" % "1.0.0")
 

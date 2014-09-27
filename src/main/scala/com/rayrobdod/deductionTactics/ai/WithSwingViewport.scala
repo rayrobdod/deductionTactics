@@ -32,8 +32,10 @@ import com.rayrobdod.deductionTactics.swingView.{BoardGamePanel, MenuBar, Highli
 final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 {
 	/** Forwards command to base */
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo) =
-			base.takeTurn(player, gameState, memo)
+	override def takeTurn(player:Int, gameState:GameState, memo:Memo) = {
+		base.takeTurn(player, gameState, memo.asInstanceOf[SwingInterfaceMemo].base)
+		
+	}
 	/** Forwards command to base */
 	override def buildTeam(size:Int) = base.buildTeam(size)
 	

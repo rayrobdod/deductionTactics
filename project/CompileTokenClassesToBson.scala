@@ -20,7 +20,7 @@ package com.rayrobdod.deductionTactics.meta
 import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
-import com.rayrobdod.deductionTactics.CannonicalTokenClass
+import com.rayrobdod.deductionTactics.TokenClass
 import com.rayrobdod.deductionTactics.CannonicalTokenClassDecoder
 	
 import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
@@ -40,7 +40,7 @@ object CompileTokenClassesToBson // extends scala.App
 {
 	def compile(sources:Seq[Path], outPath:Path) = {
 		
-		val classes:Seq[CannonicalTokenClass] = sources.map{(jsonPath:Path) => 
+		val classes:Seq[TokenClass] = sources.map{(jsonPath:Path) => 
 			val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
 			
 			val l = new ToScalaCollection(CannonicalTokenClassDecoder)
@@ -57,36 +57,36 @@ object CompileTokenClassesToBson // extends scala.App
 		val os3 = Files.newOutputStream(outPath)
 		val dos3 = new DataOutputStream(os3);
 		
-		classes.map{(tclass:CannonicalTokenClass) =>
+		classes.map{(tclass:TokenClass) =>
 			dos.write(Array(0x02, 'n','a','m','e', 0).map{_.byteValue})
 			BSONWriter.writeValue(0x02, dos, tclass.name)
 			
 			dos.write(Array(0x10, 'e','l','e','m','e','n','t', 0).map{_.byteValue})
-			BSONWriter.writeValue(0x10, dos, tclass.atkElement.get.id)
+			BSONWriter.writeValue(0x10, dos, tclass.atkElement.id)
 			
 			dos.write(Array(0x10, 'a','t','k','W','e','a','p','o','n', 0).map{_.byteValue})
-			BSONWriter.writeValue(0x10, dos, tclass.atkWeapon.get.id)
+			BSONWriter.writeValue(0x10, dos, tclass.atkWeapon.id)
 			
 			dos.write(Array(0x10, 'a','t','k','S','t','a','t','u','s', 0).map{_.byteValue})
-			BSONWriter.writeValue(0x10, dos, tclass.atkStatus.get.id)
+			BSONWriter.writeValue(0x10, dos, tclass.atkStatus.id)
 			
 			dos.write(Array(0x10, 'b','o','d','y', 0).map{_.byteValue})
-			BSONWriter.writeValue(0x10, dos, tclass.body.get.id)
+			BSONWriter.writeValue(0x10, dos, tclass.body.id)
 			
 			dos.write(Array(0x10, 'r','a','n','g','e', 0).map{_.byteValue})
-			BSONWriter.writeValue(0x10, dos, tclass.range.get)
+			BSONWriter.writeValue(0x10, dos, tclass.range)
 			
 			dos.write(Array(0x10, 's','p','e','e','d', 0).map{_.byteValue})
-			BSONWriter.writeValue(0x10, dos, tclass.speed.get)
+			BSONWriter.writeValue(0x10, dos, tclass.speed)
 			
 			dos.write(Array(0x10, 'w','e','a','k','S','t','a','t','u','s', 0).map{_.byteValue})
-			BSONWriter.writeValue(0x10, dos, tclass.weakStatus.get.id)
+			BSONWriter.writeValue(0x10, dos, tclass.weakStatus.id)
 			
 			dos.write(Array(0x10, 'w','e','a','k','D','i','r','e','c','t','i','o','n', 0).map{_.byteValue})
-			BSONWriter.writeValue(0x10, dos, tclass.weakDirection.get.id)
+			BSONWriter.writeValue(0x10, dos, tclass.weakDirection.id)
 			
 			dos.write(Array(0x03, 'w','e','a','k','W','e','a','p','o','n', 0).map{_.byteValue})
-			BSONWriter.writeValue(0x03, dos, mapAsJavaMap(tclass.weakWeapon.map{a => ((a._1.id.toString, a._2.get))}))
+			BSONWriter.writeValue(0x03, dos, mapAsJavaMap(tclass.weakWeapon.map{a => ((a._1.id.toString, a._2))}))
 			
 			dos.write(0);
 			dos.flush();
