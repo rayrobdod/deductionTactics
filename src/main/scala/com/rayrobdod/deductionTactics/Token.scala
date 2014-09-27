@@ -17,13 +17,11 @@
 */
 package com.rayrobdod.deductionTactics
 
-import Elements.Element
-import Weaponkinds.Weaponkind
 import Statuses.Status
-import scala.collection.mutable.Buffer
 import com.rayrobdod.boardGame.{Space,
 		StrictRectangularSpace,
-		Token => BoardGameToken}
+		Token => BoardGameToken
+}
 
 /**
  * 

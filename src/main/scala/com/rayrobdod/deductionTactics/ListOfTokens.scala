@@ -17,15 +17,14 @@
 */
 package com.rayrobdod.deductionTactics
 
-import scala.collection.mutable.{Seq => MSeq}
-import scala.collection.immutable.{Seq => ISeq, Map => IMap}
+import scala.collection.immutable.Seq
 
 /**
  * @author Raymond Dodge
  * @version a.6.0
  */
 final class ListOfTokens (
-	val tokens:ISeq[ISeq[Token]]
+	val tokens:Seq[Seq[Token]]
 ) {
 	def aliveTokens() = tokens.map{_.filter(ListOfTokens.aliveFilter)}
 	
