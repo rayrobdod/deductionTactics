@@ -33,7 +33,7 @@ import scala.collection.JavaConversions.mapAsJavaMap
 /**
  * A Token Class that gets its values from a Map.
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
 final class CannonicalTokenClassFromMap(map:Map[String,Any]) extends CannonicalTokenClass
 {

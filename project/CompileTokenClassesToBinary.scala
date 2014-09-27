@@ -40,6 +40,7 @@ import com.rayrobdod.deductionTactics.CannonicalTokenClassFromBinary.{nameLength
  * 
  * @author Raymond Dodge
  * @since a.5.0
+ * @version a.6.0
  */
 object CompileTokenClassesToBinary // extends scala.App
 {

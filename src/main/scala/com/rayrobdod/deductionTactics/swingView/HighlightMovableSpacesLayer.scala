@@ -31,7 +31,7 @@ import HighlightMovableSpacesLayer._
  * show what spaces a token can move to 
  *
  * @author Raymond Dodge
- * @version a.6.0
+ * @since a.6.0
  */
 final class HighlightMovableSpacesLayer(fv:FieldViewer[SpaceClass]) extends JComponent
 {
@@ -53,7 +53,7 @@ final class HighlightMovableSpacesLayer(fv:FieldViewer[SpaceClass]) extends JCom
 		g2.setColor(maximumRangeColor)
 		maximumRanges.foreach(g2Fill)
 	}
-
+	
 	this.setBackground(transparentColor)
 	this.setOpaque(false)
 	
@@ -97,7 +97,7 @@ final class HighlightMovableSpacesLayer(fv:FieldViewer[SpaceClass]) extends JCom
  * Useful functions used by the associated class
  *
  * @author Raymond Dodge
- * @version a.6.0
+ * @since a.6.0
  */
 object HighlightMovableSpacesLayer
 {

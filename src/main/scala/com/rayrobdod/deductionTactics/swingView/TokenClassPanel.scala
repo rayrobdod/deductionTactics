@@ -31,8 +31,8 @@ import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds}
 import com.rayrobdod.swing.GridBagConstraintsFactory
 
 /**
- * @author Raymond Dodge
- * @version a.5.0
+ * A panel that shows the details about a particular TokenClass
+ * @version a.6.0
  */
 class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayout)
 {

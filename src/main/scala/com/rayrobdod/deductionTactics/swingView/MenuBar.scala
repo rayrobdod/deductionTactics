@@ -31,7 +31,7 @@ import java.awt.BorderLayout.{NORTH, SOUTH}
 		
 /**
  * @author Raymond Dodge
- * @version a.5.2
+ * @version a.6.0
  */
 class MenuBar() extends JMenuBar
 {

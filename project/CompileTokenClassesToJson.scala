@@ -37,6 +37,7 @@ import java.nio.file.{Path, Files}
  * 
  * @author Raymond Dodge
  * @since a.5.0
+ * @version a.6.0
  */
 object CompileTokenClassesToJson // extends scala.App
 {

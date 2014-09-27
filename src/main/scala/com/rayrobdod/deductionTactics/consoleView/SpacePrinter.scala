@@ -23,7 +23,7 @@ import com.rayrobdod.boardGame.{Space}
 /**
  * @author Raymond Dodge
  * @since 2012 Dec 20
- * @version a.5.2
+ * @version a.6.0
  */
 object SpaceInfoPrinter
 {

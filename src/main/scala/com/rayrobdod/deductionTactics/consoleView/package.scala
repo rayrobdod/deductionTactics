@@ -26,6 +26,7 @@ package object consoleView
 
 	/**
 	 * @throws IllegalArgumentException if tokens has more tokens than this has letters reserved for
+	 * @version a.6.0
 	 */
 	def tokensToLetters(tokens:ListOfTokens, myTeamOpt:Option[Int]):Map[TokenIndex, Char] = {
 		val myChars = '0' to '9'

@@ -17,13 +17,13 @@
 */
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.{StrictRectangularSpace}
+import com.rayrobdod.boardGame.StrictRectangularSpace
 import scala.collection.immutable.{Seq, Set}
 import LoggerInitializer.{cannonicalTokenLogger => Logger}
 
 /**
  * An enumeration of directions
- * @author Raymond Dodge
+ * @version a.6.0
  */
 object Directions
 {

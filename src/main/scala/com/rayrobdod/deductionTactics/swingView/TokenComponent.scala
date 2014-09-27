@@ -1,6 +1,6 @@
 /*
 	Deduction Tactics
-	Copyright (C) 2014  Raymond Dodge
+	Copyright (C) 2012-2014  Raymond Dodge
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -36,6 +36,9 @@ import com.rayrobdod.swing.StackedIcon
 import com.rayrobdod.util.BlitzAnimImage
 
 
+/**
+ * @version a.6.0
+ */
 final class TokenComponent(
 	fieldComp:FieldViewer[SpaceClass],
 	mainIcon:Icon

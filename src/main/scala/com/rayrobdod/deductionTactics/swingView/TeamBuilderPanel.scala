@@ -38,7 +38,7 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
 
 /**
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
 class TeamBuilderPanel extends JPanel
 {
@@ -161,7 +161,7 @@ object FullTokenClassListRenderer extends ListCellRenderer[TokenClass]
 
 /**
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
 object NoWeaponWeakTokenClassListRenderer extends ListCellRenderer[TokenClass]
 {

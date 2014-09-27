@@ -27,7 +27,7 @@ import com.rayrobdod.swing.GridBagConstraintsFactory
 /**
  * An interface for setting options
  * @author Raymond Dodge
- * @version a.5.3
+ * @version a.6.0
  */
 class OptionsPanel extends JPanel
 {

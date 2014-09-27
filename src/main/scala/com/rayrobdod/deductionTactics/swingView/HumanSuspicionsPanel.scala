@@ -37,7 +37,7 @@ import javax.swing.event.{ChangeListener, ChangeEvent}
 
 /** 
  * @author Raymond Dodge
- * @version a.5.2
+ * @version a.6.0
  */
 class HumanSuspicionsPanel extends JPanel
 {

@@ -26,6 +26,7 @@ import com.rayrobdod.deductionTactics.LoggerInitializer.{elementsLogger => logge
  */
 object Elements {
 	
+	/** @version a.6.0 */
 	final class Element(val id:Int, val name:String) {
 		def damageModifier(other:Element):Float = {
 			((((other.id - this.id) % 5) + 5) % 5) match {

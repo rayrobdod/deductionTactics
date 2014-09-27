@@ -23,7 +23,7 @@ import com.rayrobdod.deductionTactics.{TokenClass}
 import scala.collection.immutable.Seq
 
 /**
- * @author Raymond Dodge
+ * @version a.6.0
  */
 class AllKnownTokenClassesComponent extends JPanel
 {

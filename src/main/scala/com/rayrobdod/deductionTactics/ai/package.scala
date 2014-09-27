@@ -33,7 +33,7 @@ import scala.runtime.{AbstractFunction1 => Function1, AbstractFunction2 => AFunc
 
 /**
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
 package object ai
 {

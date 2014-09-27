@@ -34,7 +34,7 @@ import java.awt.event.{MouseAdapter, MouseEvent}
  * A panel that displays information about a [[com.rayrobdod.deductionTactics.Token]]
  * 
  * @author Raymond Dodge
- * @version a.5.0
+ * @version a.6.0
  */
 class TokenPanel(val token:Token) extends JPanel
 {

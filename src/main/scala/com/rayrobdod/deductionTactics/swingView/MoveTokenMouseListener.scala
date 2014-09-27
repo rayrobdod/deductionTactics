@@ -23,7 +23,6 @@ import java.awt.event.{MouseAdapter, MouseEvent}
 import LoggerInitializer.{mouseListenerLogger => Logger}
 
 /**
- * @author Raymond Dodge
  * @version a.6.0
  */
 class MoveTokenMouseListener(
@@ -74,6 +73,7 @@ class MoveTokenMouseListener(
 /**
  * So that all the TokenMouseListeners can agree on who the active token is
  * @todo utilities? JavaFX Property?
+ * @since a.6.0
  */
 final class SharedActiveTokenProperty {
 	var value:Option[Token] = null
@@ -82,6 +82,7 @@ final class SharedActiveTokenProperty {
 /**
  * So that all the TokenMouseListeners can be updated when the ListOfTOkens changes
  * @todo utilities? JavaFX Property?
+ * @since a.6.0
  */
 final class ListOfTokensProperty extends Function0[ListOfTokens] {
 	var value:ListOfTokens = null

@@ -21,7 +21,7 @@ package com.rayrobdod.deductionTactics
  * An enumeration of Bodytypes. Partially determines what spaces
  * a token may enter.
  * @author Raymond Dodge
- * @version a.5.3
+ * @version a.6.0
  */
 object BodyTypes {
 	final class BodyType(val id:Int, val name:String)
