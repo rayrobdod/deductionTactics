@@ -18,10 +18,9 @@
 package com.rayrobdod.deductionTactics.swingView
 
 import com.rayrobdod.deductionTactics._
-import javax.swing.{JPanel, JScrollPane}
-import java.awt.{BorderLayout, GridLayout}
+import java.awt.Component
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
-import com.rayrobdod.boardGame.swingView.{RectangularFieldComponent => FieldComponent, RectangularTilesheet}
+import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, LayeredComponent, Layer, RectangularTilemapLayer}
 import scala.collection.immutable.Seq
 import javax.swing.event.{AncestorListener, AncestorEvent}
 import javax.swing.ScrollPaneConstants.{
@@ -30,98 +29,27 @@ import javax.swing.ScrollPaneConstants.{
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
 		HORIZONTAL_SCROLLBAR_AS_NEEDED => scrollHorizontalAsNeeded
 }
-import javax.swing.BoxLayout.{Y_AXIS => boxYAxis}
-import javax.swing.{BoxLayout, Icon}
 
 
 /**
  * @author Raymond Dodge
  * @version a.6.0
  */
-class BoardGamePanel(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[SpaceClass]) extends JPanel
+class BoardGameViewModel(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[SpaceClass])
 {
-	setLayout(new BorderLayout)
+	val bottomFieldLayer:RectangularTilemapLayer
+	val topFieldLayer:RectangularTilemapLayer
+	val tokenLayer:TokenLayer
+	val moveHilightLayer:HighlightMovableSpacesLayer = new HighlightMovableSpacesLayer(bottomFieldLayer)
+	val interactionLayer:InteractionLayer
 	
-	
-	val centerpiece = 
-	{
-		val tilesheetInfo = BoardGamePanel.currentTilesheet
-		new FieldComponent(tilesheetInfo,field)
-	}
-	
-	
-	/** @since a.6.0 */
-	val tokenComps:Map[TokenIndex, TokenComponent] = {
-		val a:Seq[(TokenIndex, TokenComponent)] = tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
-			ts.zipWithIndex.map({(t:Token, j:Int) =>
-				(( ((i, j)), new TokenComponent(
-					centerpiece,
-					t.tokenClass.map{(tc) =>
-						tokenClassToIcon(tc)
-					}.getOrElse{generateGenericIcon(None, None)}
-				) ))
-			}.tupled)
-		}.tupled)
-		a.toMap
-	}
-	
-	tokenComps.values.foreach{centerpiece.tokenLayer.add(_)}
-	this.addAncestorListener(new AncestorListener() {
+	val comp:Component = {
+		val a = new LayeredComponent
 		
-		override def ancestorAdded(e:AncestorEvent) {
-			tokenComps.foreach{(a) => a._2.moveToSpace(
-				tokens.tokens(a._1._1)(a._1._2).currentSpace
-			)}
-			BoardGamePanel.this.removeAncestorListener(this)
-		}
-		
-		override def ancestorMoved(e:AncestorEvent) {}  
-		override def  ancestorRemoved (e:AncestorEvent) {}  
-	})
-	
-	
-	
-	private var m_tokenPanels:Map[TokenIndex, TokenPanel] = Map.empty[TokenIndex, TokenPanel]
-	def tokenPanels:Map[TokenIndex, TokenPanel] = this.m_tokenPanels
-	private val gridColCount = tokenComps.map{_._1._2}.max + 1
-	private val gridRowCount = tokenComps.map{_._1._1}.max + 1
-	
-	private val westPanel = new JPanel(new GridLayout(gridColCount, 1))
-	private val eastPanel = new JPanel(new GridLayout(gridColCount, gridRowCount - 1))
-	this.resetTokenPanels(tokens)
-	
-	// make so that pack doesn't cause a screen-consuming size
-	private val westScrollPane = new JScrollPane(westPanel,
-			scrollVerticalAlways, scrollHorizontalNever)
-	westScrollPane.setPreferredSize(new java.awt.Dimension(westScrollPane.getPreferredSize().width + 5, 1))
-	private val eastScrollPane = new JScrollPane(eastPanel,
-			scrollVerticalAlways, scrollHorizontalAsNeeded)
-	eastScrollPane.setPreferredSize(new java.awt.Dimension(westScrollPane.getPreferredSize().width + 5, 1))
-	
-	private val centerScrollPane = new JScrollPane(centerpiece,
-			scrollVerticalAsNeeded, scrollHorizontalAsNeeded)
-	
-	this.add(centerScrollPane, BorderLayout.CENTER)
-	this.add(westScrollPane, BorderLayout.WEST)
-	this.add(eastScrollPane, BorderLayout.EAST)
-	
-	
-	def resetTokenPanels(tokens:ListOfTokens) = {
-		val a:Seq[(TokenIndex, TokenPanel)] = tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
-			ts.zipWithIndex.map({(t:Token, j:Int) =>
-				(( ((i, j)), new TokenPanel(t) ))
-			}.tupled)
-		}.tupled)
-		m_tokenPanels = a.toMap
-		
-		westPanel.removeAll()
-		eastPanel.removeAll()
-		tokenPanels.toSeq.sortBy{(x) => x._1._2 * 256 + x._1._1}.foreach{(x) =>
-			(if (x._1._1 == playerNumber) {westPanel} else {eastPanel}).add(x._2)
-		}
-		
-		eastPanel.revalidate()
-		westPanel.revalidate()
+		a.addLayer(bottomFieldLayer)
+		a.addLayer(tokenLayer)
+		a.addLayer(topFieldLayer)
+		a.addLayer(moveHilightLayer)
 	}
 }
 
@@ -136,7 +64,7 @@ object BoardGamePanel {
 	val movementSpeedPrefsKey:String = "tokenMoveSpeed";
 	val tilesheetPrefsKey:String = "tilesheetIndex";
 	private def myPrefs = try {
-		Preferences.userNodeForPackage(classOf[BoardGamePanel]);
+		Preferences.userNodeForPackage(classOf[BoardGameViewModel]);
 	} catch {
 		case e:java.security.AccessControlException => NilPreferences
 	}

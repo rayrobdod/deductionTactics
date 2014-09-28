@@ -17,7 +17,6 @@
 */
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.{Token => BoardGameToken}
 import com.rayrobdod.boardGame.{Space => BoardGameSpace}
 import com.rayrobdod.boardGame.SpaceClassMatcher
 import scala.collection.immutable.{Seq => ISeq}

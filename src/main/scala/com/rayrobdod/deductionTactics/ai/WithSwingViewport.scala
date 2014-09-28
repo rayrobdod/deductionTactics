@@ -19,7 +19,7 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import javax.swing.JFrame
-import com.rayrobdod.deductionTactics.swingView.{BoardGamePanel, MenuBar, HighlightMovableSpacesLayer}
+import com.rayrobdod.deductionTactics.swingView.{BoardGameViewModel, MenuBar, HighlightMovableSpacesLayer}
 
 /**
  * A decorator for PlayerAIs. It provides a viewport to a player
@@ -45,16 +45,14 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 	def initialize(player:Int, initialState:GameState):Memo =
 	{
 		val tokens = initialState.tokens
-		val panel = new BoardGamePanel(tokens, player, initialState.board)
+		val viewmodel = new BoardGameViewModel(tokens, player, initialState.board)
 		val frame = new JFrame("Deduction Tactics")		
 		frame.setJMenuBar(new MenuBar)
-		frame.getContentPane add panel
+		frame.getContentPane add viewmodel.component
 		
 		val activeToken = new swingView.SharedActiveTokenProperty()
 		activeToken.value = None
 		
-		val hilightLayer = new HighlightMovableSpacesLayer(panel.centerpiece)
-		panel.centerpiece.add(hilightLayer, 0)
 		
 		
 		val tokensProp = new swingView.ListOfTokensProperty

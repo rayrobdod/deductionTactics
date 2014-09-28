@@ -27,6 +27,7 @@ import java.awt.BorderLayout
 
 import com.rayrobdod.deductionTactics.swingView.{
 			BoardGamePanel,
+			BoardGameViewModel,
 			TeamBuilderPanel,
 			MenuBar,
 			SellectAttackTypePanel,
@@ -68,10 +69,10 @@ final class SwingInterface extends PlayerAI
 	def initialize(player:Int, initialState:GameState):Memo =
 	{
 		val tokens = initialState.tokens
-		val panel = new BoardGamePanel(tokens, player, initialState.board)
+		val viewmodel = new BoardGameViewModel(tokens, player, initialState.board)
 		val frame = new JFrame("Deduction Tactics")		
 		frame.setJMenuBar(new MenuBar)
-		frame.getContentPane add panel
+		frame.getContentPane add viewmodel.component
 		
 		val attackTypeSelector = new SellectAttackTypePanel()
 		val activeToken = new swingView.SharedActiveTokenProperty()
@@ -90,7 +91,7 @@ final class SwingInterface extends PlayerAI
 		val tokensProp = new swingView.ListOfTokensProperty
 		tokensProp.value = initialState.tokens
 		
-		initialState.board.spaces.flatten.foreach{(s:Space[SpaceClass]) =>
+		initialState.board.values.foreach{(s:Space[SpaceClass]) =>
 			panel.centerpiece.addMouseListenerToSpace(s,
 				new MoveTokenMouseListener(
 						player,
@@ -218,7 +219,7 @@ final class SwingInterface extends PlayerAI
 
 final case class SwingInterfaceMemo (
 	base:Memo,
-	panel:BoardGamePanel,
+	panel:BoardGameViewModel,
 	hilightLayer:HighlightMovableSpacesLayer,
 	attackTypeSelector:SellectAttackTypePanel,
 	selectedToken:swingView.SharedActiveTokenProperty,

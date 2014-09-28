@@ -17,12 +17,11 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
-import java.awt.{Color, Graphics, Shape, Graphics2D}
+import java.awt.{Component, Color, Graphics, Shape, Graphics2D}
 import scala.collection.immutable.{Seq, Set}
 import javax.swing.JComponent
-import com.rayrobdod.boardGame.{Space, RectangularSpace,
-			Token => BoardGameToken, RectangularField}
-import com.rayrobdod.boardGame.swingView.FieldViewer
+import com.rayrobdod.boardGame.{Space, RectangularSpace, RectangularField, StrictRectangularSpace}
+import com.rayrobdod.boardGame.swingView.{Layer, RectangularTilemapLayer}
 import com.rayrobdod.deductionTactics.{Token, ListOfTokens, SpaceClass, AttackCostFunction, MoveToCostFunction}
 import HighlightMovableSpacesLayer._
 
@@ -33,15 +32,16 @@ import HighlightMovableSpacesLayer._
  * @author Raymond Dodge
  * @since a.6.0
  */
-final class HighlightMovableSpacesLayer(fv:FieldViewer[SpaceClass]) extends JComponent
+final class HighlightMovableSpacesLayer(tilemap:RectangularTilemapLayer) extends Layer
 {
 	var currentSpeeds:Seq[Shape] = Seq.empty;
 	var currentRanges:Seq[Shape] = Seq.empty;
 	var maximumSpeeds:Seq[Shape] = Seq.empty;
 	var maximumRanges:Seq[Shape] = Seq.empty;
 	
-	override def paintComponent(g:Graphics) {
+	override def paintLayer(c:Component, g:Graphics, offsetX:Int, offsetY:Int) {
 		val g2 = g.asInstanceOf[Graphics2D]
+		g2.translate(-offsetX, -offsetY)
 		val g2Fill = {(x:Shape) => g2.fill(x)}
 		
 		g2.setColor(currentSpeedColor)
@@ -52,10 +52,10 @@ final class HighlightMovableSpacesLayer(fv:FieldViewer[SpaceClass]) extends JCom
 		maximumSpeeds.foreach(g2Fill)
 		g2.setColor(maximumRangeColor)
 		maximumRanges.foreach(g2Fill)
+		
+		g2.translate(offsetX, offsetY)
 	}
 	
-	this.setBackground(transparentColor)
-	this.setOpaque(false)
 	
 	
 	
@@ -75,7 +75,7 @@ final class HighlightMovableSpacesLayer(fv:FieldViewer[SpaceClass]) extends JCom
 			val maxSpeedSpaces = selectedToken.currentSpace.spacesWithin(tokenMaxSpeed, mcf) -- curSpeedSpaces - selectedToken.currentSpace
 			val maxRangeSpaces = (maxSpeedSpaces + selectedToken.currentSpace).map{_.spacesWithin(tokenMaxRange, atf)}.flatten -- maxSpeedSpaces -- curSpeedSpaces - selectedToken.currentSpace
 			
-			val spaceToShape = {(x:Space[SpaceClass]) => fv.spaceLocation(x)}
+			val spaceToShape = {(x:Space[SpaceClass]) => tilemap.spaceBounds(field.map{x => ((x._2:Space[SpaceClass], x._1)) }.apply(x))}
 			
 			this.currentSpeeds = Seq.empty ++ curSpeedSpaces.map(spaceToShape)
 			this.currentRanges = Seq.empty ++ curRangeSpaces.map(spaceToShape)
@@ -88,8 +88,6 @@ final class HighlightMovableSpacesLayer(fv:FieldViewer[SpaceClass]) extends JCom
 			this.maximumSpeeds = Seq.empty
 			this.maximumRanges = Seq.empty
 		}
-		
-		this.repaint();
 	}
 }
 

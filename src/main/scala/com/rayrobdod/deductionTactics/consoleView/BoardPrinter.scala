@@ -36,7 +36,8 @@ object BoardPrinter{
 	}
 	
 	def spaceStrings(tokens:ListOfTokens, field:RectangularField[SpaceClass], team:Option[Int], cursor:Option[Space[SpaceClass]] = None, selected:Option[TokenIndex] = None):Seq[Seq[String]] = {
-		field.spaces.map{_.map{(space:Space[SpaceClass]) =>
+		field.map{(index:(Int, Int), space:StrictRectangularSpace[SpaceClass]) =>
+			val newLine = (if (index._1 == 0) {"\n"} else {""}) 
 			val tokenOnSpace:Option[Token] = tokens.aliveTokens.flatten.filter{_.currentSpace == space}.headOption
 			
 			val spaceClassColor = spaceToString(space.typeOfSpace)
@@ -44,8 +45,8 @@ object BoardPrinter{
 			val cursorColor = cursor.filter{_ == space}.map{x => "\u001b[4m"}.getOrElse("\u001b[24m") // underline
 			val tokenColor = if (selected.map{tokens.tokens(_)} == tokenOnSpace) {scala.Console.BOLD} else {"\u001b[21m"}
 			
-			scala.Console.RESET + cursorColor + spaceClassColor + tokenColor + tokenString
-		} :+ "\n"}
+			newLine + scala.Console.RESET + cursorColor + spaceClassColor + tokenColor + tokenString
+		}.tupled
 	}
 	
 	// I'd prefer to use the top line, but the consoles are ASCII only
