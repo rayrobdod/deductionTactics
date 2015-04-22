@@ -22,6 +22,7 @@ import java.awt.event._
 import javax.swing._
 import javax.swing.event._
 import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
+import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 
 class Top {
 	
@@ -31,7 +32,7 @@ class Top {
 	private val nextButton = new JButton(resources.getString("nextButton"))
 	private val cancelButton = new JButton(resources.getString("cancelButton"))
 	private val maps:ListModel[Nothing] = new ScalaSeqListModel(Nil)
-	// private val ais = new ChooseAiGroupComponent
+	private val aisPanel = new ChooseAIsComponent
 	
 	{
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
@@ -51,6 +52,12 @@ class Top {
 			mapChoosingPanel.add(mapList, GridBagConstraintsFactory(gridx = 2, gridy = 0, gridheight = 3, weighty = 2, weightx = 2, fill = GridBagConstraints.BOTH))
 		}
 		
+		val topPanel = new JPanel(new GridLayout(2,1));
+		{
+			topPanel.add(mapChoosingPanel)
+			topPanel.add(aisPanel)
+		}
+		
 		val buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		{
 			buttonPanel.add(cancelButton)
@@ -68,7 +75,7 @@ class Top {
 			})
 		}
 		
-		frame.getContentPane().add(mapChoosingPanel)
+		frame.getContentPane().add(topPanel)
 		frame.getContentPane().add(buttonPanel, BorderLayout.SOUTH)
 		frame.pack()
 	}
