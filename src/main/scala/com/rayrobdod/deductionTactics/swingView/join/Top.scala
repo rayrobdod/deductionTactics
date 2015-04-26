@@ -23,7 +23,8 @@ import javax.swing._
 import javax.swing.event._
 import java.net.InetAddress
 import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
-import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
+import com.rayrobdod.deductionTactics.swingView.AiChoosingPanels
+import com.rayrobdod.deductionTactics.PlayerAI
 
 class Top {
 	
@@ -33,7 +34,7 @@ class Top {
 	private val nextButton = new JButton(resources.getString("okButton"))
 	private val cancelButton = new JButton(resources.getString("cancelButton"))
 	private val maps:ListModel[Nothing] = new ScalaSeqListModel(Nil)
-	private val aisPanel = new ChooseAIsComponent;
+	private val aiCreator = new AiChoosingPanels
 	
 	{
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
@@ -83,8 +84,14 @@ class Top {
 			})
 		}
 		
+		val aisPanel = new JPanel(new GridBagLayout());
 		{
-			aisPanel.players = 1;
+			aisPanel.add(new JLabel(resources.getString("primaryAiCompLabel")), GridBagConstraintsFactory(ipadx = 3));
+			aisPanel.add(aiCreator.baseComponent,
+					GridBagConstraintsFactory(weightx = 1d, weighty = 1d, gridwidth = GridBagConstraints.REMAINDER, fill = GridBagConstraints.BOTH, insets = new Insets(2,6,2,6)));
+			aisPanel.add(new JLabel(resources.getString("decoratorAiCompLabel")), GridBagConstraintsFactory(ipadx = 3));
+			aisPanel.add(aiCreator.decoratorComponent,
+					GridBagConstraintsFactory(weightx = 1d, weighty = 1d, gridwidth = GridBagConstraints.REMAINDER, fill = GridBagConstraints.BOTH, insets = new Insets(2,6,2,6)));
 		}
 		
 		val midPanel = new JPanel(new FlowLayout());
@@ -108,6 +115,7 @@ class Top {
 		nextButton.addActionListener(a)
 	}
 	
+	def getAi:PlayerAI = aiCreator.createAi
 }
 
 object Top {
@@ -115,6 +123,7 @@ object Top {
 		val t = new Top();
 		t.addNextActionListener(new ActionListener() {
 			def actionPerformed(e:ActionEvent) {
+				System.out.println(t.getAi)
 				Top.main(new Array[String](0))
 			}
 		})
