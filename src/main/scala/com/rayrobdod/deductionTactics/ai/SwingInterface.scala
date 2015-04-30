@@ -25,9 +25,9 @@ import java.awt.event.{ActionListener, ActionEvent}
 import javax.swing.{JButton, JFrame, JPanel}
 import java.awt.BorderLayout
 
+import com.rayrobdod.deductionTactics.swingView.chooseTokenClasses.TeamBuilderPanel
 import com.rayrobdod.deductionTactics.swingView.{
 			BoardGamePanel,
-			TeamBuilderPanel,
 			MenuBar,
 			SellectAttackTypePanel,
 			MoveTokenMouseListener,

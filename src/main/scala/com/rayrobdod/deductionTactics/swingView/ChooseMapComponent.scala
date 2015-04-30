@@ -34,6 +34,7 @@ import java.lang.Integer
  * A component that displays and lets one select map-related options
  * 
  * @version a.4.1
+ * @deprecated host.Top serves this purpose now
  */
 class ChooseMapComponent extends JPanel
 {

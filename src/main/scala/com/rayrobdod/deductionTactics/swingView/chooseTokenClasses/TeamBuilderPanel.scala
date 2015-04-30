@@ -16,6 +16,7 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package com.rayrobdod.deductionTactics.swingView
+package chooseTokenClasses
 
 import javax.swing.{JList, JPanel, ButtonGroup, JButton, BoxLayout,
 		JScrollPane, JRadioButton, AbstractListModel, ListCellRenderer,

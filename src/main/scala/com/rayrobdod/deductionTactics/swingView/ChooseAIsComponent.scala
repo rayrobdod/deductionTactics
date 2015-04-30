@@ -30,7 +30,7 @@ import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 /**
  * @author Raymond Dodge
  * @version a.4.?
- * @deprecated
+ * @deprecated use AiChoosingPanels
  */
 class ChooseAIsComponent extends JPanel
 {
