@@ -43,6 +43,8 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
  */
 class TeamBuilderPanel extends JPanel
 {
+	private val resources = java.util.ResourceBundle.getBundle("com.rayrobdod.deductionTactics.swingView.text")
+	
 	private val currentSelectionModel = new DefaultListModel[TokenClass]()
 	def currentSelection:Seq[TokenClass] = (Seq.empty ++ currentSelectionModel.toArray).asInstanceOf[Seq[TokenClass]]
 	
@@ -57,7 +59,7 @@ class TeamBuilderPanel extends JPanel
 	allTokenClassesList.setLayoutOrientation(JList.VERTICAL_WRAP)
 	allTokenClassesList.setVisibleRowCount(10)
 	
-	val addButton = new JButton("←")
+	val addButton = new JButton(resources.getString("addTeambuilderButton"))
 	addButton.addActionListener(new ActionListener(){
 		override def actionPerformed(e:ActionEvent) = {
 			allTokenClassesList.getSelectedValuesList.foreach{
@@ -65,7 +67,7 @@ class TeamBuilderPanel extends JPanel
 			}
 		}
 	})
-	val removeButton = new JButton("→")
+	val removeButton = new JButton(resources.getString("removeTeambuilderButton"))
 	removeButton.addActionListener(new ActionListener(){
 		override def actionPerformed(e:ActionEvent) = {
 			currentSelectionList.getSelectedValuesList.foreach{
@@ -73,7 +75,7 @@ class TeamBuilderPanel extends JPanel
 			}
 		}
 	})
-	val removeAllButton = new JButton("clear")
+	val removeAllButton = new JButton(resources.getString("removeAllTeambuilderButton"))
 	removeAllButton.addActionListener(new ActionListener(){
 		override def actionPerformed(e:ActionEvent) = {
 			currentSelectionModel.removeAllElements()
