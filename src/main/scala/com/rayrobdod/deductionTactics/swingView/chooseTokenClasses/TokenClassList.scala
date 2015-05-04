@@ -68,7 +68,6 @@ import javax.swing.plaf.metal.MetalToolTipUI;
 
 class MyToolTipUI extends MetalToolTipUI {
 	override def paint(g:Graphics, c:JComponent) {
-		val metrics = Toolkit.getDefaultToolkit().getFontMetrics(g.getFont());
 		val size = c.getSize()
 		g.setColor(c.getBackground());
 		g.fillRect(0, 0, size.width, size.height);
