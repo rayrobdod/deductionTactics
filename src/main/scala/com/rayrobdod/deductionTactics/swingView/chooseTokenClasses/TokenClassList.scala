@@ -23,6 +23,7 @@ import com.rayrobdod.deductionTactics.TokenClass
 import com.rayrobdod.deductionTactics.swingView.chooseTokenClasses.NoWeaponWeakTokenClassListRenderer
 
 class TokenClassList(dataModel:ListModel[TokenClass]) extends JList[TokenClass](dataModel) {
+	//def this() = this(new javax.swing.DefaultListModel[TokenClass]);
 	
 	private object HoveringIndexMouseListener extends MouseMotionListener {
 		var index:Int = 0;
@@ -42,11 +43,11 @@ class TokenClassList(dataModel:ListModel[TokenClass]) extends JList[TokenClass](
 				this.removeAll();
 				val a = new TokenClassPanel(dataModel.getElementAt(HoveringIndexMouseListener.index));
 				a.doLayout();
+				a.setBackground(new java.awt.Color(0, true))
 				this.add(a);
 			}
 		}
 		retVal.setComponent(this);
-		retVal.setBackground(java.awt.Color.red)
 		retVal.setLayout(new java.awt.BorderLayout())
 		retVal;
 	}

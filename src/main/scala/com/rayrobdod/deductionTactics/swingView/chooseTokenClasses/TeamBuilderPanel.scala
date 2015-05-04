@@ -40,6 +40,7 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
 /**
  * @author Raymond Dodge
  * @version a.6.0
+ * @deprecated use chooseTokenClasses.Top instead
  */
 class TeamBuilderPanel extends JPanel
 {
