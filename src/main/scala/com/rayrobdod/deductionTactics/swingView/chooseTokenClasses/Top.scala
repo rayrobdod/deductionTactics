@@ -15,7 +15,8 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.swingView.chooseTokenClasses
+package com.rayrobdod.deductionTactics.swingView
+package chooseTokenClasses
 
 import java.awt._
 import java.awt.event._
@@ -54,7 +55,8 @@ class Top(val maxResultSize:Int) {
 			})
 		}
 		
-		frame.getContentPane().add(teamBuilder)
+		// frame.getContentPane().add(teamBuilder)
+		frame.getContentPane().add(new TokenClassList(new ScalaSeqListModel(TokenClass.allKnown)))
 		frame.getContentPane().add(buttonPanel, BorderLayout.SOUTH)
 		frame.pack()
 	}
