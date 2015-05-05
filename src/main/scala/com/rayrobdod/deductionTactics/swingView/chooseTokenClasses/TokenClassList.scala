@@ -38,7 +38,7 @@ class TokenClassList(dataModel:ListModel[TokenClass]) extends JList[TokenClass](
 	
 	override def createToolTip():JToolTip = {
 		val retVal = new JToolTip() {
-			this.setUI(new MyToolTipUI())
+			this.setUI(TokenClassList.MyToolTipUI)
 			override def setTipText(tipText:String) {
 				this.removeAll();
 				val a = new TokenClassPanel(dataModel.getElementAt(HoveringIndexMouseListener.index));
@@ -59,14 +59,13 @@ class TokenClassList(dataModel:ListModel[TokenClass]) extends JList[TokenClass](
 }
 
 object TokenClassList {
-}
 
 
 import java.awt._;
 import javax.swing._;
 import javax.swing.plaf.metal.MetalToolTipUI;
 
-class MyToolTipUI extends MetalToolTipUI {
+private[TokenClassList] object MyToolTipUI extends MetalToolTipUI {
 	override def paint(g:Graphics, c:JComponent) {
 		val size = c.getSize()
 		g.setColor(c.getBackground());
@@ -89,4 +88,5 @@ class MyToolTipUI extends MetalToolTipUI {
 		
 		new Dimension(w.intValue + 4, h.intValue + 4);
 	}
+}
 }
