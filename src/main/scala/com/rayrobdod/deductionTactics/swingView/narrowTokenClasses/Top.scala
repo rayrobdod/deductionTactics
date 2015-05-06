@@ -33,9 +33,13 @@ import com.rayrobdod.deductionTactics.TokenClass
 import scala.collection.JavaConversions.asScalaBuffer
 
 /**
- * @pre 0 <= myIndex < choosnClasses.size
+ * @pre 0 <= myIndex < choosenClasses.size
  */
-class Top(val myIndex:Int, val choosenClasses:Seq[Seq[TokenClass]]) {
+class Top(
+		val myIndex:Int,
+		val choosenClasses:Seq[Seq[TokenClass]],
+		val maxResultSize:Int
+) {
 	private val resources = java.util.ResourceBundle.getBundle("com.rayrobdod.deductionTactics.swingView.text")
 	
 	private val frame = new JFrame(resources.getString("chooseTokensFrameTitle"))
@@ -55,6 +59,7 @@ class Top(val myIndex:Int, val choosenClasses:Seq[Seq[TokenClass]]) {
 		}
 		
 		myClassesList.setEnabled(true)
+		myClassesList.setSelectionModel(new Top.MaxCountListSelectionModel(maxResultSize))
 		
 		val listsPanel = new JPanel(new GridLayout(1,0));
 		classesLists.map{x => 
@@ -105,19 +110,44 @@ class Top(val myIndex:Int, val choosenClasses:Seq[Seq[TokenClass]]) {
 
 object Top {
 	def main(args:Array[String]):Unit = {
-		val l = Seq(
-			Seq(TokenClass.allKnown(2), TokenClass.allKnown(4), TokenClass.allKnown(6)),
-			Seq(TokenClass.allKnown(22), TokenClass.allKnown(24), TokenClass.allKnown(26)),
-			Seq(TokenClass.allKnown(12), TokenClass.allKnown(14), TokenClass.allKnown(16))
-		)
+		val l = (0 to 30 by 10).map{a =>
+			(0 to 9).map{b => 
+				TokenClass.allKnown(a + b)
+			}
+		}
 		
-		val t = new Top(1, l);
+		val t = new Top(1, l, 4);
 		t.addNextActionListener(new ActionListener() {
 			def actionPerformed(e:ActionEvent) {
 				Top.main(new Array[String](0))
 			}
 		})
 		t.show();
+	}
+	
+	// TODO: convert to decorator
+	class MaxCountListSelectionModel(maxSelected:Int) extends DefaultListSelectionModel {
+		private def selectedCount:Int = {
+			(getMinSelectionIndex to getMaxSelectionIndex).count{isSelectedIndex(_)}
+		}
+		
+		
+		override def addSelectionInterval(a:Int, b:Int):Unit = {
+			if (a > b) {
+				this.addSelectionInterval(b, a)
+			} else {
+				val c = math.min(b, a + maxSelected - selectedCount - 1)
+				if (c >= a) {super.addSelectionInterval(a, c)}
+			}
+		}
+		override def setSelectionInterval(a:Int, b:Int) = {
+			if (a > b) {
+				this.addSelectionInterval(b, a)
+			} else {
+				val c = math.min(b, a + maxSelected - 1)
+				super.setSelectionInterval(a, c)
+			}
+		}
 	}
 }
 
