@@ -103,6 +103,9 @@ package object ai
 				new MoveToCostFunction(token, list)
 		).toSet
 	}
+}
+
+package ai {
 	
 	
 	/** @version a.6.0 */
@@ -138,4 +141,41 @@ package object ai
 		val weakWeapon:Map[Weaponkind,Option[Float]] = Weaponkinds.values.map{((_, None))}.toMap,
 		val weakStatus:Option[Status] = None
 	)
+	
+	
+	class DecoratorPlayerAI(base:PlayerAI) extends PlayerAI {
+		override def selectTokenClasses(maxResultSize:Int):Seq[TokenClass] = base.selectTokenClasses(maxResultSize)
+		
+		override def narrowTokenClasses(
+				otherPlayersSelectedClasses:Seq[Seq[TokenClass]],
+				maxResultSize:Int,
+				myIndex:Int
+		):Seq[TokenClass] = base.narrowTokenClasses(
+				otherPlayersSelectedClasses,
+				maxResultSize,
+				myIndex
+		)
+		
+		override def takeTurn(
+				player:Int,
+				gameState:GameState,
+				memo:ai.Memo
+		):Seq[GameState.Action] = base.takeTurn(player, gameState, memo)
+		
+		override def notifyTurn(
+			player:Int,
+			action:GameState.Result,
+			beforeState:GameState,
+			afterState:GameState,
+			memo:ai.Memo
+		):ai.Memo = base.notifyTurn(
+			player,
+			action,
+			beforeState,
+			afterState,
+			memo
+		)
+		
+		override def initialize(player:Int, initialState:GameState):ai.Memo = base.initialize(player, initialState)
+	}
 }

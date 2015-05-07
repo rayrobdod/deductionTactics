@@ -70,11 +70,16 @@ final class SleepAbuserAI extends PlayerAI
 		} :+ GameState.EndOfTurn
 	}
 	
-	def buildTeam(teamSize:Int) = {
+	def selectTokenClasses(teamSize:Int) = {
 		val allWithSleep = TokenClass.allKnown.filter{_.atkStatus == Sleep}
-		
 		Random.shuffle(allWithSleep ++ allWithSleep).take(teamSize)
 	}
+	/** chooses a subset of selectedTokenClasses randomly */
+	override def narrowTokenClasses(
+				selectedClasses:Seq[Seq[TokenClass]],
+				maxResultSize:Int,
+				myPlayerIndex:Int
+	):Seq[TokenClass] = Random.shuffle(selectedClasses(myPlayerIndex)).take(maxResultSize)
 	
 	override def initialize(player:Int, initialState:GameState):Memo = new SimpleMemo()
 	

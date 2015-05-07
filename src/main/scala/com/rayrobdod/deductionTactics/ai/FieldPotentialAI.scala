@@ -31,7 +31,14 @@ import java.util.logging.Level
 final class FieldPotentialAI extends PlayerAI
 {
 	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
-	override def buildTeam(size:Int) = randomTeam(size)
+	override def selectTokenClasses(size:Int) = randomTeam(size)
+	/** chooses a subset of selectedTokenClasses randomly */
+	override def narrowTokenClasses(
+				selectedClasses:Seq[Seq[TokenClass]],
+				maxResultSize:Int,
+				myPlayerIndex:Int
+	):Seq[TokenClass] = scala.util.Random.shuffle(selectedClasses(myPlayerIndex)).take(maxResultSize)
+	
 	
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		gameState.tokens.alivePlayerTokens(player).flatMap{(myToken:Token) =>
@@ -98,7 +105,8 @@ final class FieldPotentialAI extends PlayerAI
 			)
 			
 			val token = list.alivePlayerTokens(player)(0)
-			val labels = initialState.board.spaces.flatten.map{(x) => (x, new JLabel("XXXX"))}.toMap[Space[SpaceClass], JLabel]
+			val labels = initialState.board.spaces.flatten.map{(x) => (x, new JLabel("XXXX"))}.toMap[Space[SpaceClass]
+, JLabel]
 			
 			labels.foreach{(x) => frame.getContentPane.add(x._2)}
 			frame.setVisible(true);

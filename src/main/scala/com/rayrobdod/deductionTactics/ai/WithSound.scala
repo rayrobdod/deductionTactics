@@ -30,16 +30,8 @@ import scala.collection.immutable.Seq
  * @author Raymond Dodge
  * @version a.6.0
  */
-final class WithSound(val base:PlayerAI) extends PlayerAI
+final class WithSound(val base:PlayerAI) extends DecoratorPlayerAI(base)
 {
-	/** Forwards command to base */
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo) = base.takeTurn(player, gameState, memo)
-	/** Forwards command to base */
-	override def initialize(player:Int, initialState:GameState):Memo = base.initialize(player, initialState)
-	/** Forwards notify to base */
-	override def buildTeam(size:Int):Seq[TokenClass] = base.buildTeam(size)
-	
-	
 	private val PREFIX = "/com/rayrobdod/deductionTactics/soundView/"
 	
 	override def notifyTurn(player:Int, action:GameState.Result, beforeState:GameState, afterState:GameState, memo:Memo):Memo = {

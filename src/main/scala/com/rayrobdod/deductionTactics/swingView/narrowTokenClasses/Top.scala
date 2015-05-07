@@ -30,6 +30,7 @@ import javax.swing.ScrollPaneConstants.{
 import javax.swing.event._
 import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 import com.rayrobdod.deductionTactics.TokenClass
+import scala.collection.immutable.Seq
 import scala.collection.JavaConversions.asScalaBuffer
 
 /**
@@ -104,7 +105,7 @@ class Top(
 	 * @post results.size <= maxResultSize
 	 */
 	def results:Seq[TokenClass] = {
-		myClassesList.getSelectedValuesList()
+		myClassesList.getSelectedValuesList().toList
 	}
 }
 

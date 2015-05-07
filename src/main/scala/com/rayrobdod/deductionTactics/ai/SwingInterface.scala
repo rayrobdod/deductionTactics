@@ -25,7 +25,9 @@ import java.awt.event.{ActionListener, ActionEvent}
 import javax.swing.{JButton, JFrame, JPanel}
 import java.awt.BorderLayout
 
-import com.rayrobdod.deductionTactics.swingView.chooseTokenClasses.TeamBuilderPanel
+import com.rayrobdod.deductionTactics.swingView.chooseTokenClasses
+import com.rayrobdod.deductionTactics.swingView.narrowTokenClasses
+
 import com.rayrobdod.deductionTactics.swingView.{
 			BoardGamePanel,
 			MenuBar,
@@ -138,11 +140,11 @@ final class SwingInterface extends PlayerAI
 		)
 	}
 	
-	override def buildTeam(teamSize:Int) = {
+	override def selectTokenClasses(maxSize:Int) = {
 		val buildingLock = new Object()
-		val teamBuilder = new TeamBuilderPanel()
+		val teamBuilder = new chooseTokenClasses.Top(maxSize)
 		
-		val frame = new InputFrame("Choose Team", teamBuilder, new ActionListener {
+		teamBuilder.addNextActionListener(new ActionListener {
 			override def actionPerformed(e:ActionEvent) = {
 				buildingLock.synchronized { buildingLock.notifyAll }
 			}
@@ -150,12 +152,34 @@ final class SwingInterface extends PlayerAI
 		
 		buildingLock.synchronized
 		{
-			frame.setVisible(true)
+			teamBuilder.show()
 			buildingLock.wait
 		}
 		
-		frame.setVisible(false)
-		teamBuilder.currentSelection
+		teamBuilder.results
+	}
+	
+	override def narrowTokenClasses(
+				otherPlayersSelectedClasses:Seq[Seq[TokenClass]],
+				maxResultSize:Int,
+				index:Int
+	):Seq[TokenClass] = {
+		val buildingLock = new Object()
+		val teamBuilder = new swingView.narrowTokenClasses.Top(index, otherPlayersSelectedClasses, maxResultSize)
+		
+		teamBuilder.addNextActionListener(new ActionListener {
+			override def actionPerformed(e:ActionEvent) = {
+				buildingLock.synchronized { buildingLock.notifyAll }
+			}
+		})
+		
+		buildingLock.synchronized
+		{
+			teamBuilder.show()
+			buildingLock.wait
+		}
+		
+		teamBuilder.results
 	}
 	
 	override def notifyTurn(
@@ -210,7 +234,7 @@ final class SwingInterface extends PlayerAI
 		// no instance variables to test
 		this.canEquals(other) && other.asInstanceOf[SwingInterface].canEquals(this)
 	}
-	// arbitrary number (17)
+	// arbitrary number (13)
 	override def hashCode = 13
 	
 	override def toString = this.getClass.getName

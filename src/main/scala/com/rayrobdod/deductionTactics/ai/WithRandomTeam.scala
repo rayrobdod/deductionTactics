@@ -18,6 +18,8 @@
 package com.rayrobdod.deductionTactics
 package ai
 
+import scala.util.Random
+import scala.collection.immutable.Seq
 
 /**
  * A decorator for PlayerAIs. It intercepts the buildTeam command and creates
@@ -26,18 +28,16 @@ package ai
  * @author Raymond Dodge
  * @version a.6.0
  */
-final class WithRandomTeam(val base:PlayerAI) extends PlayerAI
+final class WithRandomTeam(val base:PlayerAI) extends DecoratorPlayerAI(base)
 {
-	/** Forwards command to base */
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo) = base.takeTurn(player, gameState, memo)
 	/** chooses a team randomly */
-	override def buildTeam(size:Int) = randomTeam(size)
-	
-	/** Forwards command to base */
-	override def initialize(player:Int, initialState:GameState):Memo = base.initialize(player, initialState)
-	/** Forwards notify to base */
-	override def notifyTurn(player:Int, action:GameState.Result, beforeState:GameState, afterState:GameState, memo:Memo):Memo =
-				base.notifyTurn(player, action, beforeState, afterState, memo)
+	override def selectTokenClasses(size:Int) = randomTeam(size)
+	/** chooses a subset of selectedTokenClasses randomly */
+	override def narrowTokenClasses(
+				selectedTokenClasses:Seq[Seq[TokenClass]],
+				maxResultSize:Int,
+				index:Int
+	):Seq[TokenClass] = Random.shuffle(selectedTokenClasses(index)).take(maxResultSize)
 	
 	
 	

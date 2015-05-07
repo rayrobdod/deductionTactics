@@ -32,6 +32,7 @@ import javax.swing.event._
 import java.net.InetAddress
 import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 import com.rayrobdod.deductionTactics.TokenClass
+import scala.collection.immutable.{Seq, IndexedSeq}
 import scala.collection.JavaConversions.asScalaBuffer
 
 class Top(val maxResultSize:Int) {
@@ -151,7 +152,14 @@ class Top(val maxResultSize:Int) {
 	 * @post results.size <= maxResultSize
 	 */
 	def results:Seq[TokenClass] = {
-		selectedClassesList.getSelectedValuesList()
+		val a = selectedClassesList.getModel()
+		
+		class ListModelSeq[A](a:ListModel[A]) extends IndexedSeq[A] {
+			override def apply(index:Int) = a.getElementAt(index)
+			override def length = a.getSize
+		}
+		
+		new ListModelSeq(a)
 	}
 }
 

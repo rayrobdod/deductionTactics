@@ -84,8 +84,13 @@ object Main extends App
 	
 	private def buildTeams(ais:Seq[PlayerAI], field:RectangularField[SpaceClass], tokenPositions:Seq[Seq[(Int, Int)]]) =
 	{
-		val tokenClasses:Seq[Seq[TokenClass]] = ais.zip(tokenPositions.map{_.length}).map({(p:PlayerAI, l:Int) => p.buildTeam(l)}.tupled)
-		val TokenClassToSpaceIndex:Seq[Seq[(TokenClass, (Int, Int))]] = tokenClasses.zip(tokenPositions).map({(x:Seq[TokenClass],y:Seq[(Int, Int)]) => x.zip(y)}.tupled)
+		val roundOneTokenClasses:Seq[Seq[TokenClass]] = ais.zip(tokenPositions.map{_.length * 2}).map({(p:PlayerAI, l:Int) => p.selectTokenClasses(l)}.tupled)
+		val roundTwoTokenClasses:Seq[Seq[TokenClass]] = ais.zip(tokenPositions.map{_.length}).zipWithIndex.map{input => 
+			val ((p:PlayerAI, len:Int), index:Int) = input
+			p.narrowTokenClasses(roundOneTokenClasses, len, index)
+		}
+		
+		val TokenClassToSpaceIndex:Seq[Seq[(TokenClass, (Int, Int))]] = roundTwoTokenClasses.zip(tokenPositions).map({(x:Seq[TokenClass],y:Seq[(Int, Int)]) => x.zip(y)}.tupled)
 		val tokenClassToSpace:Seq[Seq[(Option[TokenClass], Space[SpaceClass])]] = TokenClassToSpaceIndex.map{_.map{(x) => ((Option(x._1), field.space(x._2._1, x._2._2) ))}}
 		// limit number of tokens to number of availiable spaces.
 		

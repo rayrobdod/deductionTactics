@@ -29,20 +29,10 @@ import com.rayrobdod.deductionTactics.swingView.{BoardGamePanel, MenuBar, Highli
  * @author Raymond Dodge
  * @version a.6.0
  */
-final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
+final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 {
-	/** Forwards command to base */
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo) = {
-		base.takeTurn(player, gameState, memo.asInstanceOf[SwingInterfaceMemo].base)
-		
-	}
-	/** Forwards command to base */
-	override def buildTeam(size:Int) = base.buildTeam(size)
-	
-	
-	
 	/** Forwards command to base, then creates a new JFrame with a BoardGamePanel */
-	def initialize(player:Int, initialState:GameState):Memo =
+	override def initialize(player:Int, initialState:GameState):Memo =
 	{
 		val tokens = initialState.tokens
 		val panel = new BoardGamePanel(tokens, player, initialState.board)

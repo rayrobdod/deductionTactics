@@ -26,17 +26,10 @@ package ai
  * @author Raymond Dodge
  * @version a.6.0
  */
-final class WithAutorecord(val base:PlayerAI) extends PlayerAI
+final class WithAutorecord(val base:PlayerAI) extends DecoratorPlayerAI(base)
 {
-	/** Forwards command to base */
-	def buildTeam(count:Int) = base.buildTeam(count)
-	/** Forwards command to base */
-	def takeTurn(player:Int, gameState:GameState, memo:Memo) = base.takeTurn(player, gameState, memo)
-	/** Forwards command to base */
-	def initialize(player:Int, initialState:GameState) = base.initialize(player, initialState)
-	
 	/** responds to actions */
-	def notifyTurn(player:Int, action:GameState.Result, beforeState:GameState, afterState:GameState, memo:Memo):Memo = {
+	override def notifyTurn(player:Int, action:GameState.Result, beforeState:GameState, afterState:GameState, memo:Memo):Memo = {
 		val a = base.notifyTurn(player, action, beforeState, afterState, memo)
 		val b = a.addAttack(action)
 		
