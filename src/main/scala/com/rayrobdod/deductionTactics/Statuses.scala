@@ -77,6 +77,7 @@ object Statuses {
 			t.copy(currentHitpoints = t.currentHitpoints + Token.baseDamage)
 	}
 	/** do nothing (so that currentStatus doesn't have to be an option)
+	 * In other words, a null object.
 	 * @since a.6.0
 	 */
 	val Normal:Status = new Status(7, "Normal") {

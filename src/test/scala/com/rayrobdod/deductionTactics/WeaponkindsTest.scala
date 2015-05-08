@@ -18,26 +18,27 @@
 package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.Seq
-import com.rayrobdod.deductionTactics.Elements._
+import com.rayrobdod.deductionTactics.Weaponkinds._
 import org.scalatest.{FunSuite, FunSpec}
 import org.scalatest.prop.PropertyChecks
 
-class ElementsTest extends FunSpec {
-	describe ("Element") {
-		describe ("Light"){
-			happySuite(enumValue = Light, id = 0, name = "Light")
+class WeaponkindsTest extends FunSpec {
+	
+	describe ("Weaponkinds") {
+		describe ("Bladekind"){
+			happySuite(enumValue = Bladekind, id = 0, name = "Blade")
 		}
-		describe ("Electric"){
-			happySuite(enumValue = Electric, id = 1, name = "Electric")
+		describe ("Bluntkind"){
+			happySuite(enumValue = Bluntkind, id = 1, name = "Blunt")
 		}
-		describe ("Fire"){
-			happySuite(enumValue = Fire, id = 2, name = "Fire")
+		describe ("Spearkind"){
+			happySuite(enumValue = Spearkind, id = 2, name = "Spear")
 		}
-		describe ("Frost"){
-			happySuite(enumValue = Frost, id = 3, name = "Frost")
+		describe ("Whipkind"){
+			happySuite(enumValue = Whipkind, id = 3, name = "Whip")
 		}
-		describe ("Sound"){
-			happySuite(enumValue = Sound, id = 4, name = "Sound")
+		describe ("Powderkind"){
+			happySuite(enumValue = Powderkind, id = 4, name = "Powder")
 		}
 		
 		describe ("Illegal values") {
@@ -68,53 +69,25 @@ class ElementsTest extends FunSpec {
 				}
 			}
 		}
-		
-		// damageModifier is a vague term. Choose either "damageMultiplierWhenAttacking" or "damageMulitplierWhenDefending"... 
-		describe ("Elements.Fire.damageModifier") {
-			it ("should be x1 against Fire"){
-				// Fire is neutral against itself
-				val res = Elements.Fire.damageModifier(Elements.Fire)
-				assertResult(1)(res)
-			}
-			ignore ("should be x2 against Electric"){
-				// Fire is very strong against electric
-				val res = Elements.Fire.damageModifier(Elements.Electric)
-				assertResult(2)(res)
-			}
-			ignore ("should be x1.5 against Light"){
-				// Fire is somewhat strong against light
-				val res = Elements.Fire.damageModifier(Elements.Light)
-				assertResult(1.5)(res)
-			}
-			ignore ("should be x0.75 against Sound"){
-				// Fire is somewhat weak against sound
-				val res = Elements.Fire.damageModifier(Elements.Sound)
-				assertResult(0.75)(res)
-			}
-			ignore ("should be x0.5 against Frost"){
-				// Fire is very weak against frost
-				val res = Elements.Fire.damageModifier(Elements.Frost)
-				assertResult(0.5)(res)
-			}
-		}
 	}
 	
 	
-	private def happySuite(id:Int, name:String, enumValue:Element) {
+	private def happySuite(id:Int, name:String, enumValue:Weaponkind) {
 		it ("id is " + id){
 			assertResult(id)(enumValue.id)
 		}
 		it ("name is \"" + name + "\""){
-			assertResult(name)(enumValue.name)
+			assertResult(name + "kind")(enumValue.name)
 		}
 		it ("is the result of apply(" + id + ")"){
-			assertResult(enumValue)(Elements.apply(id))
+			assertResult(enumValue)(Weaponkinds.apply(id))
 		}
 		it ("is the result of withName(\"" + name + "\")"){
-			assertResult(enumValue)(Elements.withName(name))
+			assertResult(enumValue)(Weaponkinds.withName(name))
 		}
 		it ("is contained inside values"){
 			assert(values.contains(enumValue))
 		}
 	}
 }
+
