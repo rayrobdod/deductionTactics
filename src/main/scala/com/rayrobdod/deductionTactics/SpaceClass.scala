@@ -36,7 +36,15 @@ import scala.collection.immutable.{Seq => ISeq}
  */
 
 /**
+ * 
  * @version a.6.0
+ * 
+ * @constructor
+ * @param toString a name for this space class
+ * @param canEnter  a cost determining how hard it is to attack this
+ *        space. Higher is more difficult.
+ * @param canAttack a cost determining how hard it is to attack this
+ *        space. Higher is more difficult.
  */
 final case class SpaceClass(
 	override val toString:String,

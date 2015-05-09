@@ -18,6 +18,7 @@
 package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.Seq
+import com.rayrobdod.boardGame.StrictRectangularSpaceViaFutures
 import com.rayrobdod.deductionTactics.Directions._
 import org.scalatest.{FunSuite, FunSpec}
 import org.scalatest.prop.PropertyChecks
@@ -64,6 +65,128 @@ class DirectionsTest extends FunSpec {
 				intercept[NoSuchElementException] {
 					Directions.withName("Spearkind")
 				}
+			}
+		}
+		
+		describe("Direction.spaceIs") {
+			val toNone = {() => None}
+			val dest = new StrictRectangularSpaceViaFutures[SpaceClass](FreePassageSpaceClass.apply, toNone, toNone, toNone, toNone)
+			val toDest = {() => Some(dest)}
+			
+			describe ("space to itself is false") {
+				values.foreach{dir =>
+					it (dir.name) {
+						assert(! dir.spaceIs(dest, dest))
+					}
+				}
+			}
+			it ("Space.Left is left of Space") {
+				val src = new StrictRectangularSpaceViaFutures[SpaceClass](
+						FreePassageSpaceClass.apply,
+						leftFuture = toDest,
+						rightFuture = toNone,
+						upFuture = toNone,
+						downFuture = toNone)
+				
+				assert(Left.spaceIs(src, dest))
+			}
+			it ("Space.Right is right of Space") {
+				val src = new StrictRectangularSpaceViaFutures[SpaceClass](
+						FreePassageSpaceClass.apply,
+						leftFuture = toNone,
+						rightFuture = toDest,
+						upFuture = toNone,
+						downFuture = toNone)
+				
+				assert(Right.spaceIs(src, dest))
+			}
+			it ("Space.down is down of Space") {
+				val src = new StrictRectangularSpaceViaFutures[SpaceClass](
+						FreePassageSpaceClass.apply,
+						leftFuture = toNone,
+						rightFuture = toNone,
+						upFuture = toNone,
+						downFuture = toDest)
+				
+				assert(Down.spaceIs(src, dest))
+			}
+			it ("Space.down is down of Space (implicit)") {
+				val src = new StrictRectangularSpaceViaFutures[SpaceClass](
+						FreePassageSpaceClass.apply,
+						leftFuture = toNone,
+						rightFuture = toNone,
+						upFuture = toNone,
+						downFuture = toDest)
+				
+				assert(dest is Down of src)
+			}
+			it ("Space.up is up of Space") {
+				val src = new StrictRectangularSpaceViaFutures[SpaceClass](
+						FreePassageSpaceClass.apply,
+						leftFuture = toNone,
+						rightFuture = toNone,
+						upFuture = toDest,
+						downFuture = toNone)
+				
+				assert(Up.spaceIs(src, dest))
+			}
+			it ("Space.up is not down of Space") {
+				val src = new StrictRectangularSpaceViaFutures[SpaceClass](
+						FreePassageSpaceClass.apply,
+						leftFuture = toNone,
+						rightFuture = toNone,
+						upFuture = toDest,
+						downFuture = toNone)
+				
+				assert(! Down.spaceIs(src, dest))
+			}
+			it ("Something random is not down of Space, when Space has a down") {
+				val notThis = new StrictRectangularSpaceViaFutures[SpaceClass](FirePassageSpaceClass.apply, toNone, toNone, toNone, toNone)
+				
+				val src = new StrictRectangularSpaceViaFutures[SpaceClass](
+						FreePassageSpaceClass.apply,
+						leftFuture = toNone,
+						rightFuture = toNone,
+						upFuture = toNone,
+						downFuture = toDest)
+				
+				assert(! Down.spaceIs(src, notThis))
+			}
+			it ("Recursion is possible (up)") {
+				val src = new StrictRectangularSpaceViaFutures[SpaceClass](
+						FreePassageSpaceClass.apply,
+						leftFuture = toNone,
+						rightFuture = toNone,
+						upFuture = {() =>
+							Some(new StrictRectangularSpaceViaFutures[SpaceClass](
+								FreePassageSpaceClass.apply,
+								leftFuture = toNone,
+								rightFuture = toNone,
+								upFuture = toDest,
+								downFuture = toNone
+							))
+						},
+						downFuture = toNone)
+				
+				assert(Up.spaceIs(src, dest))
+			}
+			it ("Recursion is possible (right)") {
+				val src = new StrictRectangularSpaceViaFutures[SpaceClass](
+						FreePassageSpaceClass.apply,
+						leftFuture = toNone,
+						rightFuture = {() =>
+							Some(new StrictRectangularSpaceViaFutures[SpaceClass](
+								FreePassageSpaceClass.apply,
+								leftFuture = toNone,
+								rightFuture = toDest,
+								upFuture = toNone,
+								downFuture = toNone
+							))
+						},
+						upFuture = toNone,
+						downFuture = toNone)
+				
+				assert(Right.spaceIs(src, dest))
 			}
 		}
 	}
