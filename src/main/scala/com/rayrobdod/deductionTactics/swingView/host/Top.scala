@@ -88,7 +88,6 @@ class Top {
 	def addNextActionListener(a:ActionListener) {
 		nextButton.addActionListener(a)
 	}
-	
 }
 
 object Top {

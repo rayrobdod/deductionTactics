@@ -38,48 +38,21 @@ object Main extends App
 	
 	def startNewGame
 	{
-		val okButton = new JButton("OK")
-		val aiChooser = new ChooseAIsComponent()
-		val mapChooser = new ChooseMapComponent()
+		val thingy = swingView.join.Top
 		
-		aiChooser.setBorder(BorderFactory.createMatteBorder(3,0,0,0,java.awt.Color.BLACK))
-		
-		val aiChooserFrame = new JFrame("Choose PlayerTypes")
-		aiChooserFrame.getContentPane.add({
-			val returnValue = new JPanel(new BorderLayout)
-			returnValue.add(mapChooser, borderNorth)
-			returnValue.add(aiChooser)
-			returnValue
-		})
-		aiChooserFrame.getContentPane.add(okButton, borderSouth)
-		aiChooserFrame.getRootPane.setDefaultButton(okButton);
-		aiChooserFrame.setJMenuBar(new swingView.MenuBar)
-		
-		
-		mapChooser.numPlayersList.addListSelectionListener(AiChooserCountChanger)
-		object AiChooserCountChanger extends ListSelectionListener {
-			def valueChanged(e:ListSelectionEvent) = {
-				Option(mapChooser.numPlayersList.getSelectedValue).map{_.intValue}.foreach{(x:Int) =>
-					aiChooser.players = x;
-					aiChooserFrame.pack();
-				}
-			}
-		}
-		
-		okButton.addActionListener(new ActionListener{
+		thingy.addNextActionListener(new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				aiChooserFrame.setVisible(false)
 				new Thread(new Runnable{
 					def run = buildTeams(
-							aiChooser.getAIs,
+							thingy.getAi,
 							Maps.getMap(mapChooser.mapList.getSelectedIndex),
 							Maps.startingPositions(mapChooser.mapList.getSelectedIndex, mapChooser.numPlayersList.getSelectedValue))
 				}, "build teams").start()
 			}
 		})
 		
-		aiChooserFrame.pack()
-		aiChooserFrame.setVisible(true)
+		aiChooserFrame.show()
 	}
 	
 	private def buildTeams(ais:Seq[PlayerAI], field:RectangularField[SpaceClass], tokenPositions:Seq[Seq[(Int, Int)]]) =
