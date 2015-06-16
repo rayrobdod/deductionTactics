@@ -6,9 +6,9 @@ organizationHomepage := Some(new URL("http://rayrobdod.name/"))
 
 version := "a.6.0-SNAPSHOT"
 
-scalaVersion := "2.9.3"
+scalaVersion := "2.10.5"
 
-crossScalaVersions ++= Seq("2.9.1", "2.9.2", "2.9.3", "2.10.3", "2.11.0-M4")
+crossScalaVersions ++= Seq("2.10.5", "2.11.6")
 
 exportJars := true
 
@@ -16,11 +16,11 @@ mainClass := Some("com.rayrobdod.deductionTactics.main.SimpleStart")
 
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "20140518")
 
-libraryDependencies += ("com.rayrobdod" %% "json" % "1.0.0")
+libraryDependencies += ("com.rayrobdod" %% "json" % "2.0-RC2")
 
 libraryDependencies += ("net.sf.opencsv" % "opencsv" % "2.3")
 
-libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0-SNAPSHOT-20140927")
+libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0-SNAPSHOT")
 
 
 

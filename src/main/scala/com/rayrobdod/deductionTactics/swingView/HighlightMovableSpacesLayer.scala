@@ -21,7 +21,7 @@ import java.awt.{Component, Color, Graphics, Shape, Graphics2D}
 import scala.collection.immutable.{Seq, Set}
 import javax.swing.JComponent
 import com.rayrobdod.boardGame.{Space, RectangularSpace, RectangularField, StrictRectangularSpace}
-import com.rayrobdod.boardGame.swingView.{Layer, RectangularTilemapLayer}
+import com.rayrobdod.boardGame.swingView.RectangularTilemapComponent
 import com.rayrobdod.deductionTactics.{Token, ListOfTokens, SpaceClass, AttackCostFunction, MoveToCostFunction}
 import HighlightMovableSpacesLayer._
 
@@ -32,7 +32,7 @@ import HighlightMovableSpacesLayer._
  * @author Raymond Dodge
  * @since a.6.0
  */
-final class HighlightMovableSpacesLayer(tilemap:RectangularTilemapLayer) extends Layer
+final class HighlightMovableSpacesLayer(tilemap:RectangularTilemapComponent) extends JComponent
 {
 	var currentSpeeds:Seq[Shape] = Seq.empty;
 	var currentRanges:Seq[Shape] = Seq.empty;

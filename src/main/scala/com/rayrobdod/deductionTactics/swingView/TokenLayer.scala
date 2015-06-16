@@ -24,7 +24,7 @@ import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.BodyTypes.BodyType
 import com.rayrobdod.deductionTactics.Directions.Direction
 
-import javax.swing.Icon
+import javax.swing.{JComponent, Icon}
 import javax.imageio.ImageIO
 import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.swingView._
@@ -39,9 +39,9 @@ import com.rayrobdod.util.BlitzAnimImage
 /**
  * @version a.6.0
  */
-final class TokenLayer extends Layer {
+final class TokenLayer extends JComponent {
 	var tokens:ListOfTokens
-	var spaces:RectangularTilemapLayer
+	var spaces:RectangularTilemapComponent
 	
 	
 	

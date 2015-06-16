@@ -20,8 +20,9 @@ package com.rayrobdod.deductionTactics.swingView
 import com.rayrobdod.deductionTactics._
 import java.awt.Component
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
-import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, LayeredComponent, Layer, RectangularTilemapLayer}
+import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularTilemapComponent}
 import scala.collection.immutable.Seq
+import javax.swing.JPanel
 import javax.swing.event.{AncestorListener, AncestorEvent}
 import javax.swing.ScrollPaneConstants.{
 		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
@@ -37,19 +38,19 @@ import javax.swing.ScrollPaneConstants.{
  */
 class BoardGameViewModel(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[SpaceClass])
 {
-	val bottomFieldLayer:RectangularTilemapLayer
-	val topFieldLayer:RectangularTilemapLayer
+	val bottomFieldLayer:RectangularTilemapComponent
+	val topFieldLayer:RectangularTilemapComponent
 	val tokenLayer:TokenLayer
 	val moveHilightLayer:HighlightMovableSpacesLayer = new HighlightMovableSpacesLayer(bottomFieldLayer)
 	val interactionLayer:InteractionLayer
 	
 	val comp:Component = {
-		val a = new LayeredComponent
+		val a = new JPanel(new com.rayrobdod.swing.layouts.LayeredLayout)
 		
-		a.addLayer(bottomFieldLayer)
-		a.addLayer(tokenLayer)
-		a.addLayer(topFieldLayer)
-		a.addLayer(moveHilightLayer)
+		a.add(bottomFieldLayer)
+		a.add(tokenLayer)
+		a.add(topFieldLayer)
+		a.add(moveHilightLayer)
 	}
 }
 

@@ -18,7 +18,7 @@ package com.rayrobdod.deductionTactics
 */
 package consoleView
 
-import com.rayrobdod.boardGame.{RectangularField, Space}
+import com.rayrobdod.boardGame.{StrictRectangularSpace, RectangularField, Space}
 import java.io.PrintStream
 
 /**
