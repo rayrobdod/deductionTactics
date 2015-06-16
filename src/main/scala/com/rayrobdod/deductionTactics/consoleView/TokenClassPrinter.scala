@@ -26,6 +26,7 @@ import com.rayrobdod.deductionTactics.Directions.Direction
 import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
 import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds}
 import scala.runtime.{AbstractFunction1 => Function1}
+import scala.language.reflectiveCalls
 
 /**
  * @version a.6.0

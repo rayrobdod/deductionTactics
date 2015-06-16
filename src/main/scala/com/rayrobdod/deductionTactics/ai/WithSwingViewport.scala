@@ -48,7 +48,7 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 		val viewmodel = new BoardGameViewModel(tokens, player, initialState.board)
 		val frame = new JFrame("Deduction Tactics")		
 		frame.setJMenuBar(new MenuBar)
-		frame.getContentPane add viewmodel.component
+		frame.getContentPane add viewmodel.comp
 		
 		val activeToken = new swingView.SharedActiveTokenProperty()
 		activeToken.value = None

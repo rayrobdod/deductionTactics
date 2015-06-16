@@ -17,15 +17,78 @@
 */
 package com.rayrobdod.deductionTactics
 
+import java.net.URL
+import java.io.{Reader, StringReader, InputStreamReader}
+import java.nio.charset.StandardCharsets.UTF_8
 import scala.collection.immutable.{Seq, Set}
 import scala.collection.JavaConversions.iterableAsScalaIterable
-import com.rayrobdod.util.services.{ResourcesServiceLoader, Services}
 import au.com.bytecode.opencsv.CSVReader;
-import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
-import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
+import com.rayrobdod.util.services.{ResourcesServiceLoader, Services}
+import com.rayrobdod.json.parser.JsonParser
+import com.rayrobdod.json.builder.{Builder, SeqBuilder, MapBuilder}
 import com.rayrobdod.boardGame.RectangularField
-import java.net.URL
-import java.nio.charset.StandardCharsets.UTF_8
+
+final case class Arena (
+	val name:String,
+	layoutStrs:Seq[Seq[String]],
+	val startSpaces:Map[Int,Seq[Seq[(Int, Int)]]]
+) {
+	def layout:Seq[Seq[SpaceClass]] = layoutStrs.map{_.map{x => SpaceClassFactory(x)}}
+	
+	def possiblePlayers:Set[Int] = startSpaces.keySet
+}
+
+final class ArenaBuilder(baseDir:URL) extends Builder[Arena] {
+	override val name:Arena = new Arena("", Nil, Map.empty)
+	override def apply(folding:Arena, key:String, value:Any):Arena = key match {
+		case "name" => folding.copy(name = value.toString)
+		case "layout" => {
+			val layoutPath:URL = new URL(baseDir, value.toString)
+			var layoutReader:Reader = new StringReader("")
+			val result = try {
+				layoutReader = new java.io.InputStreamReader(layoutPath.openStream(), UTF_8)
+				
+				val layoutParser = new CSVReader(layoutReader);
+				val letterTable3 = layoutParser.readAll();
+				Seq.empty ++ letterTable3.map{Seq.empty ++ _}
+			} finally {
+				layoutReader.close()
+			}
+			folding.copy(layoutStrs = result)
+		}
+		case "classMap" => folding
+		case "deductionTactics::startSpaces" => {
+			folding.copy(startSpaces = value match {
+				case a:String => {
+					val spacePath = new URL(baseDir, value.toString)
+					var spaceReader:Reader = new StringReader("{}")
+					try {
+						spaceReader = new java.io.InputStreamReader(spacePath.openStream(), UTF_8)
+						new JsonParser(childBuilder(key)).parse(spaceReader).asInstanceOf[Map[_,_]].map{x => ((x._1.toString.toInt, castToStartSpaces(x._2)))}
+					} finally {
+						spaceReader.close()
+					}
+				}
+				case a:Map[_,_] => {
+					a.map{x => ((x._1.toString.toInt, castToStartSpaces(x._2)))}
+				}
+			})
+		}
+		case _ => folding
+	}
+	override def childBuilder(key:String):Builder[_] = key match {
+		case "deductionTactics::startSpaces" => new MapBuilder({x:String => new SeqBuilder})
+	}
+	override val resultType:Class[CannonicalTokenClassTemplate] = classOf[CannonicalTokenClassTemplate]
+	
+	private def castToStartSpaces(x:Any):Seq[Seq[Tuple2[Int,Int]]] = {
+		def tuple(x:Any):Tuple2[Int,Int] = x match {case Seq(a:Long,b:Long) => Tuple2(a.intValue, b.intValue)}
+		def seqTuple(x:Any):Seq[(Int,Int)] = x match {case x:Seq[_] => x.map{tuple _}}
+		def seqSeqTuple(x:Any):Seq[Seq[(Int,Int)]] = x match {case x:Seq[_] => x.map{seqTuple _}}
+		
+		seqSeqTuple(x)
+	}
+}
 
 /**
  * An object that deals with Maps
@@ -46,105 +109,25 @@ object Maps {
 		Seq.empty ++ new ResourcesServiceLoader(SERVICE);
 	}
 	
-	private def getMetadata(index:Int):Map[String, Any] = {
-		val metadataPath = Maps.paths(index)
-		val metadataMap:Map[String,Any] = {
-			val reader = new java.io.InputStreamReader(metadataPath.openStream(), UTF_8)
-			val listener = ToScalaCollection()
-			JSONParser.parse(listener, reader)
+	private def getArenas:Seq[Arena] = paths.map{x =>
+		var reader:Reader = new StringReader("{}")
+		try {
+			reader = new java.io.InputStreamReader(x.openStream(), UTF_8)
+			new JsonParser(new ArenaBuilder(x)).parse(reader)
+		} finally {
 			reader.close()
-			listener.resultMap
 		}
-		
-		metadataMap
-	}
-	
-	private def getStringLayout(index:Int):Seq[Seq[String]] = {
-		val metadataPath = Maps.paths(index)
-		val metadataMap = getMetadata(index)
-		
-		val layoutPath = new URL(metadataPath, metadataMap("layout").toString)
-		val layoutReader = new java.io.InputStreamReader(layoutPath.openStream(), UTF_8)
-		val layoutTable:Seq[Seq[String]] = {
-			val reader = new CSVReader(layoutReader);
-			val letterTable3 = reader.readAll();
-			val letterTable = Seq.empty ++ letterTable3.map{Seq.empty ++ _}
-			
-			letterTable
-		}
-		layoutReader.close()
-		
-		layoutTable
-	}
-	
-	private def getSpaceClassLayout(index:Int):Seq[Seq[SpaceClass]] = {
-		val strings = getStringLayout(index)
-		
-		strings.map{_.map{(s) => SpaceClassFactory(s)}}
 	}
 	
 	def getMap(index:Int):RectangularField[SpaceClass] = {
-		RectangularField(getSpaceClassLayout(index))
+		RectangularField(getArenas(index).layout)
 	}
 	
 	def possiblePlayers(index:Int):Set[Int] = {
-		val metadataPath = Maps.paths(index)
-		val metadataMap = getMetadata(index)
-		
-		val startSpaceValue = metadataMap("deductionTactics::startSpaces")
-		val startSpaceMap:Map[String,Any] = startSpaceValue match {
-			case x:Map[_,_] => x.map{x => ((x._1.toString, x._2))}
-			case _ => {
-				val startSpacePath = new URL(metadataPath, startSpaceValue.toString)
-				val startSpaceReader = new java.io.InputStreamReader(startSpacePath.openStream(), UTF_8)
-				
-				val listener = ToScalaCollection()
-				JSONParser.parse(listener, startSpaceReader)
-				startSpaceReader.close()
-				listener.resultMap
-			}
-		}
-		
-		startSpaceMap.keySet.map{ Integer.parseInt(_) }
+		getArenas(index).possiblePlayers
 	}
 	
 	def startingPositions(index:Int, numPlayers:Int):Seq[Seq[(Int, Int)]] = {
-		def asInt(any:Any):Int = {any match {
-			case x:Int => x
-			case x:Integer => x
-			case x:Long => x.toInt
-			case x:String => Integer.parseInt(x)
-			case x:Any =>  Integer.parseInt(x.toString)
-		}}
-		
-		val metadataPath = Maps.paths(index)
-		val metadataMap = getMetadata(index)
-		
-		val startSpaceValue = metadataMap("deductionTactics::startSpaces")
-		val startSpaceMapRaw:Map[String,Any] = startSpaceValue match {
-			case x:Map[_,_] => x.map{x => ((x._1.toString, x._2))}
-			case _ => {
-				val startSpacePath = new URL(metadataPath, startSpaceValue.toString)
-				val startSpaceReader = new java.io.InputStreamReader(startSpacePath.openStream(), UTF_8)
-				
-				val listener = ToScalaCollection()
-				JSONParser.parse(listener, startSpaceReader)
-				startSpaceReader.close()
-				listener.resultMap
-			}
-		}
-		
-		val startSpaceMap:Map[String,Seq[Seq[(Int, Int)]]] = {
-			startSpaceMapRaw.mapValues{_ match {
-				case x:Seq[_] => x.map{_ match {
-					case y:Seq[_] => y.map{_ match {
-						case Seq(i:Any, j:Any) => {
-							((asInt(i), asInt(j)))
-						}
-					}}
-				}}
-			}}
-		}
-		startSpaceMap(numPlayers.toString)
+		getArenas(index).startSpaces(numPlayers)
 	}
 }

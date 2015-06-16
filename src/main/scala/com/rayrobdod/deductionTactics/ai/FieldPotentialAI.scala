@@ -98,8 +98,7 @@ final class FieldPotentialAI extends PlayerAI
 			)
 			
 			val token = list.alivePlayerTokens(player)(0)
-			val labels = initialState.board.map{(x) => (x._1, new JLabel("XXXX"))}.toMap[Space[SpaceClass]
-, JLabel]
+			val labels = initialState.board.map{(x) => (x._1, new JLabel("XXXX"))}.toMap[Space[SpaceClass], JLabel]
 			
 			labels.foreach{(x) => frame.getContentPane.add(x._2)}
 			frame.setVisible(true);

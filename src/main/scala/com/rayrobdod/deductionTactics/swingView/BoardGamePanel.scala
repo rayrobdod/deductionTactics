@@ -42,7 +42,7 @@ class BoardGameViewModel(tokens:ListOfTokens, playerNumber:Int, val field:Rectan
 	val topFieldLayer:RectangularTilemapComponent
 	val tokenLayer:TokenLayer
 	val moveHilightLayer:HighlightMovableSpacesLayer = new HighlightMovableSpacesLayer(bottomFieldLayer)
-	val interactionLayer:InteractionLayer
+//	val interactionLayer:InteractionLayer
 	
 	val comp:Component = {
 		val a = new JPanel(new com.rayrobdod.swing.layouts.LayeredLayout)
