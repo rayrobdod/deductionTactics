@@ -26,7 +26,12 @@ import com.rayrobdod.deductionTactics.LoggerInitializer.{elementsLogger => logge
  */
 object Elements {
 	
-	/** @version a.6.0 */
+	/**
+	 * An element is one of the properties of a unit. It both determines
+	 * the units offensive damage type, and the unit's defensive properties
+	 * related to elements.
+	 * @version a.6.0
+	 */
 	final class Element(val id:Int, val name:String) {
 		def damageModifier(other:Element):Float = {
 			((((other.id - this.id) % 5) + 5) % 5) match {
