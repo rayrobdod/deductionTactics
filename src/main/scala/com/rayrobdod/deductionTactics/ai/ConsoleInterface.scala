@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics.ai
 
 import scala.collection.immutable.Seq
-import com.rayrobdod.deductionTactics.{PlayerAI, Token, GameState}
+import com.rayrobdod.deductionTactics.{PlayerAI, Token, GameState, TokenClass}
 import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
 
 /**
@@ -31,7 +31,7 @@ final class ConsoleInterface extends PlayerAI
 {
 	
 	
-	def buildTeam(size:Int) = {
+	def buildTeam(size:Int):Seq[TokenClass] = {
 		// TODO: actual prompts
 		randomTeam(size)
 	}
@@ -77,15 +77,15 @@ final class ConsoleInterface extends PlayerAI
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[ConsoleInterface]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[ConsoleInterface]}
+	override def equals(other:Any):Boolean = {
 		// no instance variables to test
 		this.canEquals(other) && other.asInstanceOf[ConsoleInterface].canEquals(this)
 	}
 	// arbitrary number (17)
-	override def hashCode = 13
+	override def hashCode:Int = 13
 	
-	override def toString = this.getClass.getName
+	override def toString:String = this.getClass.getName
 }
 
 

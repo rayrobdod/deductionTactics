@@ -18,6 +18,7 @@
 package com.rayrobdod.deductionTactics
 package ai
 
+import scala.collection.immutable.Seq
 
 /**
  * A decorator for PlayerAIs. It intercepts the buildTeam command and creates
@@ -31,7 +32,7 @@ final class WithRandomTeam(val base:PlayerAI) extends PlayerAI
 	/** Forwards command to base */
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo) = base.takeTurn(player, gameState, memo)
 	/** chooses a team randomly */
-	override def buildTeam(size:Int) = randomTeam(size)
+	override def buildTeam(size:Int):Seq[TokenClass] = randomTeam(size)
 	
 	/** Forwards command to base */
 	override def initialize(player:Int, initialState:GameState):Memo = base.initialize(player, initialState)
@@ -41,12 +42,12 @@ final class WithRandomTeam(val base:PlayerAI) extends PlayerAI
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[WithRandomTeam]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[WithRandomTeam]}
+	override def equals(other:Any):Boolean = {
 		this.canEquals(other) && other.asInstanceOf[WithRandomTeam].canEquals(this) &&
 				this.base == other.asInstanceOf[WithRandomTeam].base
 	}
-	override def hashCode = base.hashCode * 7 + 23
+	override def hashCode:Int = base.hashCode * 7 + 23
 	
-	override def toString = base.toString + " with " + this.getClass.getName
+	override def toString:String = base.toString + " with " + this.getClass.getName
 }

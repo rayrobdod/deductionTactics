@@ -27,7 +27,7 @@ object Weaponkinds
 {
 	final class Weaponkind(val id:Int, val name:String, val classType:String)
 	{
-		override def toString = "com.rayrobdod.deductionTactics.Weaponkinds." + name
+		override def toString:String = "com.rayrobdod.deductionTactics.Weaponkinds." + name
 	}
 	
 	val Bladekind = new Weaponkind(0, "Bladekind", "swordsman")
@@ -36,15 +36,15 @@ object Weaponkinds
 	val Whipkind  = new Weaponkind(3, "Whipkind", "whipman")
 	val Powderkind= new Weaponkind(4, "Powderkind", "powderman")
 	
-	def values = Seq[Weaponkind](Bladekind, Bluntkind, Spearkind, Whipkind, Powderkind)
-	def apply(x:Int) = values(x) //.find{_.id == x}.get
+	def values:Seq[Weaponkind] = Seq[Weaponkind](Bladekind, Bluntkind, Spearkind, Whipkind, Powderkind)
+	def apply(x:Int):Weaponkind = values(x) //.find{_.id == x}.get
 	
-	def withName(s:String) = {
+	def withName(s:String):Weaponkind = {
 		try {
 			values.find{_.name.equalsIgnoreCase(s + "kind")}.get
 		} catch {
 			case x:NoSuchElementException => 
-				val y = new NoSuchElementException("No element with name: "+ s)
+				val y = new NoSuchElementException("No element with name: " + s)
 				y.initCause(x)
 				throw y
 		}

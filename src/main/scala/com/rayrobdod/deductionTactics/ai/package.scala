@@ -87,7 +87,7 @@ package object ai
 	 */
 	def moveRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspision = new TokenClassSuspision()):Set[Space[SpaceClass]] =
 	{
-		def statusSpeedLimit = token.currentStatus match {
+		val statusSpeedLimit = token.currentStatus match {
 			case Statuses.Snake => 1
 			case Statuses.Sleep => 0
 			case _ => 1000

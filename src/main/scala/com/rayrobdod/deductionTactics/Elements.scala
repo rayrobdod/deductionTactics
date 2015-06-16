@@ -43,7 +43,7 @@ object Elements {
 			}
 		}
 		
-		override def toString = "com.rayrobdod.deductionTactics.Elements." + name
+		override def toString:String = "com.rayrobdod.deductionTactics.Elements." + name
 	}
 	
 	val Light:Element    = new Element(0, "Light"   )
@@ -52,10 +52,10 @@ object Elements {
 	val Frost:Element    = new Element(3, "Frost"   )
 	val Sound:Element    = new Element(4, "Sound"   )
 	
-	def values = Seq[Element](Light, Electric, Fire, Frost, Sound)
-	def apply(x:Int) = values(x) //.find{_.id == x}.get
+	def values:Seq[Element] = Seq[Element](Light, Electric, Fire, Frost, Sound)
+	def apply(x:Int):Element = values(x) //.find{_.id == x}.get
 	
-	def withName(s:String) = {
+	def withName(s:String):Element = {
 		try {
 			values.find{_.name equalsIgnoreCase s}.get
 		} catch {

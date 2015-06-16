@@ -19,6 +19,7 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import scala.util.Random
+import scala.collection.immutable.Seq
 
 /**
  * A decorator for PlayerAIs. It intercepts the buildTeam command and creates
@@ -38,7 +39,7 @@ final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 				base.notifyTurn(player, action, beforeState, afterState, memo)
 	
 	/** chooses a team randomly */
-	def buildTeam(size:Int) = {
+	def buildTeam(size:Int):Seq[TokenClass] = {
 		import javax.swing.JOptionPane.PLAIN_MESSAGE
 		
 		val pane = new javax.swing.JOptionPane;
@@ -57,12 +58,12 @@ final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[WithArbitraryTeam]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[WithArbitraryTeam]}
+	override def equals(other:Any):Boolean = {
 		this.canEquals(other) && other.asInstanceOf[WithArbitraryTeam].canEquals(this) &&
 				this.base == other.asInstanceOf[WithArbitraryTeam].base
 	}
-	override def hashCode = base.hashCode * 7 + 23
+	override def hashCode:Int = base.hashCode * 7 + 23
 	
-	override def toString = base.toString + " with " + this.getClass.getName
+	override def toString:String = base.toString + " with " + this.getClass.getName
 }

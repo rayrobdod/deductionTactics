@@ -18,6 +18,7 @@
 package com.rayrobdod.deductionTactics
 package ai
 
+import scala.collection.immutable.Seq
 
 /**
  * A decorator for PlayerAIs. It adds a set of listeners to the tokens and
@@ -29,7 +30,7 @@ package ai
 final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 {
 	/** Forwards command to base */
-	def buildTeam(count:Int) = base.buildTeam(count)
+	def buildTeam(count:Int):Seq[TokenClass] = base.buildTeam(count)
 	/** Forwards command to base */
 	def takeTurn(player:Int, gameState:GameState, memo:Memo) = base.takeTurn(player, gameState, memo)
 	/** Forwards command to base */
@@ -62,12 +63,12 @@ final class WithAutorecord(val base:PlayerAI) extends PlayerAI
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[WithAutorecord]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[WithAutorecord]}
+	override def equals(other:Any):Boolean = {
 		this.canEquals(other) && other.asInstanceOf[WithAutorecord].canEquals(this) &&
 				this.base == other.asInstanceOf[WithAutorecord].base
 	}
-	override def hashCode = base.hashCode * 13 + 19
+	override def hashCode:Int = base.hashCode * 13 + 19
 	
-	override def toString = base.toString + " with " + this.getClass.getName
+	override def toString:String = base.toString + " with " + this.getClass.getName
 }
