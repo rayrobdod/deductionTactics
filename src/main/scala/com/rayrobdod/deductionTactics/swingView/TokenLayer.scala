@@ -40,14 +40,12 @@ import com.rayrobdod.util.BlitzAnimImage
  * @version a.6.0
  */
 final class TokenLayer extends JComponent {
-	var tokens:ListOfTokens
-	var spaces:RectangularTilemapComponent
+	// var tokens:ListOfTokens
+	// var spaces:RectangularTilemapComponent
 	
 	
 	
 	
-	def clicked(e:java.awt.event.MouseEvent) {}
-	def paintLayer() {}
 	
 	/*
 	final def beAttacked(element:Element, kind:Weaponkind) {

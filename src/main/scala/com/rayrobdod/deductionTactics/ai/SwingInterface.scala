@@ -72,7 +72,7 @@ final class SwingInterface extends PlayerAI
 		val viewmodel = new BoardGameViewModel(tokens, player, initialState.board)
 		val frame = new JFrame("Deduction Tactics")		
 		frame.setJMenuBar(new MenuBar)
-		frame.getContentPane add viewmodel.component
+		frame.getContentPane add viewmodel.comp
 		
 		val attackTypeSelector = new SellectAttackTypePanel()
 		val activeToken = new swingView.SharedActiveTokenProperty()
@@ -85,20 +85,18 @@ final class SwingInterface extends PlayerAI
 			}
 		}
 		
-		val hilightLayer = new HighlightMovableSpacesLayer(panel.centerpiece)
-		panel.centerpiece.add(hilightLayer, 0)
-		
 		val tokensProp = new swingView.ListOfTokensProperty
 		tokensProp.value = initialState.tokens
 		
-		initialState.board.values.foreach{(s:Space[SpaceClass]) =>
-			panel.centerpiece.addMouseListenerToSpace(s,
+		initialState.board.foreach{ab =>
+			val (index, space) = ab
+			viewmodel.bottomFieldLayer.addMouseListener(index,
 				new MoveTokenMouseListener(
 						player,
 						tokensProp,
-						s,
+						space,
 						attackTypeSelector,
-						(t:Option[Token], l:ListOfTokens) => hilightLayer.update(t, l, initialState.board),
+						(t:Option[Token], l:ListOfTokens) => viewmodel.moveHilightLayer.update(t, l, initialState.board),
 						writeGameAction,
 						activeToken
 				)
@@ -130,8 +128,7 @@ final class SwingInterface extends PlayerAI
 		
 		SwingInterfaceMemo(
 				base = new SimpleMemo,
-				panel = panel,
-				hilightLayer = hilightLayer,
+				panel = viewmodel,
 				attackTypeSelector = attackTypeSelector,
 				selectedToken = activeToken,
 				currentTokens = tokensProp,
@@ -169,7 +166,7 @@ final class SwingInterface extends PlayerAI
 		val memo2 = memo.asInstanceOf[SwingInterfaceMemo]
 		val panel = memo2.panel
 		
-		action match {
+/*		action match {
 			case GameState.TokenMoveResult(index, s) =>
 				val tokenComp = panel.tokenComps(index)
 				tokenComp.moveToSpace(s)
@@ -190,7 +187,7 @@ final class SwingInterface extends PlayerAI
 			case GameState.EndOfTurn =>
 				None
 		}
-		
+*/		
 		
 		memo2.selectedToken.value = {
 			// this assumes that the board doesn't change.
@@ -198,7 +195,7 @@ final class SwingInterface extends PlayerAI
 			afterState.tokens.tokens.flatten.find{x => Option(x.currentSpace) == space}
 		}
 		memo2.currentTokens.value = afterState.tokens
-		memo2.hilightLayer.update(memo2.selectedToken.value, afterState.tokens, afterState.board)
+		memo2.panel.moveHilightLayer.update(memo2.selectedToken.value, afterState.tokens, afterState.board)
 		
 		memo
 	}
@@ -220,7 +217,6 @@ final class SwingInterface extends PlayerAI
 final case class SwingInterfaceMemo (
 	base:Memo,
 	panel:BoardGameViewModel,
-	hilightLayer:HighlightMovableSpacesLayer,
 	attackTypeSelector:SellectAttackTypePanel,
 	selectedToken:swingView.SharedActiveTokenProperty,
 	currentTokens:swingView.ListOfTokensProperty,

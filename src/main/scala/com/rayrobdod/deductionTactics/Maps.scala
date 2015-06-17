@@ -39,7 +39,7 @@ final case class Arena (
 }
 
 final class ArenaBuilder(baseDir:URL) extends Builder[Arena] {
-	override val name:Arena = new Arena("", Nil, Map.empty)
+	override val init:Arena = new Arena("", Nil, Map.empty)
 	override def apply(folding:Arena, key:String, value:Any):Arena = key match {
 		case "name" => folding.copy(name = value.toString)
 		case "layout" => {
@@ -79,7 +79,7 @@ final class ArenaBuilder(baseDir:URL) extends Builder[Arena] {
 	override def childBuilder(key:String):Builder[_] = key match {
 		case "deductionTactics::startSpaces" => new MapBuilder({x:String => new SeqBuilder})
 	}
-	override val resultType:Class[CannonicalTokenClassTemplate] = classOf[CannonicalTokenClassTemplate]
+	override val resultType:Class[Arena] = classOf[Arena]
 	
 	private def castToStartSpaces(x:Any):Seq[Seq[Tuple2[Int,Int]]] = {
 		def tuple(x:Any):Tuple2[Int,Int] = x match {case Seq(a:Long,b:Long) => Tuple2(a.intValue, b.intValue)}

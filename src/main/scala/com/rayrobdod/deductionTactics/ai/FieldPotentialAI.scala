@@ -92,13 +92,13 @@ final class FieldPotentialAI extends PlayerAI
 			val frame:JFrame = new JFrame("PotentialFieldAI$RetreatField") 
 			frame.getContentPane.setLayout(
 				new java.awt.GridLayout(
-					initialState.board.map{_._1}.max,
-					initialState.board.map{_._2}.max
+					initialState.board.map{_._1._1}.max,
+					initialState.board.map{_._1._2}.max
 				)
 			)
 			
 			val token = list.alivePlayerTokens(player)(0)
-			val labels = initialState.board.map{(x) => (x._1, new JLabel("XXXX"))}.toMap[Space[SpaceClass], JLabel]
+			val labels = initialState.board.map{(x) => (x._2, new JLabel("XXXX"))}.toMap[Space[SpaceClass], JLabel]
 			
 			labels.foreach{(x) => frame.getContentPane.add(x._2)}
 			frame.setVisible(true);

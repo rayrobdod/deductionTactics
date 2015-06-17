@@ -37,6 +37,7 @@ import javax.imageio.ImageIO
  * @since a.6.0
  */
 class TokenClassNameToIconFromJson(sources:Seq[URL]) {
+	import TokenClassNameToIconFromJson._
 	
 	val map:Map[String, Icon] = {
 		val a:Seq[Seq[(String, Icon)]] = sources.map{(jsonPath:URL) =>
@@ -52,6 +53,9 @@ class TokenClassNameToIconFromJson(sources:Seq[URL]) {
 		val d:Map[String, Icon] = b.toMap
 		d
 	}
+}
+
+object TokenClassNameToIconFromJson {
 	
 	final class TokenIconBuilder extends Builder[TokenIconParts] {
 		override val init:TokenIconParts = new TokenIconParts()

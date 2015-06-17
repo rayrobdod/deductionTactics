@@ -30,6 +30,7 @@ import javax.swing.ScrollPaneConstants.{
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
 		HORIZONTAL_SCROLLBAR_AS_NEEDED => scrollHorizontalAsNeeded
 }
+import com.rayrobdod.boardGame.swingView.RectangularFieldComponent
 
 
 /**
@@ -38,9 +39,13 @@ import javax.swing.ScrollPaneConstants.{
  */
 class BoardGameViewModel(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[SpaceClass])
 {
-	val bottomFieldLayer:RectangularTilemapComponent
-	val topFieldLayer:RectangularTilemapComponent
-	val tokenLayer:TokenLayer
+	import BoardGamePanel.currentTilesheet
+	
+	private val fieldLayers = RectangularFieldComponent.apply(field, currentTilesheet)
+	
+	val bottomFieldLayer:RectangularTilemapComponent = fieldLayers._1
+	val topFieldLayer:RectangularTilemapComponent = fieldLayers._2
+	val tokenLayer:TokenLayer = new TokenLayer
 	val moveHilightLayer:HighlightMovableSpacesLayer = new HighlightMovableSpacesLayer(bottomFieldLayer)
 //	val interactionLayer:InteractionLayer
 	

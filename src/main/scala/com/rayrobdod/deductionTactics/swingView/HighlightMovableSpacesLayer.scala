@@ -39,9 +39,8 @@ final class HighlightMovableSpacesLayer(tilemap:RectangularTilemapComponent) ext
 	var maximumSpeeds:Seq[Shape] = Seq.empty;
 	var maximumRanges:Seq[Shape] = Seq.empty;
 	
-	override def paintLayer(c:Component, g:Graphics, offsetX:Int, offsetY:Int) {
+	override def paintComponent(g:Graphics) {
 		val g2 = g.asInstanceOf[Graphics2D]
-		g2.translate(-offsetX, -offsetY)
 		val g2Fill = {(x:Shape) => g2.fill(x)}
 		
 		g2.setColor(currentSpeedColor)
@@ -52,8 +51,6 @@ final class HighlightMovableSpacesLayer(tilemap:RectangularTilemapComponent) ext
 		maximumSpeeds.foreach(g2Fill)
 		g2.setColor(maximumRangeColor)
 		maximumRanges.foreach(g2Fill)
-		
-		g2.translate(offsetX, offsetY)
 	}
 	
 	

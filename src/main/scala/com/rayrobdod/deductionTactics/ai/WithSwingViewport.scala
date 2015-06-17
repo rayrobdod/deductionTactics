@@ -68,8 +68,7 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 		
 		SwingInterfaceMemo(
 				base = base.initialize(player, initialState), 
-				panel = panel,
-				hilightLayer = hilightLayer,
+				panel = viewmodel,
 				attackTypeSelector = new swingView.SellectAttackTypePanel(),
 				selectedToken = activeToken,
 				currentTokens = tokensProp,
@@ -91,7 +90,7 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 		val newMemoBase = base.notifyTurn(player, action, beforeState, afterState, memo2.base)
 		val panel = memo2.panel
 		
-		action match {
+/*		action match {
 			case GameState.TokenMoveResult(index, s) =>
 				val tokenComp = panel.tokenComps(index)
 				tokenComp.moveToSpace(s)
@@ -112,7 +111,7 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 			case GameState.EndOfTurn =>
 				None
 		}
-		
+*/		
 		
 		memo2.selectedToken.value = {
 			// this assumes that the board doesn't change.
@@ -120,12 +119,11 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 			afterState.tokens.tokens.flatten.find{x => Option(x.currentSpace) == space}
 		}
 		memo2.currentTokens.value = afterState.tokens
-		memo2.hilightLayer.update(memo2.selectedToken.value, afterState.tokens, afterState.board)
+		memo2.panel.moveHilightLayer.update(memo2.selectedToken.value, afterState.tokens, afterState.board)
 		
 		new SwingInterfaceMemo(
 			newMemoBase,
 			memo2.panel,
-			memo2.hilightLayer,
 			memo2.attackTypeSelector,
 			memo2.selectedToken,
 			memo2.currentTokens,
