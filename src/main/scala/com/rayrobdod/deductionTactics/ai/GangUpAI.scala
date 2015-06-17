@@ -56,10 +56,11 @@ class GangUpAI extends PlayerAI
 		// attack selected token
 		myTokens.foreach{(myToken:Token) =>
 			if (currentTarget.currentStatus == None &&
-						shouldUseStatus(myToken.tokenClass.atkStatus.get))
+					shouldUseStatus(myToken.tokenClass.atkStatus.get)) {
 				myToken.tryAttackStatus(currentTarget)
-			else
+			} else {
 				myToken.tryAttackDamage(currentTarget)
+			}
 		}
 	}
 	
@@ -108,18 +109,18 @@ class GangUpAI extends PlayerAI
 	
 	
 	
-	def buildTeam(size:Int) = randomTeam(size)
+	def buildTeam(size:Int):Seq[TokenClass] = randomTeam(size)
 	def initialize(player:Int, initialState:GameState):Memo = {
 		currentTargetMap.update(player, player.tokens.otherTokens.flatten.head)
 	}
 	
-	def canEquals(other:Any) = {other.isInstanceOf[GangUpAI]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[GangUpAI]}
+	override def equals(other:Any):Seq[TokenClass] = {
 		// no instance variables to test
 		this.canEquals(other) && other.asInstanceOf[GangUpAI].canEquals(this)
 	}
 	// arbitrary number (17)
-	override def hashCode =  41
+	override def hashCode:Int =  41
 	
-	override def toString = this.getClass.getName //+ "[" + currentTargetMap + "]"
+	override def toString:String = this.getClass.getName //+ "[" + currentTargetMap + "]"
 }

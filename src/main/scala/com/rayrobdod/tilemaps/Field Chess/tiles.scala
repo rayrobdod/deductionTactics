@@ -52,7 +52,7 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 	private val transColor = new Color(0,0,0,0);
 	private val otherColor = new Color(0,0,0);
 	
-	def name = "Field Chess";
+	def name:String = "Field Chess";
 	
 	private def spaceClassToColor(s:SpaceClass, useDarker:Boolean) = {
 			import com.rayrobdod.deductionTactics._
@@ -132,8 +132,8 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 	
 	private class MyIcon(center:Color, nw:Color, ne:Color, sw:Color, se:Color) extends Icon
 	{
-		def getIconWidth = 32;
-		def getIconHeight = 32;
+		def getIconWidth:Int = 32;
+		def getIconHeight:Int = 32;
 		
 		def paintIcon(c:Component, g:Graphics, x:Int, y:Int)
 		{

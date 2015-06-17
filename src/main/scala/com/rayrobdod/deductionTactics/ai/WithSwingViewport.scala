@@ -19,6 +19,7 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import javax.swing.JFrame
+import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.swingView.{BoardGameViewModel, MenuBar, HighlightMovableSpacesLayer}
 
 /**
@@ -37,7 +38,7 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 		
 	}
 	/** Forwards command to base */
-	override def buildTeam(size:Int) = base.buildTeam(size)
+	override def buildTeam(size:Int):Seq[TokenClass] = base.buildTeam(size)
 	
 	
 	
@@ -134,12 +135,12 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[WithSwingViewport]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[WithSwingViewport]}
+	override def equals(other:Any):Boolean = {
 		this.canEquals(other) && other.asInstanceOf[WithSwingViewport].canEquals(this) &&
 				this.base == other.asInstanceOf[WithSwingViewport].base
 	}
-	override def hashCode = base.hashCode * 7 + 23
+	override def hashCode:Int = base.hashCode * 7 + 23
 	
-	override def toString = base.toString + " with " + this.getClass.getName
+	override def toString:String = base.toString + " with " + this.getClass.getName
 }

@@ -30,15 +30,15 @@ object BodyTypes {
 	val Avian    = new BodyType(1, "Avian")
 	val Gerbil   = new BodyType(2, "Gerbillinae")
 	
-	def values = Seq[BodyType](Humanoid, Avian, Gerbil)
-	def apply(x:Int) = values(x) //.find{_.id == x}.get
+	def values:Seq[BodyType] = Seq[BodyType](Humanoid, Avian, Gerbil)
+	def apply(x:Int):BodyType = values(x) //.find{_.id == x}.get
 	
-	def withName(s:String) = {
+	def withName(s:String):BodyType = {
 		try {
 			values.find{_.name.equalsIgnoreCase(s)}.get
 		} catch {
 			case x:NoSuchElementException => 
-				val y = new NoSuchElementException("No element with name: "+ s)
+				val y = new NoSuchElementException("No element with name: " + s)
 				y.initCause(x)
 				throw y
 		}

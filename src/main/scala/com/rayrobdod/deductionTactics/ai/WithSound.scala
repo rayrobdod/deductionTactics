@@ -65,13 +65,13 @@ final class WithSound(val base:PlayerAI) extends PlayerAI
 	}
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[WithSound]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[WithSound]}
+	override def equals(other:Any):Boolean = {
 		this.canEquals(other) && other.asInstanceOf[WithSound].canEquals(this) &&
 				this.base == other.asInstanceOf[WithSound].base
 	}
-	override def hashCode = base.hashCode * 7 + 37
+	override def hashCode:Int = base.hashCode * 7 + 37
 	
-	override def toString = base.toString + " with " + this.getClass.getName
+	override def toString:String = base.toString + " with " + this.getClass.getName
 
 }

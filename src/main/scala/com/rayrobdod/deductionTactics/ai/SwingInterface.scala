@@ -136,7 +136,7 @@ final class SwingInterface extends PlayerAI
 		)
 	}
 	
-	override def buildTeam(teamSize:Int) = {
+	override def buildTeam(teamSize:Int):Seq[TokenClass] = {
 		val buildingLock = new Object()
 		val teamBuilder = new TeamBuilderPanel()
 		
@@ -203,15 +203,15 @@ final class SwingInterface extends PlayerAI
 	// hopefully, animations will work eventually and that will
 	// inform a player of what's going on.
 	
-	def canEquals(other:Any) = {other.isInstanceOf[SwingInterface]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[SwingInterface]}
+	override def equals(other:Any):Boolean = {
 		// no instance variables to test
 		this.canEquals(other) && other.asInstanceOf[SwingInterface].canEquals(this)
 	}
 	// arbitrary number (17)
-	override def hashCode = 13
+	override def hashCode:Int = 13
 	
-	override def toString = this.getClass.getName
+	override def toString:String = this.getClass.getName
 }
 
 final case class SwingInterfaceMemo (

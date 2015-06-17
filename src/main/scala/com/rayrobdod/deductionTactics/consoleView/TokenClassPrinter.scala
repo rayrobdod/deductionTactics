@@ -39,7 +39,7 @@ object TokenClassPrinter extends Function1[TokenClass,Unit]
 	val getName = {(x:{def name:String}) => x.name}
 	
 	
-	def apply(tokenClass:TokenClass) = {
+	def apply(tokenClass:TokenClass):Unit = {
 		out.println(tokenClass.name);
 		
 		out.print("Speed: ");
@@ -65,7 +65,7 @@ object TokenClassPrinter extends Function1[TokenClass,Unit]
 	/**
 	 * @since a.6.0
 	 */
-	def apply(tokenClass:TokenClassSuspision) = {
+	def apply(tokenClass:TokenClassSuspision):Unit = {
 		out.println("???");
 		
 		out.print("Speed: ");

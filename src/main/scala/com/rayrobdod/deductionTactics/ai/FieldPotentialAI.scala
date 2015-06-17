@@ -31,7 +31,7 @@ import java.util.logging.Level
 final class FieldPotentialAI extends PlayerAI
 {
 	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
-	override def buildTeam(size:Int) = randomTeam(size)
+	override def buildTeam(size:Int):Seq[TokenClass] = randomTeam(size)
 	
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		gameState.tokens.alivePlayerTokens(player).flatMap{(myToken:Token) =>
@@ -121,15 +121,15 @@ final class FieldPotentialAI extends PlayerAI
 		memo:Memo
 	):Memo = memo
 	
-	def canEquals(other:Any) = {other.isInstanceOf[FieldPotentialAI]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[FieldPotentialAI]}
+	override def equals(other:Any):Boolean = {
 		// no instance variables to test
 		this.canEquals(other) && other.asInstanceOf[FieldPotentialAI].canEquals(this)
 	}
 	// arbitrary number (17)
-	override def hashCode = 23
+	override def hashCode:Int = 23
 	
-	override def toString = this.getClass.getName
+	override def toString:String = this.getClass.getName
 }
 
 private[ai] object PotentialFieldAI$FuzzyLogic {

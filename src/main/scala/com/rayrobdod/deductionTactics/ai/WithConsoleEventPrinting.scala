@@ -41,7 +41,7 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo) =
 			base.takeTurn(player, gameState, memo)
 	/** Forwards command to base */
-	override def buildTeam(size:Int) = base.buildTeam(size)
+	override def buildTeam(size:Int):Seq[TokenClass] = base.buildTeam(size)
 	
 	
 	
@@ -143,14 +143,14 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[WithConsoleEventPrinting]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[WithConsoleEventPrinting]}
+	override def equals(other:Any):Boolean = {
 		this.canEquals(other) && other.asInstanceOf[WithConsoleEventPrinting].canEquals(this) &&
 				this.base == other.asInstanceOf[WithConsoleEventPrinting].base
 	}
-	override def hashCode = base.hashCode * 7 + 43
+	override def hashCode:Int = base.hashCode * 7 + 43
 	
-	override def toString = base.toString + " with " + this.getClass.getName
+	override def toString:String = base.toString + " with " + this.getClass.getName
 }
 
 

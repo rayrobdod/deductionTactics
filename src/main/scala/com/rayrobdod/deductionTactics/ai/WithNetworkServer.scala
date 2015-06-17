@@ -108,9 +108,9 @@ class WithNetworkServer(base:PlayerAI) extends PlayerAI {
 	// default equals - only if same instance.
 	
 	// arbitrary number (17)
-	override def hashCode = 21
+	override def hashCode:Int = 21
 	
-	override def toString = base.toString + " with " + this.getClass.getName
+	override def toString:String = base.toString + " with " + this.getClass.getName
 	
 	
 	

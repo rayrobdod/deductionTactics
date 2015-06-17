@@ -89,20 +89,20 @@ final class ConsoleInterface_CFN extends PlayerAI
 		}
 	}
 	
-	def buildTeam = {
+	def buildTeam:Seq[TokenClass] = {
 		// TODO: actual prompts
 		randomTeam()
 	}
 	
-	def canEquals(other:Any) = {other.isInstanceOf[ConsoleInterface_CFN]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[ConsoleInterface_CFN]}
+	override def equals(other:Any):Boolean = {
 		// no instance variables to test
 		this.canEquals(other) && other.asInstanceOf[ConsoleInterface_CFN].canEquals(this)
 	}
 	// arbitrary number (17)
-	override def hashCode = 13
+	override def hashCode:Int = 13
 	
-	override def toString = this.getClass.getName
+	override def toString:String = this.getClass.getName
 }
 
 object ConsoleInterface_CFN {

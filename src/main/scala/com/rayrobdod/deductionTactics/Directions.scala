@@ -80,7 +80,7 @@ object Directions
 			scaler(1 - (theta / PI)).floatValue
 		}
 		
-		override def toString = "com.rayrobdod.deductionTactics.Directions." + name
+		override def toString:String = "com.rayrobdod.deductionTactics.Directions." + name
 	}
 	
 	val Left  = new Direction(0, "Left",  (th:StrictRectangularSpace[SpaceClass]) => { th.left  })
@@ -88,10 +88,10 @@ object Directions
 	val Right = new Direction(2, "Right", (th:StrictRectangularSpace[SpaceClass]) => { th.right })
 	val Down  = new Direction(3, "Down",  (th:StrictRectangularSpace[SpaceClass]) => { th.down  })
 	
-	def values = Seq[Direction](Left, Up, Right, Down)
-	def apply(x:Int) = values(x) // values.find{_.id == x}.get
+	def values:Seq[Direction] = Seq[Direction](Left, Up, Right, Down)
+	def apply(x:Int):Direction = values(x) // values.find{_.id == x}.get
 	
-	def withName(s:String) = {
+	def withName(s:String):Direction = {
 		try {
 			values.find{_.name equalsIgnoreCase s}.get
 		} catch {
