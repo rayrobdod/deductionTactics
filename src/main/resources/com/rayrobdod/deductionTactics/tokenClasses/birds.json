@@ -6,7 +6,7 @@
 	"range":1,
 	"speed":4,
 	"body":"Avian",
-	"weakWeapon":{"blade":.75,"blunt":2,"spear":1,"whip":1.5,"powder":.5},
+	"weakWeapon":{"blade":0.75,"blunt":2,"spear":1,"whip":1.5,"powder":0.5},
 	"weakStatus":"Sleep",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Golden Eagle.png"
@@ -18,7 +18,7 @@
 	"range":1,
 	"speed":5,
 	"body":"Avian",
-	"weakWeapon":{"blade":1,"blunt":2,"spear":.75,"whip":1.5,"powder":.5},
+	"weakWeapon":{"blade":1,"blunt":2,"spear":0.75,"whip":1.5,"powder":0.5},
 	"weakStatus":"Blind",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Peregrine Falcon.png"
@@ -31,7 +31,7 @@
 	"speed":3,
 	"body":"Avian",
 	"comment":"It can't fly, but the game will act like it can?",
-	"weakWeapon":{"blade":1,"blunt":1.5,"spear":.75,"whip":2,"powder":.5},
+	"weakWeapon":{"blade":1,"blunt":1.5,"spear":0.75,"whip":2,"powder":0.5},
 	"weakStatus":"Confuse",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Magellanic Penguin.png"
@@ -43,7 +43,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Avian",
-	"weakWeapon":{"blade":1,"blunt":2,"spear":.75,"whip":1.5,"powder":.5},
+	"weakWeapon":{"blade":1,"blunt":2,"spear":0.75,"whip":1.5,"powder":0.5},
 	"weakStatus":"Burn",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Wild Turkey.png"
@@ -56,7 +56,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Avian",
-	"weakWeapon":{"blade":1,"blunt":1.5,"spear":.75,"whip":2,"powder":.5},
+	"weakWeapon":{"blade":1,"blunt":1.5,"spear":0.75,"whip":2,"powder":0.5},
 	"weakStatus":"Confuse",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Eastern Bluebird.png"
@@ -69,7 +69,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Avian",
-	"weakWeapon":{"blade":1,"blunt":2,"spear":.75,"whip":1.5,"powder":.5},
+	"weakWeapon":{"blade":1,"blunt":2,"spear":0.75,"whip":1.5,"powder":0.5},
 	"weakStatus":"Sleep",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Northern Cardinal.png"
@@ -82,7 +82,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Avian",
-	"weakWeapon":{"blade":1.5,"blunt":2,"spear":1,"whip":.75,"powder":.5},
+	"weakWeapon":{"blade":1.5,"blunt":2,"spear":1,"whip":0.75,"powder":0.5},
 	"weakStatus":"Neuro",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Northwestern Crow.png"
@@ -94,7 +94,7 @@
 	"range":2,
 	"speed":3,
 	"body":"Avian",
-	"weakWeapon":{"blade":1.5,"blunt":2,"spear":1,"whip":1.5,"powder":.5},
+	"weakWeapon":{"blade":1.5,"blunt":2,"spear":1,"whip":1.5,"powder":0.5},
 	"weakStatus":"Confuse",
 	"weakDirection":"DontCare",
 	"iconc":""
@@ -107,7 +107,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Avian",
-	"weakWeapon":{"blade":.75,"blunt":1.5,"spear":2,"whip":1,"powder":.5},
+	"weakWeapon":{"blade":0.75,"blunt":1.5,"spear":2,"whip":1,"powder":0.5},
 	"weakStatus":"Blind",
 	"comment":"Thunderbolts come from eyes, apparently",
 	"weakDirection":"DontCare",
@@ -123,7 +123,7 @@
 	"range":1,
 	"speed":4,
 	"body":"Avian",
-	"weakWeapon":{"blade":1.5,"blunt":.5,"spear":.75,"whip":1,"powder":2},
+	"weakWeapon":{"blade":1.5,"blunt":0.5,"spear":0.75,"whip":1,"powder":2},
 	"weakStatus":"Sleep",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Passenger Pigeon.png"
@@ -135,7 +135,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Avian",
-	"weakWeapon":{"blade":1,"blunt":1.5,"spear":.5,"whip":.75,"powder":2},
+	"weakWeapon":{"blade":1,"blunt":1.5,"spear":0.5,"whip":0.75,"powder":2},
 	"weakStatus":"Sleep",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Barn Owl.png"
@@ -148,7 +148,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Avian",
-	"weakWeapon":{"blade":1.5,"blunt":1,"spear":.75,"whip":2,"powder":.5},
+	"weakWeapon":{"blade":1.5,"blunt":1,"spear":0.75,"whip":2,"powder":0.5},
 	"weakStatus":"Sleep",
 	"weakDirection":"DontCare",
 	"iconc":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Barn Owl.png"
