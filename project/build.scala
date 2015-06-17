@@ -17,40 +17,45 @@ object DeductionTacticsBuild extends Build {
 	// configuration points, like the built in `version`, `libraryDependencies`, or `compile`
 	// by implementing Plugin, these are automatically imported in a user's `build.sbt`
 	val compileTokens = TaskKey[Seq[File]]("token-compile")
-	val compileTokensInput = SettingKey[Seq[File]]("token-compile-in")
-	val compileTokensOutput = SettingKey[File]("token-compile-out")
 	val genBasicTokens = TaskKey[Seq[File]]("token-basicGen")
-	val genBasicTokensOutput = SettingKey[File]("token-basicGen-out")
 	
 	val tokensPackage = "com/rayrobdod/deductionTactics/tokenClasses/"
 	
-	// a group of settings ready to be added to a Project
-	// to automatically add them, do
+	
 	val compileTokensSettings = Seq(
-		compileTokensInput <<= (resourceDirectory in Compile) apply { x =>
-			new File(x, tokensPackage).listFiles(new FileFilter{
-				def accept(x:File) = x.toString.endsWith(".json")
-			})
+		includeFilter in compileTokens := new FileFilter{
+			def accept(n:File) = {
+				n.toString.replace('\\', '/').contains(tokensPackage) && n.toString.endsWith(".json")
+			}
 		},
-		compileTokensOutput <<= (managedResourceDirectories in Compile) apply { x =>
+		sourceDirectory in compileTokens in Compile <<= (sourceDirectory in Compile),
+		
+		sources in compileTokens in Compile := {
+			(sourceDirectory in compileTokens in Compile).value **
+					((includeFilter in compileTokens in Compile).value --
+					(excludeFilter in compileTokens in Compile).value)
+		}.get,
+		sources in compileTokens in Compile := ((genBasicTokens in Compile).value ++: (sources in compileTokens in Compile).value),
+		target in compileTokens in Compile <<= (managedResourceDirectories in Compile) apply { x =>
 			new File(x.head, tokensPackage + "baseSet.rrd-dt-tokenClass")
 		},
-		compileTokens <<= (compileTokensInput, compileTokensOutput) map { (in, out) =>
-			val in2 = in.map{_.toPath}
-			val out2 = out.toPath
+		compileTokens in Compile := {
+			val in2 = (sources in compileTokens in Compile).value.map{_.toPath}
+			val out2 = (target in compileTokens in Compile).value.toPath
 			
 			java.nio.file.Files.createDirectories(out2.getParent())
 			CompileTokenClassesToBinary.compile(in2, out2)
 			
 			Seq(out2.toFile)
-		}
+		},
+		resourceGenerators in Compile <+= (compileTokens in Compile)
 	)
 	val generateBasicTokens = Seq(
-		genBasicTokensOutput <<= (managedResourceDirectories in Compile) apply { x =>
-			new File(x.head, tokensPackage + "basic.json")
+		(target in genBasicTokens in Compile) := {
+			(resourceManaged in Compile).value / tokensPackage / "basic.json"
 		},
-		genBasicTokens <<= (genBasicTokensOutput) map { (out) =>
-			val out2 = out.toPath
+		genBasicTokens in Compile := {
+			val out2 = (target in genBasicTokens in Compile).value.toPath
 			
 			java.nio.file.Files.createDirectories(out2.getParent())
 			GenerateBasicTokens.compile(out2)
@@ -64,7 +69,7 @@ object DeductionTacticsBuild extends Build {
 	lazy val root = Project(
 			id = "deductionTactics",
 			base = file("."),
-			settings = Defaults.defaultSettings ++
+			settings = Defaults.coreDefaultSettings ++
 					Seq(proguardTypeSetting) ++
 					compileTokensSettings ++
 					generateBasicTokens

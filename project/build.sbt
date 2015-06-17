@@ -1,5 +1,7 @@
 sbtPlugin := true
 
+scalacOptions ++= Seq("-unchecked", "-deprecation" )
+
 (unmanagedSourceDirectories in Compile) := (unmanagedSourceDirectories in Compile).value :+
 		(baseDirectory.value / ".." / "src" / "main" / "scala").getCanonicalFile()
 

@@ -84,27 +84,12 @@ mappings in (Compile, packageBin) <+= baseDirectory.map{(b) => (new File(b, "LIC
 
 
 // Token compiling
-compileTokensInput <<= (compileTokensInput, genBasicTokensOutput).apply{(a, b) => b +: a}
-
-compileTokens <<= compileTokens.dependsOn (genBasicTokens)
-
-excludeFilter in unmanagedResources in Compile <<= (excludeFilter in unmanagedResources in Compile, compileTokensInput) apply {(previous, tokenSrc) =>
-	previous || new FileFilter{
-		def accept(n:File) = tokenSrc.contains(n)
-	}
+excludeFilter in unmanagedResources in Compile := {
+	(excludeFilter in unmanagedResources in Compile).value || (includeFilter in compileTokens).value
 }
-
-mappings in (Compile, packageSrc) <++= (compileTokensInput) map { (tokenSrc) =>
-	// Not resilient to change
-	tokenSrc.map{x => ((x, "com/rayrobdod/deductionTactics/tokenClasses/" + x.getName )) }
-}
-
-// if some part of the circular dependency breaks down, remove this line
-resourceGenerators in Compile <+= compileTokens.task
 
 
 // scalaTest
-
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.1" % "test"
 
 testOptions in Test += Tests.Argument("-oS")
