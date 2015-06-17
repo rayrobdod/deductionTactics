@@ -20,7 +20,7 @@ libraryDependencies += ("com.rayrobdod" %% "json" % "2.0-RC2")
 
 libraryDependencies += ("net.sf.opencsv" % "opencsv" % "2.3")
 
-libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0-SNAPSHOT")
+libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0-SNAPSHOT-20150616")
 
 
 
