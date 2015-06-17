@@ -111,6 +111,10 @@ class Top {
 		frame.setVisible(true);
 	}
 	
+	def setVisible(visible:Boolean):Unit = {
+		frame.setVisible(visible)
+	}
+	
 	def addNextActionListener(a:ActionListener) {
 		nextButton.addActionListener(a)
 	}

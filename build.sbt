@@ -6,9 +6,9 @@ organizationHomepage := Some(new URL("http://rayrobdod.name/"))
 
 version := "a.6.0-SNAPSHOT"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.10.5"
 
-crossScalaVersions ++= Seq("2.9.1", "2.9.2", "2.9.3", "2.10.3", "2.11.0-M4")
+crossScalaVersions ++= Seq("2.10.5", "2.11.6")
 
 exportJars := true
 
@@ -104,12 +104,12 @@ resourceGenerators in Compile <+= compileTokens.task
 
 
 // scalaTest
-scalaVersion in Test := "2.9.3"
 
-libraryDependencies += "org.scalatest" % "scalatest_2.9.3" % "1.9.2" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.1" % "test"
 
-// testOptions in Test += Tests.Argument("-oS")
+testOptions in Test += Tests.Argument("-oS")
 
+scalastyleConfig := baseDirectory.value / "project" / "scalastyle-config.xml"
 
 // proguard
 proguardSettings

@@ -27,18 +27,28 @@ import LoggerInitializer.{cannonicalTokenLogger => Logger}
  */
 object Directions
 {
+	/**
+	 * A direction is a relation between two spaces. An attack's direction is 
+	 * determined by how two tokens are located relative to each other. The attack's
+	 * direction is independent of the token's class. The defensive properties of a token
+	 * are determined by the token's class.
+	 */
 	final class Direction(val id:Int, val name:String,
 			val function:Function1[StrictRectangularSpace[SpaceClass],Option[StrictRectangularSpace[SpaceClass]]])
 	{
-		def spaceIs(th:StrictRectangularSpace[SpaceClass], other:StrictRectangularSpace[SpaceClass]):Boolean =
+		/**
+		 * True if other is in the specified direction of self
+		 * @todo better name (?)
+		 */
+		def spaceIs(self:StrictRectangularSpace[SpaceClass], other:StrictRectangularSpace[SpaceClass]):Boolean =
 		{
 			// can't use match here, since "case other" matches everything
 			// instead of acting like "== other"
-			function(th).map[Boolean]{(mid:StrictRectangularSpace[SpaceClass]) =>
+			function(self).map[Boolean]{(mid:StrictRectangularSpace[SpaceClass]) =>
 				if (mid == other) {
 					true
 				} else {
-					spaceIs(th, mid)
+					spaceIs(mid, other)
 				}
 			}.getOrElse(false)
 		}
@@ -70,7 +80,7 @@ object Directions
 			scaler(1 - (theta / PI)).floatValue
 		}
 		
-		override def toString = "com.rayrobdod.deductionTactics.Directions." + name
+		override def toString:String = "com.rayrobdod.deductionTactics.Directions." + name
 	}
 	
 	val Left  = new Direction(0, "Left",  (th:StrictRectangularSpace[SpaceClass]) => { th.left  })
@@ -78,10 +88,10 @@ object Directions
 	val Right = new Direction(2, "Right", (th:StrictRectangularSpace[SpaceClass]) => { th.right })
 	val Down  = new Direction(3, "Down",  (th:StrictRectangularSpace[SpaceClass]) => { th.down  })
 	
-	def values = Seq[Direction](Left, Up, Right, Down)
-	def apply(x:Int) = values(x) // values.find{_.id == x}.get
+	def values:Seq[Direction] = Seq[Direction](Left, Up, Right, Down)
+	def apply(x:Int):Direction = values(x) // values.find{_.id == x}.get
 	
-	def withName(s:String) = {
+	def withName(s:String):Direction = {
 		try {
 			values.find{_.name equalsIgnoreCase s}.get
 		} catch {
@@ -116,5 +126,18 @@ object Directions
 		Logger.finer(pathDirections.toString)
 		
 		return pathDirections;
+	}
+	
+	
+	
+	/** `spaceA is Left of spaceB` */
+	implicit def spaceWithIs(s:StrictRectangularSpace[SpaceClass]):SpaceWithIs = new SpaceWithIs(s)
+	/** `spaceA is Left of spaceB` */
+	class SpaceWithIs(s:StrictRectangularSpace[SpaceClass]) {
+		def is(d:Direction) = new SpaceWithDirection(s,d)
+	}
+	/** `spaceA is Left of spaceB` */
+	class SpaceWithDirection(s:StrictRectangularSpace[SpaceClass], d:Direction) {
+		def of(o:StrictRectangularSpace[SpaceClass]) = d.spaceIs(o, s)
 	}
 }

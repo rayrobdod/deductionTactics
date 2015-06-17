@@ -26,7 +26,12 @@ import com.rayrobdod.deductionTactics.LoggerInitializer.{elementsLogger => logge
  */
 object Elements {
 	
-	/** @version a.6.0 */
+	/**
+	 * An element is one of the properties of a unit. It both determines
+	 * the units offensive damage type, and the unit's defensive properties
+	 * related to elements.
+	 * @version a.6.0
+	 */
 	final class Element(val id:Int, val name:String) {
 		def damageModifier(other:Element):Float = {
 			((((other.id - this.id) % 5) + 5) % 5) match {
@@ -38,7 +43,7 @@ object Elements {
 			}
 		}
 		
-		override def toString = "com.rayrobdod.deductionTactics.Elements." + name
+		override def toString:String = "com.rayrobdod.deductionTactics.Elements." + name
 	}
 	
 	val Light:Element    = new Element(0, "Light"   )
@@ -47,10 +52,10 @@ object Elements {
 	val Frost:Element    = new Element(3, "Frost"   )
 	val Sound:Element    = new Element(4, "Sound"   )
 	
-	def values = Seq[Element](Light, Electric, Fire, Frost, Sound)
-	def apply(x:Int) = values(x) //.find{_.id == x}.get
+	def values:Seq[Element] = Seq[Element](Light, Electric, Fire, Frost, Sound)
+	def apply(x:Int):Element = values(x) //.find{_.id == x}.get
 	
-	def withName(s:String) = {
+	def withName(s:String):Element = {
 		try {
 			values.find{_.name equalsIgnoreCase s}.get
 		} catch {

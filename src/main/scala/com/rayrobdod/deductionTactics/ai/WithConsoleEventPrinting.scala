@@ -137,14 +137,14 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends DecoratorPlayerA
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[WithConsoleEventPrinting]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[WithConsoleEventPrinting]}
+	override def equals(other:Any):Boolean = {
 		this.canEquals(other) && other.asInstanceOf[WithConsoleEventPrinting].canEquals(this) &&
 				this.base == other.asInstanceOf[WithConsoleEventPrinting].base
 	}
-	override def hashCode = base.hashCode * 7 + 43
+	override def hashCode:Int = base.hashCode * 7 + 43
 	
-	override def toString = base.toString + " with " + this.getClass.getName
+	override def toString:String = base.toString + " with " + this.getClass.getName
 }
 
 

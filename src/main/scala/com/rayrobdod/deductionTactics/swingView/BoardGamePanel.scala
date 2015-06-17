@@ -166,14 +166,14 @@ object BoardGamePanel {
 	
 	
 	private object NilPreferences extends java.util.prefs.AbstractPreferences(null, "") {
-		def getSpi(key:String) = null
-		def putSpi(key:String, value:String) {}
-		def removeSpi(key:String) {}
-		def removeNodeSpi() {}
-		def keysSpi() = new Array(0)
-		def childrenNamesSpi() = new Array(0)
-		def flushSpi() {}
-		def syncSpi() {}
-		def childSpi(key:String) = NilPreferences
+		override def getSpi(key:String):String = null
+		override def putSpi(key:String, value:String) {}
+		override def removeSpi(key:String) {}
+		override def removeNodeSpi() {}
+		override def keysSpi():Array[String] = new Array(0)
+		override def childrenNamesSpi():Array[String] = new Array(0)
+		override def flushSpi() {}
+		override def syncSpi() {}
+		override def childSpi(key:String):NilPreferences.type = NilPreferences
 	}
 }

@@ -26,6 +26,7 @@ import com.rayrobdod.deductionTactics.Directions.Direction
 import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
 import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds}
 import scala.runtime.{AbstractFunction1 => Function1}
+import scala.language.reflectiveCalls
 
 /**
  * @version a.6.0
@@ -38,7 +39,7 @@ object TokenClassPrinter extends Function1[TokenClass,Unit]
 	val getName = {(x:{def name:String}) => x.name}
 	
 	
-	def apply(tokenClass:TokenClass) = {
+	def apply(tokenClass:TokenClass):Unit = {
 		out.println(tokenClass.name);
 		
 		out.print("Speed: ");
@@ -64,7 +65,7 @@ object TokenClassPrinter extends Function1[TokenClass,Unit]
 	/**
 	 * @since a.6.0
 	 */
-	def apply(tokenClass:TokenClassSuspision) = {
+	def apply(tokenClass:TokenClassSuspision):Unit = {
 		out.println("???");
 		
 		out.print("Speed: ");

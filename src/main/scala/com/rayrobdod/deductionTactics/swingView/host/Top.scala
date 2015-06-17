@@ -21,7 +21,9 @@ import java.awt._
 import java.awt.event._
 import javax.swing._
 import javax.swing.event._
+import scala.collection.immutable.Seq
 import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
+import com.rayrobdod.deductionTactics.PlayerAI
 import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 
 class Top {
@@ -81,8 +83,8 @@ class Top {
 	}
 	
 	
-	def show() = {
-		frame.setVisible(true);
+	def setVisible(b:Boolean) = {
+		frame.setVisible(b);
 	}
 	
 	def addNextActionListener(a:ActionListener) {
@@ -98,6 +100,6 @@ object Top {
 				Top.main(new Array[String](0))
 			}
 		})
-		t.show();
+		t.setVisible(true);
 	}
 }

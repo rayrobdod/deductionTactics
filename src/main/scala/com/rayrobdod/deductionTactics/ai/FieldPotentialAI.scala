@@ -31,7 +31,7 @@ import java.util.logging.Level
 final class FieldPotentialAI extends PlayerAI
 {
 	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
-	override def selectTokenClasses(size:Int) = randomTeam(size)
+	override def selectTokenClasses(size:Int):Seq[TokenClass] = randomTeam(size)
 	/** chooses a subset of selectedTokenClasses randomly */
 	override def narrowTokenClasses(
 				selectedClasses:Seq[Seq[TokenClass]],
@@ -105,8 +105,7 @@ final class FieldPotentialAI extends PlayerAI
 			)
 			
 			val token = list.alivePlayerTokens(player)(0)
-			val labels = initialState.board.spaces.flatten.map{(x) => (x, new JLabel("XXXX"))}.toMap[Space[SpaceClass]
-, JLabel]
+			val labels = initialState.board.spaces.flatten.map{(x) => (x, new JLabel("XXXX"))}.toMap[Space[SpaceClass], JLabel]
 			
 			labels.foreach{(x) => frame.getContentPane.add(x._2)}
 			frame.setVisible(true);
@@ -129,15 +128,15 @@ final class FieldPotentialAI extends PlayerAI
 		memo:Memo
 	):Memo = memo
 	
-	def canEquals(other:Any) = {other.isInstanceOf[FieldPotentialAI]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[FieldPotentialAI]}
+	override def equals(other:Any):Boolean = {
 		// no instance variables to test
 		this.canEquals(other) && other.asInstanceOf[FieldPotentialAI].canEquals(this)
 	}
 	// arbitrary number (17)
-	override def hashCode = 23
+	override def hashCode:Int = 23
 	
-	override def toString = this.getClass.getName
+	override def toString:String = this.getClass.getName
 }
 
 private[ai] object PotentialFieldAI$FuzzyLogic {

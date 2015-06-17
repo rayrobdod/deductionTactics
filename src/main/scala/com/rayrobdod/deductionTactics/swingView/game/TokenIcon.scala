@@ -29,6 +29,7 @@ import javax.swing.Icon
 import javax.imageio.ImageIO
 import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.swingView._
+import com.rayrobdod.boardGame.swingView.{TokenComponent => BoardGameTokenComponent}
 import com.rayrobdod.animation.{AnimationIcon, ImageFrameAnimation,
 		NextFrameListener, AnimationEndedListener,
 		NextFrameEvent, AnimationEndedEvent
@@ -43,11 +44,12 @@ import com.rayrobdod.util.BlitzAnimImage
 final class TokenIcon(
 	fieldComp:FieldViewer[SpaceClass]
 ) extends BoardGameTokenComponent(fieldComp) {
+	val mainIcon = new com.rayrobdod.swing.SolidColorIcon(java.awt.Color.red, 32, 32)
 	this.setIcon(mainIcon)
 	this.setSize(mainIcon.getIconWidth, mainIcon.getIconHeight)
 	
 	final def beAttacked(element:Element, kind:Weaponkind) {
-		val animation = TokenComponent.BeAttackedAnimation(element, kind)
+		val animation = TokenIcon.BeAttackedAnimation(element, kind)
 		val animIcon = new AnimationIcon(animation)
 		
 		val stackedIcon = new StackedIcon(Seq(mainIcon, animIcon))
@@ -57,7 +59,7 @@ final class TokenIcon(
 		animation.addAnimationEndedListener(new AnimationEndedListener() {
 			def animationEnded(e:AnimationEndedEvent) = {
 					System.out.println("Animation Ended")
-					TokenComponent.this.setIcon(mainIcon)
+					TokenIcon.this.setIcon(mainIcon)
 			}
 		})
 		new Thread(animation).start()
@@ -65,7 +67,7 @@ final class TokenIcon(
 	}
 	
 	final def beAttacked(status:Status) {
-		val animation = TokenComponent.BeAttackedAnimation(status)
+		val animation = TokenIcon.BeAttackedAnimation(status)
 		val animIcon = new AnimationIcon(animation)
 		
 		val stackedIcon = new StackedIcon(Seq(mainIcon, animIcon))
@@ -74,14 +76,14 @@ final class TokenIcon(
 		animIcon.addRepaintOnNextFrameListener(this)
 		animation.addAnimationEndedListener(new AnimationEndedListener() {
 			def animationEnded(e:AnimationEndedEvent) =
-					TokenComponent.this.setIcon(mainIcon)
+					TokenIcon.this.setIcon(mainIcon)
 		})
 		new Thread(animation).start()
 	}
 	
 }
 
-object TokenComponent {
+object TokenIcon {
 	
 	def BeAttackedAnimation(elem:Element, kind:Weaponkind):ImageFrameAnimation = {
 		val effect:BlitzAnimImage = {

@@ -70,7 +70,7 @@ final class SleepAbuserAI extends PlayerAI
 		} :+ GameState.EndOfTurn
 	}
 	
-	def selectTokenClasses(teamSize:Int) = {
+	def selectTokenClasses(teamSize:Int):Seq[TokenClass] = {
 		val allWithSleep = TokenClass.allKnown.filter{_.atkStatus == Sleep}
 		Random.shuffle(allWithSleep ++ allWithSleep).take(teamSize)
 	}
@@ -91,7 +91,7 @@ final class SleepAbuserAI extends PlayerAI
 		memo:Memo
 	):Memo = memo
 	
-	override def toString = this.getClass.getName
+	override def toString:String = this.getClass.getName
 	
 	
 	

@@ -29,8 +29,7 @@ import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
  */
 final class ConsoleInterface extends PlayerAI
 {
-	def selectTokenClasses(size:Int) = {
-		// TODO: actual prompts
+	def selectTokenClasses(size:Int):Seq[TokenClass] = {		// TODO: actual prompts
 		randomTeam(size)
 	}
 	/** chooses a subset of selectedTokenClasses randomly */
@@ -84,15 +83,15 @@ final class ConsoleInterface extends PlayerAI
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[ConsoleInterface]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[ConsoleInterface]}
+	override def equals(other:Any):Boolean = {
 		// no instance variables to test
 		this.canEquals(other) && other.asInstanceOf[ConsoleInterface].canEquals(this)
 	}
 	// arbitrary number (17)
-	override def hashCode = 13
+	override def hashCode:Int = 13
 	
-	override def toString = this.getClass.getName
+	override def toString:String = this.getClass.getName
 }
 
 

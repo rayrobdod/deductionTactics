@@ -41,12 +41,12 @@ final class WithRandomTeam(val base:PlayerAI) extends DecoratorPlayerAI(base)
 	
 	
 	
-	def canEquals(other:Any) = {other.isInstanceOf[WithRandomTeam]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[WithRandomTeam]}
+	override def equals(other:Any):Boolean = {
 		this.canEquals(other) && other.asInstanceOf[WithRandomTeam].canEquals(this) &&
 				this.base == other.asInstanceOf[WithRandomTeam].base
 	}
-	override def hashCode = base.hashCode * 7 + 23
+	override def hashCode:Int = base.hashCode * 7 + 23
 	
-	override def toString = base.toString + " with " + this.getClass.getName
+	override def toString:String = base.toString + " with " + this.getClass.getName
 }

@@ -52,7 +52,7 @@ package object consoleView
 			}.tupled)
 		}.flatten.toMap
 		
-		return returnValue;
+		returnValue
 	}
 	
 	/** @since a.5.1 */

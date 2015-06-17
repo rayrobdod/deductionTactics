@@ -35,7 +35,7 @@ import java.util.logging.Level
 final class BlindAttackAI extends PlayerAI
 {
 	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
-	override def selectTokenClasses(size:Int) = randomTeam(size)
+	override def selectTokenClasses(size:Int):Seq[TokenClass] = randomTeam(size)
 	/** chooses a subset of selectedTokenClasses randomly */
 	override def narrowTokenClasses(
 				selectedClasses:Seq[Seq[TokenClass]],
@@ -111,13 +111,13 @@ final class BlindAttackAI extends PlayerAI
 		memo:Memo
 	):Memo = memo
 	
-	def canEquals(other:Any) = {other.isInstanceOf[BlindAttackAI]}
-	override def equals(other:Any) = {
+	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[BlindAttackAI]}
+	override def equals(other:Any):Boolean = {
 		// no instance variables to test
 		this.canEquals(other) && other.asInstanceOf[BlindAttackAI].canEquals(this)
 	}
 	// arbitrary number (17)
-	override def hashCode = 19
+	override def hashCode:Int = 19
 	
-	override def toString = this.getClass.getName
+	override def toString:String = this.getClass.getName
 }

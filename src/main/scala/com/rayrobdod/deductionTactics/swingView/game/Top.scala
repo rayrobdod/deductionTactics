@@ -22,6 +22,7 @@ import javax.swing.{JPanel, JScrollPane}
 import java.awt.{BorderLayout, GridLayout}
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
 import com.rayrobdod.boardGame.swingView.{RectangularFieldComponent => FieldComponent, RectangularTilesheet}
+import com.rayrobdod.deductionTactics.swingView.{TokenComponent, TokenClassList, tokenClassToIcon, TokenClassPanel, generateGenericIcon, AvailibleTilesheetListModel, tilesheets}
 import scala.collection.immutable.Seq
 import javax.swing.event.{AncestorListener, AncestorEvent}
 import javax.swing.ScrollPaneConstants.{
@@ -32,6 +33,7 @@ import javax.swing.ScrollPaneConstants.{
 }
 import javax.swing.BoxLayout.{Y_AXIS => boxYAxis}
 import javax.swing.{BoxLayout, Icon}
+import javax.swing.{JFrame, JToolTip}
 
 
 /**
@@ -69,6 +71,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	}
 	
 	
+	/*
 	override def createToolTip():JToolTip = {
 		val retVal = new JToolTip() {
 			this.setUI(TokenClassList.MyToolTipUI)
@@ -86,7 +89,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	}
 	
 	this.setToolTipText("asdfghjkl");
-	
+	*/
 	
 	
 	def show() = {
@@ -106,7 +109,7 @@ object BoardGamePanel {
 	val movementSpeedPrefsKey:String = "tokenMoveSpeed";
 	val tilesheetPrefsKey:String = "tilesheetIndex";
 	private def myPrefs = try {
-		Preferences.userNodeForPackage(classOf[BoardGamePanel]);
+		Preferences.userNodeForPackage(this.getClass);
 	} catch {
 		case e:java.security.AccessControlException => NilPreferences
 	}

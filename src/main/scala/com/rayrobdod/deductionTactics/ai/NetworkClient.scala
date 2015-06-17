@@ -43,7 +43,7 @@ class NetworkClient extends PlayerAI
 	private var input:Option[Scanner] = None
 	
 	
-	def buildTeam = {
+	def buildTeam:Seq[TokenClass] = {
 		val buildingLock = new Object()
 		val network = new NetworkClientSetupPanel()
 		
@@ -135,9 +135,9 @@ class NetworkClient extends PlayerAI
 	// default equals; by instance
 	
 	// arbitrary number (17)
-	override def hashCode = 19
+	override def hashCode:Int = 19
 	
-	override def toString = this.getClass.getName
+	override def toString:String = this.getClass.getName
 }
 
 object NetworkClient {
