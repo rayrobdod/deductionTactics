@@ -104,11 +104,10 @@ resourceGenerators in Compile <+= compileTokens.task
 
 
 // scalaTest
-scalaVersion in Test := "2.9.3"
 
-libraryDependencies += "org.scalatest" % "scalatest_2.9.3" % "1.9.2" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.1" % "test"
 
-// testOptions in Test += Tests.Argument("-oS")
+testOptions in Test += Tests.Argument("-oS")
 
 
 // proguard
