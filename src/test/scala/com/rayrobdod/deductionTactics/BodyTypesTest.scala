@@ -18,75 +18,67 @@
 package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.Seq
-import com.rayrobdod.deductionTactics.Weaponkinds._
+import com.rayrobdod.boardGame.StrictRectangularSpaceViaFutures
+import com.rayrobdod.deductionTactics.BodyTypes._
 import org.scalatest.{FunSuite, FunSpec}
 import org.scalatest.prop.PropertyChecks
 
-class WeaponkindsTest extends FunSpec {
+class BodyTypesTest extends FunSpec {
 	
-	describe ("Weaponkinds") {
-		describe ("Bladekind"){
-			happySuite(enumValue = Bladekind, id = 0, name = "Blade")
+	describe ("BodyTypes") {
+		describe ("Humanoid"){
+			happySuite(enumValue = Humanoid, id = 0, name = "Human")
 		}
-		describe ("Bluntkind"){
-			happySuite(enumValue = Bluntkind, id = 1, name = "Blunt")
+		describe ("Avian"){
+			happySuite(enumValue = Avian, id = 1, name = "Avian")
 		}
-		describe ("Spearkind"){
-			happySuite(enumValue = Spearkind, id = 2, name = "Spear")
-		}
-		describe ("Whipkind"){
-			happySuite(enumValue = Whipkind, id = 3, name = "Whip")
-		}
-		describe ("Powderkind"){
-			happySuite(enumValue = Powderkind, id = 4, name = "Powder")
+		describe ("Gerbil"){
+			happySuite(enumValue = Gerbil, id = 2, name = "Gerbillinae")
 		}
 		
 		describe ("Illegal values") {
 			it ("apply(-1) throws") {
 				intercept[IndexOutOfBoundsException] {
-					Weaponkinds.apply(-1)
+					BodyTypes.apply(-1)
 				}
 			}
-			it ("apply(5) throws") {
+			it ("apply(3) throws") {
 				intercept[IndexOutOfBoundsException] {
-					Weaponkinds.apply(5)
+					BodyTypes.apply(3)
 				}
 			}
 			it ("apply(987654321) throws") {
 				intercept[IndexOutOfBoundsException] {
-					Weaponkinds.apply(987654321)
+					BodyTypes.apply(987654321)
 				}
 			}
 			
 			it ("withName(\"asfd\") throws") {
 				intercept[NoSuchElementException] {
-					Weaponkinds.withName("asfd")
+					BodyTypes.withName("asfd")
 				}
 			}
-			it ("withName(\"Spearkind\") throws") {
+			it ("withName(\"Humanoid\") throws") {
 				intercept[NoSuchElementException] {
-					Weaponkinds.withName("Spearkind")
+					BodyTypes.withName("Humanoid")
 				}
 			}
 		}
 	}
 	
 	
-	private def happySuite(id:Int, name:String, enumValue:Weaponkind) {
+	private def happySuite(id:Int, name:String, enumValue:BodyType) {
 		it ("id is " + id){
 			assertResult(id)(enumValue.id)
 		}
 		it ("name is \"" + name + "\""){
-			assertResult(name + "kind")(enumValue.name)
-		}
-		it ("toString is \"com.rayrobdod.deductionTactics.Weaponkinds." + name + "\"") {
-			assertResult("com.rayrobdod.deductionTactics.Weaponkinds." + name + "kind"){enumValue.toString}
+			assertResult(name)(enumValue.name)
 		}
 		it ("is the result of apply(" + id + ")"){
-			assertResult(enumValue)(Weaponkinds.apply(id))
+			assertResult(enumValue)(BodyTypes.apply(id))
 		}
 		it ("is the result of withName(\"" + name + "\")"){
-			assertResult(enumValue)(Weaponkinds.withName(name))
+			assertResult(enumValue)(BodyTypes.withName(name))
 		}
 		it ("is contained inside values"){
 			assert(values.contains(enumValue))

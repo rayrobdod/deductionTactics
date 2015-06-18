@@ -107,6 +107,9 @@ class ElementsTest extends FunSpec {
 		it ("name is \"" + name + "\""){
 			assertResult(name)(enumValue.name)
 		}
+		it ("toString is \"com.rayrobdod.deductionTactics.Elements." + name + "\"") {
+			assertResult("com.rayrobdod.deductionTactics.Elements." + name){enumValue.toString}
+		}
 		it ("is the result of apply(" + id + ")"){
 			assertResult(enumValue)(Elements.apply(id))
 		}
