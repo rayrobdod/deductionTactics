@@ -31,7 +31,7 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
  */
 abstract class PlayerAI {
 	
-	/** Selects a set of classes from selectedTokenClasses */
+	/** Selects a set of classes from all avaliable classes */
 	def selectTokenClasses(maxResultSize:Int):Seq[TokenClass]
 	
 	/**
