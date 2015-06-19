@@ -27,7 +27,7 @@ import com.rayrobdod.boardGame.{RectangularField, Space}
 class TopTest extends FunSpec {
 	
 	describe ("host.Top") {
-		it ("has values selected by default") {
+		it ("Has values selected by default") {
 			val t = new Top()
 			val target = new MockNextListener
 			t.addNextListener(target)
@@ -37,7 +37,6 @@ class TopTest extends FunSpec {
 				case x:javax.swing.JFrame => x.isDisplayable
 				case _ => false
 			}}.get.asInstanceOf[javax.swing.JFrame]
-			System.out.println(frame)
 			val nextButton:javax.swing.JButton = {
 				frame.getContentPane
 					.getComponents
@@ -50,9 +49,9 @@ class TopTest extends FunSpec {
 					.get
 			}
 			nextButton.doClick()
-			// should already be disposed after the click, but since
-			// it not being disposed would be bad... worth a try/finally?
-			frame.dispose()
+			
+			// dispose was called
+			assert(! frame.isDisplayable)
 			
 			assert(target.hasBeenCalled)
 			assertResult(Seq(new SwingInterface, new SwingInterface)){target.ais}
@@ -61,6 +60,34 @@ class TopTest extends FunSpec {
 				Vector((1,5), (1,3), (1,7), (1,1), (1,9), (1,4), (1,6), (1,2), (1,8), (1,0)),
 				Vector((8,5), (8,3), (8,7), (8,1), (8,9), (8,4), (8,6), (8,2), (8,8), (8,0))
 			)){target.startSpaces}
+		}
+		it ("Does not call the NextListener if cancel is called") {
+			val t = new Top()
+			val target = new MockNextListener
+			t.addNextListener(target)
+			
+			// doClick using the backdoorsy method
+			val frame = java.awt.Window.getOwnerlessWindows.find{_ match {
+				case x:javax.swing.JFrame => x.isDisplayable
+				case _ => false
+			}}.get.asInstanceOf[javax.swing.JFrame]
+			val nextButton:javax.swing.JButton = {
+				frame.getContentPane
+					.getComponents
+					.find{_.getName == "buttonPanel"}
+					.map{_.asInstanceOf[javax.swing.JPanel]}
+					.map{x => x.getComponents
+						.find{_.getName == "cancelButton"}
+						.map{_.asInstanceOf[javax.swing.JButton]}
+					}.flatten
+					.get
+			}
+			nextButton.doClick()
+			
+			// dispose was called
+			assert(! frame.isDisplayable)
+			
+			assert(! target.hasBeenCalled)
 		}
 	}
 	

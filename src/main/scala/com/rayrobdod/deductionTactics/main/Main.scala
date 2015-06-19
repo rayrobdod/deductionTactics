@@ -42,7 +42,7 @@ object Main {
 				System.out.println(startSpaces)
 				System.out.println(narrowedClasses.map{_.map{_.name}})
 			}
-		})
+		}, "main.Main.chooseTokens")
 		t.start()
 	}
 }
