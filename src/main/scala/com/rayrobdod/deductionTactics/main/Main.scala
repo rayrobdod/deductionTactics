@@ -32,15 +32,17 @@ object Main {
 	}
 	
 	private def chooseTokens(ais:Seq[PlayerAI], map:String, startSpaces:Seq[Seq[(Int, Int)]]):Unit = {
-		new Thread(new Runnable(){
+		val t = new Thread(new Runnable(){
 			def run() = {
-				val selectedClasses:Seq[Seq[TokenClass]] = ais.map{_.selectTokenClasses(5)}
-				val narrowedClasses:Seq[Seq[TokenClass]] = ais.zipWithIndex.map{x => x._1.narrowTokenClasses(selectedClasses, 5, x._2)}
+				val startCounts = startSpaces.map{_.size}
+				val selectedClasses:Seq[Seq[TokenClass]] = ais.zip(startCounts).map{x => x._1.selectTokenClasses(x._2 * 2)}
+				val narrowedClasses:Seq[Seq[TokenClass]] = ais.zip(startCounts).zipWithIndex.map{x => x._1._1.narrowTokenClasses(selectedClasses, x._1._2, x._2)}
 				
 				System.out.println(map)
 				System.out.println(startSpaces)
-				System.out.println(narrowedClasses)
+				System.out.println(narrowedClasses.map{_.map{_.name}})
 			}
 		})
+		t.start()
 	}
 }
