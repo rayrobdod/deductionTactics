@@ -28,7 +28,7 @@ import com.rayrobdod.deductionTactics.{Maps, PlayerAI}
 import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 
 class Top {
-	type NextListener = Function3[Seq[PlayerAI], String, Seq[Seq[(Int,Int)]], Unit]
+	import Top.NextListener
 	
 	private val resources = java.util.ResourceBundle.getBundle("com.rayrobdod.deductionTactics.swingView.text")
 	
@@ -99,8 +99,11 @@ class Top {
 		{
 			val cancelButton = new JButton(resources.getString("cancelButton"))
 			
+			buttonPanel.setName("buttonPanel")
 			buttonPanel.add(cancelButton)
 			buttonPanel.add(nextButton)
+			cancelButton.setName("cancelButton")
+			nextButton.setName("nextButton")
 			nextButton.getRootPane.setDefaultButton(nextButton)
 			
 			cancelButton.addActionListener(new ActionListener() {
@@ -136,6 +139,8 @@ class Top {
 }
 
 object Top {
+	type NextListener = Function3[Seq[PlayerAI], String, Seq[Seq[(Int,Int)]], Unit]
+	
 	def main(args:Array[String]):Unit = {
 		val t = new Top();
 		t.addNextListener({(ais:Seq[PlayerAI], map:String, startSpaces:Seq[Seq[(Int,Int)]]) =>
