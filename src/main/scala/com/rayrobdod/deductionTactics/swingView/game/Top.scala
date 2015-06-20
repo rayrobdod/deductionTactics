@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics.swingView.game
 
 import com.rayrobdod.deductionTactics._
-import javax.swing.{JPanel, JScrollPane}
+import javax.swing.{JPanel, JScrollPane, WindowConstants}
 import java.awt.{BorderLayout, GridLayout}
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularFieldComponent}
@@ -34,6 +34,7 @@ import javax.swing.ScrollPaneConstants.{
 import javax.swing.BoxLayout.{Y_AXIS => boxYAxis}
 import javax.swing.{BoxLayout, Icon}
 import javax.swing.{JFrame, JToolTip}
+import java.text.MessageFormat
 
 
 /**
@@ -43,7 +44,7 @@ import javax.swing.{JFrame, JToolTip}
 class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[SpaceClass]) {
 	private val resources = java.util.ResourceBundle.getBundle("com.rayrobdod.deductionTactics.swingView.text")
 	
-	private val frame = new JFrame(resources.getString("playGameFrameTitle"))
+	private val frame = new JFrame(MessageFormat.format(resources.getString("playGameFrameTitle"), playerNumber:java.lang.Integer))
 	
 	private val centerpiece = {
 		val rv = new JPanel(new com.rayrobdod.swing.layouts.LayeredLayout)
@@ -61,7 +62,8 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	}
 	
 	frame.add(centerpiece)
-	
+	frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+	frame.pack()
 	
 	/*
 	override def createToolTip():JToolTip = {
@@ -84,8 +86,8 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	*/
 	
 	
-	def show() = {
-		frame.setVisible(true);
+	def setVisible(visible:Boolean) = {
+		frame.setVisible(visible);
 	}
 	
 }
@@ -140,5 +142,39 @@ object BoardGamePanel {
 		def flushSpi() {}
 		def syncSpi() {}
 		def childSpi(key:String) = NilPreferences
+	}
+}
+
+object Top {
+	type NextListener = Function3[Seq[PlayerAI], String, Seq[Seq[(Int,Int)]], Unit]
+	
+	def main(args:Array[String]):Unit = {
+		val field = RectangularField(Seq.fill(7,7){FreePassageSpaceClass.apply})
+		val tokens = new ListOfTokens(Seq(Seq(
+			new Token(
+				tokenClass = Some(new TokenClassBlunt(
+					name = "Flaming Spearman",
+					body = BodyTypes.Humanoid,
+					atkElement = Elements.Fire,
+					atkWeapon = Weaponkinds.Spearkind,
+					atkStatus = Statuses.Blind,
+					range = 1,
+					speed = 3,
+					weakDirection = Directions.Left,
+					weakWeapon = Map(
+						Weaponkinds.Bladekind -> .75f,
+						Weaponkinds.Bluntkind -> 2f,
+						Weaponkinds.Spearkind -> 1f,
+						Weaponkinds.Whipkind -> 1.5f,
+						Weaponkinds.Powderkind -> .5f
+					),
+					weakStatus = Statuses.Sleep
+				)),
+				currentSpace = field((0,0))
+			)
+		)))
+		
+		val t = new Top(tokens, 0, field);
+		t.setVisible(true);
 	}
 }

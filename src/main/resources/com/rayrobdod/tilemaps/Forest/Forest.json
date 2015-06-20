@@ -1,11 +1,9 @@
 [{
-	"comment":"
-		-100 is the ground
-		-9x is tree roots
-		-8x is other decorations
-		-4x is tree trunk
-		+10 is tree leaves
-	",
+	"comment":"-100 is the ground",
+	"comment":"-9x is tree roots",
+	"comment":"-8x is other decorations",
+	"comment":"-4x is tree trunk",
+	"comment":"+10 is tree leaves",
 		
 	"tiles":{"-100":0}
 },{

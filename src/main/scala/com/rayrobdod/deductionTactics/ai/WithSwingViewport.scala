@@ -37,7 +37,7 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 	{
 		val tokens = initialState.tokens
 		val viewmodel = new game.Top(tokens, player, initialState.board)
-		viewmodel.show
+		viewmodel.setVisible(true)
 		
 		val activeToken = new swingView.SharedActiveTokenProperty()
 		activeToken.value = None

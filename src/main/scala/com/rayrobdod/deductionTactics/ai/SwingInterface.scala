@@ -70,7 +70,7 @@ final class SwingInterface extends PlayerAI
 	{
 		val tokens = initialState.tokens
 		val viewmodel = new game.Top(tokens, player, initialState.board)
-		viewmodel.show()
+		viewmodel.setVisible(true)
 		
 		val attackTypeSelector = new SellectAttackTypePanel()
 		val activeToken = new swingView.SharedActiveTokenProperty()
