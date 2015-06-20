@@ -28,8 +28,8 @@ class TokenClassList(dataModel:ListModel[TokenClass]) extends JList[TokenClass](
 	private object HoveringIndexMouseListener extends MouseMotionListener {
 		var index:Int = 0;
 		
-		def mouseDragged(e:MouseEvent) = mouseMoved(e);
-		def mouseMoved(e:MouseEvent) = {
+		def mouseDragged(e:MouseEvent):Unit = mouseMoved(e);
+		def mouseMoved(e:MouseEvent):Unit = {
 			index = locationToIndex(new java.awt.Point(e.getPoint()));
 		}
 	}

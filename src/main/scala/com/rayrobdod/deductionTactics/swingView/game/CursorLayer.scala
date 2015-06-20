@@ -34,8 +34,7 @@ import com.rayrobdod.deductionTactics.{Token, ListOfTokens, SpaceClass, AttackCo
 final class CursorLayer(
 	tilemap:RectangularTilemapComponent
 ) extends JComponent {
-	//val color = new Color(0xFF33FF33)
-	val color = new Color(0xFF000000)
+	val color = Color.black
 	var currentShapes:Seq[Shape] = Nil
 	
 	override def paintComponent(g:Graphics) {
@@ -48,14 +47,14 @@ final class CursorLayer(
 	
 	
 	
-	def update(space:(Int, Int)) = {
+	def update(space:(Int, Int)):Unit = {
 		val spaceBounds = tilemap.spaceBounds(space)
-		currentShapes = RectangularCursorShape(spaceBounds)
+		currentShapes = cursorShape(spaceBounds)
 		
 		this.repaint()
 	}
 	
-	private def RectangularCursorShape(bounds:Shape):Seq[Shape] = {
+	private def cursorShape(bounds:Shape):Seq[Shape] = {
 		val bounds2 = bounds.getBounds()
 		val left = bounds2.x
 		val top  = bounds2.y

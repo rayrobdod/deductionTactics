@@ -59,7 +59,7 @@ class Top(val maxResultSize:Int) {
 			
 			val addButton = new JButton(resources.getString("addTeambuilderButton"))
 			addButton.addActionListener(new ActionListener(){
-				override def actionPerformed(e:ActionEvent) = {
+				override def actionPerformed(e:ActionEvent):Unit = {
 					allClasssesList.getSelectedValuesList.foreach{x =>
 						if (selectedClasses.getSize < maxResultSize) {
 							selectedClasses.addElement(x)
@@ -69,7 +69,7 @@ class Top(val maxResultSize:Int) {
 			})
 			val removeButton = new JButton(resources.getString("removeTeambuilderButton"))
 			removeButton.addActionListener(new ActionListener(){
-				override def actionPerformed(e:ActionEvent) = {
+				override def actionPerformed(e:ActionEvent):Unit = {
 					selectedClassesList.getSelectedValuesList.foreach{
 						selectedClasses.removeElement(_)
 					}
@@ -77,7 +77,7 @@ class Top(val maxResultSize:Int) {
 			})
 			val removeAllButton = new JButton(resources.getString("removeAllTeambuilderButton"))
 			removeAllButton.addActionListener(new ActionListener(){
-				override def actionPerformed(e:ActionEvent) = {
+				override def actionPerformed(e:ActionEvent):Unit = {
 					selectedClasses.removeAllElements()
 				}
 			})

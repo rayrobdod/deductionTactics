@@ -57,7 +57,7 @@ final class HighlightMovableSpacesLayer(
 	
 	
 	
-	def update(selectedTokenOption:Option[Token], list:ListOfTokens, field:RectangularField[SpaceClass]) = {
+	def update(selectedTokenOption:Option[Token], list:ListOfTokens, field:RectangularField[SpaceClass]):Unit = {
 		
 		selectedTokenOption.foreach{(selectedToken) =>
 			val tokenMaxSpeed = selectedToken.tokenClass.map{_.speed}.getOrElse(0)

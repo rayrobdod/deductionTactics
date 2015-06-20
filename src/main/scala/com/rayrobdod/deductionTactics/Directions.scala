@@ -96,7 +96,7 @@ object Directions
 			values.find{_.name equalsIgnoreCase s}.get
 		} catch {
 			case x:NoSuchElementException => 
-				val y = new NoSuchElementException("No element with name: "+ s)
+				val y = new NoSuchElementException("No element with name: " + s)
 				y.initCause(x)
 				throw y
 		}
@@ -125,7 +125,7 @@ object Directions
 		
 		Logger.finer(pathDirections.toString)
 		
-		return pathDirections;
+		pathDirections
 	}
 	
 	
@@ -134,10 +134,10 @@ object Directions
 	implicit def spaceWithIs(s:StrictRectangularSpace[SpaceClass]):SpaceWithIs = new SpaceWithIs(s)
 	/** `spaceA is Left of spaceB` */
 	class SpaceWithIs(s:StrictRectangularSpace[SpaceClass]) {
-		def is(d:Direction) = new SpaceWithDirection(s,d)
+		def is(d:Direction):SpaceWithDirection = new SpaceWithDirection(s,d)
 	}
 	/** `spaceA is Left of spaceB` */
 	class SpaceWithDirection(s:StrictRectangularSpace[SpaceClass], d:Direction) {
-		def of(o:StrictRectangularSpace[SpaceClass]) = d.spaceIs(o, s)
+		def of(o:StrictRectangularSpace[SpaceClass]):Boolean = d.spaceIs(o, s)
 	}
 }

@@ -43,6 +43,7 @@ class Top {
 		val aisPanel = new ChooseAIsComponent
 		
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+		frame.setJMenuBar(new com.rayrobdod.deductionTactics.swingView.MenuBar)
 		
 		val mapChoosingPanel = new JPanel(new GridBagLayout());
 		{
@@ -130,7 +131,7 @@ class Top {
 	}
 	
 	
-	def setVisible(b:Boolean) = {
+	def setVisible(b:Boolean):Unit = {
 		frame.setVisible(b);
 	}
 	

@@ -79,30 +79,12 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	
 	frame.add(centerpiece)
 	frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
+	frame.setJMenuBar(new com.rayrobdod.deductionTactics.swingView.MenuBar)
 	frame.pack()
 	
-	/*
-	override def createToolTip():JToolTip = {
-		val retVal = new JToolTip() {
-			this.setUI(TokenClassList.MyToolTipUI)
-			override def setTipText(tipText:String) {
-				this.removeAll();
-				val a = new TokenClassPanel(dataModel.getElementAt(HoveringIndexMouseListener.index));
-				a.doLayout();
-				a.setBackground(new java.awt.Color(0, true))
-				this.add(a);
-			}
-		}
-		retVal.setComponent(this);
-		retVal.setLayout(new java.awt.BorderLayout())
-		retVal;
-	}
-	
-	this.setToolTipText("asdfghjkl");
-	*/
 	
 	
-	def setVisible(visible:Boolean) = {
+	def setVisible(visible:Boolean):Unit = {
 		frame.setVisible(visible);
 	}
 	
@@ -127,7 +109,7 @@ object BoardGamePanel {
 	def movementSpeed:Int = {
 		myPrefs.getInt( movementSpeedPrefsKey, 15 );
 	}
-	def movementSpeed_=(x:Int) {
+	def movementSpeed_=(x:Int):Unit = {
 		myPrefs.putInt( movementSpeedPrefsKey, x );
 	}
 	
@@ -141,7 +123,7 @@ object BoardGamePanel {
 		)
 	}
 	
-	def currentTilesheet_=(x:RectangularTilesheet[SpaceClass]) {
+	def currentTilesheet_=(x:RectangularTilesheet[SpaceClass]):Unit = {
 		val index = tilesheets.indexOf(x);
 		myPrefs.putInt(tilesheetPrefsKey, index);
 	}

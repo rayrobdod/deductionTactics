@@ -34,7 +34,7 @@ object Main {
 	
 	private def chooseTokens(ais:Seq[PlayerAI], map:Arena):Unit = {
 		val t = new Thread(new Runnable(){
-			def run() = {
+			def run():Unit = {
 				val startSpaces = map.startSpaces(ais.size)
 				
 				val startCounts = startSpaces.map{_.size}

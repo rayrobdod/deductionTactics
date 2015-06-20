@@ -104,7 +104,7 @@ class WeaponMultiplerSetterChooserFrameMaker(
  */
 object WeaponMultiplerSetterChooserFrameMaker
 {
-	val values = Seq[JavaFloat](null, 0.5f, 0.75f, 1f, 1.5f, 2f)
+	val values:Seq[JavaFloat] = Seq[JavaFloat](null, 0.5f, 0.75f, 1f, 1.5f, 2f)
 }
 
 /** 
@@ -121,15 +121,18 @@ class ClassSynchonizerFrameMaker(
 		returnValue.setLocationRelativeTo(e.getComponent)
 	}
 	
-	def model = new ScalaSeqListModel[TokenClass]( TokenClass.allKnown.filter(
-					new TokenClassMatcher(tokenClass)) )
+	def model:ListModel[TokenClass] = {
+		new ScalaSeqListModel[TokenClass](
+			TokenClass.allKnown.filter(
+				new TokenClassMatcher(tokenClass)
+			)
+		)
+	}
 	
-	def result = new ListSelectionListener() {
-		override def valueChanged(e:ListSelectionEvent)
-		{
+	def result:ListSelectionListener = new ListSelectionListener() {
+		override def valueChanged(e:ListSelectionEvent):Unit = {
 			val selected = TokenClass.allKnown.filter(
 					new TokenClassMatcher(tokenClass)).apply(e.getFirstIndex)
-			
 			
 			panel.revalidate()
 			panel.repaint()

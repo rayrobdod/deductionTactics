@@ -75,7 +75,7 @@ object SpaceClass {
 	}
 	final case class MaxCostFunction(a:CostFunction, b:CostFunction) extends CostFunction {
 		override def apply(from:BoardGameSpace[_ <: SpaceClass], to:BoardGameSpace[_ <: SpaceClass]):Int = {
-			return math.max(a(from, to), b(from, to))
+			math.max(a(from, to), b(from, to))
 		}
 	}
 	
@@ -168,7 +168,7 @@ object SpaceClassMatcherFactory extends com.rayrobdod.boardGame.swingView.SpaceC
 		case ":" => AttackOnlySpaceClass
 		case "." => FlyingPassageSpaceClass
 		case "f" => FirePassageSpaceClass
-		case _ => new SpaceClassMatcher[SpaceClass]{ def unapply(sc:SpaceClass) = false }
+		case _   => new SpaceClassMatcher[SpaceClass]{ def unapply(sc:SpaceClass):Boolean = false }
 	}
 }
 
@@ -180,11 +180,11 @@ object SpaceClassMatcherFactory extends com.rayrobdod.boardGame.swingView.SpaceC
  * @version a.6.0
  */
 object FreePassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply = SpaceClass("Free Passage",
+	def apply:SpaceClass = SpaceClass("Free Passage",
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage)),
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
-	def unapply(a:SpaceClass) = a match {
+	def unapply(a:SpaceClass):Boolean = a match {
 		case SpaceClass("Free Passage",
 			ConstantCostFunctionFactory(ConstantCostFunction(moveCost)),
 			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
@@ -200,11 +200,11 @@ object FreePassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object AllyPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply = SpaceClass("Ally Passage",
+	def apply:SpaceClass = SpaceClass("Ally Passage",
 		FriendPassageCostFunctionFactory,
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
-	def unapply(a:SpaceClass) = a match {
+	def unapply(a:SpaceClass):Boolean = a match {
 		case SpaceClass("Ally Passage",
 			FriendPassageCostFunctionFactory,
 			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
@@ -219,11 +219,11 @@ object AllyPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object UniPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply = SpaceClass("Single Passage",
+	def apply:SpaceClass = SpaceClass("Single Passage",
 		SinglePassageCostFunctionFactory,
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
-	def unapply(a:SpaceClass) = a match {
+	def unapply(a:SpaceClass):Boolean = a match {
 		case SpaceClass("Single Passage",
 			SinglePassageCostFunctionFactory,
 			ConstantCostFunctionFactory(ConstantCostFunction(atkCost))
@@ -238,14 +238,14 @@ object UniPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object ImpassibleSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply = SpaceClass("Impassible",
+	def apply:SpaceClass = SpaceClass("Impassible",
 		MaxCostFunctionFactory(
 			ConstantCostFunctionFactory(ConstantCostFunction(impossiblePassage)),
 			SinglePassageCostFunctionFactory
 		),
 		ConstantCostFunctionFactory(ConstantCostFunction(impossiblePassage))
 	)
-	def unapply(a:SpaceClass) = a match {
+	def unapply(a:SpaceClass):Boolean = a match {
 		case SpaceClass("Impassible",
 			MaxCostFunctionFactory(
 				ConstantCostFunctionFactory(ConstantCostFunction(moveCost)),
@@ -264,14 +264,14 @@ object ImpassibleSpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object AttackOnlySpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply = SpaceClass("Attack-only",
+	def apply:SpaceClass = SpaceClass("Attack-only",
 		MaxCostFunctionFactory(
 			ConstantCostFunctionFactory(ConstantCostFunction(impossiblePassage)),
 			SinglePassageCostFunctionFactory
 		),
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
-	def unapply(a:SpaceClass) = a match {
+	def unapply(a:SpaceClass):Boolean = a match {
 		case SpaceClass("Attack-only",
 			MaxCostFunctionFactory(
 				ConstantCostFunctionFactory(ConstantCostFunction(moveCost)),
@@ -289,14 +289,14 @@ object AttackOnlySpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object FlyingPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply = SpaceClass("Flying Passage",
+	def apply:SpaceClass = SpaceClass("Flying Passage",
 		MaxCostFunctionFactory(
 			IsFlyingCostFunctionFactory,
 			SinglePassageCostFunctionFactory
 		),
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
-	def unapply(a:SpaceClass) = a match {
+	def unapply(a:SpaceClass):Boolean = a match {
 		case SpaceClass("Flying Passage",
 			MaxCostFunctionFactory(
 				IsFlyingCostFunctionFactory,
@@ -314,14 +314,14 @@ object FlyingPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object FirePassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply = SpaceClass("Fire Passage",
+	def apply:SpaceClass = SpaceClass("Fire Passage",
 		MaxCostFunctionFactory(
 			IsElementCostFunctionFactory(Elements.Fire),
 			SinglePassageCostFunctionFactory
 		),
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
-	def unapply(a:SpaceClass) = a match {
+	def unapply(a:SpaceClass):Boolean = a match {
 		case SpaceClass("Fire Passage",
 			MaxCostFunctionFactory(
 				IsElementCostFunctionFactory(Elements.Fire),
@@ -340,14 +340,14 @@ object FirePassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
  * @version a.6.0
  */
 object SlowPassageSpaceClass extends SpaceClassMatcher[SpaceClass] {
-	def apply = SpaceClass("Slow Passage",
+	def apply:SpaceClass = SpaceClass("Slow Passage",
 		MaxCostFunctionFactory(
 			ConstantCostFunctionFactory(ConstantCostFunction(normalPassage * 2)),
 			SinglePassageCostFunctionFactory
 		),
 		ConstantCostFunctionFactory(ConstantCostFunction(normalPassage))
 	)
-	def unapply(a:SpaceClass) = a match {
+	def unapply(a:SpaceClass):Boolean = a match {
 		case SpaceClass("Slow Passage",
 			MaxCostFunctionFactory(
 				ConstantCostFunctionFactory(ConstantCostFunction(moveCost)),
