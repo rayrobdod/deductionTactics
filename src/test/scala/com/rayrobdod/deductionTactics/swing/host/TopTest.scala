@@ -21,7 +21,7 @@ import org.scalatest.{FunSuite, FunSpec}
 import org.scalatest.prop.PropertyChecks
 import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.ai.SwingInterface
-import com.rayrobdod.deductionTactics.PlayerAI
+import com.rayrobdod.deductionTactics.{Arena, PlayerAI}
 import com.rayrobdod.boardGame.{RectangularField, Space}
 
 class TopTest extends FunSpec {
@@ -55,7 +55,18 @@ class TopTest extends FunSpec {
 			
 			assert(target.hasBeenCalled)
 			assertResult(Seq(new SwingInterface, new SwingInterface)){target.ais}
-			assertResult("com/rayrobdod/deductionTactics/maps/emptyField.json"){target.map}
+			assertResult(Arena("Empty Field", Seq.fill(10,10){" "}, Map(
+				2 -> List(
+					List((1,5), (1,3), (1,7), (1,1), (1,9), (1,4), (1,6), (1,2), (1,8), (1,0)),
+					List((8,5), (8,3), (8,7), (8,1), (8,9), (8,4), (8,6), (8,2), (8,8), (8,0))
+				),
+				4 -> List(
+					List((1,5), (1,3), (1,7), (1,4), (1,6)),
+					List((8,5), (8,3), (8,7), (8,4), (8,6)),
+					List((5,1), (3,1), (7,1), (4,1), (6,1)),
+					List((5,8), (3,8), (7,8), (4,8), (6,8))
+				)
+			))){target.map}
 			assertResult(Vector(
 				Vector((1,5), (1,3), (1,7), (1,1), (1,9), (1,4), (1,6), (1,2), (1,8), (1,0)),
 				Vector((8,5), (8,3), (8,7), (8,1), (8,9), (8,4), (8,6), (8,2), (8,8), (8,0))
@@ -93,7 +104,7 @@ class TopTest extends FunSpec {
 	
 	
 	class MockNextListener extends Top.NextListener {
-		override def apply(ais:Seq[PlayerAI], map:String, startSpaces:Seq[Seq[(Int,Int)]]):Unit = {
+		override def apply(ais:Seq[PlayerAI], map:Arena, startSpaces:Seq[Seq[(Int,Int)]]):Unit = {
 			if (this._hasBeenCalled) {throw new IllegalStateException("MockNextListener.apply called twice")}
 			
 			this._hasBeenCalled = true
@@ -104,11 +115,11 @@ class TopTest extends FunSpec {
 		
 		private var _hasBeenCalled:Boolean = false
 		private var _ais:Seq[PlayerAI] = Nil
-		private var _map:String = ""
+		private var _map:Arena = Arena("", Nil, Map.empty)
 		private var _startSpaces:Seq[Seq[(Int,Int)]] = Nil
 		def hasBeenCalled:Boolean = _hasBeenCalled
 		def ais:Seq[PlayerAI] = _ais
-		def map:String = _map
+		def map:Arena = _map
 		def startSpaces:Seq[Seq[(Int,Int)]] = _startSpaces
 	}
 }

@@ -101,15 +101,17 @@ final class ArenaBuilder(baseDir:URL) extends Builder[Arena] {
 object Maps {
 	private val SERVICE = "com.rayrobdod.deductionTactics.Maps"
 	
+	@deprecated("getArenas(index).name", "a.6.0")
 	val names:Seq[String] = {
 		Seq.empty ++ Services.readServices(SERVICE);
 	}
 	
+	@deprecated("why is this even a thing?", "a.6.0")
 	val paths:Seq[URL] = {
 		Seq.empty ++ new ResourcesServiceLoader(SERVICE);
 	}
 	
-	private def getArenas:Seq[Arena] = paths.map{x =>
+	def arenas:Seq[Arena] = paths.map{x =>
 		var reader:Reader = new StringReader("{}")
 		try {
 			reader = new java.io.InputStreamReader(x.openStream(), UTF_8)
@@ -119,15 +121,18 @@ object Maps {
 		}
 	}
 	
+	@deprecated("getArenas(index).layout", "a.6.0")
 	def getMap(index:Int):RectangularField[SpaceClass] = {
-		RectangularField(getArenas(index).layout)
+		RectangularField(arenas(index).layout)
 	}
 	
+	@deprecated("getArenas(index).possiblePlayers", "a.6.0")
 	def possiblePlayers(index:Int):Set[Int] = {
-		getArenas(index).possiblePlayers
+		arenas(index).possiblePlayers
 	}
 	
+	@deprecated("getArenas(index).startSpaces(numPlayers)", "a.6.0")
 	def startingPositions(index:Int, numPlayers:Int):Seq[Seq[(Int, Int)]] = {
-		getArenas(index).startSpaces(numPlayers)
+		arenas(index).startSpaces(numPlayers)
 	}
 }

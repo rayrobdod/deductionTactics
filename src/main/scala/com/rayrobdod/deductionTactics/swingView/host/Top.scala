@@ -24,7 +24,7 @@ import javax.swing.event._
 import scala.collection.immutable.Seq
 import scala.collection.mutable.Buffer
 import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
-import com.rayrobdod.deductionTactics.{Maps, PlayerAI}
+import com.rayrobdod.deductionTactics.{Arena, Maps, PlayerAI}
 import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 
 class Top {
@@ -117,7 +117,7 @@ class Top {
 					nextListeners.foreach{x:NextListener =>
 						x.apply(
 							aisPanel.getAIs,
-							mapList.getSelectedValue,
+							Maps.arenas(mapList.getSelectedIndex),
 							Maps.startingPositions(mapList.getSelectedIndex, playerCount.getSelectedValue)
 						)
 					}
@@ -139,11 +139,11 @@ class Top {
 }
 
 object Top {
-	type NextListener = Function3[Seq[PlayerAI], String, Seq[Seq[(Int,Int)]], Unit]
+	type NextListener = Function3[Seq[PlayerAI], Arena, Seq[Seq[(Int,Int)]], Unit]
 	
 	def main(args:Array[String]):Unit = {
 		val t = new Top();
-		t.addNextListener({(ais:Seq[PlayerAI], map:String, startSpaces:Seq[Seq[(Int,Int)]]) =>
+		t.addNextListener({(ais:Seq[PlayerAI], map:Arena, startSpaces:Seq[Seq[(Int,Int)]]) =>
 			System.out.println(ais)
 			System.out.println(map)
 			System.out.println(startSpaces)
