@@ -20,6 +20,7 @@ package com.rayrobdod.deductionTactics.swingView.game
 import com.rayrobdod.deductionTactics._
 import javax.swing.{JPanel, JScrollPane, WindowConstants}
 import java.awt.{BorderLayout, GridLayout}
+import java.awt.event.{MouseEvent, MouseListener}
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularFieldComponent}
 import com.rayrobdod.deductionTactics.swingView.{TokenClassList, tokenClassToIcon, TokenClassPanel, generateGenericIcon, AvailibleTilesheetListModel, tilesheets}
@@ -53,11 +54,26 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		val fieldLayers = RectangularFieldComponent(field, tilesheet)
 		val tokenLayer = new TokenLayer
 		val highlightLayer = new HighlightMovableSpacesLayer(fieldLayers._2)
+		val cursorLayer = new CursorLayer(fieldLayers._2)
 		
+		field.keySet.foreach{x =>
+			fieldLayers._2.addMouseListener(x, new MouseListener() {
+				def mouseEntered(e:MouseEvent):Unit  = {}
+				def mouseExited(e:MouseEvent):Unit   = {}
+				def mousePressed(e:MouseEvent):Unit  = {}
+				def mouseReleased(e:MouseEvent):Unit = {}
+				
+				def mouseClicked(e:MouseEvent):Unit = {
+					cursorLayer.update(x)
+				}
+			})
+		}
+		
+		rv.add(cursorLayer)
+		rv.add(highlightLayer)
 		rv.add(fieldLayers._2)
 		rv.add(tokenLayer)
 		rv.add(fieldLayers._1)
-		rv.add(highlightLayer)
 		rv
 	}
 	
