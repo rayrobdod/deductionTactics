@@ -15,7 +15,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.swingView
+package com.rayrobdod.deductionTactics.swingView.game
 
 import java.awt.{Component, Color, Graphics, Shape, Graphics2D}
 import scala.collection.immutable.{Seq, Set}
@@ -32,8 +32,9 @@ import HighlightMovableSpacesLayer._
  * @author Raymond Dodge
  * @since a.6.0
  */
-final class HighlightMovableSpacesLayer(tilemap:RectangularTilemapComponent) extends JComponent
-{
+final class HighlightMovableSpacesLayer(
+	tilemap:RectangularTilemapComponent
+) extends JComponent {
 	var currentSpeeds:Seq[Shape] = Seq.empty;
 	var currentRanges:Seq[Shape] = Seq.empty;
 	var maximumSpeeds:Seq[Shape] = Seq.empty;

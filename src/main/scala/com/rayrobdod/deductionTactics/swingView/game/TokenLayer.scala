@@ -40,45 +40,7 @@ import com.rayrobdod.util.BlitzAnimImage
 /**
  * @version a.6.0
  */
-final class TokenIcon(
-	fieldComp:FieldViewer[SpaceClass]
-) extends JComponent {
-	val mainIcon = new com.rayrobdod.swing.SolidColorIcon(java.awt.Color.red, 32, 32)
-	this.setIcon(mainIcon)
-	this.setSize(mainIcon.getIconWidth, mainIcon.getIconHeight)
-	
-	final def beAttacked(element:Element, kind:Weaponkind) {
-		val animation = TokenIcon.BeAttackedAnimation(element, kind)
-		val animIcon = new AnimationIcon(animation)
-		
-		val stackedIcon = new StackedIcon(Seq(mainIcon, animIcon))
-		this.setIcon(stackedIcon)
-		
-		animIcon.addRepaintOnNextFrameListener(this)
-		animation.addAnimationEndedListener(new AnimationEndedListener() {
-			def animationEnded(e:AnimationEndedEvent) = {
-					System.out.println("Animation Ended")
-					TokenIcon.this.setIcon(mainIcon)
-			}
-		})
-		new Thread(animation).start()
-		// TODO: also do the text raising thing
-	}
-	
-	final def beAttacked(status:Status) {
-		val animation = TokenIcon.BeAttackedAnimation(status)
-		val animIcon = new AnimationIcon(animation)
-		
-		val stackedIcon = new StackedIcon(Seq(mainIcon, animIcon))
-		this.setIcon(stackedIcon)
-		
-		animIcon.addRepaintOnNextFrameListener(this)
-		animation.addAnimationEndedListener(new AnimationEndedListener() {
-			def animationEnded(e:AnimationEndedEvent) =
-					TokenIcon.this.setIcon(mainIcon)
-		})
-		new Thread(animation).start()
-	}
+final class TokenLayer extends JComponent {
 	
 }
 

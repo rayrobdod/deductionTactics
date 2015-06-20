@@ -33,10 +33,10 @@ class OptionsPanel extends JPanel
 {
 	val currentTilesheet = new JList[RectangularTilesheet[SpaceClass]](AvailibleTilesheetListModel)
 	currentTilesheet.setCellRenderer(TilesheetListRenderer)
-	currentTilesheet.setSelectedValue(BoardGamePanel.currentTilesheet, true)
+	currentTilesheet.setSelectedValue(game.BoardGamePanel.currentTilesheet, true)
 	
 	val movementSpeed = new JTextField(5)
-	movementSpeed.setText(BoardGamePanel.movementSpeed.toString)
+	movementSpeed.setText(game.BoardGamePanel.movementSpeed.toString)
 	
 	this.setLayout(new java.awt.GridBagLayout())
 	this.add(new JLabel("the tilesheet to use"),
@@ -52,8 +52,8 @@ class OptionsPanel extends JPanel
 	object apply extends ActionListener() {
 		override def actionPerformed(e:ActionEvent)
 		{
-			BoardGamePanel.currentTilesheet = currentTilesheet.getSelectedValue()
-			BoardGamePanel.movementSpeed = Integer.parseInt(movementSpeed.getText)
+			game.BoardGamePanel.currentTilesheet = currentTilesheet.getSelectedValue()
+			game.BoardGamePanel.movementSpeed = Integer.parseInt(movementSpeed.getText)
 		}
 	}
 }

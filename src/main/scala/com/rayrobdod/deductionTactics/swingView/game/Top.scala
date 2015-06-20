@@ -21,8 +21,8 @@ import com.rayrobdod.deductionTactics._
 import javax.swing.{JPanel, JScrollPane}
 import java.awt.{BorderLayout, GridLayout}
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
-import com.rayrobdod.boardGame.swingView.{RectangularFieldComponent => FieldComponent, RectangularTilesheet}
-import com.rayrobdod.deductionTactics.swingView.{TokenComponent, TokenClassList, tokenClassToIcon, TokenClassPanel, generateGenericIcon, AvailibleTilesheetListModel, tilesheets}
+import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularFieldComponent}
+import com.rayrobdod.deductionTactics.swingView.{TokenClassList, tokenClassToIcon, TokenClassPanel, generateGenericIcon, AvailibleTilesheetListModel, tilesheets}
 import scala.collection.immutable.Seq
 import javax.swing.event.{AncestorListener, AncestorEvent}
 import javax.swing.ScrollPaneConstants.{
@@ -46,29 +46,21 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	private val frame = new JFrame(resources.getString("playGameFrameTitle"))
 	
 	private val centerpiece = {
-		val tilesheetInfo = BoardGamePanel.currentTilesheet
-		new FieldComponent(tilesheetInfo,field)
+		val rv = new JPanel(new com.rayrobdod.swing.layouts.LayeredLayout)
+		val tilesheet = BoardGamePanel.currentTilesheet
+		
+		val fieldLayers = RectangularFieldComponent(field, tilesheet)
+		val tokenLayer = new TokenLayer
+		val highlightLayer = new HighlightMovableSpacesLayer(fieldLayers._2)
+		
+		rv.add(fieldLayers._2)
+		rv.add(tokenLayer)
+		rv.add(fieldLayers._1)
+		rv.add(highlightLayer)
+		rv
 	}
 	
-	val tokenComps:Map[TokenIndex, TokenComponent] = {
-		val a:Seq[(TokenIndex, TokenComponent)] = tokens.tokens.zipWithIndex.flatMap({(ts:Seq[Token], i:Int) =>
-			ts.zipWithIndex.map({(t:Token, j:Int) =>
-				(( ((i, j)), new TokenComponent(
-					centerpiece,
-					t.tokenClass.map{(tc) =>
-						tokenClassToIcon(tc)
-					}.getOrElse{generateGenericIcon(None, None)}
-				) ))
-			}.tupled)
-		}.tupled)
-		a.toMap
-	}
-	
-	{
-		tokenComps.values.foreach{centerpiece.tokenLayer.add(_)}
-		frame.getContentPane.add(centerpiece)
-		frame.pack()
-	}
+	frame.add(centerpiece)
 	
 	
 	/*

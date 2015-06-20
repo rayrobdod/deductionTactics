@@ -20,7 +20,7 @@ package ai
 
 import javax.swing.JFrame
 import scala.collection.immutable.Seq
-import com.rayrobdod.deductionTactics.swingView.{BoardGameViewModel, MenuBar, HighlightMovableSpacesLayer}
+import com.rayrobdod.deductionTactics.swingView.game
 
 /**
  * A decorator for PlayerAIs. It provides a viewport to a player
@@ -36,10 +36,8 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 	override def initialize(player:Int, initialState:GameState):Memo =
 	{
 		val tokens = initialState.tokens
-		val viewmodel = new BoardGameViewModel(tokens, player, initialState.board)
-		val frame = new JFrame("Deduction Tactics")		
-		frame.setJMenuBar(new MenuBar)
-		frame.getContentPane add viewmodel.comp
+		val viewmodel = new game.Top(tokens, player, initialState.board)
+		viewmodel.show
 		
 		val activeToken = new swingView.SharedActiveTokenProperty()
 		activeToken.value = None
@@ -53,9 +51,6 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 		
 		
 		
-		frame.pack()
-		frame.validate()
-		frame.setVisible(true)
 		
 		SwingInterfaceMemo(
 				base = base.initialize(player, initialState), 
@@ -110,7 +105,6 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 			afterState.tokens.tokens.flatten.find{x => Option(x.currentSpace) == space}
 		}
 		memo2.currentTokens.value = afterState.tokens
-		memo2.panel.moveHilightLayer.update(memo2.selectedToken.value, afterState.tokens, afterState.board)
 		
 		new SwingInterfaceMemo(
 			newMemoBase,
