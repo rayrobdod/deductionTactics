@@ -20,7 +20,7 @@ package ai
 
 import javax.swing.JFrame
 import scala.collection.immutable.Seq
-import com.rayrobdod.deductionTactics.swingView.{BoardGamePanel, MenuBar, HighlightMovableSpacesLayer}
+import com.rayrobdod.deductionTactics.swingView.{BoardGameViewModel, MenuBar, HighlightMovableSpacesLayer}
 
 /**
  * A decorator for PlayerAIs. It provides a viewport to a player
@@ -36,16 +36,14 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 	override def initialize(player:Int, initialState:GameState):Memo =
 	{
 		val tokens = initialState.tokens
-		val panel = new BoardGamePanel(tokens, player, initialState.board)
+		val viewmodel = new BoardGameViewModel(tokens, player, initialState.board)
 		val frame = new JFrame("Deduction Tactics")		
 		frame.setJMenuBar(new MenuBar)
-		frame.getContentPane add panel
+		frame.getContentPane add viewmodel.comp
 		
 		val activeToken = new swingView.SharedActiveTokenProperty()
 		activeToken.value = None
 		
-		val hilightLayer = new HighlightMovableSpacesLayer(panel.centerpiece)
-		panel.centerpiece.add(hilightLayer, 0)
 		
 		
 		val tokensProp = new swingView.ListOfTokensProperty
@@ -61,8 +59,7 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 		
 		SwingInterfaceMemo(
 				base = base.initialize(player, initialState), 
-				panel = panel,
-				hilightLayer = hilightLayer,
+				panel = viewmodel,
 				attackTypeSelector = new swingView.SellectAttackTypePanel(),
 				selectedToken = activeToken,
 				currentTokens = tokensProp,
@@ -84,7 +81,7 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 		val newMemoBase = base.notifyTurn(player, action, beforeState, afterState, memo2.base)
 		val panel = memo2.panel
 		
-		action match {
+/*		action match {
 			case GameState.TokenMoveResult(index, s) =>
 				val tokenComp = panel.tokenComps(index)
 				tokenComp.moveToSpace(s)
@@ -105,7 +102,7 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 			case GameState.EndOfTurn =>
 				None
 		}
-		
+*/		
 		
 		memo2.selectedToken.value = {
 			// this assumes that the board doesn't change.
@@ -113,12 +110,11 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 			afterState.tokens.tokens.flatten.find{x => Option(x.currentSpace) == space}
 		}
 		memo2.currentTokens.value = afterState.tokens
-		memo2.hilightLayer.update(memo2.selectedToken.value, afterState.tokens, afterState.board)
+		memo2.panel.moveHilightLayer.update(memo2.selectedToken.value, afterState.tokens, afterState.board)
 		
 		new SwingInterfaceMemo(
 			newMemoBase,
 			memo2.panel,
-			memo2.hilightLayer,
 			memo2.attackTypeSelector,
 			memo2.selectedToken,
 			memo2.currentTokens,

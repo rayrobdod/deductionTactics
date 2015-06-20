@@ -86,7 +86,7 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 	
 	def getIconFor(field:RectangularField[_ <: SpaceClass], x:Int, y:Int, rng:Random):(Icon, Icon) = {
 		val useDarker = ((x + y) % 2) == 0
-		val center = spaceClassToColor(field.space(x,y).typeOfSpace, useDarker)
+		val center = spaceClassToColor(field(x,y).typeOfSpace, useDarker)
 		
 		def SpaceSeqToColor(x:Seq[Space[_ <: SpaceClass]]) = {
 			val x1 = x.map{(y:Space[_ <: SpaceClass]) => spaceClassToColor(y.typeOfSpace, useDarker)}
@@ -95,32 +95,32 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 					.getOrElse(transColor)
 		}
 		
-		val nw = if (field.containsIndexies(x-1, y-1)) {
+		val nw = if (field.contains(x-1, y-1)) {
 			SpaceSeqToColor(Seq(
-				field.space(x-1,y  ),
-				field.space(x-1,y-1),
-				field.space(x,  y-1)
+				field(x-1,y  ),
+				field(x-1,y-1),
+				field(x,  y-1)
 			))
 		} else {transColor}
-		val ne = if (field.containsIndexies(x+1, y-1)) {
+		val ne = if (field.contains(x+1, y-1)) {
 			SpaceSeqToColor(Seq(
-				field.space(x+1,y  ),
-				field.space(x+1,y-1),
-				field.space(x,  y-1)
+				field(x+1,y  ),
+				field(x+1,y-1),
+				field(x,  y-1)
 			))
 		} else {transColor}
-		val sw = if (field.containsIndexies(x-1, y+1)) {
+		val sw = if (field.contains(x-1, y+1)) {
 			SpaceSeqToColor(Seq(
-				field.space(x-1,y  ),
-				field.space(x-1,y+1),
-				field.space(x,  y+1)
+				field(x-1,y  ),
+				field(x-1,y+1),
+				field(x,  y+1)
 			))
 		} else {transColor}
-		val se = if (field.containsIndexies(x+1, y+1)) {
+		val se = if (field.contains(x+1, y+1)) {
 			SpaceSeqToColor(Seq(
-				field.space(x+1,y  ),
-				field.space(x+1,y+1),
-				field.space(x,  y+1)
+				field(x+1,y  ),
+				field(x+1,y+1),
+				field(x,  y+1)
 			))
 		} else {transColor}
 		

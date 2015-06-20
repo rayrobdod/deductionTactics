@@ -6,7 +6,7 @@
 	"range":3,
 	"speed":2,
 	"body":"Human",
-	"weakWeapon":{"blade":.75,"blunt":1,"spear":2,"whip":.5,"powder":1.5},
+	"weakWeapon":{"blade":0.75,"blunt":1,"spear":2,"whip":0.5,"powder":1.5},
 	"weakStatus":"Blind",
 	"weakDirection":"DontCare",
 	"iconc":"" 
@@ -18,7 +18,7 @@
 	"range":2,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":1,"blunt":2,"spear":.5,"whip":1.5,"powder":.75},
+	"weakWeapon":{"blade":1,"blunt":2,"spear":0.5,"whip":1.5,"powder":0.75},
 	"weakStatus":"Blind",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/sportsmen.png#xywh=0,0,32,32" 
@@ -30,7 +30,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":2,"blunt":.5,"spear":1.5,"whip":1,"powder":1.25},
+	"weakWeapon":{"blade":2,"blunt":0.5,"spear":1.5,"whip":1,"powder":1.25},
 	"weakStatus":"Burn",
 	"weakDirection":"Left",
 	"iconc":"" 
@@ -43,7 +43,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":2,"blunt":.5,"spear":1.5,"whip":1,"powder":1.25},
+	"weakWeapon":{"blade":2,"blunt":0.5,"spear":1.5,"whip":1,"powder":1.25},
 	"weakStatus":"Burn",
 	"weakDirection":"Right",
 	"iconc":"" 
@@ -55,7 +55,7 @@
 	"range":2,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":1.25,"blunt":1.5,"spear":2,"whip":1,"powder":.5},
+	"weakWeapon":{"blade":1.25,"blunt":1.5,"spear":2,"whip":1,"powder":0.5},
 	"weakStatus":"Snake",
 	"weakDirection":"DontCare",
 	"iconc":"" 
@@ -67,7 +67,7 @@
 	"range":3,
 	"speed":2,
 	"body":"Human",
-	"weakWeapon":{"blade":.75,"blunt":2,"spear":1.5,"whip":.5,"powder":1},
+	"weakWeapon":{"blade":0.75,"blunt":2,"spear":1.5,"whip":0.5,"powder":1},
 	"weakStatus":"Blind",
 	"weakDirection":"DontCare",
 	"iconc":"" 
@@ -80,7 +80,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":.75,"blunt":.5,"spear":1.5,"whip":1,"powder":2},
+	"weakWeapon":{"blade":0.75,"blunt":0.5,"spear":1.5,"whip":1,"powder":2},
 	"weakStatus":"Confuse",
 	"weakDirection":"DontCare",
 	"iconc":"" 
@@ -92,7 +92,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":1.5,"blunt":.75,"spear":2,"whip":1,"powder":.5},
+	"weakWeapon":{"blade":1.5,"blunt":0.75,"spear":2,"whip":1,"powder":0.5},
 	"weakStatus":"Sleep",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/sportsmen.png#xywh=64,0,32,32" 
@@ -104,7 +104,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":2,"blunt":.5,"spear":1,"whip":.75,"powder":1.5},
+	"weakWeapon":{"blade":2,"blunt":0.5,"spear":1,"whip":0.75,"powder":1.5},
 	"weakStatus":"Snake",
 	"weakDirection":"DontCare",
 	"iconc":"" 
@@ -116,7 +116,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":.75,"blunt":1,"spear":1.5,"whip":.5,"powder":2},
+	"weakWeapon":{"blade":0.75,"blunt":1,"spear":1.5,"whip":0.5,"powder":2},
 	"weakStatus":"Blind",
 	"weakDirection":"DontCare",
 	"iconc":"" 
@@ -128,7 +128,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":.5,"blunt":1,"spear":2,"whip":1.5,"powder":.75},
+	"weakWeapon":{"blade":0.5,"blunt":1,"spear":2,"whip":1.5,"powder":0.75},
 	"weakStatus":"Blind",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/sportsmen.png#xywh=32,0,32,32" 
@@ -141,7 +141,7 @@
 	"range":1,
 	"speed":5,
 	"body":"Human",
-	"weakWeapon":{"blade":1.25,"blunt":2,"spear":1,"whip":.5,"powder":1.5},
+	"weakWeapon":{"blade":1.25,"blunt":2,"spear":1,"whip":0.5,"powder":1.5},
 	"weakStatus":"Snake",
 	"weakDirection":"DontCare",
 	"iconc":""
@@ -153,7 +153,7 @@
 	"range":2,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":1.25,"blunt":2,"spear":1,"whip":.5,"powder":1.5},
+	"weakWeapon":{"blade":1.25,"blunt":2,"spear":1,"whip":0.5,"powder":1.5},
 	"weakStatus":"Blind",
 	"comment":"All lighting comes from the east side, so clearly the sun is that way",
 	"weakDirection":"Right",

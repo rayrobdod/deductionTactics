@@ -7,7 +7,7 @@
 	"range":1,
 	"speed":5,
 	"body":"Gerbillinae",
-	"weakWeapon":{"blade":1.25,"blunt":.5,"spear":1.5,"whip":1,"powder":2},
+	"weakWeapon":{"blade":1.25,"blunt":0.5,"spear":1.5,"whip":1,"powder":2},
 	"weakStatus":"Blind",
 	"weakDirection":"DontCare",
 	"iconc":"" 
@@ -20,7 +20,7 @@
 	"range":1,
 	"speed":5,
 	"body":"Gerbillinae",
-	"weakWeapon":{"blade":1.25,"blunt":.5,"spear":1.5,"whip":1,"powder":2},
+	"weakWeapon":{"blade":1.25,"blunt":0.5,"spear":1.5,"whip":1,"powder":2},
 	"weakStatus":"Blind",
 	"weakDirection":"DontCare",
 	"iconc":"" 
@@ -33,7 +33,7 @@
 	"range":1,
 	"speed":5,
 	"body":"Gerbillinae",
-	"weakWeapon":{"blade":1.25,"blunt":.5,"spear":1.5,"whip":1,"powder":2},
+	"weakWeapon":{"blade":1.25,"blunt":0.5,"spear":1.5,"whip":1,"powder":2},
 	"weakStatus":"Blind",
 	"weakDirection":"DontCare",
 	"iconc":""

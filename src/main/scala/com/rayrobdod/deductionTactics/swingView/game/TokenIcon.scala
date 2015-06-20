@@ -25,11 +25,10 @@ import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.BodyTypes.BodyType
 import com.rayrobdod.deductionTactics.Directions.Direction
 
-import javax.swing.Icon
+import javax.swing.{JComponent, Icon}
 import javax.imageio.ImageIO
 import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.swingView._
-import com.rayrobdod.boardGame.swingView.{TokenComponent => BoardGameTokenComponent}
 import com.rayrobdod.animation.{AnimationIcon, ImageFrameAnimation,
 		NextFrameListener, AnimationEndedListener,
 		NextFrameEvent, AnimationEndedEvent
@@ -43,7 +42,7 @@ import com.rayrobdod.util.BlitzAnimImage
  */
 final class TokenIcon(
 	fieldComp:FieldViewer[SpaceClass]
-) extends BoardGameTokenComponent(fieldComp) {
+) extends JComponent {
 	val mainIcon = new com.rayrobdod.swing.SolidColorIcon(java.awt.Color.red, 32, 32)
 	this.setIcon(mainIcon)
 	this.setSize(mainIcon.getIconWidth, mainIcon.getIconHeight)

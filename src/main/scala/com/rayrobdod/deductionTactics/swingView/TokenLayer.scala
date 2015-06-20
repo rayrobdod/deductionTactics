@@ -24,10 +24,10 @@ import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.BodyTypes.BodyType
 import com.rayrobdod.deductionTactics.Directions.Direction
 
-import javax.swing.Icon
+import javax.swing.{JComponent, Icon}
 import javax.imageio.ImageIO
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.swingView.{TokenComponent => BoardGameTokenComponent, _}
+import com.rayrobdod.boardGame.swingView._
 import com.rayrobdod.animation.{AnimationIcon, ImageFrameAnimation,
 		NextFrameListener, AnimationEndedListener,
 		NextFrameEvent, AnimationEndedEvent
@@ -39,15 +39,15 @@ import com.rayrobdod.util.BlitzAnimImage
 /**
  * @version a.6.0
  */
-final class TokenComponent(
-	fieldComp:FieldViewer[SpaceClass],
-	mainIcon:Icon
+final class TokenLayer extends JComponent {
+	// var tokens:ListOfTokens
+	// var spaces:RectangularTilemapComponent
 	
-
-) extends BoardGameTokenComponent(fieldComp) {
-	this.setIcon(mainIcon)
-	this.setSize(mainIcon.getIconWidth, mainIcon.getIconHeight)
 	
+	
+	
+	
+	/*
 	final def beAttacked(element:Element, kind:Weaponkind) {
 		val animation = TokenComponent.BeAttackedAnimation(element, kind)
 		val animIcon = new AnimationIcon(animation)
@@ -80,6 +80,7 @@ final class TokenComponent(
 		})
 		new Thread(animation).start()
 	}
+	*/
 	
 }
 

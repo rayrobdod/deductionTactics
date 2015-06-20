@@ -26,28 +26,28 @@ class StatusesTest extends FunSpec {
 	
 	describe ("Statuses") {
 		describe ("Sleep"){
-			happySuite(enumValue = Sleep, id = 0, name = "Sleep")
+			happySuite(enumValue = Sleep, id = 0, name = "Sleep", randMovesPerTurn = 0)
 		}
 		describe ("Burn"){
-			happySuite(enumValue = Burn, id = 1, name = "Burn")
+			happySuite(enumValue = Burn, id = 1, name = "Burn", randMovesPerTurn = 0)
 		}
 		describe ("Blind"){
-			happySuite(enumValue = Blind, id = 2, name = "Blind")
+			happySuite(enumValue = Blind, id = 2, name = "Blind", randMovesPerTurn = 0)
 		}
 		describe ("Confuse"){
-			happySuite(enumValue = Confuse, id = 3, name = "Confuse")
+			happySuite(enumValue = Confuse, id = 3, name = "Confuse", randMovesPerTurn = 3)
 		}
 		describe ("Neuro"){
-			happySuite(enumValue = Neuro, id = 4, name = "Neuro")
+			happySuite(enumValue = Neuro, id = 4, name = "Neuro", randMovesPerTurn = 1)
 		}
 		describe ("Snake"){
-			happySuite(enumValue = Snake, id = 5, name = "Snake")
+			happySuite(enumValue = Snake, id = 5, name = "Snake", randMovesPerTurn = 0)
 		}
 		describe ("Heal"){
-			happySuite(enumValue = Heal, id = 6, name = "Heal")
+			happySuite(enumValue = Heal, id = 6, name = "Heal", randMovesPerTurn = 0)
 		}
 		describe ("Normal"){
-			happySuite(enumValue = Normal, id = 7, name = "Normal")
+			happySuite(enumValue = Normal, id = 7, name = "Normal", randMovesPerTurn = 0)
 		}
 		
 		describe ("Illegal values") {
@@ -81,12 +81,18 @@ class StatusesTest extends FunSpec {
 	}
 	
 	
-	private def happySuite(id:Int, name:String, enumValue:Status) {
+	private def happySuite(id:Int, name:String, enumValue:Status, randMovesPerTurn:Int) {
 		it ("id is " + id){
 			assertResult(id)(enumValue.id)
 		}
 		it ("name is \"" + name + "\""){
 			assertResult(name)(enumValue.name)
+		}
+		it ("toString is \"com.rayrobdod.deductionTactics.Statuses." + name + "\"") {
+			assertResult("com.rayrobdod.deductionTactics.Statuses." + name){enumValue.toString}
+		}
+		it ("randMovesPerTurn is \"" + randMovesPerTurn + "\""){
+			assertResult(randMovesPerTurn)(enumValue.randMovesPerTurn)
 		}
 		it ("is the result of apply(" + id + ")"){
 			assertResult(enumValue)(Statuses.apply(id))

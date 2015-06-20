@@ -20,15 +20,10 @@ package com.rayrobdod.deductionTactics.meta
 import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
-import com.rayrobdod.deductionTactics.{TokenClass,
-		CannonicalTokenClassDecoder, Weaponkinds}
+import com.rayrobdod.json.parser.JsonParser
+import com.rayrobdod.json.builder.SeqBuilder
+import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds, TokenClassBuilder, CannonicalTokenClassTemplate}
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
-	
-import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
-import com.rayrobdod.javaScriptObjectNotation.parser.{
-		JSONParser, JSONDecoder, JSONParseListener}
-import com.rayrobdod.javaScriptObjectNotation.JSONString
-import com.rayrobdod.binaryJSON.BSONWriter
 import java.io.{ByteArrayOutputStream, DataOutputStream}
 import java.nio.file.{Path, Files}
 
@@ -46,13 +41,15 @@ object CompileTokenClassesToBinary // extends scala.App
 {
 	def compile(sources:Seq[Path], outPath:Path) = {
 		
-		val classes:Seq[TokenClass] = sources.map{(jsonPath:Path) => 
-			val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
-			
-			val l = new ToScalaCollection(CannonicalTokenClassDecoder)
-			JSONParser.parse(l, jsonReader)
-			jsonReader.close()
-			l.resultSeq
+		val classes:Seq[TokenClass] = sources.map{(jsonPath:Path) =>
+			var jsonReader:java.io.Reader = new java.io.StringReader("[]")
+			try {
+				val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
+				
+				new JsonParser(new SeqBuilder(new TokenClassBuilder)).parse(jsonReader).map{_.asInstanceOf[CannonicalTokenClassTemplate].build}
+			} finally {
+				jsonReader.close()
+			}
 		}.flatten
 		
 		val imageMap = new TokenClassNameToImageLocation(sources)

@@ -32,10 +32,6 @@ import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
 import com.rayrobdod.deductionTactics.TokenClass
-
-import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
-import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
-import com.rayrobdod.binaryJSON.BSONWriter
 import java.io.{ByteArrayOutputStream, DataOutputStream}
 import java.nio.file.{Path, Files}
 
