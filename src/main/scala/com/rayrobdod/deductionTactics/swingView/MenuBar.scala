@@ -26,7 +26,7 @@ import javax.swing.ScrollPaneConstants.{
 }
 import javax.swing.SwingUtilities.getWindowAncestor
 import com.rayrobdod.deductionTactics.TokenClass
-import com.rayrobdod.deductionTactics.{CannonicalTokenClassBuilder => TokenClassBuilder}
+import com.rayrobdod.deductionTactics.{CannonicalTokenClassTemplate => TokenClassBuilder}
 import java.awt.BorderLayout.{NORTH, SOUTH}
 		
 /**

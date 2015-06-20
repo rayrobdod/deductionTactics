@@ -6,7 +6,7 @@
 	"range":1,
 	"speed":5,
 	"body":"Human",
-	"weakWeapon":{"blade":1,"blunt":.5,"spear":1.75,"whip":2,"powder":1},
+	"weakWeapon":{"blade":1,"blunt":0.5,"spear":1.75,"whip":2,"powder":1},
 	"weakStatus":"Neuro",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Ninja.png" 
@@ -18,7 +18,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":1.5 ,"blunt":.5,"spear":.75 ,"whip":1,"powder":2},
+	"weakWeapon":{"blade":1.5 ,"blunt":0.5,"spear":0.75 ,"whip":1,"powder":2},
 	"weakStatus":"Blind",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Farmer.png" 
@@ -30,7 +30,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":1.5,"blunt":1,"spear":2 ,"whip":.75,"powder":.5},
+	"weakWeapon":{"blade":1.5,"blunt":1,"spear":2 ,"whip":0.75,"powder":0.5},
 	"weakStatus":"Blind",
 	"weakDirection":"Down",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Umbrellaswordsman.png" 
@@ -42,7 +42,7 @@
 	"range":2,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":1.5,"blunt":1,"spear":2 ,"whip":1,"powder":.75},
+	"weakWeapon":{"blade":1.5,"blunt":1,"spear":2 ,"whip":1,"powder":0.75},
 	"weakStatus":"Blind",
 	"weakDirection":"Down",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Umbrellaswordsman.png" 
@@ -54,7 +54,7 @@
 	"range":2,
 	"speed":2,
 	"body":"Human",
-	"weakWeapon":{"blade":2,"blunt":1.5,"spear":.5 ,"whip":.5,"powder":.75},
+	"weakWeapon":{"blade":2,"blunt":1.5,"spear":0.5 ,"whip":0.5,"powder":0.75},
 	"weakStatus":"Neuro",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Pyro.png" 
@@ -66,7 +66,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":.75,"blunt":.5,"spear":1.5 ,"whip":2,"powder":1},
+	"weakWeapon":{"blade":0.75,"blunt":0.5,"spear":1.5 ,"whip":2,"powder":1},
 	"weakStatus":"Sleep",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/torchbearer.png" 
@@ -78,7 +78,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":2,"blunt":.5,"spear":1.5,"whip":1,"powder":.75},
+	"weakWeapon":{"blade":2,"blunt":0.5,"spear":1.5,"whip":1,"powder":0.75},
 	"weakStatus":"Confuse",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Yoyoer.png" 
@@ -90,7 +90,7 @@
 	"range":2,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":1,"blunt":1.5,"spear":2,"whip":.75,"powder":.5},
+	"weakWeapon":{"blade":1,"blunt":1.5,"spear":2,"whip":0.75,"powder":0.5},
 	"weakStatus":"Confuse",
 	"weakDirection":"DontCare",
 	"iconc":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Farmer.png" 
@@ -102,7 +102,7 @@
 	"range":2,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":2,"blunt":1,"spear":1.5,"whip":.75,"powder":1},
+	"weakWeapon":{"blade":2,"blunt":1,"spear":1.5,"whip":0.75,"powder":1},
 	"weakStatus":"Confuse",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Pikachu suit.png" 
@@ -114,7 +114,7 @@
 	"range":1,
 	"speed":5,
 	"body":"Human",
-	"weakWeapon":{"blade":1.5,"blunt":1,"spear":2 ,"whip":.5,"powder":.75},
+	"weakWeapon":{"blade":1.5,"blunt":1,"spear":2 ,"whip":0.5,"powder":0.75},
 	"weakStatus":"Snake",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Katie's Entei shirt.png" 
@@ -127,7 +127,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":.5,"blunt":.75,"spear":2,"whip":1,"powder":1.5},
+	"weakWeapon":{"blade":0.5,"blunt":0.75,"spear":2,"whip":1,"powder":1.5},
 	"weakStatus":"Confuse",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/TF2 Medic.png"
@@ -140,7 +140,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":2,"blunt":.5,"spear":1.5,"whip":.75,"powder":1},
+	"weakWeapon":{"blade":2,"blunt":0.5,"spear":1.5,"whip":0.75,"powder":1},
 	"comment":"Silence shouldn't become an option, but if it did…",
 	"weakStatus":"Sleep",
 	"weakDirection":"DontCare",
@@ -154,7 +154,7 @@
 	"range":3,
 	"speed":2,
 	"body":"Human",
-	"weakWeapon":{"blade":2,"blunt":.75,"spear":1,"whip":.75,"powder":.5},
+	"weakWeapon":{"blade":2,"blunt":0.75,"spear":1,"whip":0.75,"powder":0.5},
 	"weakStatus":"Burn",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Tiny Evergreen Tree.png" 
@@ -166,7 +166,7 @@
 	"range":1,
 	"speed":3,
 	"body":"Human",
-	"weakWeapon":{"blade":1,"blunt":1.5,"spear":.75,"whip":.5,"powder":2},
+	"weakWeapon":{"blade":1,"blunt":1.5,"spear":0.75,"whip":0.5,"powder":2},
 	"weakStatus":"Burn",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Snowman.png" 

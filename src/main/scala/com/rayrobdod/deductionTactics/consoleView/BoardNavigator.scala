@@ -18,7 +18,7 @@ class BoardNavigator(
 		val in:java.io.InputStream = System.in
 ) extends Runnable {
 	
-	private var currentSpace:RectangularSpace[SpaceClass] = currentState.board.space(0,0);
+	private var currentSpace:RectangularSpace[SpaceClass] = currentState.board(0,0);
 	private var selected:Option[TokenIndex] = None;
 	private var continue:Boolean = true;
 	var suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty

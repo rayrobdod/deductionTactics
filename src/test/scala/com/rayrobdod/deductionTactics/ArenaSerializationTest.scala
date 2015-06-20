@@ -33,10 +33,9 @@ class ArenaSerializationTest extends FunSpec {
 			}
 		}
 		it ("First has an arena that is empty") {
-			Maps.getMap(0).spaces.flatten.foreach{space =>
+			Maps.getMap(0).foreach{x =>
+				val (index, space) = x
 				val spaceClass = space.typeOfSpace
-//			Maps.getMap(0).foreach{x =>
-//				val (index, spaceClass) = x
 				assertResult(UniPassageSpaceClass.apply){spaceClass}
 			}
 		}

@@ -86,7 +86,7 @@ object Main extends App
 	{
 		val tokenClasses:Seq[Seq[TokenClass]] = ais.zip(tokenPositions.map{_.length}).map({(p:PlayerAI, l:Int) => p.buildTeam(l)}.tupled)
 		val TokenClassToSpaceIndex:Seq[Seq[(TokenClass, (Int, Int))]] = tokenClasses.zip(tokenPositions).map({(x:Seq[TokenClass],y:Seq[(Int, Int)]) => x.zip(y)}.tupled)
-		val tokenClassToSpace:Seq[Seq[(Option[TokenClass], Space[SpaceClass])]] = TokenClassToSpaceIndex.map{_.map{(x) => ((Option(x._1), field.space(x._2._1, x._2._2) ))}}
+		val tokenClassToSpace:Seq[Seq[(Option[TokenClass], Space[SpaceClass])]] = TokenClassToSpaceIndex.map{_.map{(x) => ((Option(x._1), field(x._2._1, x._2._2) ))}}
 		// limit number of tokens to number of availiable spaces.
 		
 		val tokens = new ListOfTokens( tokenClassToSpace.map{_.map{(x) => new Token(x._2, tokenClass = x._1)}} )

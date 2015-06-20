@@ -19,8 +19,7 @@ package com.rayrobdod.deductionTactics
 
 import Statuses.Status
 import com.rayrobdod.boardGame.{Space,
-		StrictRectangularSpace,
-		Token => BoardGameToken
+		StrictRectangularSpace
 }
 
 /**
@@ -29,7 +28,7 @@ import com.rayrobdod.boardGame.{Space,
  * @version a.6.0
  */
 final case class Token (
-	override val currentSpace:Space[SpaceClass],
+	val currentSpace:Space[SpaceClass],
 	val currentHitpoints:Int = Token.maximumHitpoints,
 	val currentStatus:Status = Statuses.Normal,
 	val currentStatusTurnsLeft:Int = 0,
@@ -37,7 +36,7 @@ final case class Token (
 	
 	val canMoveThisTurn:Int = 0,
 	val canAttackThisTurn:Boolean = false
-) extends BoardGameToken[SpaceClass](currentSpace) {
+) {
 	
 	final def startOfTurn():Token = {
 		val newStatus = if (currentStatusTurnsLeft > 1) {currentStatus} else {Statuses.Normal}

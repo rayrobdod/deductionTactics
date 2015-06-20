@@ -10,11 +10,11 @@ scalacOptions ++= Seq("-unchecked", "-deprecation" )
 
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "20140518")
 
-libraryDependencies += ("com.rayrobdod" %% "json" % "1.0.0")
+libraryDependencies += ("com.rayrobdod" %% "json" % "2.0-RC3")
 
 libraryDependencies += ("net.sf.opencsv" % "opencsv" % "2.3")
 
-libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0-SNAPSHOT-20140809")
+libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0-SNAPSHOT-20150616")
 
 excludeFilter in unmanagedSources in Compile := new FileFilter{
 	def accept(n:File) = {

@@ -20,14 +20,11 @@ package com.rayrobdod.deductionTactics.swingView
 import javax.swing.{Icon, ImageIcon}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
-import com.rayrobdod.deductionTactics.{TokenClass,
-		CannonicalTokenClassDecoder, Weaponkinds, CannonicalTokenClassBuilder, Elements}
+import com.rayrobdod.deductionTactics.{Weaponkinds, Elements}
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 	
-import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
-import com.rayrobdod.javaScriptObjectNotation.parser.{
-		JSONParser, JSONDecoder, JSONParseListener}
-import com.rayrobdod.javaScriptObjectNotation.JSONString
+import com.rayrobdod.json.parser.JsonParser
+import com.rayrobdod.json.builder.{Builder, SeqBuilder, MapBuilder}
 import java.io.{ByteArrayOutputStream, DataOutputStream}
 import java.net.URL
 import javax.imageio.ImageIO
@@ -40,80 +37,51 @@ import javax.imageio.ImageIO
  * @since a.6.0
  */
 class TokenClassNameToIconFromJson(sources:Seq[URL]) {
+	import TokenClassNameToIconFromJson._
 	
 	val map:Map[String, Icon] = {
 		val a:Seq[Seq[(String, Icon)]] = sources.map{(jsonPath:URL) =>
 			val jsonReader = new java.io.InputStreamReader(jsonPath.openStream(), UTF_8)
 			
-			val l = new ToScalaCollection(this.Decoder)
-			JSONParser.parse(l, jsonReader)
-			jsonReader.close()
-			l.resultSeq
+			try {
+				new JsonParser(new SeqBuilder(new TokenIconBuilder)).parse(jsonReader).map{_.asInstanceOf[TokenIconParts].result}
+			} finally {
+				jsonReader.close()
+			}
 		}
 		val b:Seq[(String, Icon)] = a.flatten
 		val d:Map[String, Icon] = b.toMap
 		d
 	}
+}
+
+object TokenClassNameToIconFromJson {
 	
-	private object Decoder extends JSONDecoder[(String, Icon)] {
-		override def decode(s:String):(String, Icon) = {
-			val l = new TokenClassNameToIconFromJson.this.ParseListener
-			JSONParser.parse(l, s)
-			l.result
+	final class TokenIconBuilder extends Builder[TokenIconParts] {
+		override val init:TokenIconParts = new TokenIconParts()
+		override def apply(folding:TokenIconParts, key:String, value:Object):TokenIconParts = key match {
+			case "name" => folding.copy(name = value.toString)
+			case "icon" => folding.copy(iconLoc = Some(value.toString))
+			case "element" => folding.copy(atkElement = Some(Elements.withName(value.toString)))
+			case "atkWeapon" => folding.copy(atkWeapon = Some(Weaponkinds.withName(value.toString)))
+			case _ => folding
 		}
+		override def childBuilder(key:String):Builder[_] = new MapBuilder
+		override val resultType:Class[TokenIconParts] = classOf[TokenIconParts]
 	}
 	
-	private class ParseListener extends JSONParseListener {
-		private val builder = new CannonicalTokenClassBuilder
-		private var strBuilder = StringBuilder.newBuilder
-		private var key:Option[String] = None
-		private var iconLoc:Option[String] = None
-		
-		override def abort = false
-		override def charRead(index:Int, charact:Char) = strBuilder += charact
-		override def started() {builder.clear; iconLoc = None; key = None; strBuilder = StringBuilder.newBuilder}
-		override def ended() {}
-		override def elemStarted(index:Int, charact:Char) {}
-		override def openingBracket(index:Int, charact:Char) {}
-		override def endingBracket(index:Int, charact:Char) {}
-		
-		override def elemEnded(index:Int, charact:Char) =
-		{
-			val valueRaw = strBuilder.toString
-			val value = try {
-				JSONString.generateUnparsed(valueRaw).toString
-			} catch {
-				case x:java.text.ParseException => valueRaw
-			}
-			
-			key.foreach{ (x:String) =>
-				try {
-					x match {
-						case "name" => builder.nameOpt = Some(value)
-						case "icon" => iconLoc = Some(value)
-						case "element" => builder.atkElement = Some(Elements.withName(value))
-						case "atkWeapon" => builder.atkWeapon = Some(Weaponkinds.withName(value))
-						case x => {  }
-					}
-				} catch {
-					case e:java.util.NoSuchElementException => {throw e}
-				}
-			}
-			strBuilder = StringBuilder.newBuilder
-		}
-		
-		override def keyValueSeparation(index:Int, charact:Char) =
-		{
-				key = Some(JSONString.generateUnparsed(strBuilder.toString).toString)
-				strBuilder = StringBuilder.newBuilder;
-		}
-		
+	final case class TokenIconParts(
+		val name:String = "",
+		val iconLoc:Option[String] = None,
+		val atkElement:Option[Elements.Element] = None,
+		val atkWeapon:Option[Weaponkinds.Weaponkind] = None
+	) {
 		def result:(String, Icon) = {
-			val name = builder.name;
+			val name = this.name;
 			val icon = if (iconLoc.isDefined) {
 				loadIcon(iconLoc.get, 32)
 			} else {
-				generateGenericIcon(builder.atkElement, builder.atkWeapon)
+				generateGenericIcon(atkElement, atkWeapon)
 			}
 			
 			(name, icon)

@@ -20,6 +20,7 @@ package com.rayrobdod.deductionTactics
 import org.scalatest.{FunSuite, FunSpec}
 import org.scalatest.prop.PropertyChecks
 import scala.collection.immutable.Seq
+import com.rayrobdod.json.parser.JsonParser
 import com.rayrobdod.deductionTactics.Statuses._
 
 class TokenClassFromJsonTest extends FunSpec {
@@ -33,7 +34,7 @@ class TokenClassFromJsonTest extends FunSpec {
 				"range":1,
 				"speed":4,
 				"body":"Avian",
-				"weakWeapon":{"blade":.75,"blunt":2,"spear":1,"whip":1.5,"powder":.5},
+				"weakWeapon":{"blade":0.75,"blunt":2,"spear":1,"whip":1.5,"powder":0.5},
 				"weakStatus":"Sleep",
 				"weakDirection":"DontCare",
 				"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Golden Eagle.png"
@@ -56,7 +57,7 @@ class TokenClassFromJsonTest extends FunSpec {
 				),
 				weakStatus = Statuses.Sleep
 			)
-			val res = CannonicalTokenClassDecoder.decode(src)
+			val res = new JsonParser(new TokenClassBuilder).parse(src).build
 			
 			assertResult(exp){res}
 		}
@@ -70,7 +71,7 @@ class TokenClassFromJsonTest extends FunSpec {
 				"range":1,
 				"speed":3,
 				"body":"Human",
-				"weakWeapon":{"blade":2,"blunt":.5,"spear":1.5,"whip":1,"powder":1.25},
+				"weakWeapon":{"blade":2,"blunt":0.5,"spear":1.5,"whip":1,"powder":1.25},
 				"weakStatus":"Burn",
 				"weakDirection":"Right",
 				"iconc":"" 
@@ -93,7 +94,7 @@ class TokenClassFromJsonTest extends FunSpec {
 				),
 				weakStatus = Statuses.Burn
 			)
-			val res = CannonicalTokenClassDecoder.decode(src)
+			val res = new JsonParser(new TokenClassBuilder).parse(src).build
 			
 			assertResult(exp){res}
 		}

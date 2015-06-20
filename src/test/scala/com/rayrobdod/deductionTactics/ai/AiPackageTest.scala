@@ -38,43 +38,43 @@ class MoveRangeOfTest extends FunSpec {
 	
 	describe ("moveRangeOf") {
 		it ("A healthy current-turn Token has a full range") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass).startOfTurn()
+			val token = new Token(board(1,1), tokenClass = myTokenClass).startOfTurn()
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(11)(moveRangeOf(token, list).size)
 		}
 		it ("A healthy Token has a full speed") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass)
+			val token = new Token(board(1,1), tokenClass = myTokenClass)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(11)(moveRangeOf(token, list).size)
 		}
 		it ("A SnakeToxin'd Token has a speed of one") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Snake)
+			val token = new Token(board(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Snake)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(5)(moveRangeOf(token, list).size)
 		}
 		it ("A Sleep'd Token has a speed of zero") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Sleep)
+			val token = new Token(board(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Sleep)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(1)(moveRangeOf(token, list).size)
 		}
 		it ("A Burn'd Token has a full speed") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Burn)
+			val token = new Token(board(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Burn)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(11)(moveRangeOf(token, list).size)
 		}
 		it ("An unknown token guesses no speed") {
-			val token = new Token(board.space(1,1)).startOfTurn()
+			val token = new Token(board(1,1)).startOfTurn()
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(1)(moveRangeOf(token, list).size)
 		}
 		it ("An unknown token guesses the suspicion's speed") {
-			val token = new Token(board.space(1,1)).startOfTurn()
+			val token = new Token(board(1,1)).startOfTurn()
 			val susp = new TokenClassSuspision(speed = Some(2))
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
@@ -84,49 +84,49 @@ class MoveRangeOfTest extends FunSpec {
 	
 	describe ("attackRangeOf") {
 		it ("A healthy current-turn Token has a full range") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass).startOfTurn()
+			val token = new Token(board(1,1), tokenClass = myTokenClass).startOfTurn()
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(15)(attackRangeOf(token, list).size)
 		}
 		it ("A healthy Token has a full speed") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass)
+			val token = new Token(board(1,1), tokenClass = myTokenClass)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(15)(attackRangeOf(token, list).size)
 		}
 		it ("A SnakeToxin'd Token has a speed of one") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Snake)
+			val token = new Token(board(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Snake)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(11)(attackRangeOf(token, list).size)
 		}
 		it ("A Sleep'd Token has a speed of zero") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Sleep)
+			val token = new Token(board(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Sleep)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(5)(attackRangeOf(token, list).size)
 		}
 		it ("A Burn'd Token has a full speed") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Burn)
+			val token = new Token(board(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Burn)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(15)(attackRangeOf(token, list).size)
 		}
 		it ("A Blind'd Token has a full speed") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Blind)
+			val token = new Token(board(1,1), tokenClass = myTokenClass, currentStatus = Statuses.Blind)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(0)(attackRangeOf(token, list).size)
 		}
 		it ("An unknown token guesses no range") {
-			val token = new Token(board.space(1,1)).startOfTurn()
+			val token = new Token(board(1,1)).startOfTurn()
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(1)(attackRangeOf(token, list).size)
 		}
 		it ("An unknown token guesses the suspicion's range") {
-			val token = new Token(board.space(1,1)).startOfTurn()
+			val token = new Token(board(1,1)).startOfTurn()
 			val susp = new TokenClassSuspision(range = Some(2))
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
@@ -140,19 +140,19 @@ class MoveRangeOfTest extends FunSpec {
 	
 	describe ("MoveToCostFunction") {
 		it ("UniPassageSpaceClass occupied") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass)
+			val token = new Token(board(1,1), tokenClass = myTokenClass)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(SpaceClass.impossiblePassage)(
-					new MoveToCostFunction(token, list)(board.space(1,1), board.space(1,1))
+					new MoveToCostFunction(token, list)(board(1,1), board(1,1))
 			)
 		}
 		it ("UniPassageSpaceClass unoccupied") {
-			val token = new Token(board.space(1,1), tokenClass = myTokenClass)
+			val token = new Token(board(1,1), tokenClass = myTokenClass)
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(SpaceClass.normalPassage)(
-					new MoveToCostFunction(token, list)(board.space(2,2), board.space(2,2))
+					new MoveToCostFunction(token, list)(board(2,2), board(2,2))
 			)
 		}
 	}

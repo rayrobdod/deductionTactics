@@ -141,8 +141,8 @@ object TokenClass
 	val allKnown:Seq[TokenClass] =
 	{
 		import scala.collection.JavaConversions.iterableAsScalaIterable
-		import com.rayrobdod.javaScriptObjectNotation.parser.JSONParser
-		import com.rayrobdod.javaScriptObjectNotation.parser.listeners.ToScalaCollection
+		import com.rayrobdod.json.parser.JsonParser
+		import com.rayrobdod.json.builder.SeqBuilder
 		import com.rayrobdod.util.services.ResourcesServiceLoader
 		import java.nio.charset.StandardCharsets.UTF_8
 		import java.net.URL
@@ -164,12 +164,14 @@ object TokenClass
 				dis.close();
 				retVal
 			} else { // assume JSON
-				val jsonReader = new java.io.InputStreamReader(jsonPath.openStream(), UTF_8)
-				
-				val l = new ToScalaCollection(CannonicalTokenClassDecoder)
-				JSONParser.parse(l, jsonReader)
-				jsonReader.close()
-				l.resultSeq
+				var jsonReader:java.io.Reader = new java.io.StringReader("[]")
+				try {
+					val jsonReader = new java.io.InputStreamReader(jsonPath.openStream(), UTF_8)
+					
+					new JsonParser(new SeqBuilder(new TokenClassBuilder)).parse(jsonReader).map{_.asInstanceOf[CannonicalTokenClassTemplate].build}
+				} finally {
+					jsonReader.close()
+				}
 			}
 		}
 		val e = b.flatten
