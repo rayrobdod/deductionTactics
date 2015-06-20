@@ -32,9 +32,11 @@ object Main {
 		t.setVisible(true)
 	}
 	
-	private def chooseTokens(ais:Seq[PlayerAI], map:Arena, startSpaces:Seq[Seq[(Int, Int)]]):Unit = {
+	private def chooseTokens(ais:Seq[PlayerAI], map:Arena):Unit = {
 		val t = new Thread(new Runnable(){
 			def run() = {
+				val startSpaces = map.startSpaces(ais.size)
+				
 				val startCounts = startSpaces.map{_.size}
 				val selectedClasses:Seq[Seq[TokenClass]] = ais.zip(startCounts).map{x => x._1.selectTokenClasses(x._2 * 2)}
 				// TODO: short circuit and stop if any AI returns an empty list

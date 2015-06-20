@@ -67,10 +67,6 @@ class TopTest extends FunSpec {
 					List((5,8), (3,8), (7,8), (4,8), (6,8))
 				)
 			))){target.map}
-			assertResult(Vector(
-				Vector((1,5), (1,3), (1,7), (1,1), (1,9), (1,4), (1,6), (1,2), (1,8), (1,0)),
-				Vector((8,5), (8,3), (8,7), (8,1), (8,9), (8,4), (8,6), (8,2), (8,8), (8,0))
-			)){target.startSpaces}
 		}
 		it ("Does not call the NextListener if cancel is called") {
 			val t = new Top()
@@ -104,22 +100,19 @@ class TopTest extends FunSpec {
 	
 	
 	class MockNextListener extends Top.NextListener {
-		override def apply(ais:Seq[PlayerAI], map:Arena, startSpaces:Seq[Seq[(Int,Int)]]):Unit = {
+		override def apply(ais:Seq[PlayerAI], map:Arena):Unit = {
 			if (this._hasBeenCalled) {throw new IllegalStateException("MockNextListener.apply called twice")}
 			
 			this._hasBeenCalled = true
 			this._ais = ais
 			this._map = map
-			this._startSpaces = startSpaces
 		}
 		
 		private var _hasBeenCalled:Boolean = false
 		private var _ais:Seq[PlayerAI] = Nil
 		private var _map:Arena = Arena("", Nil, Map.empty)
-		private var _startSpaces:Seq[Seq[(Int,Int)]] = Nil
 		def hasBeenCalled:Boolean = _hasBeenCalled
 		def ais:Seq[PlayerAI] = _ais
 		def map:Arena = _map
-		def startSpaces:Seq[Seq[(Int,Int)]] = _startSpaces
 	}
 }

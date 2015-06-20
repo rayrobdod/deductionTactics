@@ -29,6 +29,7 @@ import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 
 class Top {
 	import Top.NextListener
+	import Top.MyCellRenderer
 	
 	private val resources = java.util.ResourceBundle.getBundle("com.rayrobdod.deductionTactics.swingView.text")
 	
@@ -37,7 +38,7 @@ class Top {
 	private val nextButton = new JButton(resources.getString("nextButton"))
 	
 	{
-		val mapList:JList[String] = new JList(new ScalaSeqListModel(Maps.names))
+		val mapList:JList[Arena] = new JList(new ScalaSeqListModel(Maps.arenas))
 		val playerCount:JList[Int] = new JList(new ScalaSeqListModel(Seq(2,4)))
 		val aisPanel = new ChooseAIsComponent
 		
@@ -52,10 +53,11 @@ class Top {
 			playerCount.setVisibleRowCount(1)
 			mapList.setVisibleRowCount(8)
 			
+			mapList.setCellRenderer(MyCellRenderer)
 			mapList.addListSelectionListener(new ListSelectionListener(){
 				override def valueChanged(e:ListSelectionEvent):Unit = {
-					if (mapList.getSelectedIndex >= 0) {
-						playerCount.setModel(new ScalaSeqListModel(Maps.possiblePlayers(mapList.getSelectedIndex).toSeq))
+					if (! mapList.isSelectionEmpty) {
+						playerCount.setModel(new ScalaSeqListModel(mapList.getSelectedValue.possiblePlayers.toSeq))
 						playerCount.setSelectedIndex(0)
 						nextButton.setEnabled(true)
 					} else {
@@ -67,8 +69,8 @@ class Top {
 			})
 			playerCount.addListSelectionListener(new ListSelectionListener(){
 				override def valueChanged(e:ListSelectionEvent):Unit = {
-					if (mapList.getSelectedIndex >= 0 && playerCount.getSelectedIndex >= 0) {
-						tokensPerPlayer.setText(Maps.startingPositions(mapList.getSelectedIndex, playerCount.getSelectedValue).map{_.size}.toString)
+					if (! mapList.isSelectionEmpty && ! playerCount.isSelectionEmpty) {
+						tokensPerPlayer.setText(mapList.getSelectedValue.startSpaces(playerCount.getSelectedValue).map{_.size}.mkString("[", ",", "]"))
 						nextButton.setEnabled(true)
 					} else {
 						tokensPerPlayer.setText(resources.getString("invalid"))
@@ -117,8 +119,7 @@ class Top {
 					nextListeners.foreach{x:NextListener =>
 						x.apply(
 							aisPanel.getAIs,
-							Maps.arenas(mapList.getSelectedIndex),
-							Maps.startingPositions(mapList.getSelectedIndex, playerCount.getSelectedValue)
+							Maps.arenas(mapList.getSelectedIndex)
 						)
 					}
 				}
@@ -139,15 +140,24 @@ class Top {
 }
 
 object Top {
-	type NextListener = Function3[Seq[PlayerAI], Arena, Seq[Seq[(Int,Int)]], Unit]
+	type NextListener = Function2[Seq[PlayerAI], Arena, Unit]
 	
 	def main(args:Array[String]):Unit = {
 		val t = new Top();
-		t.addNextListener({(ais:Seq[PlayerAI], map:Arena, startSpaces:Seq[Seq[(Int,Int)]]) =>
+		t.addNextListener({(ais:Seq[PlayerAI], map:Arena) =>
 			System.out.println(ais)
 			System.out.println(map)
-			System.out.println(startSpaces)
 		})
 		t.setVisible(true);
+	}
+	
+	object MyCellRenderer extends ListCellRenderer[Arena] {
+		private val backing = new javax.swing.DefaultListCellRenderer
+		
+		override def getListCellRendererComponent(list:JList[_ <: Arena], value:Arena,
+				index:Int, isSelected:Boolean, cellHasFocus:Boolean
+		):Component = {
+			backing.getListCellRendererComponent(list:JList[_], value.name, index, isSelected, cellHasFocus)
+		}
 	}
 }
