@@ -19,22 +19,13 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.{Space}
-import com.rayrobdod.deductionTactics.{PlayerAI, Token}
+import com.rayrobdod.deductionTactics.{PlayerAI}
 import java.awt.event.{ActionListener, ActionEvent}
-import javax.swing.{JButton, JFrame, JPanel}
-import java.awt.BorderLayout
 
 import com.rayrobdod.deductionTactics.swingView.chooseTokenClasses
 import com.rayrobdod.deductionTactics.swingView.narrowTokenClasses
 import com.rayrobdod.deductionTactics.swingView.game
 
-import com.rayrobdod.deductionTactics.swingView.{
-			MenuBar,
-			SellectAttackTypePanel,
-			MoveTokenMouseListener,
-			InputFrame
-}
 
 /**
  * An instance of the PlayerAI service. Needs to be a class, since it
@@ -51,7 +42,6 @@ final class SwingInterface extends PlayerAI
 	
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		
-		System.out.println(gameState.tokens.tokens.flatten.map{_.canMoveThisTurn})
 		val a = memo.asInstanceOf[SwingInterfaceMemo]
 		a.panel.fireTurnStartListeners(gameState)
 		

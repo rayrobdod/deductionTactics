@@ -17,9 +17,11 @@
 */
 package com.rayrobdod.deductionTactics.swingView.game
 
-import java.awt.{Component, Color, Graphics, Shape, Graphics2D}
-import scala.collection.immutable.{Seq, Set}
+import java.awt.{Shape, Rectangle}
+import java.awt.Color
+import java.awt.{Graphics, Graphics2D}
 import javax.swing.JComponent
+import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.{Space, RectangularSpace, RectangularField, StrictRectangularSpace}
 import com.rayrobdod.boardGame.swingView.RectangularTilemapComponent
 import com.rayrobdod.deductionTactics.{Token, ListOfTokens, SpaceClass, AttackCostFunction, MoveToCostFunction}
@@ -35,10 +37,10 @@ import HighlightMovableSpacesLayer._
 final class HighlightMovableSpacesLayer(
 	tilemap:RectangularTilemapComponent
 ) extends JComponent {
-	var currentSpeeds:Seq[Shape] = Seq.empty;
-	var currentRanges:Seq[Shape] = Seq.empty;
-	var maximumSpeeds:Seq[Shape] = Seq.empty;
-	var maximumRanges:Seq[Shape] = Seq.empty;
+	private[this] var currentSpeeds:Seq[Shape] = Seq.empty;
+	private[this] var currentRanges:Seq[Shape] = Seq.empty;
+	private[this] var maximumSpeeds:Seq[Shape] = Seq.empty;
+	private[this] var maximumRanges:Seq[Shape] = Seq.empty;
 	
 	override def paintComponent(g:Graphics):Unit = {
 		val g2 = g.asInstanceOf[Graphics2D]

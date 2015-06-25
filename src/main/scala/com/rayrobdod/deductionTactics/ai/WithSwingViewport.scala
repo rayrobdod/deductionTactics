@@ -18,8 +18,6 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import javax.swing.JFrame
-import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.swingView.game
 
 /**
@@ -59,7 +57,7 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 		
 		panel.fireNotificationListeners(action, afterState)
 		
-		memo
+		super.notifyTurn(player, action, beforeState, afterState, memo)
 	}
 	
 	

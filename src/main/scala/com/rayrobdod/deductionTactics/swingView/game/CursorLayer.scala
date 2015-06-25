@@ -17,44 +17,37 @@
 */
 package com.rayrobdod.deductionTactics.swingView.game
 
-import java.awt.{Component, Color, Graphics, Shape, Graphics2D}
-import scala.collection.immutable.{Seq, Set}
+import java.awt.{Shape, Rectangle, Polygon}
+import java.awt.geom.Area
+import java.awt.Color
+import java.awt.{Graphics, Graphics2D}
 import javax.swing.JComponent
-import com.rayrobdod.boardGame.{Space, RectangularSpace, RectangularField, StrictRectangularSpace}
-import com.rayrobdod.boardGame.swingView.RectangularTilemapComponent
-import com.rayrobdod.deductionTactics.{Token, ListOfTokens, SpaceClass, AttackCostFunction, MoveToCostFunction}
 
 /**
- * A component that can be added to a FieldComponent's tokenLayer to
- * show what spaces a token can move to 
+ * A layer to be place on top of a [[com.rayrobdod.boardGame.swingView.RectangularTilemapComponent]];
+ * it will show a cursor on top of the space most recently called with update 
  *
  * @author Raymond Dodge
  * @since a.6.0
  */
 final class CursorLayer(
-	tilemap:RectangularTilemapComponent
+	spaceBounds:Function1[(Int,Int), Shape]
 ) extends JComponent {
-	val color = Color.black
-	var currentShapes:Seq[Shape] = Nil
+	private[this] var currentShape:Shape = new Area()
 	
 	override def paintComponent(g:Graphics) {
 		val g2 = g.asInstanceOf[Graphics2D]
-		val g2Fill = {(x:Shape) => g2.fill(x)}
 		
-		g2.setColor(color)
-		currentShapes.foreach(g2Fill)
+		g2.setColor(this.getForeground())
+		g2.fill(currentShape)
 	}
 	
-	
-	
-	def update(space:(Int, Int)):Unit = {
-		val spaceBounds = tilemap.spaceBounds(space)
-		currentShapes = cursorShape(spaceBounds)
-		
+	def update(spaceIndex:(Int, Int)):Unit = {
+		currentShape = cursorShape(spaceBounds(spaceIndex))
 		this.repaint()
 	}
 	
-	private def cursorShape(bounds:Shape):Seq[Shape] = {
+	private[this] def cursorShape(bounds:Shape):Shape = {
 		val bounds2 = bounds.getBounds()
 		val left = bounds2.x
 		val top  = bounds2.y
@@ -68,11 +61,11 @@ final class CursorLayer(
 		val yTopPoints    = Array[Int](top, top, top + width, top + width, top + length, top + length, top)
 		val yBottomPoints = Array[Int](bottom, bottom, bottom - width, bottom - width, bottom - length, bottom - length, bottom)
 		
-		Seq(
-			new java.awt.Polygon(xLeftPoints,  yTopPoints,    xLeftPoints.length),
-			new java.awt.Polygon(xLeftPoints,  yBottomPoints, xLeftPoints.length),
-			new java.awt.Polygon(xRightPoints, yTopPoints,    xLeftPoints.length),
-			new java.awt.Polygon(xRightPoints, yBottomPoints, xLeftPoints.length)
-		)
+		val retVal = new Area()
+		retVal.add(new Area(new Polygon(xLeftPoints,  yTopPoints,    xLeftPoints.length)))
+		retVal.add(new Area(new Polygon(xLeftPoints,  yBottomPoints, xLeftPoints.length)))
+		retVal.add(new Area(new Polygon(xRightPoints, yTopPoints,    xLeftPoints.length)))
+		retVal.add(new Area(new Polygon(xRightPoints, yBottomPoints, xLeftPoints.length)))
+		retVal
 	}
 }

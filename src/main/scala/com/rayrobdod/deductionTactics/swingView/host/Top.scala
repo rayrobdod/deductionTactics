@@ -17,10 +17,10 @@
 */
 package com.rayrobdod.deductionTactics.swingView.host
 
-import java.awt._
-import java.awt.event._
-import javax.swing._
-import javax.swing.event._
+import java.awt.{Component, BorderLayout, FlowLayout, GridLayout, GridBagLayout, GridBagConstraints}
+import java.awt.event.{ActionListener, ActionEvent}
+import javax.swing.{JList, ListCellRenderer, JButton, JPanel, JLabel, JFrame, WindowConstants}
+import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
 import scala.collection.immutable.Seq
 import scala.collection.mutable.Buffer
 import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}

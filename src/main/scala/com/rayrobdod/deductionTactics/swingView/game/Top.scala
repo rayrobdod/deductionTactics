@@ -15,28 +15,17 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.swingView.game
+package com.rayrobdod.deductionTactics
+package swingView.game
 
-import com.rayrobdod.deductionTactics._
-import javax.swing.{JPanel, JScrollPane, WindowConstants}
-import java.awt.{BorderLayout, GridLayout}
+import javax.swing.{JFrame, JPanel, WindowConstants}
+import java.text.MessageFormat
 import java.awt.event.{MouseEvent, MouseListener}
-import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
-import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularFieldComponent}
-import com.rayrobdod.deductionTactics.swingView.{TokenClassList, tokenClassToIcon, TokenClassPanel, generateGenericIcon, AvailibleTilesheetListModel, tilesheets}
 import scala.collection.mutable.Buffer
 import scala.collection.immutable.Seq
-import javax.swing.event.{AncestorListener, AncestorEvent}
-import javax.swing.ScrollPaneConstants.{
-		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
-		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
-		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
-		HORIZONTAL_SCROLLBAR_AS_NEEDED => scrollHorizontalAsNeeded
-}
-import javax.swing.BoxLayout.{Y_AXIS => boxYAxis}
-import javax.swing.{BoxLayout, Icon}
-import javax.swing.{JFrame, JToolTip}
-import java.text.MessageFormat
+import com.rayrobdod.boardGame.RectangularField
+import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularFieldComponent}
+import com.rayrobdod.deductionTactics.swingView.{AvailibleTilesheetListModel, tilesheets}
 
 
 /**
@@ -62,7 +51,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		val fieldLayers = RectangularFieldComponent(field, tilesheet)
 		val tokenLayer = new TokenLayer(field, fieldLayers._2)
 		val highlightLayer = new HighlightMovableSpacesLayer(fieldLayers._2)
-		val cursorLayer = new CursorLayer(fieldLayers._2)
+		val cursorLayer = new CursorLayer(fieldLayers._2.spaceBounds _)
 		
 		tokenLayer.tokens = tokens
 		field.keySet.foreach{x =>
