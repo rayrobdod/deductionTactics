@@ -65,7 +65,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 					cursorLayer.update(x)
 					
 					val tokenOnThisSpace = currentTokens.aliveTokens.flatten.filter{_.currentSpace == field(x)}.headOption
-					highlightLayer.update(tokenOnThisSpace, tokens, field)
+					highlightLayer.update(tokenOnThisSpace, currentTokens, field)
 				}
 			})
 		}

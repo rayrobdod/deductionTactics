@@ -43,8 +43,14 @@ import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
  * @version a.6.0
  */
 final class TokenLayer(spaces:RectangularField[SpaceClass], tiles:RectangularTilemapComponent) extends JComponent {
-	var tokens:ListOfTokens = new ListOfTokens(Nil)
+	private[this] var _tokens:ListOfTokens = new ListOfTokens(Nil)
 	var suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty
+	
+	def tokens:ListOfTokens = _tokens
+	def tokens_=(newTokens:ListOfTokens):Unit = {
+		_tokens = newTokens
+		this.repaint()
+	}
 	
 	override def paintComponent(g:Graphics):Unit = {
 		// TODO: don't paint dead tokens
