@@ -8,11 +8,11 @@ version := "a.6.0-SNAPSHOT"
 
 scalaVersion := "2.10.5"
 
-crossScalaVersions ++= Seq("2.10.5", "2.11.6")
+crossScalaVersions := Seq("2.10.5", "2.11.6")
 
 exportJars := true
 
-mainClass := Some("com.rayrobdod.deductionTactics.main.SimpleStart")
+mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
 
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "20140518")
 
