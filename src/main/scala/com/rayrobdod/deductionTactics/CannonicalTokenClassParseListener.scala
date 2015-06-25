@@ -50,7 +50,7 @@ final case class CannonicalTokenClassTemplate(
 	val weakWeapon:Map[Weaponkind,Option[Float]] = Weaponkinds.values.zipAll(Nil, null, None).toMap,
 	val weakStatus:Option[Status] = None
 ) {
-	def name = nameOpt.getOrElse("???")
+	def name:String = nameOpt.getOrElse("???")
 	
 	private def arbitraryDirection:Direction = {
 		val nameHash = this.name.hashCode

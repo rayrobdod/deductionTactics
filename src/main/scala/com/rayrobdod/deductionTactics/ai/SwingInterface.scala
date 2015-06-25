@@ -38,14 +38,14 @@ import com.rayrobdod.deductionTactics.swingView.game
 final class SwingInterface extends PlayerAI
 {
 	private[this] val endOfTurnLock = new Object();
-	var takeTurnReturnValue:Option[GameState.Action] = None
+	private[this] var takeTurnReturnValue:Option[GameState.Action] = None
 	
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		
 		val a = memo.asInstanceOf[SwingInterfaceMemo]
 		a.panel.fireTurnStartListeners(gameState)
 		
-		return endOfTurnLock.synchronized{
+		endOfTurnLock.synchronized{
 			while (takeTurnReturnValue == None) { 
 				endOfTurnLock.wait()
 			}
@@ -88,7 +88,7 @@ final class SwingInterface extends PlayerAI
 		val teamBuilder = new chooseTokenClasses.Top(maxSize)
 		
 		teamBuilder.addNextActionListener(new ActionListener {
-			override def actionPerformed(e:ActionEvent) = {
+			override def actionPerformed(e:ActionEvent):Unit = {
 				buildingLock.synchronized { buildingLock.notifyAll }
 			}
 		})
@@ -111,7 +111,7 @@ final class SwingInterface extends PlayerAI
 		val teamBuilder = new swingView.narrowTokenClasses.Top(index, otherPlayersSelectedClasses, maxResultSize)
 		
 		teamBuilder.addNextActionListener(new ActionListener {
-			override def actionPerformed(e:ActionEvent) = {
+			override def actionPerformed(e:ActionEvent):Unit = {
 				buildingLock.synchronized { buildingLock.notifyAll }
 			}
 		})

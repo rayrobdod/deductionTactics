@@ -53,7 +53,7 @@ final class BlindAttackAI extends PlayerAI
 					new MoveToCostFunction(a, gameState.tokens)
 			)
 			
-			def compare(a:(Token, Token), b:(Token, Token)) =
+			def compare(a:(Token, Token), b:(Token, Token)):Int =
 			{
 				-(distance(a) compareTo distance(b))
 			}
@@ -81,7 +81,6 @@ final class BlindAttackAI extends PlayerAI
 		)
 		
 		// return the first legal move
-		
 		Seq(
 			actions.filter{_ match {
 				case GameState.TokenMove(t:Token, s:Space[_]) =>
