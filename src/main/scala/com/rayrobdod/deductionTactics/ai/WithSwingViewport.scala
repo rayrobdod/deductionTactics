@@ -39,29 +39,11 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 		val viewmodel = new game.Top(tokens, player, initialState.board)
 		viewmodel.setVisible(true)
 		
-		val activeToken = new swingView.SharedActiveTokenProperty()
-		activeToken.value = None
-		
-		
-		
-		val tokensProp = new swingView.ListOfTokensProperty
-		tokensProp.value = initialState.tokens
-		
-		
-		
-		
-		
-		
 		SwingInterfaceMemo(
 				base = base.initialize(player, initialState), 
-				panel = viewmodel,
-				attackTypeSelector = new swingView.SellectAttackTypePanel(),
-				selectedToken = activeToken,
-				currentTokens = tokensProp,
-				endOfTurnButton = new javax.swing.JButton("XXXX")
+				panel = viewmodel
 		)
 	}
-	
 	
 	
 	/**  */
@@ -73,49 +55,12 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 		memo:Memo
 	):Memo = {
 		val memo2 = memo.asInstanceOf[SwingInterfaceMemo]
-		val newMemoBase = base.notifyTurn(player, action, beforeState, afterState, memo2.base)
 		val panel = memo2.panel
 		
-/*		action match {
-			case GameState.TokenMoveResult(index, s) =>
-				val tokenComp = panel.tokenComps(index)
-				tokenComp.moveToSpace(s)
-				
-			case GameState.TokenAttackDamageResult(a, d, e, k) =>
-				val tokenComp = panel.tokenComps(d)
-				tokenComp.beAttacked(e,k)
-				panel.resetTokenPanels(afterState.tokens)
-				System.out.println("Token was attacked")
-				
-				None
-			case GameState.TokenAttackStatusResult(a, d, s) =>
-				val tokenComp = panel.tokenComps(d)
-				tokenComp.beAttacked(s)
-				panel.resetTokenPanels(afterState.tokens)
-				// TODO
-				None
-			case GameState.EndOfTurn =>
-				None
-		}
-*/		
+		panel.fireNotificationListeners(action, afterState)
 		
-		memo2.selectedToken.value = {
-			// this assumes that the board doesn't change.
-			val space = memo2.selectedToken.value.map{_.currentSpace}
-			afterState.tokens.tokens.flatten.find{x => Option(x.currentSpace) == space}
-		}
-		memo2.currentTokens.value = afterState.tokens
-		
-		new SwingInterfaceMemo(
-			newMemoBase,
-			memo2.panel,
-			memo2.attackTypeSelector,
-			memo2.selectedToken,
-			memo2.currentTokens,
-			memo2.endOfTurnButton
-		)
+		memo
 	}
-	
 	
 	
 	

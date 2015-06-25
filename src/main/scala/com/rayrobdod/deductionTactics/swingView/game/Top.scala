@@ -24,6 +24,7 @@ import java.awt.event.{MouseEvent, MouseListener}
 import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularFieldComponent}
 import com.rayrobdod.deductionTactics.swingView.{TokenClassList, tokenClassToIcon, TokenClassPanel, generateGenericIcon, AvailibleTilesheetListModel, tilesheets}
+import scala.collection.mutable.Buffer
 import scala.collection.immutable.Seq
 import javax.swing.event.{AncestorListener, AncestorEvent}
 import javax.swing.ScrollPaneConstants.{
@@ -43,11 +44,18 @@ import java.text.MessageFormat
  * @version a.6.0
  */
 class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[SpaceClass]) {
-	private val resources = java.util.ResourceBundle.getBundle("com.rayrobdod.deductionTactics.swingView.text")
+	import Top._
 	
-	private val frame = new JFrame(MessageFormat.format(resources.getString("playGameFrameTitle"), playerNumber:java.lang.Integer))
+	private[this] val resources = java.util.ResourceBundle.getBundle("com.rayrobdod.deductionTactics.swingView.text")
+	private[this] val frame = new JFrame(MessageFormat.format(resources.getString("playGameFrameTitle"), playerNumber:java.lang.Integer))
 	
-	private val centerpiece = {
+	private[this] val turnStartListeners:Buffer[StartOfTurnListener] = Buffer.empty
+	private[this] val notificationListeners:Buffer[NotificationListener] = Buffer.empty
+	private[this] val turnEndListeners:Buffer[EndOfTurnListener] = Buffer.empty
+	private[this] var currentTokens:ListOfTokens = tokens
+	
+	
+	private[this] val centerpiece = {
 		val rv = new JPanel(new com.rayrobdod.swing.layouts.LayeredLayout)
 		val tilesheet = BoardGamePanel.currentTilesheet
 		
@@ -67,10 +75,18 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 				def mouseClicked(e:MouseEvent):Unit = {
 					cursorLayer.update(x)
 					
-					val tokenOnThisSpace = tokens.aliveTokens.flatten.filter{_.currentSpace == field(x)}.headOption
+					val tokenOnThisSpace = currentTokens.aliveTokens.flatten.filter{_.currentSpace == field(x)}.headOption
 					highlightLayer.update(tokenOnThisSpace, tokens, field)
 				}
 			})
+		}
+		this.addNotificationListener{(a,gs) => 
+			tokenLayer.tokens = gs.tokens
+			currentTokens = gs.tokens
+		}
+		this.addTurnStartListener{(gs) =>
+			tokenLayer.tokens = gs.tokens
+			currentTokens = gs.tokens
 		}
 		
 		rv.add(cursorLayer)
@@ -87,9 +103,28 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	frame.pack()
 	
 	
-	
 	def setVisible(visible:Boolean):Unit = {
 		frame.setVisible(visible);
+	}
+	
+	/* * * OBVERVABLE * * */
+	
+	def addTurnStartListener(f:StartOfTurnListener):Unit = {
+		turnStartListeners += f
+	}
+	def fireTurnStartListeners(gs:GameState):Unit = {
+		turnStartListeners.foreach{f => f(gs)}
+	}
+	
+	def addNotificationListener(f:NotificationListener):Unit = {
+		notificationListeners += f
+	}
+	def fireNotificationListeners(res:GameState.Result, gs:GameState):Unit = {
+		notificationListeners.foreach{f => f(res,gs)}
+	}
+	
+	def addTurnEndListener(f:EndOfTurnListener):Unit = {
+		turnEndListeners += f
 	}
 	
 }
@@ -148,7 +183,10 @@ object BoardGamePanel {
 }
 
 object Top {
-	type NextListener = Function3[Seq[PlayerAI], String, Seq[Seq[(Int,Int)]], Unit]
+	type NotificationListener = Function2[GameState.Result,GameState,Unit]
+	type StartOfTurnListener = Function1[GameState,Unit]
+	type EndOfTurnListener = Function0[Unit]
+	
 	
 	def main(args:Array[String]):Unit = {
 		val field = RectangularField(Seq.fill(7,7){FreePassageSpaceClass.apply})

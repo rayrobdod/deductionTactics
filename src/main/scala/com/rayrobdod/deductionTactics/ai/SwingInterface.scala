@@ -46,14 +46,14 @@ import com.rayrobdod.deductionTactics.swingView.{
  */
 final class SwingInterface extends PlayerAI
 {
-	val endOfTurnLock = new Object();
+	private[this] val endOfTurnLock = new Object();
 	var takeTurnReturnValue:Option[GameState.Action] = None
 	
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		
+		System.out.println(gameState.tokens.tokens.flatten.map{_.canMoveThisTurn})
 		val a = memo.asInstanceOf[SwingInterfaceMemo]
-		a.currentTokens.value = gameState.tokens
-		a.endOfTurnButton.setEnabled(true)
+		a.panel.fireTurnStartListeners(gameState)
 		
 		return endOfTurnLock.synchronized{
 			while (takeTurnReturnValue == None) { 
@@ -72,9 +72,6 @@ final class SwingInterface extends PlayerAI
 		val viewmodel = new game.Top(tokens, player, initialState.board)
 		viewmodel.setVisible(true)
 		
-		val attackTypeSelector = new SellectAttackTypePanel()
-		val activeToken = new swingView.SharedActiveTokenProperty()
-		activeToken.value = None
 		
 		def writeGameAction = {(x:GameState.Action) => 
 			endOfTurnLock.synchronized {
@@ -83,32 +80,16 @@ final class SwingInterface extends PlayerAI
 			}
 		}
 		
-		val tokensProp = new swingView.ListOfTokensProperty
-		tokensProp.value = initialState.tokens
 		
-		
-		
-		val endOfTurnButton = new JButton("End Turn")
-		endOfTurnButton.addActionListener(new ActionListener{
-			def actionPerformed(e:ActionEvent) = {
-				endOfTurnLock.synchronized{
-					endOfTurnButton.setEnabled(false)
-					takeTurnReturnValue = Some(GameState.EndOfTurn)
-					endOfTurnLock.notifyAll()
-				}
-			}
-		})
-		
-		
+		viewmodel.addTurnEndListener{() =>
+			takeTurnReturnValue = Some(GameState.EndOfTurn)
+			endOfTurnLock.notifyAll()
+		}
 		
 		
 		SwingInterfaceMemo(
 				base = new SimpleMemo,
-				panel = viewmodel,
-				attackTypeSelector = attackTypeSelector,
-				selectedToken = activeToken,
-				currentTokens = tokensProp,
-				endOfTurnButton = endOfTurnButton
+				panel = viewmodel
 		)
 	}
 	
@@ -164,41 +145,10 @@ final class SwingInterface extends PlayerAI
 		val memo2 = memo.asInstanceOf[SwingInterfaceMemo]
 		val panel = memo2.panel
 		
-/*		action match {
-			case GameState.TokenMoveResult(index, s) =>
-				val tokenComp = panel.tokenComps(index)
-				tokenComp.moveToSpace(s)
-				
-			case GameState.TokenAttackDamageResult(a, d, e, k) =>
-				val tokenComp = panel.tokenComps(d)
-				tokenComp.beAttacked(e,k)
-				panel.resetTokenPanels(afterState.tokens)
-				System.out.println("Token was attacked")
-				
-				None
-			case GameState.TokenAttackStatusResult(a, d, s) =>
-				val tokenComp = panel.tokenComps(d)
-				tokenComp.beAttacked(s)
-				panel.resetTokenPanels(afterState.tokens)
-				// TODO
-				None
-			case GameState.EndOfTurn =>
-				None
-		}
-*/		
-		
-		memo2.selectedToken.value = {
-			// this assumes that the board doesn't change.
-			val space = memo2.selectedToken.value.map{_.currentSpace}
-			afterState.tokens.tokens.flatten.find{x => Option(x.currentSpace) == space}
-		}
-		memo2.currentTokens.value = afterState.tokens
+		panel.fireNotificationListeners(action, afterState)
 		
 		memo
 	}
-	
-	// hopefully, animations will work eventually and that will
-	// inform a player of what's going on.
 	
 	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[SwingInterface]}
 	override def equals(other:Any):Boolean = {
@@ -213,11 +163,7 @@ final class SwingInterface extends PlayerAI
 
 final case class SwingInterfaceMemo (
 	base:Memo,
-	panel:game.Top,
-	attackTypeSelector:SellectAttackTypePanel,
-	selectedToken:swingView.SharedActiveTokenProperty,
-	currentTokens:swingView.ListOfTokensProperty,
-	endOfTurnButton:JButton
+	panel:game.Top
 ) extends Memo {
 	override def attacks:Seq[GameState.Result] = base.attacks
 	override def suspisions:Map[(Int, Int), TokenClassSuspision] = base.suspisions
