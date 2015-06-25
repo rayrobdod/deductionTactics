@@ -35,7 +35,7 @@ class BlindAttackAITest extends FunSpec {
 				elem,
 				weap,
 				Statuses.Burn,
-				1, 2,
+				1, 3,
 				Directions.Left,
 				Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
 				Statuses.Burn
@@ -97,7 +97,38 @@ class BlindAttackAITest extends FunSpec {
 			}
 		}
 		describe("takeTurn") {
-			// TODO: ???
+			val field = RectangularField( Seq.fill(4,1){UniPassageSpaceClass.apply} )
+			val myT = (new GameStateTest).genActionableToken(field, 0, 0)
+
+			
+			it ("when no attacks are possible, moves") {
+				val gameState = GameState(field,
+					new ListOfTokens(Seq(Seq(myT), Seq(Token(field(0,3)))))
+				)
+				val exp = Seq(GameState.TokenMove(myT, field(0,1)))
+				val res = (new BlindAttackAI).takeTurn(0, gameState, null)
+				
+				assertResult(exp){res}
+			}
+			it ("when attacks is possible, attacks") {
+				val otT = Token(field(0,1))
+				val gameState = GameState(field,
+					new ListOfTokens(Seq(Seq(myT), Seq(otT)))
+				)
+				val exp = Seq(GameState.TokenAttackDamage(myT, otT))
+				val res = (new BlindAttackAI).takeTurn(0, gameState, null)
+				
+				assertResult(exp){res}
+			}
+			it ("when nothing else is possible, EndsTurn") {
+				val gameState = GameState(field,
+					new ListOfTokens(Seq(Seq(Token(field(0,0))), Seq(Token(field(0,3)))))
+				)
+				val exp = Seq(GameState.EndOfTurn)
+				val res = (new BlindAttackAI).takeTurn(0, gameState, null)
+				
+				assertResult(exp){res}
+			}
 		}
 	}
 }
