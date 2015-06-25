@@ -25,23 +25,47 @@ import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.BodyTypes.BodyType
 import com.rayrobdod.deductionTactics.Directions.Direction
 
+import java.awt.Graphics
 import javax.swing.{JComponent, Icon}
 import javax.imageio.ImageIO
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.swingView._
+import com.rayrobdod.util.BlitzAnimImage
 import com.rayrobdod.animation.{AnimationIcon, ImageFrameAnimation,
 		NextFrameListener, AnimationEndedListener,
 		NextFrameEvent, AnimationEndedEvent
 }
-import com.rayrobdod.swing.StackedIcon
-import com.rayrobdod.util.BlitzAnimImage
+import com.rayrobdod.boardGame.RectangularField
+import com.rayrobdod.boardGame.swingView._
+import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
 
 
 /**
  * @version a.6.0
  */
-final class TokenLayer extends JComponent {
+final class TokenLayer(spaces:RectangularField[SpaceClass], tiles:RectangularTilemapComponent) extends JComponent {
+	var tokens:ListOfTokens = new ListOfTokens(Nil)
+	var suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty
 	
+	override def paintComponent(g:Graphics):Unit = {
+		// TODO: don't paint dead tokens
+		val t2:Map[(Int, Int), Option[TokenClass]] = {
+			tokens.tokens.zipWithIndex.flatMap{x =>
+				x._1.zipWithIndex.map{y => (( ((x._2, y._2)), y._1.tokenClass ))}
+			}.toMap
+		}
+		
+		t2.keySet.foreach{x =>
+			val icon:Icon = t2.get(x).flatMap{y => y.map{tokenClassToIcon _}}.getOrElse{
+				val y = suspisions.getOrElse(x, new TokenClassSuspision)
+				generateGenericIcon(y.atkElement, y.atkWeapon)
+			}
+			val space = tokens.tokens(x).currentSpace
+			val spaceIndex = spaces.find(_._2 == space).get._1
+			val bounds = tiles.spaceBounds(spaceIndex).getBounds
+			
+			icon.paintIcon(this, g, bounds.x, bounds.y)
+		}
+	}
 }
 
 object TokenIcon {

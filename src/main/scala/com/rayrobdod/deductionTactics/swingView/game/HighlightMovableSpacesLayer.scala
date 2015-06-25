@@ -40,7 +40,7 @@ final class HighlightMovableSpacesLayer(
 	var maximumSpeeds:Seq[Shape] = Seq.empty;
 	var maximumRanges:Seq[Shape] = Seq.empty;
 	
-	override def paintComponent(g:Graphics) {
+	override def paintComponent(g:Graphics):Unit = {
 		val g2 = g.asInstanceOf[Graphics2D]
 		val g2Fill = {(x:Shape) => g2.fill(x)}
 		

@@ -52,10 +52,11 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		val tilesheet = BoardGamePanel.currentTilesheet
 		
 		val fieldLayers = RectangularFieldComponent(field, tilesheet)
-		val tokenLayer = new TokenLayer
+		val tokenLayer = new TokenLayer(field, fieldLayers._2)
 		val highlightLayer = new HighlightMovableSpacesLayer(fieldLayers._2)
 		val cursorLayer = new CursorLayer(fieldLayers._2)
 		
+		tokenLayer.tokens = tokens
 		field.keySet.foreach{x =>
 			fieldLayers._2.addMouseListener(x, new MouseListener() {
 				def mouseEntered(e:MouseEvent):Unit  = {}
@@ -65,6 +66,9 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 				
 				def mouseClicked(e:MouseEvent):Unit = {
 					cursorLayer.update(x)
+					
+					val tokenOnThisSpace = tokens.aliveTokens.flatten.filter{_.currentSpace == field(x)}.headOption
+					highlightLayer.update(tokenOnThisSpace, tokens, field)
 				}
 			})
 		}
@@ -148,29 +152,57 @@ object Top {
 	
 	def main(args:Array[String]):Unit = {
 		val field = RectangularField(Seq.fill(7,7){FreePassageSpaceClass.apply})
-		val tokens = new ListOfTokens(Seq(Seq(
-			new Token(
-				tokenClass = Some(new TokenClassBlunt(
-					name = "Flaming Spearman",
-					body = BodyTypes.Humanoid,
-					atkElement = Elements.Fire,
-					atkWeapon = Weaponkinds.Spearkind,
-					atkStatus = Statuses.Blind,
-					range = 1,
-					speed = 3,
-					weakDirection = Directions.Left,
-					weakWeapon = Map(
-						Weaponkinds.Bladekind -> .75f,
-						Weaponkinds.Bluntkind -> 2f,
-						Weaponkinds.Spearkind -> 1f,
-						Weaponkinds.Whipkind -> 1.5f,
-						Weaponkinds.Powderkind -> .5f
-					),
-					weakStatus = Statuses.Sleep
-				)),
-				currentSpace = field((0,0))
+		val tokens = new ListOfTokens(Seq(
+			Seq(
+				new Token(
+					tokenClass = Some(new TokenClassBlunt(
+						name = "Flaming Spearman",
+						body = BodyTypes.Humanoid,
+						atkElement = Elements.Fire,
+						atkWeapon = Weaponkinds.Spearkind,
+						atkStatus = Statuses.Blind,
+						range = 1,
+						speed = 3,
+						weakDirection = Directions.Left,
+						weakWeapon = Map(
+							Weaponkinds.Bladekind -> .75f,
+							Weaponkinds.Bluntkind -> 2f,
+							Weaponkinds.Spearkind -> 1f,
+							Weaponkinds.Whipkind -> 1.5f,
+							Weaponkinds.Powderkind -> .5f
+						),
+						weakStatus = Statuses.Sleep
+					)),
+					currentSpace = field((1,2))
+				),
+				new Token(
+					canMoveThisTurn = 3,
+					canAttackThisTurn = true,
+					tokenClass = Some(new TokenClassBlunt(
+						name = "Frosty Whipman",
+						body = BodyTypes.Humanoid,
+						atkElement = Elements.Frost,
+						atkWeapon = Weaponkinds.Whipkind,
+						atkStatus = Statuses.Blind,
+						range = 1,
+						speed = 3,
+						weakDirection = Directions.Left,
+						weakWeapon = Map(
+							Weaponkinds.Bladekind -> .75f,
+							Weaponkinds.Bluntkind -> 2f,
+							Weaponkinds.Spearkind -> 1f,
+							Weaponkinds.Whipkind -> 1.5f,
+							Weaponkinds.Powderkind -> .5f
+						),
+						weakStatus = Statuses.Sleep
+					)),
+					currentSpace = field((6,3))
+				)
+			), Seq(
+				Token( currentSpace = field((3,5)) ),
+				Token( currentSpace = field((5,5)) )
 			)
-		)))
+		))
 		
 		val t = new Top(tokens, 0, field);
 		t.setVisible(true);
