@@ -40,7 +40,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	
 	private[this] val turnStartListeners:Buffer[StartOfTurnListener] = Buffer.empty
 	private[this] val notificationListeners:Buffer[NotificationListener] = Buffer.empty
-	private[this] val turnEndListeners:Buffer[EndOfTurnListener] = Buffer.empty
+	private[this] val actionPerformedListeners:Buffer[ActionPerformedListener] = Buffer.empty
 	private[this] var currentTokens:ListOfTokens = tokens
 	
 	
@@ -112,8 +112,8 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		notificationListeners.foreach{f => f(res,gs)}
 	}
 	
-	def addTurnEndListener(f:EndOfTurnListener):Unit = {
-		turnEndListeners += f
+	def addActionPerformedListener(f:ActionPerformedListener):Unit = {
+		actionPerformedListeners += f
 	}
 	
 }
@@ -174,7 +174,7 @@ object BoardGamePanel {
 object Top {
 	type NotificationListener = Function2[GameState.Result,GameState,Unit]
 	type StartOfTurnListener = Function1[GameState,Unit]
-	type EndOfTurnListener = Function0[Unit]
+	type ActionPerformedListener = Function1[GameState.Action,Unit]
 	
 	
 	def main(args:Array[String]):Unit = {

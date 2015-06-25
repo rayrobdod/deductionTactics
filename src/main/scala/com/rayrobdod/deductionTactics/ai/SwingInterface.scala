@@ -63,17 +63,11 @@ final class SwingInterface extends PlayerAI
 		viewmodel.setVisible(true)
 		
 		
-		def writeGameAction = {(x:GameState.Action) => 
+		viewmodel.addActionPerformedListener{(act:GameState.Action) =>
 			endOfTurnLock.synchronized {
-				takeTurnReturnValue = Option(x)
-				endOfTurnLock.notifyAll
+				takeTurnReturnValue = Option(act)
+				endOfTurnLock.notifyAll()
 			}
-		}
-		
-		
-		viewmodel.addTurnEndListener{() =>
-			takeTurnReturnValue = Some(GameState.EndOfTurn)
-			endOfTurnLock.notifyAll()
 		}
 		
 		
