@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics
 package swingView.game
 
-import javax.swing.{JFrame, JPanel, WindowConstants}
+import javax.swing.{SwingUtilities, JFrame, JPanel, WindowConstants}
 import java.text.MessageFormat
 import java.awt.event.{MouseEvent, MouseListener}
 import scala.collection.mutable.Buffer
@@ -42,6 +42,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	private[this] val notificationListeners:Buffer[NotificationListener] = Buffer.empty
 	private[this] val actionPerformedListeners:Buffer[ActionPerformedListener] = Buffer.empty
 	private[this] var currentTokens:ListOfTokens = tokens
+	private[this] var selectedTokenIndex:Option[TokenIndex] = None
 	
 	
 	private[this] val centerpiece = {
@@ -61,11 +62,52 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 				def mousePressed(e:MouseEvent):Unit  = {}
 				def mouseReleased(e:MouseEvent):Unit = {}
 				
-				def mouseClicked(e:MouseEvent):Unit = {
-					cursorLayer.update(x)
-					
-					val tokenOnThisSpace = currentTokens.aliveTokens.flatten.filter{_.currentSpace == field(x)}.headOption
-					highlightLayer.update(tokenOnThisSpace, currentTokens, field)
+				def mouseClicked(e:MouseEvent):Unit  = {
+					if (SwingUtilities.isRightMouseButton(e)) {
+						// deselect everything
+						selectedTokenIndex = None
+						cursorLayer.clear()
+						highlightLayer.update(None, currentTokens, field)
+						
+					} else if (SwingUtilities.isLeftMouseButton(e)) {
+						cursorLayer.update(x)
+						val tokenOnThisSpace:Option[Token] = currentTokens.aliveTokens.flatten.filter{_.currentSpace == field(x)}.headOption
+						val tokenOnThisSpaceIndex:Option[TokenIndex] = tokenOnThisSpace.map{currentTokens.indexOf _}
+						
+						
+						selectedTokenIndex = selectedTokenIndex.fold[Option[TokenIndex]]{
+							// no token is selected
+							
+							tokenOnThisSpaceIndex.orElse{
+								// show "End Turn" button
+							}
+							
+							tokenOnThisSpaceIndex
+						}{(index) =>
+							if (index._1 == playerNumber) {
+								// selected token is mine
+								
+								tokenOnThisSpace.fold{
+									// show "move to" button
+								}{t =>
+									// show "attack" buttons
+								}
+								
+								
+								selectedTokenIndex
+								
+							} else {
+								// selected token is not mine
+								tokenOnThisSpaceIndex
+							}
+						}
+						
+						val selectedToken:Option[Token] = selectedTokenIndex.map{currentTokens.tokens _}
+						
+						highlightLayer.update(selectedToken, currentTokens, field)
+					} else {
+						// ignore middle button clicks
+					}
 				}
 			})
 		}
@@ -115,7 +157,6 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	def addActionPerformedListener(f:ActionPerformedListener):Unit = {
 		actionPerformedListeners += f
 	}
-	
 }
 
 /**
@@ -232,6 +273,7 @@ object Top {
 		))
 		
 		val t = new Top(tokens, 0, field);
+		t.addActionPerformedListener(System.out.println _)
 		t.setVisible(true);
 	}
 }

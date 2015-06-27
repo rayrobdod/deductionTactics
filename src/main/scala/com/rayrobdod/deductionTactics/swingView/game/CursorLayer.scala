@@ -47,6 +47,11 @@ final class CursorLayer(
 		this.repaint()
 	}
 	
+	def clear():Unit = {
+		currentShape = new Area()
+		this.repaint()
+	}
+	
 	private[this] def cursorShape(bounds:Shape):Shape = {
 		val bounds2 = bounds.getBounds()
 		val left = bounds2.x

@@ -66,6 +66,14 @@ class ListOfTokensTest extends FunSpec {
 				assertResult(halfAlive.tokens(0)(0))(halfAlive.aliveNotPlayerTokens(1).apply(0)(0))
 			}
 		}
+		describe ("indexOf") {
+			it ("a") {
+				assertResult((1,1)){halfAlive.indexOf(halfAlive.tokens(1,1))}
+			}
+			it ("b") {
+				assertResult((1,0)){halfAlive.indexOf(halfAlive.tokens(1,0))}
+			}
+		}
 	}
 	
 }
