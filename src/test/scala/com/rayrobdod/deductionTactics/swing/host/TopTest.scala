@@ -17,37 +17,21 @@
 */
 package com.rayrobdod.deductionTactics.swingView.host
 
-import org.scalatest.{FunSuite, FunSpec}
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.{FunSpec}
+import javax.swing.{JFrame, JButton, JPanel, JList}
 import scala.collection.immutable.Seq
-import com.rayrobdod.deductionTactics.ai.SwingInterface
-import com.rayrobdod.deductionTactics.{Arena, PlayerAI}
+import com.rayrobdod.deductionTactics.ai.{BlindAttackAI, SwingInterface}
+import com.rayrobdod.deductionTactics.{Arena, PlayerAI, Maps}
 import com.rayrobdod.boardGame.{RectangularField, Space}
+import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 
 class TopTest extends FunSpec {
 	
 	describe ("host.Top") {
 		it ("Has values selected by default") {
-			val t = new Top()
-			val target = new MockNextListener
-			t.addNextListener(target)
+			val (frame, target) = this.createNextFrameAndListener()
 			
-			// doClick using the backdoorsy method
-			val frame = java.awt.Window.getOwnerlessWindows.find{_ match {
-				case x:javax.swing.JFrame => x.isDisplayable
-				case _ => false
-			}}.get.asInstanceOf[javax.swing.JFrame]
-			val nextButton:javax.swing.JButton = {
-				frame.getContentPane
-					.getComponents
-					.find{_.getName == "buttonPanel"}
-					.map{_.asInstanceOf[javax.swing.JPanel]}
-					.map{x => x.getComponents
-						.find{_.getName == "nextButton"}
-						.map{_.asInstanceOf[javax.swing.JButton]}
-					}.flatten
-					.get
-			}
+			val nextButton:JButton = getButton(frame, "nextButton")
 			nextButton.doClick()
 			
 			// dispose was called
@@ -69,35 +53,116 @@ class TopTest extends FunSpec {
 			))){target.map}
 		}
 		it ("Does not call the NextListener if cancel is called") {
-			val t = new Top()
-			val target = new MockNextListener
-			t.addNextListener(target)
+			val (frame, target) = this.createNextFrameAndListener()
 			
-			// doClick using the backdoorsy method
-			val frame = java.awt.Window.getOwnerlessWindows.find{_ match {
-				case x:javax.swing.JFrame => x.isDisplayable
-				case _ => false
-			}}.get.asInstanceOf[javax.swing.JFrame]
-			val nextButton:javax.swing.JButton = {
-				frame.getContentPane
-					.getComponents
-					.find{_.getName == "buttonPanel"}
-					.map{_.asInstanceOf[javax.swing.JPanel]}
-					.map{x => x.getComponents
-						.find{_.getName == "cancelButton"}
-						.map{_.asInstanceOf[javax.swing.JButton]}
-					}.flatten
-					.get
-			}
-			nextButton.doClick()
+			val cancelButton:JButton = getButton(frame, "cancelButton")
+			cancelButton.doClick()
 			
 			// dispose was called
 			assert(! frame.isDisplayable)
 			
 			assert(! target.hasBeenCalled)
 		}
+		it ("Changes ai in return value when a new base ai is selected (1)") {
+			val (frame, target) = this.createNextFrameAndListener()
+			
+			val aisComp = getAIsComponent(frame)
+			aisComp.aiLists(0).setSelectedIndex(2)
+			
+			val nextButton:JButton = getButton(frame, "nextButton")
+			nextButton.doClick()
+			
+			// dispose was called
+			assert(! frame.isDisplayable)
+			
+			assert(target.hasBeenCalled)
+			assertResult(Seq(new BlindAttackAI, new SwingInterface)){target.ais}
+		}
+		it ("Changes ai in return value when a new base ai is selected (2)") {
+			val (frame, target) = this.createNextFrameAndListener()
+			
+			val aisComp = getAIsComponent(frame)
+			aisComp.aiLists(1).setSelectedIndex(2)
+			
+			val nextButton:JButton = getButton(frame, "nextButton")
+			nextButton.doClick()
+			
+			// dispose was called
+			assert(! frame.isDisplayable)
+			
+			assert(target.hasBeenCalled)
+			assertResult(Seq(new SwingInterface, new BlindAttackAI)){target.ais}
+		}
+		it ("Changes arena in return value when a new arena is selected") {
+			val (frame, target) = this.createNextFrameAndListener()
+			
+			val mapList = getMapList(frame)
+			mapList.setSelectedIndex(2)
+			
+			val nextButton:JButton = getButton(frame, "nextButton")
+			nextButton.doClick()
+			
+			// dispose was called
+			assert(! frame.isDisplayable)
+			
+			assert(target.hasBeenCalled)
+			assertResult(Maps.arenas(2)){target.map}
+		}
 	}
 	
+	
+	private[this] def createNextFrameAndListener():(JFrame, MockNextListener) = {
+		val t = new Top()
+		val target = new MockNextListener
+		t.addNextListener(target)
+		
+		val frame = java.awt.Window.getOwnerlessWindows.find{_ match {
+			case x:JFrame => x.isDisplayable
+			case _ => false
+		}}.get.asInstanceOf[JFrame]
+		
+		(frame, target)
+	}
+	
+	private[this] def getButton(frame:JFrame, buttonName:String):JButton = {
+		frame.getContentPane
+			.getComponents
+			.find{_.getName == "buttonPanel"}
+			.map{_.asInstanceOf[JPanel]}
+			.map{x => x.getComponents
+				.find{_.getName == buttonName}
+				.map{_.asInstanceOf[JButton]}
+			}.flatten
+			.get
+	}
+	
+	private[this] def getAIsComponent(frame:JFrame):ChooseAIsComponent = {
+		frame.getContentPane
+			.getComponents
+			.find{_.getName == "topPanel"}
+			.map{_.asInstanceOf[JPanel]}
+			.map{x => x.getComponents
+				.find{_.isInstanceOf[ChooseAIsComponent]}
+				.map{_.asInstanceOf[ChooseAIsComponent]}
+			}.flatten
+			.get
+	}
+	
+	private[this] def getMapList(frame:JFrame):JList[_] = {
+		frame.getContentPane
+			.getComponents
+			.find{_.getName == "topPanel"}
+			.map{_.asInstanceOf[JPanel]}
+			.map{x => x.getComponents
+				.find{_.getName == "mapChoosingPanel"}
+				.map{_.asInstanceOf[JPanel]}
+				.map{x => x.getComponents
+					.find{_.getName == "mapList"}
+					.map{_.asInstanceOf[JList[_]]}
+				}.flatten
+			}.flatten
+			.get
+	}
 	
 	class MockNextListener extends Top.NextListener {
 		override def apply(ais:Seq[PlayerAI], map:Arena):Unit = {

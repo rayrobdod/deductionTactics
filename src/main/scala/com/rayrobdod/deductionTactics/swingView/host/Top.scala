@@ -50,6 +50,10 @@ class Top {
 			val mapPreviewPicture = new JLabel("Map Preview Picture")
 			val tokensPerPlayer = new JLabel("4")
 			
+			mapChoosingPanel.setName("mapChoosingPanel")
+			mapList.setName("mapList")
+			playerCount.setName("playerCount")
+			
 			playerCount.setLayoutOrientation(JList.VERTICAL_WRAP)
 			playerCount.setVisibleRowCount(1)
 			mapList.setVisibleRowCount(8)
@@ -93,6 +97,7 @@ class Top {
 		val topPanel = new JPanel(new GridLayout(2,1));
 		frame.getContentPane().add(topPanel);
 		{
+			topPanel.setName("topPanel")
 			topPanel.add(mapChoosingPanel)
 			topPanel.add(aisPanel)
 		}
