@@ -18,9 +18,10 @@
 package com.rayrobdod.deductionTactics
 package swingView.game
 
-import javax.swing.{SwingUtilities, JFrame, JPanel, WindowConstants}
+import javax.swing.{SwingUtilities, JFrame, JPanel, JButton, WindowConstants}
 import java.text.MessageFormat
-import java.awt.event.{MouseEvent, MouseListener}
+import java.awt.event.{MouseEvent, MouseListener, MouseAdapter}
+import java.awt.event.{ActionEvent, ActionListener}
 import scala.collection.mutable.Buffer
 import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.RectangularField
@@ -53,8 +54,34 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		val tokenLayer = new TokenLayer(field, fieldLayers._2)
 		val highlightLayer = new HighlightMovableSpacesLayer(fieldLayers._2)
 		val cursorLayer = new CursorLayer(fieldLayers._2.spaceBounds _)
+		val pieMenuLayout = new PieMenuLayout
+		val pieMenuLayer = new JPanel(pieMenuLayout) 
 		
+		def generateButton(resourceKey:String, action:GameState.Action):JButton = {
+			val button = new JButton(resources.getString(resourceKey))
+			button.addActionListener(new ActionListener() {
+				def actionPerformed(e:ActionEvent):Unit = {
+					actionPerformedListeners.foreach{f => f(action)}
+					
+					// deselect everything
+					selectedTokenIndex = None
+					cursorLayer.clear()
+					highlightLayer.update(None, currentTokens, field)
+					pieMenuLayer.removeAll()
+				}
+			})
+			button
+		}
+		
+		pieMenuLayer.setBackground(new java.awt.Color(0, true))
 		tokenLayer.tokens = tokens
+		fieldLayers._2.addMouseListener(new MouseAdapter() {
+			override def mouseClicked(e:MouseEvent):Unit  = {
+				pieMenuLayout.center = e.getPoint()
+				pieMenuLayer.invalidate()
+				pieMenuLayer.validate()
+			}
+		})
 		field.keySet.foreach{x =>
 			fieldLayers._2.addMouseListener(x, new MouseListener() {
 				def mouseEntered(e:MouseEvent):Unit  = {}
@@ -63,6 +90,8 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 				def mouseReleased(e:MouseEvent):Unit = {}
 				
 				def mouseClicked(e:MouseEvent):Unit  = {
+					pieMenuLayer.removeAll()
+					
 					if (SwingUtilities.isRightMouseButton(e)) {
 						// deselect everything
 						selectedTokenIndex = None
@@ -78,8 +107,8 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 						selectedTokenIndex = selectedTokenIndex.fold[Option[TokenIndex]]{
 							// no token is selected
 							
-							tokenOnThisSpaceIndex.orElse{
-								// show "End Turn" button
+							tokenOnThisSpaceIndex.getOrElse{
+								pieMenuLayer.add(generateButton("endTurnButton", GameState.EndOfTurn))
 							}
 							
 							tokenOnThisSpaceIndex
@@ -88,9 +117,10 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 								// selected token is mine
 								
 								tokenOnThisSpace.fold{
-									// show "move to" button
+									pieMenuLayer.add(generateButton("moveToButton", GameState.TokenMove(currentTokens.tokens(index), field(x))))
 								}{t =>
-									// show "attack" buttons
+									pieMenuLayer.add(generateButton("damageAttackButton", GameState.TokenAttackDamage(currentTokens.tokens(index), t)))
+									pieMenuLayer.add(generateButton("statusAttackButton", GameState.TokenAttackStatus(currentTokens.tokens(index), t)))
 								}
 								
 								
@@ -108,6 +138,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 					} else {
 						// ignore middle button clicks
 					}
+					pieMenuLayer.validate()
 				}
 			})
 		}
@@ -120,6 +151,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 			currentTokens = gs.tokens
 		}
 		
+		rv.add(pieMenuLayer)
 		rv.add(cursorLayer)
 		rv.add(highlightLayer)
 		rv.add(fieldLayers._2)
