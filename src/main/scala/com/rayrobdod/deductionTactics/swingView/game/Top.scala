@@ -45,7 +45,6 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	private[this] val actionPerformedListeners:Buffer[ActionPerformedListener] = Buffer.empty
 	
 	private[this] var currentTokens:ListOfTokens = tokens
-	private[this] val selectedTokenIndex = new CurrentlySelectedTokenProperty
 	
 	
 	private[this] val centerpiece = {
@@ -60,6 +59,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		val pieMenuLayer = new JPanel(pieMenuLayout)
 		
 		val selectedSpace = new CurrentlySelectedSpaceProperty
+		val selectedTokenIndex = new CurrentlySelectedTokenProperty
 		
 		val clearSelectionAction = new ClearSelectionAction(selectedSpace, selectedTokenIndex, pieMenuLayer)
 		

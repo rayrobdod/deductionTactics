@@ -32,7 +32,7 @@ final class PieMenuLayout extends LayoutManager {
 	private[this] val OFFSET_Y = 16
 	private[this] var _center:Point = new Point()
 	def center:Point = _center
-	def center_=(x:Point) = {
+	def center_=(x:Point):Unit = {
 		this._center = x
 	}
 	

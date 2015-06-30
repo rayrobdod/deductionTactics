@@ -29,7 +29,7 @@ class CurrentlySelectedTokenProperty {
 	private[this] var value:Option[TokenIndex] = None
 	private[this] val changeListeners:Buffer[ChangeListener] = Buffer.empty
 	
-	def addChangeListener(l:ChangeListener) = {
+	def addChangeListener(l:ChangeListener):Unit = {
 		changeListeners += l
 	}
 	

@@ -30,7 +30,7 @@ class CurrentlySelectedSpaceProperty {
 	private[this] var value:RectangularFieldIndex = (0,0)
 	private[this] val changeListeners:Buffer[ChangeListener] = Buffer.empty
 	
-	def addChangeListener(l:ChangeListener) = {
+	def addChangeListener(l:ChangeListener):Unit = {
 		changeListeners += l
 	}
 	

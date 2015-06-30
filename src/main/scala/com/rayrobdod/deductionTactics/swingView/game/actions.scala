@@ -96,10 +96,14 @@ class SelectAction(
 				// selected token is mine
 				
 				tokenOnThisSpace.fold{
-					pieMenuLayer.add(generateButton("moveToButton", GameState.TokenMove(currentTokens().tokens(index), field(selectedSpace()))))
+					val b = generateButton("moveToButton", GameState.TokenMove(currentTokens().tokens(index), field(selectedSpace())))
+					pieMenuLayer.add(b)
+					b.requestFocusInWindow()
 				}{t =>
-					pieMenuLayer.add(generateButton("damageAttackButton", GameState.TokenAttackDamage(currentTokens().tokens(index), t)))
+					val b = generateButton("damageAttackButton", GameState.TokenAttackDamage(currentTokens().tokens(index), t))
+					pieMenuLayer.add(b)
 					pieMenuLayer.add(generateButton("statusAttackButton", GameState.TokenAttackStatus(currentTokens().tokens(index), t)))
+					b.requestFocusInWindow()
 				}
 				
 				selectedTokenIndex.get
