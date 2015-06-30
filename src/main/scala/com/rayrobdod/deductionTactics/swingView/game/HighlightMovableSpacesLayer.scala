@@ -88,6 +88,7 @@ final class HighlightMovableSpacesLayer(
 			this.maximumSpeeds = Seq.empty
 			this.maximumRanges = Seq.empty
 		}
+		this.repaint()
 	}
 }
 

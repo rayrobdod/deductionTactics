@@ -24,7 +24,7 @@ import scala.collection.mutable.Buffer
  * @see javafx.beans.value.ObservableValue
  */
 class CurrentlySelectedTokenProperty {
-	import CurrentlySelectedSpaceProperty.ChangeListener
+	import CurrentlySelectedTokenProperty.ChangeListener
 	
 	private[this] var value:Option[TokenIndex] = None
 	private[this] val changeListeners:Buffer[ChangeListener] = Buffer.empty

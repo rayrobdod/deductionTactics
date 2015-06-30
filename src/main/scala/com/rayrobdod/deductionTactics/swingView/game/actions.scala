@@ -33,16 +33,16 @@ class MoveCursorAction(
 		spaceBounds:Function1[(Int,Int), Shape]
 ) extends AbstractAction(name) {
 	def actionPerformed(e:ActionEvent):Unit = {
-		selectedSpace.set(
-			selectedSpace.get
-				.map{field}
-				.map{adjustment}
-				.map{x => field.find{_._2 == x}.map{_._1}}.flatten
-		)
-		selectedSpace.get.foreach{x =>
+		selectedSpace.set({
+			
+			val a = field(selectedSpace.get)
+			val b = adjustment(a)
+			field.find{_._2 == b}.get._1
+		});
+		{
 			pieMenuLayer.removeAll()
 			pieMenuLayout.center = {
-				val spaceShape = spaceBounds(x)
+				val spaceShape = spaceBounds(selectedSpace.get)
 				val spaceRect = spaceShape.getBounds()
 				val spaceCenter = new java.awt.Point(
 					spaceRect.x + spaceRect.width / 2,
@@ -60,7 +60,6 @@ class ClearSelectionAction(
 		pieMenuLayer:javax.swing.JPanel
 ) extends AbstractAction("ClearSelection") {
 	def actionPerformed(e:ActionEvent):Unit = {
-		selectedSpace.set(None)
 		selectedToken.set(None)
 		pieMenuLayer.removeAll()
 		pieMenuLayer.validate()
@@ -68,7 +67,7 @@ class ClearSelectionAction(
 }
 
 class SelectAction(
-		selectedSpace:Function0[Option[RectangularFieldIndex]],
+		selectedSpace:Function0[RectangularFieldIndex],
 		currentTokens:Function0[ListOfTokens],
 		field:RectangularField[SpaceClass],
 		selectedTokenIndex:CurrentlySelectedTokenProperty,
@@ -79,7 +78,7 @@ class SelectAction(
 	def actionPerformed(e:ActionEvent):Unit = {
 		pieMenuLayer.removeAll()
 		
-		val tokenOnThisSpace:Option[Token] = currentTokens().aliveTokens.flatten.filter{_.currentSpace == field(selectedSpace().get)}.headOption
+		val tokenOnThisSpace:Option[Token] = currentTokens().aliveTokens.flatten.filter{_.currentSpace == field(selectedSpace())}.headOption
 		val tokenOnThisSpaceIndex:Option[TokenIndex] = tokenOnThisSpace.map{currentTokens().indexOf _}
 		
 		val newSelectedTokenIndex = selectedTokenIndex.get.fold[Option[TokenIndex]]{
@@ -97,7 +96,7 @@ class SelectAction(
 				// selected token is mine
 				
 				tokenOnThisSpace.fold{
-					pieMenuLayer.add(generateButton("moveToButton", GameState.TokenMove(currentTokens().tokens(index), field(selectedSpace().get))))
+					pieMenuLayer.add(generateButton("moveToButton", GameState.TokenMove(currentTokens().tokens(index), field(selectedSpace()))))
 				}{t =>
 					pieMenuLayer.add(generateButton("damageAttackButton", GameState.TokenAttackDamage(currentTokens().tokens(index), t)))
 					pieMenuLayer.add(generateButton("statusAttackButton", GameState.TokenAttackStatus(currentTokens().tokens(index), t)))

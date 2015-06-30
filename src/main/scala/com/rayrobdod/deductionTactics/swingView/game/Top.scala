@@ -106,7 +106,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 						clearSelectionAction.actionPerformed(null)
 						
 					} else if (SwingUtilities.isLeftMouseButton(e)) {
-						selectedSpace.set(Option(x))
+						selectedSpace.set(x)
 						selectAction.actionPerformed(null)
 						
 					} else {

@@ -27,21 +27,21 @@ import com.rayrobdod.boardGame.RectangularFieldIndex
 class CurrentlySelectedSpaceProperty {
 	import CurrentlySelectedSpaceProperty.ChangeListener
 	
-	private[this] var value:Option[RectangularFieldIndex] = None
+	private[this] var value:RectangularFieldIndex = (0,0)
 	private[this] val changeListeners:Buffer[ChangeListener] = Buffer.empty
 	
 	def addChangeListener(l:ChangeListener) = {
 		changeListeners += l
 	}
 	
-	def set(s:Option[RectangularFieldIndex]):Unit = {
+	def set(s:RectangularFieldIndex):Unit = {
 		this.value = s
 		changeListeners.foreach{_.apply(s)}
 	}
 	
-	def get:Option[RectangularFieldIndex] = this.value
+	def get:RectangularFieldIndex = this.value
 }
 
 object CurrentlySelectedSpaceProperty {
-	type ChangeListener = Function1[Option[RectangularFieldIndex], Unit]
+	type ChangeListener = Function1[RectangularFieldIndex, Unit]
 }

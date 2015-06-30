@@ -22,6 +22,7 @@ import java.awt.geom.Area
 import java.awt.Color
 import java.awt.{Graphics, Graphics2D}
 import javax.swing.JComponent
+import com.rayrobdod.boardGame.RectangularFieldIndex
 
 /**
  * A layer to be place on top of a [[com.rayrobdod.boardGame.swingView.RectangularTilemapComponent]];
@@ -31,7 +32,7 @@ import javax.swing.JComponent
  * @since a.6.0
  */
 final class CursorLayer(
-	spaceBounds:Function1[(Int,Int), Shape]
+	spaceBounds:Function1[RectangularFieldIndex, Shape]
 ) extends JComponent {
 	private[this] var currentShape:Shape = new Area()
 	
@@ -42,8 +43,8 @@ final class CursorLayer(
 		g2.fill(currentShape)
 	}
 	
-	def update(spaceIndex:Option[(Int, Int)]):Unit = {
-		currentShape = spaceIndex.fold[Shape](new Area){x => cursorShape(spaceBounds(x))}
+	def update(spaceIndex:RectangularFieldIndex):Unit = {
+		currentShape = cursorShape(spaceBounds(spaceIndex))
 		this.repaint()
 	}
 	
