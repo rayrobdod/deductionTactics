@@ -61,21 +61,28 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		
 		val selectedSpace = new CurrentlySelectedSpaceProperty
 		
+		val clearSelectionAction = new ClearSelectionAction(selectedSpace, selectedTokenIndex, pieMenuLayer)
+		
 		def generateButton(resourceKey:String, action:GameState.Action):JButton = {
 			val button = new JButton(resources.getString(resourceKey))
 			button.addActionListener(new ActionListener() {
 				def actionPerformed(e:ActionEvent):Unit = {
 					actionPerformedListeners.foreach{f => f(action)}
-					
-					// deselect everything
-					selectedTokenIndex.set(None)
-					selectedSpace.set(None)
-					highlightLayer.update(None, currentTokens, field)
-					pieMenuLayer.removeAll()
 				}
 			})
+			button.addActionListener(clearSelectionAction)
 			button
 		}
+		
+		val selectAction = new SelectAction(
+				selectedSpace.get _,
+				{() => currentTokens},
+				field,
+				selectedTokenIndex,
+				pieMenuLayer,
+				generateButton _,
+				playerNumber
+		)
 		
 		pieMenuLayer.setBackground(new java.awt.Color(0, true))
 		tokenLayer.tokens = tokens
@@ -94,51 +101,17 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 				def mouseReleased(e:MouseEvent):Unit = {}
 				
 				def mouseClicked(e:MouseEvent):Unit  = {
-					pieMenuLayer.removeAll()
 					
 					if (SwingUtilities.isRightMouseButton(e)) {
-						// deselect everything
-						selectedTokenIndex.set(None)
-						selectedSpace.set(None)
-						highlightLayer.update(None, currentTokens, field)
+						clearSelectionAction.actionPerformed(null)
 						
 					} else if (SwingUtilities.isLeftMouseButton(e)) {
 						selectedSpace.set(Option(x))
-						val tokenOnThisSpace:Option[Token] = currentTokens.aliveTokens.flatten.filter{_.currentSpace == field(x)}.headOption
-						val tokenOnThisSpaceIndex:Option[TokenIndex] = tokenOnThisSpace.map{currentTokens.indexOf _}
+						selectAction.actionPerformed(null)
 						
-						
-						selectedTokenIndex.set(selectedTokenIndex.get.fold[Option[TokenIndex]]{
-							// no token is selected
-							
-							tokenOnThisSpaceIndex.getOrElse{
-								pieMenuLayer.add(generateButton("endTurnButton", GameState.EndOfTurn))
-							}
-							
-							tokenOnThisSpaceIndex
-						}{(index) =>
-							if (index._1 == playerNumber) {
-								// selected token is mine
-								
-								tokenOnThisSpace.fold{
-									pieMenuLayer.add(generateButton("moveToButton", GameState.TokenMove(currentTokens.tokens(index), field(x))))
-								}{t =>
-									pieMenuLayer.add(generateButton("damageAttackButton", GameState.TokenAttackDamage(currentTokens.tokens(index), t)))
-									pieMenuLayer.add(generateButton("statusAttackButton", GameState.TokenAttackStatus(currentTokens.tokens(index), t)))
-								}
-								
-								
-								selectedTokenIndex.get
-								
-							} else {
-								// selected token is not mine
-								tokenOnThisSpaceIndex
-							}
-						})
 					} else {
 						// ignore middle button clicks
 					}
-					pieMenuLayer.validate()
 				}
 			})
 		}
@@ -162,15 +135,17 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		val inputMap = rv.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW)
 		val actionMap = rv.getActionMap()
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "MoveLeft")
-		actionMap.put("MoveLeft", new MoveCursorAction("MoveLeft", {x => x.left.getOrElse(x)}, selectedSpace, field))
+		actionMap.put("MoveLeft", new MoveCursorAction("MoveLeft", {x => x.left.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._2.spaceBounds _))
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "MoveUp")
-		actionMap.put("MoveUp", new MoveCursorAction("MoveUp", {x => x.up.getOrElse(x)}, selectedSpace, field))
+		actionMap.put("MoveUp", new MoveCursorAction("MoveUp", {x => x.up.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._2.spaceBounds _))
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "MoveRight")
-		actionMap.put("MoveRight", new MoveCursorAction("MoveRight", {x => x.right.getOrElse(x)}, selectedSpace, field))
+		actionMap.put("MoveRight", new MoveCursorAction("MoveRight", {x => x.right.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._2.spaceBounds _))
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "MoveDown")
-		actionMap.put("MoveDown", new MoveCursorAction("MoveDown", {x => x.down.getOrElse(x)}, selectedSpace, field))
+		actionMap.put("MoveDown", new MoveCursorAction("MoveDown", {x => x.down.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._2.spaceBounds _))
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0), "Select")
-//		actionMap.put("Select", new SelectAction(selectedSpace.get _, {() => listOfTokens}, field))
+		actionMap.put("Select", selectAction)
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, 0), "Clear")
+		actionMap.put("Clear", clearSelectionAction)
 		
 		rv.add(pieMenuLayer)
 		rv.add(cursorLayer)

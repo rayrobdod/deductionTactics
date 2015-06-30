@@ -18,15 +18,19 @@
 package com.rayrobdod.deductionTactics
 package swingView.game
 
+import java.awt.Shape
 import java.awt.event.ActionEvent
-import javax.swing.AbstractAction
+import javax.swing.{JPanel, AbstractAction}
 import com.rayrobdod.boardGame.{RectangularField, RectangularFieldIndex, StrictRectangularSpace}
 
 class MoveCursorAction(
 		name:String,
 		adjustment:Function1[StrictRectangularSpace[SpaceClass], StrictRectangularSpace[SpaceClass]],
 		selectedSpace:CurrentlySelectedSpaceProperty,
-		field:RectangularField[SpaceClass]
+		field:RectangularField[SpaceClass],
+		pieMenuLayer:JPanel,
+		pieMenuLayout:PieMenuLayout,
+		spaceBounds:Function1[(Int,Int), Shape]
 ) extends AbstractAction(name) {
 	def actionPerformed(e:ActionEvent):Unit = {
 		selectedSpace.set(
@@ -35,20 +39,31 @@ class MoveCursorAction(
 				.map{adjustment}
 				.map{x => field.find{_._2 == x}.map{_._1}}.flatten
 		)
+		selectedSpace.get.foreach{x =>
+			pieMenuLayer.removeAll()
+			pieMenuLayout.center = {
+				val spaceShape = spaceBounds(x)
+				val spaceRect = spaceShape.getBounds()
+				val spaceCenter = new java.awt.Point(
+					spaceRect.x + spaceRect.width / 2,
+					spaceRect.y + spaceRect.height / 2
+				)
+				spaceCenter
+			}
+		}
 	}
 }
 
 class ClearSelectionAction(
 		selectedSpace:CurrentlySelectedSpaceProperty,
-		setSelectedTokenIndex:() => Unit,
-		highlightLayer:HighlightMovableSpacesLayer,
+		selectedToken:CurrentlySelectedTokenProperty,
 		pieMenuLayer:javax.swing.JPanel
 ) extends AbstractAction("ClearSelection") {
 	def actionPerformed(e:ActionEvent):Unit = {
 		selectedSpace.set(None)
-		setSelectedTokenIndex.apply()
-		highlightLayer.update(None, new ListOfTokens(Nil), null)
+		selectedToken.set(None)
 		pieMenuLayer.removeAll()
+		pieMenuLayer.validate()
 	}
 }
 
@@ -56,21 +71,24 @@ class SelectAction(
 		selectedSpace:Function0[Option[RectangularFieldIndex]],
 		currentTokens:Function0[ListOfTokens],
 		field:RectangularField[SpaceClass],
-		getSelectedTokenIndex:Function0[Option[TokenIndex]],
-		setSelectedTokenIndex:Function1[Option[TokenIndex], Any],
+		selectedTokenIndex:CurrentlySelectedTokenProperty,
 		pieMenuLayer:javax.swing.JPanel,
 		generateButton:(String, GameState.Action) => javax.swing.JButton,
 		playerNumber:Int
 ) extends AbstractAction("Select") {
 	def actionPerformed(e:ActionEvent):Unit = {
+		pieMenuLayer.removeAll()
+		
 		val tokenOnThisSpace:Option[Token] = currentTokens().aliveTokens.flatten.filter{_.currentSpace == field(selectedSpace().get)}.headOption
 		val tokenOnThisSpaceIndex:Option[TokenIndex] = tokenOnThisSpace.map{currentTokens().indexOf _}
 		
-		val newSelectedTokenIndex = getSelectedTokenIndex().fold[Option[TokenIndex]]{
+		val newSelectedTokenIndex = selectedTokenIndex.get.fold[Option[TokenIndex]]{
 			// no token is selected
 			
 			tokenOnThisSpaceIndex.getOrElse{
-				pieMenuLayer.add(generateButton("endTurnButton", GameState.EndOfTurn))
+				val b = generateButton("endTurnButton", GameState.EndOfTurn)
+				pieMenuLayer.add(b)
+				b.requestFocusInWindow()
 			}
 			
 			tokenOnThisSpaceIndex
@@ -85,13 +103,15 @@ class SelectAction(
 					pieMenuLayer.add(generateButton("statusAttackButton", GameState.TokenAttackStatus(currentTokens().tokens(index), t)))
 				}
 				
-				getSelectedTokenIndex()
+				selectedTokenIndex.get
 				
 			} else {
 				// selected token is not mine
 				tokenOnThisSpaceIndex
 			}
 		}
-		setSelectedTokenIndex(newSelectedTokenIndex)
+		selectedTokenIndex.set(newSelectedTokenIndex)
+		
+		pieMenuLayer.validate()
 	}
 }
