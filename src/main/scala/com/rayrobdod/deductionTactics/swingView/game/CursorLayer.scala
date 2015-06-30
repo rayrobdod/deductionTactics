@@ -42,13 +42,8 @@ final class CursorLayer(
 		g2.fill(currentShape)
 	}
 	
-	def update(spaceIndex:(Int, Int)):Unit = {
-		currentShape = cursorShape(spaceBounds(spaceIndex))
-		this.repaint()
-	}
-	
-	def clear():Unit = {
-		currentShape = new Area()
+	def update(spaceIndex:Option[(Int, Int)]):Unit = {
+		currentShape = spaceIndex.fold[Shape](new Area){x => cursorShape(spaceBounds(x))}
 		this.repaint()
 	}
 	

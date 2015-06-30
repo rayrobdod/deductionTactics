@@ -18,10 +18,11 @@
 package com.rayrobdod.deductionTactics
 package swingView.game
 
-import javax.swing.{SwingUtilities, JFrame, JPanel, JButton, WindowConstants}
+import javax.swing.{SwingUtilities, JFrame, JPanel, JButton, WindowConstants, KeyStroke, AbstractAction}
 import java.text.MessageFormat
 import java.awt.event.{MouseEvent, MouseListener, MouseAdapter}
 import java.awt.event.{ActionEvent, ActionListener}
+import java.awt.event.KeyEvent
 import scala.collection.mutable.Buffer
 import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.RectangularField
@@ -42,8 +43,9 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	private[this] val turnStartListeners:Buffer[StartOfTurnListener] = Buffer.empty
 	private[this] val notificationListeners:Buffer[NotificationListener] = Buffer.empty
 	private[this] val actionPerformedListeners:Buffer[ActionPerformedListener] = Buffer.empty
+	
 	private[this] var currentTokens:ListOfTokens = tokens
-	private[this] var selectedTokenIndex:Option[TokenIndex] = None
+	private[this] val selectedTokenIndex = new CurrentlySelectedTokenProperty
 	
 	
 	private[this] val centerpiece = {
@@ -55,7 +57,9 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		val highlightLayer = new HighlightMovableSpacesLayer(fieldLayers._2)
 		val cursorLayer = new CursorLayer(fieldLayers._2.spaceBounds _)
 		val pieMenuLayout = new PieMenuLayout
-		val pieMenuLayer = new JPanel(pieMenuLayout) 
+		val pieMenuLayer = new JPanel(pieMenuLayout)
+		
+		val selectedSpace = new CurrentlySelectedSpaceProperty
 		
 		def generateButton(resourceKey:String, action:GameState.Action):JButton = {
 			val button = new JButton(resources.getString(resourceKey))
@@ -64,8 +68,8 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 					actionPerformedListeners.foreach{f => f(action)}
 					
 					// deselect everything
-					selectedTokenIndex = None
-					cursorLayer.clear()
+					selectedTokenIndex.set(None)
+					selectedSpace.set(None)
 					highlightLayer.update(None, currentTokens, field)
 					pieMenuLayer.removeAll()
 				}
@@ -94,17 +98,17 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 					
 					if (SwingUtilities.isRightMouseButton(e)) {
 						// deselect everything
-						selectedTokenIndex = None
-						cursorLayer.clear()
+						selectedTokenIndex.set(None)
+						selectedSpace.set(None)
 						highlightLayer.update(None, currentTokens, field)
 						
 					} else if (SwingUtilities.isLeftMouseButton(e)) {
-						cursorLayer.update(x)
+						selectedSpace.set(Option(x))
 						val tokenOnThisSpace:Option[Token] = currentTokens.aliveTokens.flatten.filter{_.currentSpace == field(x)}.headOption
 						val tokenOnThisSpaceIndex:Option[TokenIndex] = tokenOnThisSpace.map{currentTokens.indexOf _}
 						
 						
-						selectedTokenIndex = selectedTokenIndex.fold[Option[TokenIndex]]{
+						selectedTokenIndex.set(selectedTokenIndex.get.fold[Option[TokenIndex]]{
 							// no token is selected
 							
 							tokenOnThisSpaceIndex.getOrElse{
@@ -124,17 +128,13 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 								}
 								
 								
-								selectedTokenIndex
+								selectedTokenIndex.get
 								
 							} else {
 								// selected token is not mine
 								tokenOnThisSpaceIndex
 							}
-						}
-						
-						val selectedToken:Option[Token] = selectedTokenIndex.map{currentTokens.tokens _}
-						
-						highlightLayer.update(selectedToken, currentTokens, field)
+						})
 					} else {
 						// ignore middle button clicks
 					}
@@ -150,6 +150,27 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 			tokenLayer.tokens = gs.tokens
 			currentTokens = gs.tokens
 		}
+		selectedSpace.addChangeListener{x =>
+			cursorLayer.update(x)
+		}
+		selectedTokenIndex.addChangeListener{x =>
+			val selectedToken:Option[Token] = x.map{currentTokens.tokens _}
+			highlightLayer.update(selectedToken, currentTokens, field)
+		}
+		
+		rv.setFocusable(true)
+		val inputMap = rv.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW)
+		val actionMap = rv.getActionMap()
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "MoveLeft")
+		actionMap.put("MoveLeft", new MoveCursorAction("MoveLeft", {x => x.left.getOrElse(x)}, selectedSpace, field))
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "MoveUp")
+		actionMap.put("MoveUp", new MoveCursorAction("MoveUp", {x => x.up.getOrElse(x)}, selectedSpace, field))
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "MoveRight")
+		actionMap.put("MoveRight", new MoveCursorAction("MoveRight", {x => x.right.getOrElse(x)}, selectedSpace, field))
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "MoveDown")
+		actionMap.put("MoveDown", new MoveCursorAction("MoveDown", {x => x.down.getOrElse(x)}, selectedSpace, field))
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0), "Select")
+//		actionMap.put("Select", new SelectAction(selectedSpace.get _, {() => listOfTokens}, field))
 		
 		rv.add(pieMenuLayer)
 		rv.add(cursorLayer)
