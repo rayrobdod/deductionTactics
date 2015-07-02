@@ -57,6 +57,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		val cursorLayer = new CursorLayer(fieldLayers._2.spaceBounds _)
 		val pieMenuLayout = new PieMenuLayout
 		val pieMenuLayer = new JPanel(pieMenuLayout)
+		val tokenSummaryDisplay = new TokenSummaryDisplay
 		
 		val selectedSpace = new CurrentlySelectedSpaceProperty
 		val selectedTokenIndex = new CurrentlySelectedTokenProperty
@@ -85,6 +86,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		)
 		
 		pieMenuLayer.setBackground(new java.awt.Color(0, true))
+		pieMenuLayer.setOpaque(false)
 		tokenLayer.tokens = tokens
 		fieldLayers._2.addMouseListener(new MouseAdapter() {
 			override def mouseClicked(e:MouseEvent):Unit  = {
@@ -130,6 +132,16 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 			val selectedToken:Option[Token] = x.map{currentTokens.tokens _}
 			highlightLayer.update(selectedToken, currentTokens, field)
 		}
+		selectedSpace.addChangeListener{x =>
+			val tokenOnSpace:Option[Token] = currentTokens.tokens.flatten.find{_.currentSpace == field(x)}
+			val putInNorth = x._2 > (field.keySet.map{_._2}.max / 2)
+			val putInWest  = x._1 > (field.keySet.map{_._1}.max / 2)
+			val anchor = {
+				(if (putInNorth == putInWest) {2} else {0}) +
+				(if (putInWest) {16} else {12})
+			}
+			tokenSummaryDisplay.showDetailsOf(tokenOnSpace, anchor)
+		}
 		
 		rv.setFocusable(true)
 		val inputMap = rv.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW)
@@ -149,6 +161,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		
 		rv.add(pieMenuLayer)
 		rv.add(cursorLayer)
+		rv.add(tokenSummaryDisplay.component)
 		rv.add(highlightLayer)
 		rv.add(fieldLayers._2)
 		rv.add(tokenLayer)
