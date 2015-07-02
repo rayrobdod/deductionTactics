@@ -43,7 +43,7 @@ final class SwingInterface extends PlayerAI
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		
 		val a = memo.asInstanceOf[SwingInterfaceMemo]
-		a.panel.fireTurnStartListeners(gameState)
+		a.panel.fireTurnStartListeners(gameState, memo)
 		
 		endOfTurnLock.synchronized{
 			while (takeTurnReturnValue == None) { 
@@ -129,9 +129,7 @@ final class SwingInterface extends PlayerAI
 		val memo2 = memo.asInstanceOf[SwingInterfaceMemo]
 		val panel = memo2.panel
 		
-		panel.fireNotificationListeners(action, afterState)
-		
-		memo
+		panel.fireNotificationListeners(action, afterState, memo)
 	}
 	
 	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[SwingInterface]}

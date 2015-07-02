@@ -55,9 +55,9 @@ final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 		val memo2 = memo.asInstanceOf[SwingInterfaceMemo]
 		val panel = memo2.panel
 		
-		panel.fireNotificationListeners(action, afterState)
+		val memo3 = panel.fireNotificationListeners(action, afterState, memo)
 		
-		super.notifyTurn(player, action, beforeState, afterState, memo)
+		super.notifyTurn(player, action, beforeState, afterState, memo3)
 	}
 	
 	

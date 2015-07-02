@@ -24,7 +24,7 @@ import java.awt.event.{MouseEvent, MouseListener, MouseAdapter}
 import java.awt.event.{ActionEvent, ActionListener}
 import java.awt.event.KeyEvent
 import scala.collection.mutable.Buffer
-import scala.collection.immutable.Seq
+import scala.collection.immutable.{Seq, Map}
 import com.rayrobdod.boardGame.RectangularField
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularFieldComponent}
 import com.rayrobdod.deductionTactics.swingView.{AvailibleTilesheetListModel, tilesheets}
@@ -43,8 +43,10 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	private[this] val turnStartListeners:Buffer[StartOfTurnListener] = Buffer.empty
 	private[this] val notificationListeners:Buffer[NotificationListener] = Buffer.empty
 	private[this] val actionPerformedListeners:Buffer[ActionPerformedListener] = Buffer.empty
+	private[this] val memoUpdates:Buffer[Function1[ai.Memo, ai.Memo]] = Buffer.empty
 	
 	private[this] var currentTokens:ListOfTokens = tokens
+	private[this] var currentSuspicions:Map[(Int,Int), ai.TokenClassSuspision] = Map.empty
 	
 	
 	private[this] val centerpiece = {
@@ -117,11 +119,13 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 				}
 			})
 		}
-		this.addNotificationListener{(a,gs) => 
+		this.addNotificationListener{(a, gs, memo) => 
 			tokenLayer.tokens = gs.tokens
 			currentTokens = gs.tokens
+			currentSuspicions = memo.suspisions
+			memo
 		}
-		this.addTurnStartListener{(gs) =>
+		this.addTurnStartListener{(gs, memo) =>
 			tokenLayer.tokens = gs.tokens
 			currentTokens = gs.tokens
 		}
@@ -186,15 +190,15 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	def addTurnStartListener(f:StartOfTurnListener):Unit = {
 		turnStartListeners += f
 	}
-	def fireTurnStartListeners(gs:GameState):Unit = {
-		turnStartListeners.foreach{f => f(gs)}
+	def fireTurnStartListeners(gs:GameState, memo:ai.Memo):Unit = {
+		turnStartListeners.foreach{f => f(gs, memo)}
 	}
 	
 	def addNotificationListener(f:NotificationListener):Unit = {
 		notificationListeners += f
 	}
-	def fireNotificationListeners(res:GameState.Result, gs:GameState):Unit = {
-		notificationListeners.foreach{f => f(res,gs)}
+	def fireNotificationListeners(res:GameState.Result, gs:GameState, memo:ai.Memo):ai.Memo = {
+		notificationListeners.foldLeft(memo){(m, f) => f(res,gs,m)}
 	}
 	
 	def addActionPerformedListener(f:ActionPerformedListener):Unit = {
@@ -256,8 +260,8 @@ object BoardGamePanel {
 }
 
 object Top {
-	type NotificationListener = Function2[GameState.Result,GameState,Unit]
-	type StartOfTurnListener = Function1[GameState,Unit]
+	type NotificationListener = Function3[GameState.Result,GameState,ai.Memo,ai.Memo]
+	type StartOfTurnListener  = Function2[GameState,ai.Memo,Unit]
 	type ActionPerformedListener = Function1[GameState.Action,Unit]
 	
 	

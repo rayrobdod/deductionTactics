@@ -25,7 +25,7 @@ import Weaponkinds.Weaponkind
 import Statuses.{Status, Sleep}
 
 import scala.util.Random
-import scala.collection.immutable.Seq
+import scala.collection.immutable.{Seq, Map}
 import com.rayrobdod.boardGame.Space
 import com.rayrobdod.deductionTactics.LoggerInitializer.{
 				observeMovementLogger => somLogger}
