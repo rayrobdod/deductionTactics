@@ -158,6 +158,8 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		actionMap.put("Select", selectAction)
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, 0), "Clear")
 		actionMap.put("Clear", clearSelectionAction)
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), "FindNextActionableToken")
+		actionMap.put("FindNextActionableToken", new SelectNextActionableTokenAction(selectedSpace, selectedTokenIndex, {() => currentTokens}, field, playerNumber))
 		
 		rv.add(pieMenuLayer)
 		rv.add(cursorLayer)
@@ -306,6 +308,11 @@ object Top {
 						weakStatus = Statuses.Sleep
 					)),
 					currentSpace = field((6,3))
+				),
+				new Token(
+					canMoveThisTurn = 1,
+					canAttackThisTurn = true,
+					currentSpace = field((5,0))
 				)
 			), Seq(
 				Token( currentSpace = field((3,5)) ),

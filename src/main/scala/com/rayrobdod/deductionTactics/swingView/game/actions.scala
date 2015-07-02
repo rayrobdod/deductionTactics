@@ -118,3 +118,21 @@ class SelectAction(
 		pieMenuLayer.validate()
 	}
 }
+
+class SelectNextActionableTokenAction(
+		selectedSpace:CurrentlySelectedSpaceProperty,
+		selectedToken:CurrentlySelectedTokenProperty,
+		currentTokens:Function0[ListOfTokens],
+		field:RectangularField[SpaceClass],
+		playerNumber:Int
+) extends AbstractAction("FindNextActionableToken") {
+	def actionPerformed(e:ActionEvent):Unit = {
+		val initialPlayerTokenIndex:Int = selectedToken.get.filter{_._1 == playerNumber}.map{_._2}.getOrElse{-1}
+		val rotation = (currentTokens().alivePlayerTokens(playerNumber) ++ currentTokens().alivePlayerTokens(playerNumber)).drop(initialPlayerTokenIndex + 1)
+		val nextToken = rotation.filter{ListOfTokens.aliveFilter}.filter{x => x.canMoveThisTurn > 0 || x.canAttackThisTurn}.head
+		val nextTokenIndex = currentTokens().indexOf(nextToken)
+		val nextSpaceIndex = field.find{_._2 == nextToken.currentSpace}.get._1
+		selectedToken.set(Option(nextTokenIndex))
+		selectedSpace.set(nextSpaceIndex)
+	}
+}
