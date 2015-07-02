@@ -27,6 +27,7 @@ import com.rayrobdod.deductionTactics.swingView.{
 }
 
 import java.awt.{Dimension, Color}
+import java.nio.charset.StandardCharsets.UTF_8
 import javax.swing.{ImageIcon, Icon, ListModel}
 import java.awt.Image.{SCALE_SMOOTH => imageScaleSmooth}
 
@@ -294,47 +295,25 @@ package object swingView
 	/** @since a.5.2 */
 	private val runningOn = "Running on Java; " + System.getProperty("java.vendor") + " " + System.getProperty("java.version")
 	
-	/** @since a.5.2 */
-	val aboutDialogString:String = ("<html><head>" +
-			"<style>" +
-				"h1, div {text-align: center;}" +
-				"h2, h3, dl, div {margin-bottom:0}" +
-				"h2, h3 {margin-top:12;}" +
-				"dl, div {margin-top:0;}" +
-			"</style>" +
-		"</head><body>" +
-			"<h1>" + appName + "</h1>" +
-			"<div>" + version + "</div>" +
-			"<div>" + runningOn + "</div>" +
-			
-			"<h2>Credits</h2>" +
-			"<dl>" +
-				"<dt>Programmer</dt>" +
-				"""<dd>Raymond Dodge (<a href="http://rayrobdod.name/">http://rayrobdod.name/</a>)</dd>""" +
-				
-				"<dt>Inspiration guy</dt>" +
-				"""<dd>Sean 'Squidi' Howard (<a href="http://www.squidi.net/">http://www.squidi.net/</a>)</dd>""" +
-			"""</dl>""" +
-			
-			"<h3>Libraries</h3>" +
-			"<dl>" +
-				"<dt>Scala</dt>" +
-				"""<dd><a href="http://www.scala-lang.org/">http://www.scala-lang.org/</a></dd>""" +
-				
-				"<dt>SVG Salamander</dt>" +
-				"""<dd>Mark 'kitfox' MacKay (<a href="http://svgsalamander.java.net/">http://svgsalamander.java.net/</a>)</dd>""" +
-				
-				"<dt>opencsv</dt>" +
-				"""<dd><a href="http://opencsv.sourceforge.net/">http://opencsv.sourceforge.net/</a></dd>""" +
-			"</dl>" +
-			
-			"<h3>Resources</h3>" +
-			"<dl>" +
-				"<dt>dark_forest tileset</dt>" +
-				"""<dd>Stephen 'Redshrike' Challener (<a href="http://opengameart.org/content/32x32-and-16x16-rpg-tiles-forest-and-some-interior-tiles">http://opengameart.org/content/32x32-and-16x16-rpg-tiles-forest-and-some-interior-tiles</a>)</dd>""" +
-				
-				"<dt>Hit Sounds</dt>" +
-				"<dd>Paulius Jurgelevičius</dd>" +
-			"</dl>" +
-		"</body></html>")
+	/**
+	 * @since a.5.2
+	 * @version a.6.0
+	 */
+	val aboutDialogString:String = {
+		var reader:java.io.Reader = new java.io.StringReader("")
+		try { 
+			reader = new java.io.InputStreamReader(
+				this.getClass().getResourceAsStream("/com/rayrobdod/deductionTactics/swingView/about.html"),
+				UTF_8
+			)
+			val readAllChars:String = {
+				val array = new Array[Char](2048)
+				val len = reader.read(array)
+				new String(array, 0, len)
+			}
+			java.text.MessageFormat.format(readAllChars, appName, version, runningOn)
+		} finally {
+			reader.close()
+		}
+	}
 }
