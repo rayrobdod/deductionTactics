@@ -93,7 +93,7 @@ final class ArenaBuilder(baseDir:URL) extends Builder[Arena] {
 /**
  * An object that deals with Maps
  * 
- * @version a.5.0
+ * @version a.6.0
  */
 // metadata
 // starting locations

@@ -27,6 +27,9 @@ import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 import com.rayrobdod.deductionTactics.{Arena, Maps, PlayerAI}
 import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 
+/**
+ * A display for selecting an arena and players
+ */
 class Top {
 	import Top.NextListener
 	import Top.MyCellRenderer

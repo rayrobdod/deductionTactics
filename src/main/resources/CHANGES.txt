@@ -4,20 +4,24 @@ Wishlist:
 * Token Animations
   * Probably in the Liberated Pixel Cup style
 * alternative console-based main method
-* Pokemon Stadium-like pre-battle negotiations
 * Multi-stance tokens
 * The Spy, as described in the Three Hundred Mechanics article.
 
+== a.7.0 ==
+A new token selection scheme, in which each player selects a set of token
+classes independently, that set of tokens that each player chose is revealed to
+everyone, and then each player chooses a subset of the tokens chosen in the
+previous step.
 
 == a.6.0 ==
 
 === Major/Breaking ===
-Changed a bunch of interfaces to make them more funcitonal and less
-imperitive. Internal stuff. Does't matter in the slightest.
+Changed a bunch of interfaces to make them more functional and less
+imperative. Internal stuff. Doesn't matter in the slightest.
 
 * No listening to token events. Instead, the MainRunner calls a function on the PlayerAI.
 * The PlayerAI's commands are not set to a token, but through the takeTurn return value
-* Tokens are treated as values, not as refrences.
+* Tokens are treated as values, not as references.
 * PlayerAIs are expected to be stateless, with a Memo object being passed around instead
 
 === Fixes ===

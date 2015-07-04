@@ -138,6 +138,60 @@ class TopTest extends FunSpec {
 			assert(target.hasBeenCalled)
 			assertResult(Seq(new SwingInterface, new SwingInterface, new SwingInterface, new SwingInterface)){target.ais}
 		}
+		it ("Will not continue if no arena is selected") {
+			val (frame, target) = this.createNextFrameAndListener()
+			
+			val mapList = getMapList(frame)
+			mapList.setSelectedIndices(new Array[Int](0))
+			
+			val nextButton:JButton = getButton(frame, "nextButton")
+			
+			assert(! nextButton.isEnabled)
+			nextButton.doClick()
+			// dispose was not called
+			assert(frame.isDisplayable)
+			
+			// cleanup
+			val cancelButton:JButton = getButton(frame, "cancelButton")
+			cancelButton.doClick()
+			assert(! frame.isDisplayable)
+		}
+		it ("Will not continue if no playerCount is selected") {
+			val (frame, target) = this.createNextFrameAndListener()
+			
+			val playerCount = getPlayerCountList(frame)
+			playerCount.setSelectedIndices(new Array[Int](0))
+			
+			val nextButton:JButton = getButton(frame, "nextButton")
+			
+			assert(! nextButton.isEnabled)
+			nextButton.doClick()
+			// dispose was not called
+			assert(frame.isDisplayable)
+			
+			// cleanup
+			val cancelButton:JButton = getButton(frame, "cancelButton")
+			cancelButton.doClick()
+			assert(! frame.isDisplayable)
+		}
+		ignore ("Will not continue if no base ai is selected") {
+			val (frame, target) = this.createNextFrameAndListener()
+			
+			val aisComp = getAIsComponent(frame)
+			aisComp.aiDLists(1).setSelectedIndices(new Array[Int](0))
+			
+			val nextButton:JButton = getButton(frame, "nextButton")
+			
+			assert(! nextButton.isEnabled)
+			nextButton.doClick()
+			// dispose was not called
+			assert(frame.isDisplayable)
+			
+			// cleanup
+			val cancelButton:JButton = getButton(frame, "cancelButton")
+			cancelButton.doClick()
+			assert(! frame.isDisplayable)
+		}
 	}
 	
 	
