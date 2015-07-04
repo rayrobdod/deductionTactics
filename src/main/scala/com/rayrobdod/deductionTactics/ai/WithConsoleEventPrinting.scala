@@ -89,7 +89,7 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends DecoratorPlayerA
 			afterState,
 			memo2.sharedToken,
 			baseLogOut,
-			memo2.suspisions
+			memo2.suspicions
 		)
 		
 		
@@ -108,7 +108,7 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends DecoratorPlayerA
 		afterState:GameState,
 		sharedToken:SharedActiveTokenProperty,
 		eventLog:Seq[String],
-		suspisions:Map[(Int, Int), TokenClassSuspision]
+		suspicions:Map[(Int, Int), TokenClassSuspicion]
 	) {
 		outStream.println( controlCursorToTop )
 		outStream.println( controlClearRest )
@@ -116,7 +116,7 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends DecoratorPlayerA
 		outStream.println( scala.Console.RESET )
 		outStream.println()
 		sharedToken.value.foreach{(x:TokenIndex) =>
-			TokenPrinter(afterState.tokens.tokens(x), suspisions(x) )
+			TokenPrinter(afterState.tokens.tokens(x), suspicions(x) )
 		}
 		outStream.println()
 		eventLog.foreach{x => outStream.println(x)}
@@ -161,7 +161,7 @@ final class ConsoleEventPrintingMemo(
 	
 	
 	override def attacks:Seq[GameState.Result] = base.attacks
-	override def suspisions:Map[(Int, Int), TokenClassSuspision] = base.suspisions
+	override def suspicions:Map[(Int, Int), TokenClassSuspicion] = base.suspicions
 	
 	override def addAttack(
 			r:GameState.Result
@@ -173,12 +173,12 @@ final class ConsoleEventPrintingMemo(
 			sharedState,
 			sharedToken
 		)
-	override def updateSuspision(
+	override def updateSuspicion(
 			key:(Int, Int),
-			value:TokenClassSuspision
+			value:TokenClassSuspicion
 	):ConsoleEventPrintingMemo =
 		new ConsoleEventPrintingMemo(
-			base.updateSuspision(key, value),
+			base.updateSuspicion(key, value),
 			baseLog,
 			outStream,
 			sharedState,

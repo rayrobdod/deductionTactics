@@ -148,10 +148,10 @@ final case class SwingInterfaceMemo (
 	panel:game.Top
 ) extends Memo {
 	override def attacks:Seq[GameState.Result] = base.attacks
-	override def suspisions:Map[(Int, Int), TokenClassSuspision] = base.suspisions
+	override def suspicions:Map[(Int, Int), TokenClassSuspicion] = base.suspicions
 	
 	override def addAttack(r:GameState.Result):SwingInterfaceMemo =
 			this.copy(base.addAttack(r))
-	override def updateSuspision(key:(Int, Int), value:TokenClassSuspision):SwingInterfaceMemo =
-			this.copy(base.updateSuspision(key, value))
+	override def updateSuspicion(key:(Int, Int), value:TokenClassSuspicion):SwingInterfaceMemo =
+			this.copy(base.updateSuspicion(key, value))
 }

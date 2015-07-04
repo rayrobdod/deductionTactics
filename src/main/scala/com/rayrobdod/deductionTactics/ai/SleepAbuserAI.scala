@@ -46,13 +46,13 @@ final class SleepAbuserAI extends PlayerAI
 	def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		val tokens = gameState.tokens
 		val aliveEnemies = tokens.aliveNotPlayerTokens(player).flatten
-		val enemyAttackRange = aliveEnemies.map{x => attackRangeOf(x, tokens, memo.suspisions(tokens.indexOf(x)))}
+		val enemyAttackRange = aliveEnemies.map{x => attackRangeOf(x, tokens, memo.suspicions(tokens.indexOf(x)))}
 		
 		Logger.finer("Enemy Range: " + enemyAttackRange.size)
 		
 		tokens.alivePlayerTokens(player).flatMap{(myToken:Token) =>
 			
-			val susp = memo.suspisions(tokens.indexOf(myToken))
+			val susp = memo.suspicions(tokens.indexOf(myToken))
 			
 			val myRange = attackRangeOf(myToken, tokens, susp)
 			val myReach = moveRangeOf(myToken, tokens, susp)
@@ -112,7 +112,7 @@ final class SleepAbuserAI extends PlayerAI
 	}
 	
 	/** returns a sequence of actions that will cause a token to retreat to a safe space */
-	def retreatFromEnemy(player:Int, myToken:Token, susp:TokenClassSuspision, tokens:ListOfTokens, enemyRange:Seq[Space[SpaceClass]]):Seq[GameState.Action] = 
+	def retreatFromEnemy(player:Int, myToken:Token, susp:TokenClassSuspicion, tokens:ListOfTokens, enemyRange:Seq[Space[SpaceClass]]):Seq[GameState.Action] = 
 	{
 		Logger.entering("com.rayrobdod.deductionTactics.ai.SleepAbuserAI",
 				"retreatFromEnemy", Seq(myToken.tokenClass.get.name, "tokens{}", "enemyRange"))
@@ -164,7 +164,7 @@ final class SleepAbuserAI extends PlayerAI
 	}
 	
 	/** returns a sequence of actions that will cause a token to attack an enemy token */
-	def moveToAndStrikeEnemy(myToken:Token, susp:TokenClassSuspision, attackableOtherTokens:Seq[Token], allTokens:ListOfTokens):Seq[GameState.Action] = 
+	def moveToAndStrikeEnemy(myToken:Token, susp:TokenClassSuspicion, attackableOtherTokens:Seq[Token], allTokens:ListOfTokens):Seq[GameState.Action] = 
 	{
 		val awakeAttackableOtherTokens = attackableOtherTokens.filter{_.currentStatus != Sleep}
 		Logger.finer("Attackable: " + attackableOtherTokens)

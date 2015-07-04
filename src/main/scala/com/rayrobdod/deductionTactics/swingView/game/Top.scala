@@ -46,17 +46,17 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	private[this] val memoUpdates:Buffer[Function1[ai.Memo, ai.Memo]] = Buffer.empty
 	
 	private[this] var currentTokens:ListOfTokens = tokens
-	private[this] var currentSuspicions:Map[TokenIndex, ai.TokenClassSuspision] = Map.empty
-	private[this] def afterUpdateSuspicions:Map[TokenIndex, ai.TokenClassSuspision] = {
-		val currentMemo:ai.Memo = new ai.SimpleMemo(suspisions = currentSuspicions)
+	private[this] var currentSuspicions:Map[TokenIndex, ai.TokenClassSuspicion] = Map.empty
+	private[this] def afterUpdateSuspicions:Map[TokenIndex, ai.TokenClassSuspicion] = {
+		val currentMemo:ai.Memo = new ai.SimpleMemo(suspicions = currentSuspicions)
 		val updatedMemo = memoUpdates.foldLeft(currentMemo){(s,f) => f(s)}
-		val updatedSusps = updatedMemo.suspisions
+		val updatedSusps = updatedMemo.suspicions
 		updatedSusps
 	}
 	
 	private[this] val tokenInfoPanel = new JPanel(new java.awt.BorderLayout)
 	tokenInfoPanel.setPreferredSize({
-		val a = new TokenPanel(new Token(field(0,0)), new ai.TokenClassSuspision(), {x => })
+		val a = new TokenPanel(new Token(field(0,0)), new ai.TokenClassSuspicion(), {x => })
 		a.doLayout
 		a.getPreferredSize
 	})
@@ -134,13 +134,13 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		this.addNotificationListener{(a, gs, memo) => 
 			tokenLayer.tokens = gs.tokens
 			currentTokens = gs.tokens
-			currentSuspicions = memo.suspisions
+			currentSuspicions = memo.suspicions
 			memo
 		}
 		this.addTurnStartListener{(gs, memo) =>
 			tokenLayer.tokens = gs.tokens
 			currentTokens = gs.tokens
-			currentSuspicions = memo.suspisions
+			currentSuspicions = memo.suspicions
 		}
 		selectedSpace.addChangeListener{x =>
 			cursorLayer.update(x)
@@ -166,7 +166,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 			tokenOnSpace.map{t =>
 				val tokenIndex = currentTokens.indexOf(t)
 				val susp = afterUpdateSuspicions(tokenIndex)
-				val tp = new TokenPanel(t, susp, {x => memoUpdates += {y => y.updateSuspision(tokenIndex, x(y.suspisions(tokenIndex)))}})
+				val tp = new TokenPanel(t, susp, {x => memoUpdates += {y => y.updateSuspicion(tokenIndex, x(y.suspicions(tokenIndex)))}})
 				tokenInfoPanel.add(tp)
 				tokenInfoPanel.validate()
 				tp.validate()
@@ -360,7 +360,7 @@ object Top {
 		val t = new Top(tokens, 0, field);
 		t.fireTurnStartListeners(
 				new GameState(field, tokens),
-				(new ai.SimpleMemo()).updateSuspision((1,0), ai.TokenClassSuspision(atkElement = Some(Elements.Fire)))
+				(new ai.SimpleMemo()).updateSuspicion((1,0), ai.TokenClassSuspicion(atkElement = Some(Elements.Fire)))
 		)
 		t.addActionPerformedListener(System.out.println _)
 		t.setVisible(true);

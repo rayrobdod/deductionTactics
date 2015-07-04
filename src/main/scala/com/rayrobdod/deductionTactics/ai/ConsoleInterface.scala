@@ -58,7 +58,7 @@ final class ConsoleInterface extends PlayerAI
 	
 	def initialize(player:Int, initialState:GameState):Memo = {
 		val memo = ConsoleInterfaceMemo(new SimpleMemo, player, initialState)
-		memo.runner.suspisions = memo.suspisions
+		memo.runner.suspicions = memo.suspicions
 		
 		new Thread(memo.runner, "ConsoleInterface").start()
 		return memo
@@ -74,7 +74,7 @@ final class ConsoleInterface extends PlayerAI
 		val memo2:ConsoleInterfaceMemo = memo.asInstanceOf[ConsoleInterfaceMemo]
 		
 		memo2.runner.currentState = afterState
-		memo2.runner.suspisions = memo2.suspisions
+		memo2.runner.suspicions = memo2.suspicions
 		
 		memo2
 	}
@@ -107,7 +107,7 @@ final class ConsoleInterfaceMemo(
 	
 	
 	override def attacks:Seq[GameState.Result] = base.attacks
-	override def suspisions:Map[(Int, Int), TokenClassSuspision] = base.suspisions
+	override def suspicions:Map[(Int, Int), TokenClassSuspicion] = base.suspicions
 	
 	override def addAttack(r:GameState.Result):ConsoleInterfaceMemo =
 		new ConsoleInterfaceMemo(
@@ -116,9 +116,9 @@ final class ConsoleInterfaceMemo(
 			takeTurnReturnValue,
 			runner
 		)
-	override def updateSuspision(key:(Int, Int), value:TokenClassSuspision):ConsoleInterfaceMemo =
+	override def updateSuspicion(key:(Int, Int), value:TokenClassSuspicion):ConsoleInterfaceMemo =
 		new ConsoleInterfaceMemo(
-			base.updateSuspision(key, value),
+			base.updateSuspicion(key, value),
 			takeTurnReturnValueLock,
 			takeTurnReturnValue,
 			runner

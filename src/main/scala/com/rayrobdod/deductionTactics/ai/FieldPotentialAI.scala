@@ -47,7 +47,7 @@ final class FieldPotentialAI extends PlayerAI
 				
 				val otherToken = gameState.tokens.aliveNotPlayerTokens(player).flatten.map{(x:Token) =>
 					import PotentialFieldAI$FuzzyLogic.shouldEngage;
-					val susp = memo.suspisions(gameState.tokens.indexOf(x))
+					val susp = memo.suspicions(gameState.tokens.indexOf(x))
 					
 					val a = shouldEngage(myToken, x, susp, gameState.tokens);
 					((x, a))
@@ -64,7 +64,7 @@ final class FieldPotentialAI extends PlayerAI
 					PotentialFieldAI$AttackField(
 							myToken,
 							x,
-							memo.suspisions(gameState.tokens.indexOf(x)),
+							memo.suspicions(gameState.tokens.indexOf(x)),
 							gameState.tokens,
 							memo.asInstanceOf[SimpleMemoWithDebugWindow].showFieldData
 					)
@@ -78,7 +78,7 @@ final class FieldPotentialAI extends PlayerAI
 			
 			// Stage 4 : post-attack move
 			val move3 = GameState.TokenMove(myToken,
-				PotentialFieldAI$RetreatField(myToken, gameState.tokens, memo.suspisions, player)
+				PotentialFieldAI$RetreatField(myToken, gameState.tokens, memo.suspicions, player)
 			)
 			
 			move1.toSeq ++ move2.toSeq :+ move3
@@ -166,7 +166,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 		}
 	}
 	
-	class Advantage(selfT:Token, otherT:Token, otherClass:TokenClassSuspision) {
+	class Advantage(selfT:Token, otherT:Token, otherClass:TokenClassSuspicion) {
 		private val selfClass = selfT.tokenClass.get;
 		
 		val (self:Float, opponent:Float, even:Float, unknown:Float) = {
@@ -252,7 +252,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 	
 	
 	
-	def shouldEngage(selfT:Token, otherT:Token, otherSusp:TokenClassSuspision, list:ListOfTokens):Float = {
+	def shouldEngage(selfT:Token, otherT:Token, otherSusp:TokenClassSuspicion, list:ListOfTokens):Float = {
 		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$FuzzyLogic", "shouldEngage")
 		
 		val distance = new Distance(selfT, otherT, list);
@@ -289,7 +289,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 }
 
 private[ai] object PotentialFieldAI$AttackField {
-	def apply(selfT:Token, otherT:Token, otherSusp:TokenClassSuspision, tokens:ListOfTokens, showFieldData:Function2[Space[SpaceClass], String, Any] = {(a,b) => }):Space[SpaceClass] = {
+	def apply(selfT:Token, otherT:Token, otherSusp:TokenClassSuspicion, tokens:ListOfTokens, showFieldData:Function2[Space[SpaceClass], String, Any] = {(a,b) => }):Space[SpaceClass] = {
 		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$AttackField", "apply")
 		
 		val eligibleSpaces:Set[Space[SpaceClass]] = otherT.currentSpace.spacesWithin(
@@ -330,15 +330,15 @@ private[ai] object PotentialFieldAI$AttackField {
 }
 
 private[ai] object PotentialFieldAI$RetreatField {
-	def apply(selfT:Token, tokens:ListOfTokens, susps:Map[(Int, Int), TokenClassSuspision], player:Int):Space[SpaceClass] = {
+	def apply(selfT:Token, tokens:ListOfTokens, susps:Map[(Int, Int), TokenClassSuspicion], player:Int):Space[SpaceClass] = {
 		priorities(selfT, tokens, susps, player).maxBy{_._2}._1
 	}
 	
-	def priorities(selfT:Token, tokens:ListOfTokens, susps:Map[(Int, Int), TokenClassSuspision], player:Int):Map[Space[SpaceClass], Int] = {
+	def priorities(selfT:Token, tokens:ListOfTokens, susps:Map[(Int, Int), TokenClassSuspicion], player:Int):Map[Space[SpaceClass], Int] = {
 		this.priorities(selfT, tokens, susps, player, selfT.canMoveThisTurn)
 	}
 	
-	def priorities(selfT:Token, tokens:ListOfTokens, susps:Map[(Int, Int), TokenClassSuspision], player:Int, range:Int):Map[Space[SpaceClass], Int] = {
+	def priorities(selfT:Token, tokens:ListOfTokens, susps:Map[(Int, Int), TokenClassSuspicion], player:Int, range:Int):Map[Space[SpaceClass], Int] = {
 		Logger.entering("com.rayrobdod.deductionTactics.ai.PotentialFieldAI$RetreatField", "priorities")
 		
 		val eligibleSpaces:Set[Space[SpaceClass]] = moveRangeOf(selfT, tokens)
@@ -411,11 +411,11 @@ private[ai] object PotentialFieldAI$RetreatField {
 /** @version a.6.0 */
 final class SimpleMemoWithDebugWindow(
 	val attacks:Seq[GameState.Result] = Nil,
-	val suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty.withDefaultValue(new TokenClassSuspision),
+	val suspicions:Map[(Int, Int), TokenClassSuspicion] = Map.empty.withDefaultValue(new TokenClassSuspicion),
 	val showFieldData:Function2[Space[SpaceClass], String, Any] = {(a,c) => }
 ) extends Memo {
 	def addAttack(r:GameState.Result):SimpleMemoWithDebugWindow =
-			new SimpleMemoWithDebugWindow(r +: attacks, suspisions, showFieldData)
-	def updateSuspision(key:(Int, Int), value:TokenClassSuspision):SimpleMemoWithDebugWindow =
-			new SimpleMemoWithDebugWindow(attacks, suspisions + ((key, value)), showFieldData)
+			new SimpleMemoWithDebugWindow(r +: attacks, suspicions, showFieldData)
+	def updateSuspicion(key:(Int, Int), value:TokenClassSuspicion):SimpleMemoWithDebugWindow =
+			new SimpleMemoWithDebugWindow(attacks, suspicions + ((key, value)), showFieldData)
 }

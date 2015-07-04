@@ -27,7 +27,7 @@ import java.awt.{GridBagLayout, GridBagConstraints}
 import javax.swing.{JPanel, JLabel, JList, ListCellRenderer}
 import com.rayrobdod.deductionTactics.Token
 import com.rayrobdod.swing.{GridBagConstraintsFactory}
-import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
+import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
 
 
 /**
@@ -36,7 +36,7 @@ import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
  * @author Raymond Dodge
  * @version a.6.0
  */
-class TokenPanel(token:Token, suspicions:TokenClassSuspision, suspicionsUpdator:HumanSuspicionsPanel.SuspicionUpdateListener) extends JPanel
+class TokenPanel(token:Token, suspicions:TokenClassSuspicion, suspicionsUpdator:HumanSuspicionsPanel.SuspicionUpdateListener) extends JPanel
 {
 	private val ICON_SIZE = 32
 	

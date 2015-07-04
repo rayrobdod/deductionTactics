@@ -36,13 +36,13 @@ import scala.collection.immutable.Seq
 import scala.collection.mutable.Buffer
 import com.rayrobdod.swing.{GridBagConstraintsFactory, ScalaSeqListModel, AbstractComboBoxModel}
 import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds}
-import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
+import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
 
 /** 
  * @author Raymond Dodge
  * @version a.6.0
  */
-class HumanSuspicionsPanel(initialSusp:TokenClassSuspision) extends JPanel
+class HumanSuspicionsPanel(initialSusp:TokenClassSuspicion) extends JPanel
 {
 	import HumanSuspicionsPanel._
 	
@@ -100,37 +100,37 @@ class HumanSuspicionsPanel(initialSusp:TokenClassSuspision) extends JPanel
 		
 		rangeModel.addChangeListener(new ChangeListener() {
 			def stateChanged(e:ChangeEvent):Unit = {
-				fireSuspicionsUpdateEvent{(x:TokenClassSuspision) => x.copy(range = Option(rangeModel.getNumber.intValue))}
+				fireSuspicionsUpdateEvent{(x:TokenClassSuspicion) => x.copy(range = Option(rangeModel.getNumber.intValue))}
 			}
 		})
 		speedModel.addChangeListener(new ChangeListener() {
 			def stateChanged(e:ChangeEvent):Unit = {
-				fireSuspicionsUpdateEvent{(x:TokenClassSuspision) => x.copy(speed = Option(speedModel.getNumber.intValue))}
+				fireSuspicionsUpdateEvent{(x:TokenClassSuspicion) => x.copy(speed = Option(speedModel.getNumber.intValue))}
 			}
 		})
 		atkElement.addActionListener(new ActionListener() {
 			def actionPerformed(e:ActionEvent):Unit = {
-				fireSuspicionsUpdateEvent{(x:TokenClassSuspision) => x.copy(atkElement = atkElement.getSelectedItem.asInstanceOf[Option[Element]])}
+				fireSuspicionsUpdateEvent{(x:TokenClassSuspicion) => x.copy(atkElement = atkElement.getSelectedItem.asInstanceOf[Option[Element]])}
 			}
 		})
 		atkWeapon.addActionListener(new ActionListener() {
 			def actionPerformed(e:ActionEvent):Unit = {
-				fireSuspicionsUpdateEvent{(x:TokenClassSuspision) => x.copy(atkWeapon = atkWeapon.getSelectedItem.asInstanceOf[Option[Weaponkind]])}
+				fireSuspicionsUpdateEvent{(x:TokenClassSuspicion) => x.copy(atkWeapon = atkWeapon.getSelectedItem.asInstanceOf[Option[Weaponkind]])}
 			}
 		})
 		atkStatus.addActionListener(new ActionListener() {
 			def actionPerformed(e:ActionEvent):Unit = {
-				fireSuspicionsUpdateEvent{(x:TokenClassSuspision) => x.copy(atkStatus = atkStatus.getSelectedItem.asInstanceOf[Option[Status]])}
+				fireSuspicionsUpdateEvent{(x:TokenClassSuspicion) => x.copy(atkStatus = atkStatus.getSelectedItem.asInstanceOf[Option[Status]])}
 			}
 		})
 		weakStatus.addActionListener(new ActionListener() {
 			def actionPerformed(e:ActionEvent):Unit = {
-				fireSuspicionsUpdateEvent{(x:TokenClassSuspision) => x.copy(weakStatus = weakStatus.getSelectedItem.asInstanceOf[Option[Status]])}
+				fireSuspicionsUpdateEvent{(x:TokenClassSuspicion) => x.copy(weakStatus = weakStatus.getSelectedItem.asInstanceOf[Option[Status]])}
 			}
 		})
 		weakDirection.addActionListener(new ActionListener() {
 			def actionPerformed(e:ActionEvent):Unit = {
-				fireSuspicionsUpdateEvent{(x:TokenClassSuspision) => x.copy(weakDirection = weakDirection.getSelectedItem.asInstanceOf[Option[Direction]])}
+				fireSuspicionsUpdateEvent{(x:TokenClassSuspicion) => x.copy(weakDirection = weakDirection.getSelectedItem.asInstanceOf[Option[Direction]])}
 			}
 		})
 	}
@@ -147,7 +147,7 @@ class HumanSuspicionsPanel(initialSusp:TokenClassSuspision) extends JPanel
  * Assorted types for HumanSuspicionsPanel
  */
 object HumanSuspicionsPanel {
-	type SuspicionUpdate = Function1[TokenClassSuspision,TokenClassSuspision]
+	type SuspicionUpdate = Function1[TokenClassSuspicion,TokenClassSuspicion]
 	type SuspicionUpdateListener = Function1[SuspicionUpdate, Unit] 
 	
 	

@@ -88,9 +88,9 @@ class BlindAttackAITest extends FunSpec {
 			it ("Returns the 'memo' parameter") {
 				val exp = new Memo() {
 					def attacks:Seq[GameState.Result] = throw new UnsupportedOperationException
-					def suspisions:Map[(Int, Int), TokenClassSuspision] = throw new UnsupportedOperationException
+					def suspicions:Map[(Int, Int), TokenClassSuspicion] = throw new UnsupportedOperationException
 					def addAttack(r:GameState.Result):Memo = throw new UnsupportedOperationException
-					def updateSuspision(key:(Int, Int), value:TokenClassSuspision):Memo = throw new UnsupportedOperationException
+					def updateSuspicion(key:(Int, Int), value:TokenClassSuspicion):Memo = throw new UnsupportedOperationException
 				}
 				
 				assertResult(exp){(new BlindAttackAI).notifyTurn(0, null, null, null, exp)}

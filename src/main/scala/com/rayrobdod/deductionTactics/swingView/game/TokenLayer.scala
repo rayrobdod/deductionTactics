@@ -36,7 +36,7 @@ import com.rayrobdod.animation.{AnimationIcon, ImageFrameAnimation,
 }
 import com.rayrobdod.boardGame.RectangularField
 import com.rayrobdod.boardGame.swingView._
-import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
+import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
 
 
 /**
@@ -44,7 +44,7 @@ import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
  */
 final class TokenLayer(spaces:RectangularField[SpaceClass], tiles:RectangularTilemapComponent) extends JComponent {
 	private[this] var _tokens:ListOfTokens = new ListOfTokens(Nil)
-	var suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty
+	var suspicions:Map[(Int, Int), TokenClassSuspicion] = Map.empty
 	
 	def tokens:ListOfTokens = _tokens
 	def tokens_=(newTokens:ListOfTokens):Unit = {
@@ -62,7 +62,7 @@ final class TokenLayer(spaces:RectangularField[SpaceClass], tiles:RectangularTil
 		
 		t2.keySet.foreach{x =>
 			val icon:Icon = t2.get(x).flatMap{y => y.map{tokenClassToIcon _}}.getOrElse{
-				val y = suspisions.getOrElse(x, new TokenClassSuspision)
+				val y = suspicions.getOrElse(x, new TokenClassSuspicion)
 				generateGenericIcon(y.atkElement, y.atkWeapon)
 			}
 			val space = tokens.tokens(x).currentSpace

@@ -65,7 +65,7 @@ package object ai
 	 * determines the spaces a token can attack
 	 * @version a.6.0
 	 */
-	def attackRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspision = new TokenClassSuspision()):Set[Space[SpaceClass]] =
+	def attackRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspicion = new TokenClassSuspicion()):Set[Space[SpaceClass]] =
 	{
 		if (token.currentStatus == Statuses.Blind) {
 			Set.empty
@@ -85,7 +85,7 @@ package object ai
 	 * determines the spaces a token can move to
 	 * @version a.6.0
 	 */
-	def moveRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspision = new TokenClassSuspision()):Set[Space[SpaceClass]] =
+	def moveRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspicion = new TokenClassSuspicion()):Set[Space[SpaceClass]] =
 	{
 		val statusSpeedLimit = token.currentStatus match {
 			case Statuses.Snake => 1
@@ -111,25 +111,25 @@ package ai {
 	/** @version a.6.0 */
 	trait Memo {
 		def attacks:Seq[GameState.Result]
-		def suspisions:Map[(Int, Int), TokenClassSuspision]
+		def suspicions:Map[(Int, Int), TokenClassSuspicion]
 		def addAttack(r:GameState.Result):Memo
-		def updateSuspision(key:(Int, Int), value:TokenClassSuspision):Memo
+		def updateSuspicion(key:(Int, Int), value:TokenClassSuspicion):Memo
 	}
 	
 	
 	/** @version a.6.0 */
 	final case class SimpleMemo(
 		val attacks:Seq[GameState.Result] = Nil,
-		val suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty.withDefaultValue(new TokenClassSuspision)
+		val suspicions:Map[(Int, Int), TokenClassSuspicion] = Map.empty.withDefaultValue(new TokenClassSuspicion)
 	) extends Memo {
 		def addAttack(r:GameState.Result):SimpleMemo =
-				new SimpleMemo(r +: attacks, suspisions)
-		def updateSuspision(key:(Int, Int), value:TokenClassSuspision):SimpleMemo =
-				new SimpleMemo(attacks, suspisions + ((key, value)))
+				new SimpleMemo(r +: attacks, suspicions)
+		def updateSuspicion(key:(Int, Int), value:TokenClassSuspicion):SimpleMemo =
+				new SimpleMemo(attacks, suspicions + ((key, value)))
 	}
 	
 	/** @version a.6.0 */
-	case class TokenClassSuspision(
+	case class TokenClassSuspicion(
 		val body:Option[BodyType] = None,
 		val atkElement:Option[Element] = None,
 		val atkWeapon:Option[Weaponkind] = None,

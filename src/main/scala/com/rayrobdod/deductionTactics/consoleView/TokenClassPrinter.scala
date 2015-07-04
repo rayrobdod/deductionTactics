@@ -23,7 +23,7 @@ import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.BodyTypes.BodyType
 import com.rayrobdod.deductionTactics.Directions.Direction
 
-import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
+import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
 import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds}
 import scala.runtime.{AbstractFunction1 => Function1}
 import scala.language.reflectiveCalls
@@ -65,7 +65,7 @@ object TokenClassPrinter extends Function1[TokenClass,Unit]
 	/**
 	 * @since a.6.0
 	 */
-	def apply(tokenClass:TokenClassSuspision):Unit = {
+	def apply(tokenClass:TokenClassSuspicion):Unit = {
 		out.println("???");
 		
 		out.print("Speed: ");

@@ -75,7 +75,7 @@ class MoveRangeOfTest extends FunSpec {
 		}
 		it ("An unknown token guesses the suspicion's speed") {
 			val token = new Token(board(1,1)).startOfTurn()
-			val susp = new TokenClassSuspision(speed = Some(2))
+			val susp = new TokenClassSuspicion(speed = Some(2))
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(11)(moveRangeOf(token, list, susp).size)
@@ -127,7 +127,7 @@ class MoveRangeOfTest extends FunSpec {
 		}
 		it ("An unknown token guesses the suspicion's range") {
 			val token = new Token(board(1,1)).startOfTurn()
-			val susp = new TokenClassSuspision(range = Some(2))
+			val susp = new TokenClassSuspicion(range = Some(2))
 			val list = new ListOfTokens(Seq(Seq(token)))
 			
 			assertResult(11)(attackRangeOf(token, list, susp).size)

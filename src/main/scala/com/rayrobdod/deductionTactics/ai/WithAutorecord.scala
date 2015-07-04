@@ -37,17 +37,17 @@ final class WithAutorecord(val base:PlayerAI) extends DecoratorPlayerAI(base)
 		action match {
 			case GameState.TokenAttackDamageResult(attackerIndex, _, elem, kind) => {
 				
-				val oldSusp = b.suspisions.get(attackerIndex).getOrElse(new TokenClassSuspision)
+				val oldSusp = b.suspicions.get(attackerIndex).getOrElse(new TokenClassSuspicion)
 				val newSusp = oldSusp.copy(atkElement = Some(elem), atkWeapon = Some(kind))
 				
-				b.updateSuspision(attackerIndex, newSusp)
+				b.updateSuspicion(attackerIndex, newSusp)
 			}
 			case GameState.TokenAttackStatusResult(attackerIndex, _, status) => {
 				
-				val oldSusp = b.suspisions.get(attackerIndex).getOrElse(new TokenClassSuspision)
+				val oldSusp = b.suspicions.get(attackerIndex).getOrElse(new TokenClassSuspicion)
 				val newSusp = oldSusp.copy(atkStatus = Some(status))
 				
-				b.updateSuspision(attackerIndex, newSusp)
+				b.updateSuspicion(attackerIndex, newSusp)
 			}
 			case _ => {b}
 		}

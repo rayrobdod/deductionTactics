@@ -215,7 +215,7 @@ class WithAutorecordTest extends FunSpec {
 				val retVal = ai.notifyTurn(0, action, null, null, inMemo)
 				
 				
-				assertResult(Some(exStatus))(retVal.suspisions(attackerIndex).atkStatus)
+				assertResult(Some(exStatus))(retVal.suspicions(attackerIndex).atkStatus)
 			}
 			it ("Records Damage") {
 				val attackerIndex = ((3,3))
@@ -229,8 +229,8 @@ class WithAutorecordTest extends FunSpec {
 				val retVal = ai.notifyTurn(0, action, null, null, inMemo)
 				
 				
-				assertResult(Some(exElem))(retVal.suspisions(attackerIndex).atkElement)
-				assertResult(Some(exKind))(retVal.suspisions(attackerIndex).atkWeapon)
+				assertResult(Some(exElem))(retVal.suspicions(attackerIndex).atkElement)
+				assertResult(Some(exKind))(retVal.suspicions(attackerIndex).atkWeapon)
 			}
 		}
 	}
