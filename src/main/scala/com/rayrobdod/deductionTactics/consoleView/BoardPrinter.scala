@@ -49,8 +49,6 @@ object BoardPrinter{
 		}.tupled)
 	}
 	
-	// I'd prefer to use the top line, but the consoles are ASCII only
-	//val (tl, tr, bl, br, horiz, vert) = ('┏', '┓', '┗', '┛', '━', '┃')
 	private val (tl, tr, bl, br, horiz, vert) = (',', '.', '`', '\'', '-', '|')
 
 	def apply(out:PrintStream, tokens:ListOfTokens, field:RectangularField[SpaceClass], team:Option[Int], cursor:Option[Space[SpaceClass]] = None, selected:Option[TokenIndex] = None) {
