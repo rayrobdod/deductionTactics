@@ -47,6 +47,12 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	
 	private[this] var currentTokens:ListOfTokens = tokens
 	private[this] var currentSuspicions:Map[TokenIndex, ai.TokenClassSuspision] = Map.empty
+	private[this] def afterUpdateSuspicions:Map[TokenIndex, ai.TokenClassSuspision] = {
+		val currentMemo:ai.Memo = new ai.SimpleMemo(suspisions = currentSuspicions)
+		val updatedMemo = memoUpdates.foldLeft(currentMemo){(s,f) => f(s)}
+		val updatedSusps = updatedMemo.suspisions
+		updatedSusps
+	}
 	
 	private[this] val tokenInfoPanel = new JPanel(new java.awt.BorderLayout)
 	tokenInfoPanel.setPreferredSize({
@@ -141,7 +147,8 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		}
 		selectedTokenIndex.addChangeListener{x =>
 			val selectedToken:Option[Token] = x.map{currentTokens.tokens _}
-			highlightLayer.update(selectedToken, currentTokens, field)
+			val susp = x.map{afterUpdateSuspicions}
+			highlightLayer.update(selectedToken, currentTokens, field, susp.flatMap{_.speed}.getOrElse(0), susp.flatMap{_.range}.getOrElse(0))
 		}
 		selectedSpace.addChangeListener{x =>
 			val spaceClass = field(x).typeOfSpace
@@ -158,12 +165,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 			tokenInfoPanel.removeAll()
 			tokenOnSpace.map{t =>
 				val tokenIndex = currentTokens.indexOf(t)
-				val susp = {
-					val currentMemo:ai.Memo = new ai.SimpleMemo(suspisions = currentSuspicions)
-					val updatedMemo = memoUpdates.foldLeft(currentMemo){(s,f) => f(s)}
-					val updatedSusps = updatedMemo.suspisions
-					updatedSusps(tokenIndex)
-				}
+				val susp = afterUpdateSuspicions(tokenIndex)
 				val tp = new TokenPanel(t, susp, {x => memoUpdates += {y => y.updateSuspision(tokenIndex, x(y.suspisions(tokenIndex)))}})
 				tokenInfoPanel.add(tp)
 				tokenInfoPanel.validate()

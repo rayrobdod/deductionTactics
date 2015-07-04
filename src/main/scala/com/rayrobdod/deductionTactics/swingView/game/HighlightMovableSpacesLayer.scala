@@ -59,11 +59,11 @@ final class HighlightMovableSpacesLayer(
 	
 	
 	
-	def update(selectedTokenOption:Option[Token], list:ListOfTokens, field:RectangularField[SpaceClass]):Unit = {
+	def update(selectedTokenOption:Option[Token], list:ListOfTokens, field:RectangularField[SpaceClass], suspectedSpeed:Int, suspectedRange:Int):Unit = {
 		
 		selectedTokenOption.foreach{(selectedToken) =>
-			val tokenMaxSpeed = selectedToken.tokenClass.map{_.speed}.getOrElse(0)
-			val tokenMaxRange = selectedToken.tokenClass.map{_.range}.getOrElse(0)
+			val tokenMaxSpeed = selectedToken.tokenClass.map{_.speed}.getOrElse(suspectedSpeed)
+			val tokenMaxRange = selectedToken.tokenClass.map{_.range}.getOrElse(suspectedRange)
 			val tokenCurSpeed = selectedToken.canMoveThisTurn
 			val tokenCurRange = tokenMaxRange // the computation for curRangeSpaces checks for this
 			
