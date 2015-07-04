@@ -18,14 +18,13 @@
 package com.rayrobdod.deductionTactics.swingView.game
 
 import java.awt.{Component, GridBagLayout, GridBagConstraints}
-import javax.swing.{JComponent, JPanel}
-import com.rayrobdod.deductionTactics.Token
-import com.rayrobdod.deductionTactics.swingView.TokenPanel
+import javax.swing.{JComponent, JPanel, JLabel}
+import com.rayrobdod.deductionTactics.SpaceClass
 
 /**
  * 
  */
-final class TokenSummaryDisplay {
+final class DisplaySpaceClassInfoInCorner {
 	private[this] val panel = new JPanel(new GridBagLayout)
 	def component:Component = panel
 	panel.setBackground(new java.awt.Color(0, true))
@@ -44,12 +43,10 @@ final class TokenSummaryDisplay {
 	/**
 	 * @param placeInCorner see [[java.awt.GridBagConstraints#anchor]]
 	 */
-	def showDetailsOf(t:Option[Token], placeInCorner:Int) {
+	def showDetailsOf(t:SpaceClass, placeInCorner:Int) {
 		panel.removeAll()
 		constrs.anchor = placeInCorner
-		t.map{t2 =>
-			panel.add(new TokenPanel(t2), constrs)
-		}
+		panel.add(new JLabel(t.toString), constrs)
 		panel.validate()
 	}
 }

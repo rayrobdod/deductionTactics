@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics
 package swingView.game
 
-import javax.swing.{SwingUtilities, JFrame, JPanel, JButton, WindowConstants, KeyStroke, AbstractAction}
+import javax.swing.{SwingUtilities, JFrame, JPanel, JButton, WindowConstants, KeyStroke, AbstractAction, JScrollPane}
 import java.text.MessageFormat
 import java.awt.event.{MouseEvent, MouseListener, MouseAdapter}
 import java.awt.event.{ActionEvent, ActionListener}
@@ -27,7 +27,7 @@ import scala.collection.mutable.Buffer
 import scala.collection.immutable.{Seq, Map}
 import com.rayrobdod.boardGame.RectangularField
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularFieldComponent}
-import com.rayrobdod.deductionTactics.swingView.{AvailibleTilesheetListModel, tilesheets}
+import com.rayrobdod.deductionTactics.swingView.{AvailibleTilesheetListModel, tilesheets, TokenPanel}
 
 
 /**
@@ -48,6 +48,12 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	private[this] var currentTokens:ListOfTokens = tokens
 	private[this] var currentSuspicions:Map[(Int,Int), ai.TokenClassSuspision] = Map.empty
 	
+	private[this] val tokenInfoPanel = new JPanel(new java.awt.BorderLayout)
+	tokenInfoPanel.setPreferredSize({
+		val a = new TokenPanel(new Token(field(0,0)))
+		a.doLayout
+		a.getPreferredSize
+	})
 	
 	private[this] val centerpiece = {
 		val rv = new JPanel(new com.rayrobdod.swing.layouts.LayeredLayout)
@@ -59,7 +65,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		val cursorLayer = new CursorLayer(fieldLayers._2.spaceBounds _)
 		val pieMenuLayout = new PieMenuLayout
 		val pieMenuLayer = new JPanel(pieMenuLayout)
-		val tokenSummaryDisplay = new TokenSummaryDisplay
+		val spaceClassDisplay = new DisplaySpaceClassInfoInCorner
 		
 		val selectedSpace = new CurrentlySelectedSpaceProperty
 		val selectedTokenIndex = new CurrentlySelectedTokenProperty
@@ -137,14 +143,27 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 			highlightLayer.update(selectedToken, currentTokens, field)
 		}
 		selectedSpace.addChangeListener{x =>
-			val tokenOnSpace:Option[Token] = currentTokens.tokens.flatten.find{_.currentSpace == field(x)}
+			val spaceClass = field(x).typeOfSpace
 			val putInNorth = x._2 > (field.keySet.map{_._2}.max / 2)
 			val putInWest  = x._1 > (field.keySet.map{_._1}.max / 2)
 			val anchor = {
 				(if (putInNorth == putInWest) {2} else {0}) +
 				(if (putInWest) {16} else {12})
 			}
-			tokenSummaryDisplay.showDetailsOf(tokenOnSpace, anchor)
+			spaceClassDisplay.showDetailsOf(spaceClass, anchor)
+		}
+		selectedSpace.addChangeListener{x =>
+			val tokenOnSpace:Option[Token] = currentTokens.tokens.flatten.find{_.currentSpace == field(x)}
+			tokenInfoPanel.removeAll()
+			tokenOnSpace.map{t =>
+				val tp = new TokenPanel(t)
+				tokenInfoPanel.add(tp)
+				tokenInfoPanel.validate()
+				tp.validate()
+				tp.doLayout()
+			}
+			tokenInfoPanel.validate()
+			tokenInfoPanel.repaint()
 		}
 		
 		rv.setFocusable(true)
@@ -167,7 +186,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		
 		rv.add(pieMenuLayer)
 		rv.add(cursorLayer)
-		rv.add(tokenSummaryDisplay.component)
+		rv.add(spaceClassDisplay.component)
 		rv.add(highlightLayer)
 		rv.add(fieldLayers._2)
 		rv.add(tokenLayer)
@@ -175,11 +194,11 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		rv
 	}
 	
-	frame.add(centerpiece)
+	frame.getContentPane.add(centerpiece)
+	frame.getContentPane.add(tokenInfoPanel, java.awt.BorderLayout.EAST)
 	frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
 	frame.setJMenuBar(new com.rayrobdod.deductionTactics.swingView.MenuBar)
 	frame.pack()
-	
 	
 	def setVisible(visible:Boolean):Unit = {
 		frame.setVisible(visible);
