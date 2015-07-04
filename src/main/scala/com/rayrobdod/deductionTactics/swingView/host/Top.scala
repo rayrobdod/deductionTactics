@@ -39,7 +39,7 @@ class Top {
 	
 	{
 		val mapList:JList[Arena] = new JList(new ScalaSeqListModel(Maps.arenas))
-		val playerCount:JList[Int] = new JList(new ScalaSeqListModel(Seq(2,4)))
+		val playerCount:JList[Int] = new JList(new ScalaSeqListModel(Seq.empty[Int]))
 		val aisPanel = new ChooseAIsComponent
 		
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
@@ -48,7 +48,7 @@ class Top {
 		val mapChoosingPanel = new JPanel(new GridBagLayout());
 		{
 			val mapPreviewPicture = new JLabel("Map Preview Picture")
-			val tokensPerPlayer = new JLabel("4")
+			val tokensPerPlayer = new JLabel("")
 			
 			mapChoosingPanel.setName("mapChoosingPanel")
 			mapList.setName("mapList")
@@ -77,6 +77,7 @@ class Top {
 					if (! mapList.isSelectionEmpty && ! playerCount.isSelectionEmpty) {
 						tokensPerPlayer.setText(mapList.getSelectedValue.startSpaces(playerCount.getSelectedValue).map{_.size}.mkString("[", ",", "]"))
 						nextButton.setEnabled(true)
+						aisPanel.players = playerCount.getSelectedValue
 					} else {
 						tokensPerPlayer.setText(resources.getString("invalid"))
 						nextButton.setEnabled(false)

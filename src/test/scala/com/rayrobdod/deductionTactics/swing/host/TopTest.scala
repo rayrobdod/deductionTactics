@@ -20,7 +20,7 @@ package com.rayrobdod.deductionTactics.swingView.host
 import org.scalatest.{FunSpec}
 import javax.swing.{JFrame, JButton, JPanel, JList}
 import scala.collection.immutable.Seq
-import com.rayrobdod.deductionTactics.ai.{BlindAttackAI, SwingInterface}
+import com.rayrobdod.deductionTactics.ai.{BlindAttackAI, SwingInterface, WithRandomTeam}
 import com.rayrobdod.deductionTactics.{Arena, PlayerAI, Maps}
 import com.rayrobdod.boardGame.{RectangularField, Space}
 import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
@@ -93,6 +93,21 @@ class TopTest extends FunSpec {
 			assert(target.hasBeenCalled)
 			assertResult(Seq(new SwingInterface, new BlindAttackAI)){target.ais}
 		}
+		it ("Changes ai in return value when a new decorator ai is selected (2)") {
+			val (frame, target) = this.createNextFrameAndListener()
+			
+			val aisComp = getAIsComponent(frame)
+			aisComp.aiDLists(1).setSelectedIndex(1)
+			
+			val nextButton:JButton = getButton(frame, "nextButton")
+			nextButton.doClick()
+			
+			// dispose was called
+			assert(! frame.isDisplayable)
+			
+			assert(target.hasBeenCalled)
+			assertResult(Seq(new SwingInterface, new WithRandomTeam(new SwingInterface))){target.ais}
+		}
 		it ("Changes arena in return value when a new arena is selected") {
 			val (frame, target) = this.createNextFrameAndListener()
 			
@@ -107,6 +122,21 @@ class TopTest extends FunSpec {
 			
 			assert(target.hasBeenCalled)
 			assertResult(Maps.arenas(2)){target.map}
+		}
+		it ("Changes player count when player count is changes") {
+			val (frame, target) = this.createNextFrameAndListener()
+			
+			val playerCount = getPlayerCountList(frame)
+			playerCount.setSelectedIndex(1)
+			
+			val nextButton:JButton = getButton(frame, "nextButton")
+			nextButton.doClick()
+			
+			// dispose was called
+			assert(! frame.isDisplayable)
+			
+			assert(target.hasBeenCalled)
+			assertResult(Seq(new SwingInterface, new SwingInterface, new SwingInterface, new SwingInterface)){target.ais}
 		}
 	}
 	
@@ -158,6 +188,22 @@ class TopTest extends FunSpec {
 				.map{_.asInstanceOf[JPanel]}
 				.map{x => x.getComponents
 					.find{_.getName == "mapList"}
+					.map{_.asInstanceOf[JList[_]]}
+				}.flatten
+			}.flatten
+			.get
+	}
+	
+	private[this] def getPlayerCountList(frame:JFrame):JList[_] = {
+		frame.getContentPane
+			.getComponents
+			.find{_.getName == "topPanel"}
+			.map{_.asInstanceOf[JPanel]}
+			.map{x => x.getComponents
+				.find{_.getName == "mapChoosingPanel"}
+				.map{_.asInstanceOf[JPanel]}
+				.map{x => x.getComponents
+					.find{_.getName == "playerCount"}
 					.map{_.asInstanceOf[JList[_]]}
 				}.flatten
 			}.flatten
