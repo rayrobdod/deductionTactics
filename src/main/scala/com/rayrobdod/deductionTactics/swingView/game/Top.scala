@@ -46,11 +46,11 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	private[this] val memoUpdates:Buffer[Function1[ai.Memo, ai.Memo]] = Buffer.empty
 	
 	private[this] var currentTokens:ListOfTokens = tokens
-	private[this] var currentSuspicions:Map[(Int,Int), ai.TokenClassSuspision] = Map.empty
+	private[this] var currentSuspicions:Map[TokenIndex, ai.TokenClassSuspision] = Map.empty
 	
 	private[this] val tokenInfoPanel = new JPanel(new java.awt.BorderLayout)
 	tokenInfoPanel.setPreferredSize({
-		val a = new TokenPanel(new Token(field(0,0)))
+		val a = new TokenPanel(new Token(field(0,0)), new ai.TokenClassSuspision(), {x => })
 		a.doLayout
 		a.getPreferredSize
 	})
@@ -134,6 +134,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		this.addTurnStartListener{(gs, memo) =>
 			tokenLayer.tokens = gs.tokens
 			currentTokens = gs.tokens
+			currentSuspicions = memo.suspisions
 		}
 		selectedSpace.addChangeListener{x =>
 			cursorLayer.update(x)
@@ -156,7 +157,14 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 			val tokenOnSpace:Option[Token] = currentTokens.tokens.flatten.find{_.currentSpace == field(x)}
 			tokenInfoPanel.removeAll()
 			tokenOnSpace.map{t =>
-				val tp = new TokenPanel(t)
+				val tokenIndex = currentTokens.indexOf(t)
+				val susp = {
+					val currentMemo:ai.Memo = new ai.SimpleMemo(suspisions = currentSuspicions)
+					val updatedMemo = memoUpdates.foldLeft(currentMemo){(s,f) => f(s)}
+					val updatedSusps = updatedMemo.suspisions
+					updatedSusps(tokenIndex)
+				}
+				val tp = new TokenPanel(t, susp, {x => memoUpdates += {y => y.updateSuspision(tokenIndex, x(y.suspisions(tokenIndex)))}})
 				tokenInfoPanel.add(tp)
 				tokenInfoPanel.validate()
 				tp.validate()
@@ -217,7 +225,11 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		notificationListeners += f
 	}
 	def fireNotificationListeners(res:GameState.Result, gs:GameState, memo:ai.Memo):ai.Memo = {
-		notificationListeners.foldLeft(memo){(m, f) => f(res,gs,m)}
+		val retVal = notificationListeners.foldLeft(
+				memoUpdates.foldLeft(memo){(m, f) => f(m)}
+		){(m, f) => f(res,gs,m)}
+		memoUpdates.clear()
+		retVal
 	}
 	
 	def addActionPerformedListener(f:ActionPerformedListener):Unit = {
@@ -344,6 +356,10 @@ object Top {
 		))
 		
 		val t = new Top(tokens, 0, field);
+		t.fireTurnStartListeners(
+				new GameState(field, tokens),
+				(new ai.SimpleMemo()).updateSuspision((1,0), ai.TokenClassSuspision(atkElement = Some(Elements.Fire)))
+		)
 		t.addActionPerformedListener(System.out.println _)
 		t.setVisible(true);
 	}
