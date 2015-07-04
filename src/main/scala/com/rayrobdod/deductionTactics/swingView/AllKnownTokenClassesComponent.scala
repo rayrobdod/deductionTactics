@@ -28,8 +28,8 @@ import scala.collection.immutable.Seq
 class AllKnownTokenClassesComponent extends JPanel
 {
 	private var _tokenClassToComponent:Function1[TokenClass,JComponent] = {(x:TokenClass) => new TokenClassPanel(x)}
-	def tokenClassToComponent = _tokenClassToComponent
-	def tokenClassToComponent_=(x:Function1[TokenClass,JComponent]) = {
+	def tokenClassToComponent:Function1[TokenClass,JComponent] = _tokenClassToComponent
+	def tokenClassToComponent_=(x:Function1[TokenClass,JComponent]):Unit = {
 		_tokenClassToComponent = x
 		
 		this.removeAll()
@@ -40,9 +40,9 @@ class AllKnownTokenClassesComponent extends JPanel
 	private def tokenClassPanels:Seq[JComponent] = TokenClass.allKnown.map(tokenClassToComponent)
 	
 	this.setLayout(new FlowLayout(){
-		override def preferredLayoutSize(c:Container) = minimumLayoutSize(c)
+		override def preferredLayoutSize(c:Container):Dimension = minimumLayoutSize(c)
 		
-		override def minimumLayoutSize(c:Container) = {
+		override def minimumLayoutSize(c:Container):Dimension = {
 			if (c.getComponentCount == 0) {new Dimension(0,0)}
 			else
 			{

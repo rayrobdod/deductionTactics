@@ -10,7 +10,8 @@ scalaVersion := "2.10.5"
 
 crossScalaVersions := Seq("2.10.5", "2.11.6")
 
-exportJars := true
+// heavy resource use, including ResourceBundles
+fork := true
 
 mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
 

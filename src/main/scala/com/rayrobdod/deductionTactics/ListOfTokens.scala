@@ -26,24 +26,24 @@ import scala.collection.immutable.Seq
 final class ListOfTokens (
 	val tokens:Seq[Seq[Token]]
 ) {
-	def aliveTokens() = tokens.map{_.filter(ListOfTokens.aliveFilter)}
+	def aliveTokens():Seq[Seq[Token]] = tokens.map{_.filter(ListOfTokens.aliveFilter)}
 	
 	/** Since the other ListOfTokens are no longer around to provide this method
 	 * @version a.6.0
 	 */
-	def alivePlayerTokens(player:Int) = tokens(player).filter(ListOfTokens.aliveFilter)
+	def alivePlayerTokens(player:Int):Seq[Token] = tokens(player).filter(ListOfTokens.aliveFilter)
 
 	/** Since the other ListOfTokens are no longer around to provide this method
 	 * @version a.6.0
 	 */
-	def aliveNotPlayerTokens(player:Int) = {
+	def aliveNotPlayerTokens(player:Int):Seq[Seq[Token]] = {
 		tokens.zipWithIndex.filter(_._2 != player).map{_._1}
 				.map{_.filter(ListOfTokens.aliveFilter)}
 	}
 	
 	
 	/**  @since a.6.0 */
-	def indexOf(t:Token) = {
+	def indexOf(t:Token):TokenIndex = {
 		tokens.zipWithIndex.flatMap{(a) =>
 			a._1.zipWithIndex.map{(b) => (( ((a._2, b._2)), b._1 ))}
 		}.find{_._2 == t}.map{_._1}.getOrElse{((-1,-1))}

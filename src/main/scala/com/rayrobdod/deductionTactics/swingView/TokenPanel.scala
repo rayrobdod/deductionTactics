@@ -23,12 +23,12 @@ import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.BodyTypes.BodyType
 import com.rayrobdod.deductionTactics.Directions.Direction
 
-import javax.swing.{JPanel, JLabel, JList, ListCellRenderer}
 import java.awt.{GridBagLayout, GridBagConstraints}
+import javax.swing.{JPanel, JLabel, JList, ListCellRenderer}
 import com.rayrobdod.deductionTactics.Token
 import com.rayrobdod.swing.{GridBagConstraintsFactory}
+import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
 
-import java.awt.event.{MouseAdapter, MouseEvent}
 
 /**
  * A panel that displays information about a [[com.rayrobdod.deductionTactics.Token]]
@@ -36,13 +36,21 @@ import java.awt.event.{MouseAdapter, MouseEvent}
  * @author Raymond Dodge
  * @version a.6.0
  */
-class TokenPanel(val token:Token) extends JPanel
+class TokenPanel(token:Token, suspicions:TokenClassSuspision, suspicionsUpdator:HumanSuspicionsPanel.SuspicionUpdateListener) extends JPanel
 {
 	private val ICON_SIZE = 32
 	
 	setLayout(new GridBagLayout)
 	
-	val tokenClass = token.tokenClass.map{new TokenClassPanel(_)}.getOrElse{new HumanSuspicionsPanel()}
+	val tokenClass = (
+		token.tokenClass.map{
+			new TokenClassPanel(_)
+		}.getOrElse{
+			val rv = new HumanSuspicionsPanel(suspicions)
+			rv.addUpdateListener(suspicionsUpdator)
+			rv
+		}
+	)
 	val hitpoints = new JLabel(token.currentHitpoints + " / " + Token.maximumHitpoints) 
 	val status = new JLabel( makeIconFor(token.currentStatus, ICON_SIZE) )
 	val statusTurnsLeft = new JLabel("" + token.currentStatusTurnsLeft)
@@ -59,5 +67,3 @@ class TokenPanel(val token:Token) extends JPanel
 	add(tokenClass, GridBagConstraintsFactory( gridwidth = GridBagConstraints.REMAINDER ))
 	
 }
-
-

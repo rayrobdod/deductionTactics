@@ -15,11 +15,13 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.swingView
+package com.rayrobdod.deductionTactics.swingView.game
 
-import java.awt.{Component, Color, Graphics, Shape, Graphics2D}
-import scala.collection.immutable.{Seq, Set}
+import java.awt.{Shape, Rectangle}
+import java.awt.Color
+import java.awt.{Graphics, Graphics2D}
 import javax.swing.JComponent
+import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.{Space, RectangularSpace, RectangularField, StrictRectangularSpace}
 import com.rayrobdod.boardGame.swingView.RectangularTilemapComponent
 import com.rayrobdod.deductionTactics.{Token, ListOfTokens, SpaceClass, AttackCostFunction, MoveToCostFunction}
@@ -32,14 +34,15 @@ import HighlightMovableSpacesLayer._
  * @author Raymond Dodge
  * @since a.6.0
  */
-final class HighlightMovableSpacesLayer(tilemap:RectangularTilemapComponent) extends JComponent
-{
-	var currentSpeeds:Seq[Shape] = Seq.empty;
-	var currentRanges:Seq[Shape] = Seq.empty;
-	var maximumSpeeds:Seq[Shape] = Seq.empty;
-	var maximumRanges:Seq[Shape] = Seq.empty;
+final class HighlightMovableSpacesLayer(
+	tilemap:RectangularTilemapComponent
+) extends JComponent {
+	private[this] var currentSpeeds:Seq[Shape] = Seq.empty;
+	private[this] var currentRanges:Seq[Shape] = Seq.empty;
+	private[this] var maximumSpeeds:Seq[Shape] = Seq.empty;
+	private[this] var maximumRanges:Seq[Shape] = Seq.empty;
 	
-	override def paintComponent(g:Graphics) {
+	override def paintComponent(g:Graphics):Unit = {
 		val g2 = g.asInstanceOf[Graphics2D]
 		val g2Fill = {(x:Shape) => g2.fill(x)}
 		
@@ -56,11 +59,11 @@ final class HighlightMovableSpacesLayer(tilemap:RectangularTilemapComponent) ext
 	
 	
 	
-	def update(selectedTokenOption:Option[Token], list:ListOfTokens, field:RectangularField[SpaceClass]) = {
+	def update(selectedTokenOption:Option[Token], list:ListOfTokens, field:RectangularField[SpaceClass], suspectedSpeed:Int, suspectedRange:Int):Unit = {
 		
 		selectedTokenOption.foreach{(selectedToken) =>
-			val tokenMaxSpeed = selectedToken.tokenClass.map{_.speed}.getOrElse(0)
-			val tokenMaxRange = selectedToken.tokenClass.map{_.range}.getOrElse(0)
+			val tokenMaxSpeed = selectedToken.tokenClass.map{_.speed}.getOrElse(suspectedSpeed)
+			val tokenMaxRange = selectedToken.tokenClass.map{_.range}.getOrElse(suspectedRange)
 			val tokenCurSpeed = selectedToken.canMoveThisTurn
 			val tokenCurRange = tokenMaxRange // the computation for curRangeSpaces checks for this
 			
@@ -85,6 +88,7 @@ final class HighlightMovableSpacesLayer(tilemap:RectangularTilemapComponent) ext
 			this.maximumSpeeds = Seq.empty
 			this.maximumRanges = Seq.empty
 		}
+		this.repaint()
 	}
 }
 

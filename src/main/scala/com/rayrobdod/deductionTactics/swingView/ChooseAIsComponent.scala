@@ -30,6 +30,7 @@ import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 /**
  * @author Raymond Dodge
  * @version a.4.?
+ * @deprecated use AiChoosingPanels
  */
 class ChooseAIsComponent extends JPanel
 {
@@ -38,7 +39,7 @@ class ChooseAIsComponent extends JPanel
 	
 	private var _players:Int = 2
 	def players:Int = _players
-	def players_=(x:Int) = {
+	def players_=(x:Int):Unit = {
 		_players = x
 		
 		this.removeAll()

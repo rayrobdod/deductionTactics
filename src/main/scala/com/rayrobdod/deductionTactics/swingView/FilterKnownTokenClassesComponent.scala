@@ -48,7 +48,7 @@ class FilterKnownTokenClassesComponent extends JPanel
  */
 class TokenClassMatcher(template:TokenClassBuilder) extends Function1[TokenClass,Boolean]
 	{
-		def apply(tc:TokenClass) = {
+		def apply(tc:TokenClass):Boolean = {
 			(
 				eitherIsNoneOrBothAreEqual(template.atkElement, tc.atkElement) &&
 				eitherIsNoneOrBothAreEqual(template.atkWeapon, tc.atkWeapon) &&

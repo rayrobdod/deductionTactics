@@ -28,18 +28,12 @@ import scala.collection.immutable.Seq
  * @author Raymond Dodge
  * @version a.6.0
  */
-final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
+final class WithArbitraryTeam(val base:PlayerAI) extends DecoratorPlayerAI(base)
 {
-	/** Forwards command to base */
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo) = base.takeTurn(player, gameState, memo)
-	/** Forwards command to base */
-	override def initialize(player:Int, initialState:GameState):Memo = base.initialize(player, initialState)
-	/** Forwards notify to base */
-	override def notifyTurn(player:Int, action:GameState.Result, beforeState:GameState, afterState:GameState, memo:Memo):Memo =
-				base.notifyTurn(player, action, beforeState, afterState, memo)
+	private var input:Int = 0;
 	
 	/** chooses a team randomly */
-	def buildTeam(size:Int):Seq[TokenClass] = {
+	override def selectTokenClasses(size:Int) = {
 		import javax.swing.JOptionPane.PLAIN_MESSAGE
 		
 		val pane = new javax.swing.JOptionPane;
@@ -50,11 +44,17 @@ final class WithArbitraryTeam(val base:PlayerAI) extends PlayerAI
 		pane.setMessageType(PLAIN_MESSAGE);
 		val dialog = pane.createDialog("WithArbitraryTeam")
 		dialog.setVisible(true);
-		val input = pane.getInputValue.hashCode
+		input = pane.getInputValue.hashCode
 		
 		ai.randomTeam(size, new Random(input))
 	}
 	
+	/** chooses a subset of selectedTokenClasses randomly */
+	override def narrowTokenClasses(
+				selectedTokenClasses:Seq[Seq[TokenClass]],
+				maxResultSize:Int,
+				index:Int
+	):Seq[TokenClass] = Random.shuffle(selectedTokenClasses(index)).take(maxResultSize)
 	
 	
 	

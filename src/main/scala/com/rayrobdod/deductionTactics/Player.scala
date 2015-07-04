@@ -31,9 +31,22 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
  */
 abstract class PlayerAI {
 	
+	/** Selects a set of classes from all avaliable classes */
+	def selectTokenClasses(maxResultSize:Int):Seq[TokenClass]
 	
-	/** Generates a team of tokens that this AI would like to use. */
-	def buildTeam(size:Int):Seq[TokenClass]
+	/**
+	 * Selects a set of classes from selectedTokenClasses
+	 *
+	 * @param selectedTokenClasses the token classes from which the return value may contain
+	 * @param maxResultSize the maximum allowed size of the return value
+	 * @param otherPlayersSelectedClasses other player's token classes
+	 * @return a subset of selectedTokenClasses
+	 */
+	def narrowTokenClasses(
+			selectedClasses:Seq[Seq[TokenClass]],
+			maxResultSize:Int,
+			myIndexInSelectedClasses:Int
+	):Seq[TokenClass]
 	
 	/**
 	 * The engine calls this to make a player take its turn.

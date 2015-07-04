@@ -18,86 +18,42 @@
 package com.rayrobdod.deductionTactics
 package main
 
-import swingView._
-import java.awt.BorderLayout
-import java.awt.BorderLayout.{SOUTH => borderSouth, NORTH => borderNorth}
-import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
 import scala.collection.immutable.Seq
-import javax.swing.{JFrame, JButton, JPanel, JCheckBox, BorderFactory}
-import java.awt.event.{ActionEvent, ActionListener}
-import com.rayrobdod.boardGame.{RectangularField, Space}
+import com.rayrobdod.boardGame.{Space, RectangularField}
 
-
-/**
- * @author Raymond Dodge
- * @version a.5.0
- */
-object Main extends App
-{
-	this.startNewGame
-	
-	def startNewGame
-	{
-		val okButton = new JButton("OK")
-		val aiChooser = new ChooseAIsComponent()
-		val mapChooser = new ChooseMapComponent()
-		
-		aiChooser.setBorder(BorderFactory.createMatteBorder(3,0,0,0,java.awt.Color.BLACK))
-		
-		val aiChooserFrame = new JFrame("Choose PlayerTypes")
-		aiChooserFrame.getContentPane.add({
-			val returnValue = new JPanel(new BorderLayout)
-			returnValue.add(mapChooser, borderNorth)
-			returnValue.add(aiChooser)
-			returnValue
-		})
-		aiChooserFrame.getContentPane.add(okButton, borderSouth)
-		aiChooserFrame.getRootPane.setDefaultButton(okButton);
-		aiChooserFrame.setJMenuBar(new swingView.MenuBar)
-		
-		
-		mapChooser.numPlayersList.addListSelectionListener(AiChooserCountChanger)
-		object AiChooserCountChanger extends ListSelectionListener {
-			def valueChanged(e:ListSelectionEvent) = {
-				Option(mapChooser.numPlayersList.getSelectedValue).map{_.intValue}.foreach{(x:Int) =>
-					aiChooser.players = x;
-					aiChooserFrame.pack();
-				}
-			}
-		}
-		
-		okButton.addActionListener(new ActionListener{
-			def actionPerformed(e:ActionEvent) = {
-				aiChooserFrame.setVisible(false)
-				new Thread(new Runnable{
-					def run = buildTeams(
-							aiChooser.getAIs,
-							Maps.getMap(mapChooser.mapList.getSelectedIndex),
-							Maps.startingPositions(mapChooser.mapList.getSelectedIndex, mapChooser.numPlayersList.getSelectedValue))
-				}, "build teams").start()
-			}
-		})
-		
-		aiChooserFrame.pack()
-		aiChooserFrame.setVisible(true)
+object Main {
+	def main(args:Array[String]):Unit = {
+		this.startNewGame()
 	}
 	
-	private def buildTeams(ais:Seq[PlayerAI], field:RectangularField[SpaceClass], tokenPositions:Seq[Seq[(Int, Int)]]) =
-	{
-		val tokenClasses:Seq[Seq[TokenClass]] = ais.zip(tokenPositions.map{_.length}).map({(p:PlayerAI, l:Int) => p.buildTeam(l)}.tupled)
-		val TokenClassToSpaceIndex:Seq[Seq[(TokenClass, (Int, Int))]] = tokenClasses.zip(tokenPositions).map({(x:Seq[TokenClass],y:Seq[(Int, Int)]) => x.zip(y)}.tupled)
-		val tokenClassToSpace:Seq[Seq[(Option[TokenClass], Space[SpaceClass])]] = TokenClassToSpaceIndex.map{_.map{(x) => ((Option(x._1), field(x._2._1, x._2._2) ))}}
-		// limit number of tokens to number of availiable spaces.
-		
-		val tokens = new ListOfTokens( tokenClassToSpace.map{_.map{(x) => new Token(x._2, tokenClass = x._1)}} )
-		
-		
-		val initialState = GameState(field, tokens)
-		
-		
-		
-		
-		// run, meaning this returns when PlayerTurnCycler returns
-		new PlayerTurnCycler(ais, initialState).run()
+	def startNewGame():Unit = {
+		val t = new swingView.host.Top()
+		t.addNextListener(chooseTokens _)
+		t.setVisible(true)
+	}
+	
+	private def chooseTokens(ais:Seq[PlayerAI], map:Arena):Unit = {
+		val t = new Thread(new Runnable(){
+			def run():Unit = {
+				val startSpaces = map.startSpaces(ais.size)
+				
+				val startCounts = startSpaces.map{_.size}
+				val selectedClasses:Seq[Seq[TokenClass]] = ais.zip(startCounts).map{x => x._1.selectTokenClasses(x._2 * 2)}
+				// TODO: short circuit and stop if any AI returns an empty list
+				val narrowedClasses:Seq[Seq[TokenClass]] = ais.zip(startCounts).zipWithIndex.map{x => x._1._1.narrowTokenClasses(selectedClasses, x._1._2, x._2)}
+				// TODO: short circuit and stop if any AI returns an empty list
+				
+				val field = RectangularField(map.layout)
+				val TokenClassToSpaceIndex:Seq[Seq[(TokenClass, (Int, Int))]] = narrowedClasses.zip(startSpaces).map({(x:Seq[TokenClass],y:Seq[(Int, Int)]) => x.zip(y)}.tupled)
+				val tokenClassToSpace:Seq[Seq[(Option[TokenClass], Space[SpaceClass])]] = TokenClassToSpaceIndex.map{_.map{(x) => ((Option(x._1), field(x._2._1, x._2._2) ))}}
+				
+				val tokens = new ListOfTokens( tokenClassToSpace.map{_.map{(x) => new Token(x._2, tokenClass = x._1)}} )
+				val initialState = GameState(field, tokens)
+				
+				// run, meaning this returns when PlayerTurnCycler returns
+				new PlayerTurnCycler(ais, initialState).run()
+			}
+		}, "main.Main.chooseTokens")
+		t.start()
 	}
 }

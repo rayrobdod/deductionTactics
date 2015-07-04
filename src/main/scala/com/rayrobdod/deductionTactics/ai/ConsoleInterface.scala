@@ -29,11 +29,17 @@ import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
  */
 final class ConsoleInterface extends PlayerAI
 {
-	
-	
-	def buildTeam(size:Int):Seq[TokenClass] = {
-		// TODO: actual prompts
+	def selectTokenClasses(size:Int):Seq[TokenClass] = {		// TODO: actual prompts
 		randomTeam(size)
+	}
+	/** chooses a subset of selectedTokenClasses randomly */
+	override def narrowTokenClasses(
+				selectedClasses:Seq[Seq[TokenClass]],
+				maxResultSize:Int,
+				myPlayerIndex:Int
+	):Seq[TokenClass] = {
+		// TODO: actual prompts
+		scala.util.Random.shuffle(selectedClasses(myPlayerIndex)).take(maxResultSize)
 	}
 	
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {

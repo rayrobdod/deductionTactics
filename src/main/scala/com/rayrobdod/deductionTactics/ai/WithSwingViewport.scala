@@ -18,9 +18,7 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import javax.swing.JFrame
-import scala.collection.immutable.Seq
-import com.rayrobdod.deductionTactics.swingView.{BoardGameViewModel, MenuBar, HighlightMovableSpacesLayer}
+import com.rayrobdod.deductionTactics.swingView.game
 
 /**
  * A decorator for PlayerAIs. It provides a viewport to a player
@@ -30,53 +28,20 @@ import com.rayrobdod.deductionTactics.swingView.{BoardGameViewModel, MenuBar, Hi
  * @author Raymond Dodge
  * @version a.6.0
  */
-final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
+final class WithSwingViewport(val base:PlayerAI) extends DecoratorPlayerAI(base)
 {
-	/** Forwards command to base */
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo) = {
-		base.takeTurn(player, gameState, memo.asInstanceOf[SwingInterfaceMemo].base)
-		
-	}
-	/** Forwards command to base */
-	override def buildTeam(size:Int):Seq[TokenClass] = base.buildTeam(size)
-	
-	
-	
 	/** Forwards command to base, then creates a new JFrame with a BoardGamePanel */
-	def initialize(player:Int, initialState:GameState):Memo =
+	override def initialize(player:Int, initialState:GameState):Memo =
 	{
 		val tokens = initialState.tokens
-		val viewmodel = new BoardGameViewModel(tokens, player, initialState.board)
-		val frame = new JFrame("Deduction Tactics")		
-		frame.setJMenuBar(new MenuBar)
-		frame.getContentPane add viewmodel.comp
-		
-		val activeToken = new swingView.SharedActiveTokenProperty()
-		activeToken.value = None
-		
-		
-		
-		val tokensProp = new swingView.ListOfTokensProperty
-		tokensProp.value = initialState.tokens
-		
-		
-		
-		
-		
-		frame.pack()
-		frame.validate()
-		frame.setVisible(true)
+		val viewmodel = new game.Top(tokens, player, initialState.board)
+		viewmodel.setVisible(true)
 		
 		SwingInterfaceMemo(
 				base = base.initialize(player, initialState), 
-				panel = viewmodel,
-				attackTypeSelector = new swingView.SellectAttackTypePanel(),
-				selectedToken = activeToken,
-				currentTokens = tokensProp,
-				endOfTurnButton = new javax.swing.JButton("XXXX")
+				panel = viewmodel
 		)
 	}
-	
 	
 	
 	/**  */
@@ -88,50 +53,12 @@ final class WithSwingViewport(val base:PlayerAI) extends PlayerAI
 		memo:Memo
 	):Memo = {
 		val memo2 = memo.asInstanceOf[SwingInterfaceMemo]
-		val newMemoBase = base.notifyTurn(player, action, beforeState, afterState, memo2.base)
 		val panel = memo2.panel
 		
-/*		action match {
-			case GameState.TokenMoveResult(index, s) =>
-				val tokenComp = panel.tokenComps(index)
-				tokenComp.moveToSpace(s)
-				
-			case GameState.TokenAttackDamageResult(a, d, e, k) =>
-				val tokenComp = panel.tokenComps(d)
-				tokenComp.beAttacked(e,k)
-				panel.resetTokenPanels(afterState.tokens)
-				System.out.println("Token was attacked")
-				
-				None
-			case GameState.TokenAttackStatusResult(a, d, s) =>
-				val tokenComp = panel.tokenComps(d)
-				tokenComp.beAttacked(s)
-				panel.resetTokenPanels(afterState.tokens)
-				// TODO
-				None
-			case GameState.EndOfTurn =>
-				None
-		}
-*/		
+		val memo3 = panel.fireNotificationListeners(action, afterState, memo)
 		
-		memo2.selectedToken.value = {
-			// this assumes that the board doesn't change.
-			val space = memo2.selectedToken.value.map{_.currentSpace}
-			afterState.tokens.tokens.flatten.find{x => Option(x.currentSpace) == space}
-		}
-		memo2.currentTokens.value = afterState.tokens
-		memo2.panel.moveHilightLayer.update(memo2.selectedToken.value, afterState.tokens, afterState.board)
-		
-		new SwingInterfaceMemo(
-			newMemoBase,
-			memo2.panel,
-			memo2.attackTypeSelector,
-			memo2.selectedToken,
-			memo2.currentTokens,
-			memo2.endOfTurnButton
-		)
+		super.notifyTurn(player, action, beforeState, afterState, memo3)
 	}
-	
 	
 	
 	

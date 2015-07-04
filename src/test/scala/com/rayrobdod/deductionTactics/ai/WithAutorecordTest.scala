@@ -30,10 +30,11 @@ import org.scalatest.prop.PropertyChecks
  */
 class WithAutorecordTest extends FunSpec {
 	class StubPlayerAI extends PlayerAI {
-		def buildTeam(a:Int):Seq[TokenClass] = Nil
-		def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = Nil
-		def initialize(player:Int, initialState:GameState):Memo = new SimpleMemo
-		def notifyTurn(player:Int,action:GameState.Result,beforeState:GameState,afterState:GameState,memo:Memo):Memo = memo
+		override def selectTokenClasses(a:Int):Seq[TokenClass] = Nil
+		override def narrowTokenClasses(b:Seq[Seq[TokenClass]],a:Int,c:Int):Seq[TokenClass] = Nil
+		override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = Nil
+		override def initialize(player:Int, initialState:GameState):Memo = new SimpleMemo
+		override def notifyTurn(player:Int,action:GameState.Result,beforeState:GameState,afterState:GameState,memo:Memo):Memo = memo
 	}
 	val myTokenClass = new TokenClassBlunt("Sample",
 			BodyTypes.Humanoid,
@@ -64,11 +65,12 @@ class WithAutorecordTest extends FunSpec {
 				val exCount = 5
 				val expected = Seq(myTokenClass)
 				object Base extends StubPlayerAI{
-					override def buildTeam(a:Int) = {
+					override def selectTokenClasses(a:Int) = {
 						buildTeamCount = buildTeamCount + 1
 						assertResult(exCount)(a)
 						expected
 					}
+					override def narrowTokenClasses(b:Seq[Seq[TokenClass]],a:Int,c:Int):Seq[TokenClass] = Nil
 					
 					private var buildTeamCount:Int = 0
 					def verify() = {1 == buildTeamCount}
@@ -76,7 +78,7 @@ class WithAutorecordTest extends FunSpec {
 				val ai = new WithAutorecord(Base)
 				
 				// execute
-				val retVal = ai.buildTeam(exCount)
+				val retVal = ai.selectTokenClasses(exCount)
 				
 				// verify
 				assertResult(true)(Base.verify())

@@ -16,6 +16,7 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package com.rayrobdod.deductionTactics.swingView
+package chooseTokenClasses
 
 import javax.swing.{JList, JPanel, ButtonGroup, JButton, BoxLayout,
 		JScrollPane, JRadioButton, AbstractListModel, ListCellRenderer,
@@ -39,9 +40,12 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
 /**
  * @author Raymond Dodge
  * @version a.6.0
+ * @deprecated use chooseTokenClasses.Top instead
  */
 class TeamBuilderPanel extends JPanel
 {
+	private val resources = java.util.ResourceBundle.getBundle("com.rayrobdod.deductionTactics.swingView.text")
+	
 	private val currentSelectionModel = new DefaultListModel[TokenClass]()
 	def currentSelection:Seq[TokenClass] = (Seq.empty ++ currentSelectionModel.toArray).asInstanceOf[Seq[TokenClass]]
 	
@@ -56,31 +60,31 @@ class TeamBuilderPanel extends JPanel
 	allTokenClassesList.setLayoutOrientation(JList.VERTICAL_WRAP)
 	allTokenClassesList.setVisibleRowCount(10)
 	
-	val addButton = new JButton("←")
+	val addButton = new JButton(resources.getString("addTeambuilderButton"))
 	addButton.addActionListener(new ActionListener(){
-		override def actionPerformed(e:ActionEvent) = {
+		override def actionPerformed(e:ActionEvent):Unit = {
 			allTokenClassesList.getSelectedValuesList.foreach{
 				currentSelectionModel.addElement(_)
 			}
 		}
 	})
-	val removeButton = new JButton("→")
+	val removeButton = new JButton(resources.getString("removeTeambuilderButton"))
 	removeButton.addActionListener(new ActionListener(){
-		override def actionPerformed(e:ActionEvent) = {
+		override def actionPerformed(e:ActionEvent):Unit = {
 			currentSelectionList.getSelectedValuesList.foreach{
 				currentSelectionModel.removeElement(_)
 			}
 		}
 	})
-	val removeAllButton = new JButton("clear")
+	val removeAllButton = new JButton(resources.getString("removeAllTeambuilderButton"))
 	removeAllButton.addActionListener(new ActionListener(){
-		override def actionPerformed(e:ActionEvent) = {
+		override def actionPerformed(e:ActionEvent):Unit = {
 			currentSelectionModel.removeAllElements()
 		}
 	})
 	val fullStyle = new JRadioButton("Full", true)
 	fullStyle.addActionListener(new ActionListener(){
-		override def actionPerformed(e:ActionEvent) = {
+		override def actionPerformed(e:ActionEvent):Unit = {
 			allTokenClassesList.setCellRenderer(FullTokenClassListRenderer)
 			currentSelectionList.setCellRenderer(FullTokenClassListRenderer)
 			allTokenClassesList.setVisibleRowCount(10)
@@ -88,7 +92,7 @@ class TeamBuilderPanel extends JPanel
 	})
 	val noWeaponWeakStyle = new JRadioButton("Without Weapon Weakness", true)
 	noWeaponWeakStyle.addActionListener(new ActionListener(){
-		override def actionPerformed(e:ActionEvent) = {
+		override def actionPerformed(e:ActionEvent):Unit = {
 			allTokenClassesList.setCellRenderer(NoWeaponWeakTokenClassListRenderer)
 			currentSelectionList.setCellRenderer(NoWeaponWeakTokenClassListRenderer)
 			allTokenClassesList.setVisibleRowCount(10)
@@ -96,10 +100,10 @@ class TeamBuilderPanel extends JPanel
 	})
 	val nameAndIconStyle = new JRadioButton("Name and Icon", true)
 	nameAndIconStyle.addActionListener(new ActionListener(){
-		implicit def tokenClassToNameAndIcon(x:TokenClass) = {
+		implicit def tokenClassToNameAndIcon(x:TokenClass):MyNameAndIcon = {
 			new MyNameAndIcon(x.name, tokenClassToIcon(x))
 		}
-		override def actionPerformed(e:ActionEvent) = {
+		override def actionPerformed(e:ActionEvent):Unit = {
 			allTokenClassesList.setCellRenderer(new MapToNameAndIconCellRenderer[TokenClass])
 			currentSelectionList.setCellRenderer(new MapToNameAndIconCellRenderer[TokenClass])
 			allTokenClassesList.setVisibleRowCount(20)
@@ -148,7 +152,7 @@ class TeamBuilderPanel extends JPanel
 object FullTokenClassListRenderer extends ListCellRenderer[TokenClass]
 {
 	def getListCellRendererComponent(list:JList[_ <: TokenClass], value:TokenClass, index:Int,
-			isSelected:Boolean, cellHasFocus:Boolean) =
+			isSelected:Boolean, cellHasFocus:Boolean):java.awt.Component =
 	{
 		val returnValue = new TokenClassPanel(value)
 		returnValue.doLayout()
@@ -166,7 +170,7 @@ object FullTokenClassListRenderer extends ListCellRenderer[TokenClass]
 object NoWeaponWeakTokenClassListRenderer extends ListCellRenderer[TokenClass]
 {
 	def getListCellRendererComponent(list:JList[_ <: TokenClass], value:TokenClass, index:Int,
-			isSelected:Boolean, cellHasFocus:Boolean) =
+			isSelected:Boolean, cellHasFocus:Boolean):java.awt.Component =
 	{
 		val returnValue = new TokenClassPanel(value)
 		returnValue.remove(returnValue.weaponWeakPanel)

@@ -63,18 +63,12 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 	
 	object weaponWeakPanel extends JPanel(new java.awt.GridLayout(5,1)){
 		val addends:Seq[JProgressBar] = Weaponkinds.values.map{(e:Weaponkind) => 
-			new JProgressBar(new TokenClassPanel.TokenWeakRangeModel(tokenClass, e)){
-				setString(e.name)
-			//	setStringPainted(true)
-				
-				override def paint(g:java.awt.Graphics)
-				{
-					setIndeterminate(this.getModel.getValueIsAdjusting)
-					super.paint(g)
-				}
-			}
+			val retVal = new JProgressBar(TokenClassPanel.TokenWeakRangeModel(tokenClass, e))
+			retVal.setString(e.name)
+			// retVal.setStringPainted(true)
+			this.add(retVal)
+			retVal
 		}
-		addends.foreach{this.add(_)}
 	}
 	
 	// manual optimization of anon classes
@@ -104,7 +98,6 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 		else false
 	}
 	
-	override def doLayout()
 	{
 		this.icon.setIcon(tokenClassToIcon(tokenClass))
 		this.name.setText(tokenClass.name)
@@ -119,11 +112,8 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 		this.weakDirection.setIcon( makeIconFor(tokenClass.weakDirection, ICON_SIZE) )
 		this.weaponWeakPanel.addends.zip(Weaponkinds.values).foreach(
 			{(bar:JProgressBar, e:Weaponkind) =>
-				// NOTE: This seems like it would put a lot of work on th GC
-				bar.setModel(new TokenClassPanel.TokenWeakRangeModel(tokenClass, e))
+				bar.setModel(TokenClassPanel.TokenWeakRangeModel(tokenClass, e))
 		}.tupled)
-		
-		super.doLayout()
 	}
 	
 	private def getWeakWeaponIcon() = {
@@ -141,9 +131,7 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 
 object TokenClassPanel
 {
-	class TokenWeakRangeModel(tokenClass:TokenClass, kind:Weaponkind)
-			extends DefaultBoundedRangeModel(10, 0, 5, 20)
-	{
-		((tokenClass.weakWeapon(kind)) * 10).intValue
+	def TokenWeakRangeModel(tokenClass:TokenClass, kind:Weaponkind) = {
+		new DefaultBoundedRangeModel(((tokenClass.weakWeapon(kind)) * 10).intValue, 0, 5, 20)
 	}
 }

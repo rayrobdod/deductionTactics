@@ -31,7 +31,14 @@ import java.util.logging.Level
 final class FieldPotentialAI extends PlayerAI
 {
 	/** [[com.rayrobdod.deductionTactics.ai.randomTeam]] */
-	override def buildTeam(size:Int):Seq[TokenClass] = randomTeam(size)
+	override def selectTokenClasses(size:Int):Seq[TokenClass] = randomTeam(size)
+	/** chooses a subset of selectedTokenClasses randomly */
+	override def narrowTokenClasses(
+				selectedClasses:Seq[Seq[TokenClass]],
+				maxResultSize:Int,
+				myPlayerIndex:Int
+	):Seq[TokenClass] = scala.util.Random.shuffle(selectedClasses(myPlayerIndex)).take(maxResultSize)
+	
 	
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		gameState.tokens.alivePlayerTokens(player).flatMap{(myToken:Token) =>

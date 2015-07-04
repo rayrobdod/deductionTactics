@@ -39,8 +39,8 @@ class MenuBar() extends JMenuBar
 		a.setMnemonic('g')
 		
 		a.add(myMenuItem("New Game", 'n', new ActionListener{
-			def actionPerformed(e:ActionEvent) = {
-		//		com.rayrobdod.deductionTactics.main.Main.startNewGame
+			def actionPerformed(e:ActionEvent):Unit = {
+				com.rayrobdod.deductionTactics.main.Main.startNewGame
 			}
 		}))
 		
@@ -48,7 +48,7 @@ class MenuBar() extends JMenuBar
 		
 		// TODO: disable menu item if Preferences are denied
 		a.add(myMenuItem("Options…", 'o', new ActionListener{
-			def actionPerformed(e:ActionEvent) = {
+			def actionPerformed(e:ActionEvent):Unit = {
 				val optionsPanel = new OptionsPanel
 				
 				val result = javax.swing.JOptionPane.showOptionDialog(
@@ -82,7 +82,7 @@ class MenuBar() extends JMenuBar
 		a.setMnemonic('h')
 		
 		a.add(myMenuItem("View Classes…", 'c', new ActionListener{
-			def actionPerformed(e:ActionEvent) = {
+			def actionPerformed(e:ActionEvent):Unit = {
 				val classesComp = new AllKnownTokenClassesComponent()
 				val classesPane = new JScrollPane(classesComp,
 								scrollVerticalAsNeeded, scrollHorizontalNever)
@@ -119,7 +119,7 @@ class MenuBar() extends JMenuBar
 		})) */
 		
 		a.add(myMenuItem("View Elements…", 'e', new ActionListener{
-			def actionPerformed(e:ActionEvent) = {
+			def actionPerformed(e:ActionEvent):Unit = {
 				val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
 				frame.add(new ElementPentagonReminderComponent)
 				frame.setTitle("Element Pentagon - Deduction Tactics")
@@ -131,7 +131,7 @@ class MenuBar() extends JMenuBar
 		a.addSeparator() 
 		
 		a.add(myMenuItem("About…", 'a', new ActionListener{
-			def actionPerformed(e:ActionEvent) = {
+			def actionPerformed(e:ActionEvent):Unit = {
 				javax.swing.JOptionPane.showMessageDialog(
 						getWindowAncestor(MenuBar.this),
 						new JLabel(aboutDialogString),

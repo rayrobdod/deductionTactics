@@ -17,6 +17,7 @@
 */
 package com.rayrobdod.deductionTactics
 package swingView
+package game
 
 import com.rayrobdod.deductionTactics.Elements.Element
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
@@ -24,67 +25,56 @@ import com.rayrobdod.deductionTactics.Statuses.Status
 import com.rayrobdod.deductionTactics.BodyTypes.BodyType
 import com.rayrobdod.deductionTactics.Directions.Direction
 
+import java.awt.Graphics
 import javax.swing.{JComponent, Icon}
 import javax.imageio.ImageIO
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.swingView._
+import com.rayrobdod.util.BlitzAnimImage
 import com.rayrobdod.animation.{AnimationIcon, ImageFrameAnimation,
 		NextFrameListener, AnimationEndedListener,
 		NextFrameEvent, AnimationEndedEvent
 }
-import com.rayrobdod.swing.StackedIcon
-import com.rayrobdod.util.BlitzAnimImage
+import com.rayrobdod.boardGame.RectangularField
+import com.rayrobdod.boardGame.swingView._
+import com.rayrobdod.deductionTactics.ai.TokenClassSuspision
 
 
 /**
  * @version a.6.0
  */
-final class TokenLayer extends JComponent {
-	// var tokens:ListOfTokens
-	// var spaces:RectangularTilemapComponent
+final class TokenLayer(spaces:RectangularField[SpaceClass], tiles:RectangularTilemapComponent) extends JComponent {
+	private[this] var _tokens:ListOfTokens = new ListOfTokens(Nil)
+	var suspisions:Map[(Int, Int), TokenClassSuspision] = Map.empty
 	
+	def tokens:ListOfTokens = _tokens
+	def tokens_=(newTokens:ListOfTokens):Unit = {
+		_tokens = newTokens
+		this.repaint()
+	}
 	
-	
-	
-	
-	/*
-	final def beAttacked(element:Element, kind:Weaponkind) {
-		val animation = TokenComponent.BeAttackedAnimation(element, kind)
-		val animIcon = new AnimationIcon(animation)
+	override def paintComponent(g:Graphics):Unit = {
+		// TODO: don't paint dead tokens
+		val t2:Map[(Int, Int), Option[TokenClass]] = {
+			tokens.tokens.zipWithIndex.flatMap{x =>
+				x._1.zipWithIndex.map{y => (( ((x._2, y._2)), y._1.tokenClass ))}
+			}.toMap
+		}
 		
-		val stackedIcon = new StackedIcon(Seq(mainIcon, animIcon))
-		this.setIcon(stackedIcon)
-		
-		animIcon.addRepaintOnNextFrameListener(this)
-		animation.addAnimationEndedListener(new AnimationEndedListener() {
-			def animationEnded(e:AnimationEndedEvent) = {
-					System.out.println("Animation Ended")
-					TokenComponent.this.setIcon(mainIcon)
+		t2.keySet.foreach{x =>
+			val icon:Icon = t2.get(x).flatMap{y => y.map{tokenClassToIcon _}}.getOrElse{
+				val y = suspisions.getOrElse(x, new TokenClassSuspision)
+				generateGenericIcon(y.atkElement, y.atkWeapon)
 			}
-		})
-		new Thread(animation).start()
-		// TODO: also do the text raising thing
+			val space = tokens.tokens(x).currentSpace
+			val spaceIndex = spaces.find(_._2 == space).get._1
+			val bounds = tiles.spaceBounds(spaceIndex).getBounds
+			
+			icon.paintIcon(this, g, bounds.x, bounds.y)
+		}
 	}
-	
-	final def beAttacked(status:Status) {
-		val animation = TokenComponent.BeAttackedAnimation(status)
-		val animIcon = new AnimationIcon(animation)
-		
-		val stackedIcon = new StackedIcon(Seq(mainIcon, animIcon))
-		this.setIcon(stackedIcon)
-		
-		animIcon.addRepaintOnNextFrameListener(this)
-		animation.addAnimationEndedListener(new AnimationEndedListener() {
-			def animationEnded(e:AnimationEndedEvent) =
-					TokenComponent.this.setIcon(mainIcon)
-		})
-		new Thread(animation).start()
-	}
-	*/
-	
 }
 
-object TokenComponent {
+object TokenIcon {
 	
 	def BeAttackedAnimation(elem:Element, kind:Weaponkind):ImageFrameAnimation = {
 		val effect:BlitzAnimImage = {

@@ -31,22 +31,16 @@ import scala.collection.immutable.Seq
  * @author Raymond Dodge
  * @version a.6.0
  */
-final class WithConsoleEventPrinting(val base:PlayerAI) extends PlayerAI
+final class WithConsoleEventPrinting(val base:PlayerAI) extends DecoratorPlayerAI(base)
 {
 	/** Number of values kept in the event log */
 	private val maxEventsCount = 10
 	
 	
-	/** Forwards command to base */
-	override def takeTurn(player:Int, gameState:GameState, memo:Memo) =
-			base.takeTurn(player, gameState, memo)
-	/** Forwards command to base */
-	override def buildTeam(size:Int):Seq[TokenClass] = base.buildTeam(size)
-	
 	
 	
 	/** Forwards command to base, then creates a new JFrame with a BoardGamePanel */
-	def initialize(player:Int, initialState:GameState):Memo =
+	override def initialize(player:Int, initialState:GameState):Memo =
 	{
 		val activeToken = new SharedActiveTokenProperty
 		val currentState = new SharedGameStateProperty(initialState)
