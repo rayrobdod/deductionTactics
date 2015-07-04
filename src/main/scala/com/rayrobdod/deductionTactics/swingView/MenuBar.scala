@@ -35,10 +35,12 @@ import java.awt.BorderLayout.{NORTH, SOUTH}
  */
 class MenuBar() extends JMenuBar
 {
-	this.add({ val a = new JMenu("Game")
-		a.setMnemonic('g')
+	private val resources = java.util.ResourceBundle.getBundle("com.rayrobdod.deductionTactics.swingView.text")
+	
+	this.add({ val a = new JMenu(resources.getString("fileMenu"))
+		a.setMnemonic(resources.getString("fileMenuMnemonic").charAt(0))
 		
-		a.add(myMenuItem("New Game", 'n', new ActionListener{
+		a.add(myMenuItem("newGameMenu", new ActionListener{
 			def actionPerformed(e:ActionEvent):Unit = {
 				com.rayrobdod.deductionTactics.main.Main.startNewGame
 			}
@@ -47,22 +49,22 @@ class MenuBar() extends JMenuBar
 		a.addSeparator()
 		
 		// TODO: disable menu item if Preferences are denied
-		a.add(myMenuItem("Options…", 'o', new ActionListener{
+		a.add(myMenuItem("optionsMenu", new ActionListener{
 			def actionPerformed(e:ActionEvent):Unit = {
 				val optionsPanel = new OptionsPanel
 				
 				val result = javax.swing.JOptionPane.showOptionDialog(
 						getWindowAncestor(MenuBar.this),
 						optionsPanel,
-						"Options",
+						resources.getString("optionsFrameTitle"),
 						javax.swing.JOptionPane.DEFAULT_OPTION,
 						javax.swing.JOptionPane.PLAIN_MESSAGE,
 						null,
 						Array[Object](
-							"Apply",
-							"Cancel"
+							resources.getString("applyButton"),
+							resources.getString("cancelButton")
 						),
-						"Apply"
+						resources.getString("applyButton")
 				)
 				
 				if (result == 0) { // Apply selected
@@ -78,10 +80,10 @@ class MenuBar() extends JMenuBar
 		a;
 	})
 	
-	this.add({ val a = new JMenu("Help")
-		a.setMnemonic('h')
+	this.add({ val a = new JMenu(resources.getString("helpMenu"))
+		a.setMnemonic(resources.getString("helpMenuMnemonic").charAt(0))
 		
-		a.add(myMenuItem("View Classes…", 'c', new ActionListener{
+		a.add(myMenuItem("classesAllMenu", new ActionListener{
 			def actionPerformed(e:ActionEvent):Unit = {
 				val classesComp = new AllKnownTokenClassesComponent()
 				val classesPane = new JScrollPane(classesComp,
@@ -90,13 +92,13 @@ class MenuBar() extends JMenuBar
 				val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
 				frame.add(classesPane)
 				frame.add(new TokenClassPanelTypeSelector(classesComp), SOUTH)
-				frame.setTitle("Known Classes - Deduction Tactics")
+				frame.setTitle(resources.getString("classesAllFrameTitle"))
 				frame.pack()
 				frame.setVisible(true)
 			}
 		}))
 		
-		/* a.add(myMenuItem("Filter Classes…", 'f', new ActionListener{
+		/* a.add(myMenuItem("classesFilterMenu", new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
 				
@@ -112,17 +114,17 @@ class MenuBar() extends JMenuBar
 						display.filter(filterClass)
 					}
 				})
-				frame.setTitle("Filter Classes - Deduction Tactics")
+				frame.setTitle(resources.getString("classesFilterFrameTitle"))
 				frame.setSize(250,600)
 				frame.setVisible(true)
 			}
 		})) */
 		
-		a.add(myMenuItem("View Elements…", 'e', new ActionListener{
+		a.add(myMenuItem("elementsMenu", new ActionListener{
 			def actionPerformed(e:ActionEvent):Unit = {
 				val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
 				frame.add(new ElementPentagonReminderComponent)
-				frame.setTitle("Element Pentagon - Deduction Tactics")
+				frame.setTitle(resources.getString("elementsFrameTitle"))
 				frame.pack()
 				frame.setVisible(true)
 			}
@@ -130,12 +132,12 @@ class MenuBar() extends JMenuBar
 		
 		a.addSeparator() 
 		
-		a.add(myMenuItem("About…", 'a', new ActionListener{
+		a.add(myMenuItem("aboutMenu", new ActionListener{
 			def actionPerformed(e:ActionEvent):Unit = {
 				javax.swing.JOptionPane.showMessageDialog(
 						getWindowAncestor(MenuBar.this),
 						new JLabel(aboutDialogString),
-						"About Deduction Tactics",
+						resources.getString("aboutFrameTitle"),
 						javax.swing.JOptionPane.PLAIN_MESSAGE
 				)
 			}
@@ -144,8 +146,11 @@ class MenuBar() extends JMenuBar
 		a;
 	})
 	
-	private def myMenuItem(title:String, mnemonic:Char, action:ActionListener):JMenuItem =
+	private def myMenuItem(propertyName:String, action:ActionListener):JMenuItem =
 	{
+		val title = resources.getString(propertyName)
+		val mnemonic = resources.getString(propertyName + "Mnemonic").charAt(0)
+		
 		val retVal = new JMenuItem(title)
 		retVal.setMnemonic(mnemonic)
 		retVal.addActionListener(action)
