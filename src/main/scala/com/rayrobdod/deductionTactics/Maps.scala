@@ -34,10 +34,14 @@ final case class Arena (
 	val startSpaces:Map[Int,Seq[Seq[(Int, Int)]]]
 ) {
 	def layout:Seq[Seq[SpaceClass]] = layoutStrs.map{_.map{x => SpaceClassFactory(x)}}
+	def field = RectangularField(layout)
 	
 	def possiblePlayers:Set[Int] = startSpaces.keySet
 }
 
+/**
+ * A [[Builder]] for [[Arena]]s
+ */
 final class ArenaBuilder(baseDir:URL) extends Builder[Arena] {
 	override val init:Arena = new Arena("", Nil, Map.empty)
 	override def apply(folding:Arena, key:String, value:Any):Arena = key match {
@@ -95,19 +99,11 @@ final class ArenaBuilder(baseDir:URL) extends Builder[Arena] {
  * 
  * @version a.6.0
  */
-// metadata
-// starting locations
-// tiles
+// ???: Rename to ArenaService
 object Maps {
 	private val SERVICE = "com.rayrobdod.deductionTactics.Maps"
 	
-	@deprecated("getArenas(index).name", "a.6.0")
-	val names:Seq[String] = {
-		Seq.empty ++ Services.readServices(SERVICE);
-	}
-	
-	@deprecated("why is this even a thing?", "a.6.0")
-	val paths:Seq[URL] = {
+	private val paths:Seq[URL] = {
 		Seq.empty ++ new ResourcesServiceLoader(SERVICE);
 	}
 	
@@ -121,18 +117,4 @@ object Maps {
 		}
 	}
 	
-	@deprecated("getArenas(index).layout", "a.6.0")
-	def getMap(index:Int):RectangularField[SpaceClass] = {
-		RectangularField(arenas(index).layout)
-	}
-	
-	@deprecated("getArenas(index).possiblePlayers", "a.6.0")
-	def possiblePlayers(index:Int):Set[Int] = {
-		arenas(index).possiblePlayers
-	}
-	
-	@deprecated("getArenas(index).startSpaces(numPlayers)", "a.6.0")
-	def startingPositions(index:Int, numPlayers:Int):Seq[Seq[(Int, Int)]] = {
-		arenas(index).startSpaces(numPlayers)
-	}
 }

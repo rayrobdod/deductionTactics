@@ -26,21 +26,21 @@ import java.nio.charset.StandardCharsets.UTF_8
 class ArenaSerializationTest extends FunSpec {
 	import TokenClassFromBinary.HexArrayStringConverter;
 	
-	describe ("Arena + Json") {
-		it ("First is named \"com/rayrobdod/deductionTactics/maps/emptyField.json\"") {
-			assertResult("com/rayrobdod/deductionTactics/maps/emptyField.json"){
-				Maps.names(0)
+	describe ("ArenaService") {
+		it ("First is named \"Empty Field\"") {
+			assertResult("Empty Field"){
+				Maps.arenas(0).name
 			}
 		}
 		it ("First has an arena that is empty") {
-			Maps.getMap(0).foreach{x =>
+			Maps.arenas(0).field.foreach{x =>
 				val (index, space) = x
 				val spaceClass = space.typeOfSpace
 				assertResult(UniPassageSpaceClass.apply){spaceClass}
 			}
 		}
 		it ("First has an possible players count of 2 or 4") {
-			assertResult(Set(2,4)){Maps.possiblePlayers(0)}
+			assertResult(Set(2,4)){Maps.arenas(0).possiblePlayers}
 		}
 		it ("First has starting spaces for 2 of Seq(...)") {
 			val exp = Seq(Seq(
@@ -67,14 +67,14 @@ class ArenaSerializationTest extends FunSpec {
 				Tuple2(8,0)
 			))
 			
-			assertResult(exp){Maps.startingPositions(0, 2)}
+			assertResult(exp){Maps.arenas(0).startSpaces(2)}
 		}
 		
 		
 		
-		it ("Third is named \"com/rayrobdod/deductionTactics/maps/tournament.json\"") {
-			assertResult("com/rayrobdod/deductionTactics/maps/tournament.json"){
-				Maps.names(2)
+		it ("Third is named \"Tournament Bracket\"") {
+			assertResult("Tournament Bracket"){
+				Maps.arenas(2).name
 			}
 		}
 		it ("Third has starting spaces for 2 of Seq(...)") {
@@ -90,7 +90,7 @@ class ArenaSerializationTest extends FunSpec {
 				Tuple2(4 ,13)
 			))
 			
-			assertResult(exp){Maps.startingPositions(2, 2)}
+			assertResult(exp){Maps.arenas(2).startSpaces(2)}
 		}
 	}
 }
