@@ -18,10 +18,10 @@
 package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.Seq
+import com.rayrobdod.boardGame.RectangularField
 import com.rayrobdod.boardGame.StrictRectangularSpaceViaFutures
 import com.rayrobdod.deductionTactics.Directions._
-import org.scalatest.{FunSuite, FunSpec}
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.FunSpec
 
 class DirectionsTest extends FunSpec {
 	
@@ -187,6 +187,45 @@ class DirectionsTest extends FunSpec {
 						downFuture = toNone)
 				
 				assert(Right.spaceIs(src, dest))
+			}
+		}
+		describe ("pathDirections") {
+			val field = RectangularField(Seq(
+				Seq(AttackOnlySpaceClass.apply, AttackOnlySpaceClass.apply, AttackOnlySpaceClass.apply),
+				Seq(AttackOnlySpaceClass.apply, AttackOnlySpaceClass.apply, AttackOnlySpaceClass.apply),
+				Seq(AttackOnlySpaceClass.apply, AttackOnlySpaceClass.apply, AttackOnlySpaceClass.apply)
+			))
+			val listOfTokens = new ListOfTokens(Seq(Seq(Token(field(0,0)))))
+			
+			it ("a to a.down is Seq(Down)") {
+				val exp = Seq(Down)
+				val res = Directions.pathDirections(field(0,0), field(0,0).down.get, listOfTokens.tokens(0,0), listOfTokens)
+				assertResult(exp){res}
+			}
+			it ("a to a.up is Seq(Up)") {
+				val exp = Seq(Up)
+				val res = Directions.pathDirections(field(1,1), field(1,1).up.get, listOfTokens.tokens(0,0), listOfTokens)
+				assertResult(exp){res}
+			}
+			it ("a to a.left is Seq(Left)") {
+				val exp = Seq(Left)
+				val res = Directions.pathDirections(field(1,1), field(1,1).left.get, listOfTokens.tokens(0,0), listOfTokens)
+				assertResult(exp){res}
+			}
+			it ("a to a.right is Seq(Right)") {
+				val exp = Seq(Right)
+				val res = Directions.pathDirections(field(1,1), field(1,1).right.get, listOfTokens.tokens(0,0), listOfTokens)
+				assertResult(exp){res}
+			}
+			it ("a to a.left.left is Seq(Left, Left)") {
+				val exp = Seq(Left, Left)
+				val res = Directions.pathDirections(field(2,2), field(2,2).left.get.left.get, listOfTokens.tokens(0,0), listOfTokens)
+				assertResult(exp){res}
+			}
+			it ("a to a.left.left.down.down is Seq(Left, Left, Down, Down)") {
+				val exp = Seq(Down, Left, Left, Down)
+				val res = Directions.pathDirections(field(2,0), field(0,2), listOfTokens.tokens(0,0), listOfTokens)
+				assertResult(exp){res}
 			}
 		}
 	}

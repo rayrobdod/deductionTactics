@@ -43,28 +43,28 @@ class ElementsTest extends FunSpec {
 		describe ("Illegal values") {
 			it ("apply(-1) throws") {
 				intercept[IndexOutOfBoundsException] {
-					Weaponkinds.apply(-1)
+					Elements.apply(-1)
 				}
 			}
 			it ("apply(5) throws") {
 				intercept[IndexOutOfBoundsException] {
-					Weaponkinds.apply(5)
+					Elements.apply(5)
 				}
 			}
 			it ("apply(987654321) throws") {
 				intercept[IndexOutOfBoundsException] {
-					Weaponkinds.apply(987654321)
+					Elements.apply(987654321)
 				}
 			}
 			
 			it ("withName(\"asfd\") throws") {
 				intercept[NoSuchElementException] {
-					Weaponkinds.withName("asfd")
+					Elements.withName("asfd")
 				}
 			}
 			it ("withName(\"Spearkind\") throws") {
 				intercept[NoSuchElementException] {
-					Weaponkinds.withName("Spearkind")
+					Elements.withName("Spearkind")
 				}
 			}
 		}
@@ -73,27 +73,27 @@ class ElementsTest extends FunSpec {
 		describe ("Elements.Fire.damageModifier") {
 			it ("should be x1 against Fire"){
 				// Fire is neutral against itself
-				val res = Elements.Fire.damageModifier(Elements.Fire)
+				val res = Elements.Fire.damageMultiplierAgainst(Elements.Fire)
 				assertResult(1)(res)
 			}
-			ignore ("should be x2 against Electric"){
+			it ("should be x2 against Electric"){
 				// Fire is very strong against electric
-				val res = Elements.Fire.damageModifier(Elements.Electric)
+				val res = Elements.Fire.damageMultiplierAgainst(Elements.Electric)
 				assertResult(2)(res)
 			}
-			ignore ("should be x1.5 against Light"){
+			it ("should be x1.5 against Light"){
 				// Fire is somewhat strong against light
-				val res = Elements.Fire.damageModifier(Elements.Light)
+				val res = Elements.Fire.damageMultiplierAgainst(Elements.Light)
 				assertResult(1.5)(res)
 			}
-			ignore ("should be x0.75 against Sound"){
+			it ("should be x0.75 against Sound"){
 				// Fire is somewhat weak against sound
-				val res = Elements.Fire.damageModifier(Elements.Sound)
+				val res = Elements.Fire.damageMultiplierAgainst(Elements.Sound)
 				assertResult(0.75)(res)
 			}
-			ignore ("should be x0.5 against Frost"){
+			it ("should be x0.5 against Frost"){
 				// Fire is very weak against frost
-				val res = Elements.Fire.damageModifier(Elements.Frost)
+				val res = Elements.Fire.damageMultiplierAgainst(Elements.Frost)
 				assertResult(0.5)(res)
 			}
 		}

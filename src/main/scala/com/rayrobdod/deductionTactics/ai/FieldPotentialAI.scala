@@ -177,7 +177,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 			var m_unknown  = 0f;
 			
 			if (otherClass.atkElement.isDefined) {
-				val elemAd = selfClass.atkElement.damageModifier(otherClass.atkElement.get)
+				val elemAd = selfClass.atkElement damageMultiplierAgainst otherClass.atkElement.get
 				
 				if (elemAd >= 1f) {
 					m_self = m_self + elemAd - 1f;

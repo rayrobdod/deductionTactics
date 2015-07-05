@@ -116,7 +116,7 @@ object Directions
 		val path2:Seq[Space[SpaceClass]] = fromSpace.pathTo(toSpace, new AttackCostFunction(movingToken, listOfTokens))
 		val path:Seq[StrictRectangularSpace[SpaceClass]] = path2.map{_.asInstanceOf[StrictRectangularSpace[SpaceClass]]}
 		
-		val pathDirections = path.zip(path.head +: path).map({(next:StrictRectangularSpace[SpaceClass], curr:StrictRectangularSpace[SpaceClass]) =>
+		val pathDirections = path.tail.zip(path).map({(next:StrictRectangularSpace[SpaceClass], curr:StrictRectangularSpace[SpaceClass]) =>
 			val candidates = Directions.values.map{
 				_.function(curr)}.zip(Directions.values).toMap
 			

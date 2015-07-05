@@ -95,7 +95,7 @@ class GameStateTest extends FunSpec {
 						initialState.tokens.tokens(0)(0),
 						initialState.tokens.tokens(1)(0)
 				)
-				assertResult(Token.maximumHitpoints - Token.baseDamage / 2)(afterState.tokens.tokens(1)(0).currentHitpoints)
+				assertResult(Token.maximumHitpoints - Token.baseDamage * 2)(afterState.tokens.tokens(1)(0).currentHitpoints)
 			}
 			it ("Should use up the Attacker's attack "){
 				val initialState = genSimpleGameState()

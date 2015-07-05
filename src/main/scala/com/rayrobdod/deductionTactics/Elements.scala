@@ -33,13 +33,13 @@ object Elements {
 	 * @version a.6.0
 	 */
 	final class Element(val id:Int, val name:String) {
-		def damageModifier(other:Element):Float = {
+		def damageMultiplierAgainst(other:Element):Float = {
 			((((other.id - this.id) % 5) + 5) % 5) match {
 				case 0 => 1f
-				case 1 => 2f
-				case 2 => 1.5f
-				case 3 => .75f
-				case 4 => .5f
+				case 1 => .5f
+				case 2 => .75f
+				case 3 => 1.5f
+				case 4 => 2f
 			}
 		}
 		

@@ -45,7 +45,7 @@ final case class Token (
 			currentSpace,
 			currentHitpoints,
 			newStatus,
-			currentStatusTurnsLeft - 1,
+			math.max(0, currentStatusTurnsLeft - 1),
 			tokenClass,
 			tokenClass.map{_.speed}.getOrElse{0},
 			true
@@ -65,20 +65,20 @@ final case class Token (
 	}
 	
 	final def takeDamage(attacker:Token, ts:ListOfTokens):Token = {
-		val attackeeClass = this.tokenClass.get
+		val defenderClass = this.tokenClass.get
 		val attackerClass = attacker.tokenClass.get
 		
 		
-		val path = Directions.pathDirections(attacker.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]], this.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]], attacker, ts)
+		val path = Directions.pathDirections(this.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]], attacker.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]], attacker, ts)
 		val weakDir = this.tokenClass.get.weakDirection
 		val directionMultiplier = weakDir.weaknessMultiplier(path)
 		
-		val multiplier = attackeeClass.weakWeapon(attackerClass.atkWeapon) *
-				(if (currentStatus == attackeeClass.weakStatus) {2} else {1}) *
+		val multiplier = defenderClass.weakWeapon(attackerClass.atkWeapon) *
+				(if (currentStatus == defenderClass.weakStatus) {2} else {1}) *
 				(directionMultiplier) *
-				(attackeeClass.atkElement.damageModifier(attackerClass.atkElement));
+				(attackerClass.atkElement damageMultiplierAgainst defenderClass.atkElement);
 				
-		val damageDone = (if (multiplier > 8) {320} else {Token.baseDamage * multiplier}).intValue
+		val damageDone = (Token.baseDamage * multiplier).intValue
 		
 		this.copy(currentHitpoints = currentHitpoints - damageDone)
 	}
