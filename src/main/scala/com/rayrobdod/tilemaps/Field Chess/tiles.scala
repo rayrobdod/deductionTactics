@@ -54,7 +54,7 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 	
 	def name:String = "Field Chess";
 	
-	private def spaceClassToColor(s:SpaceClass, useDarker:Boolean) = {
+	private def spaceClassToColor(s:SpaceClass, useDarker:Boolean):Color = {
 			import com.rayrobdod.deductionTactics._
 			
 			if (useDarker) {
@@ -86,47 +86,47 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 	
 	def getIconFor(field:RectangularField[_ <: SpaceClass], x:Int, y:Int, rng:Random):(Icon, Icon) = {
 		val useDarker = ((x + y) % 2) == 0
-		val center = spaceClassToColor(field(x,y).typeOfSpace, useDarker)
+		val center = spaceClassToColor(field(x, y).typeOfSpace, useDarker)
 		
-		def SpaceSeqToColor(x:Seq[Space[_ <: SpaceClass]]) = {
+		def spaceSeqToColor(x:Seq[Space[_ <: SpaceClass]]):Color = {
 			val x1 = x.map{(y:Space[_ <: SpaceClass]) => spaceClassToColor(y.typeOfSpace, useDarker)}
 			Option(x1.head)
 					.filter{_ != center && x1.forall{_ == x1.head}}
 					.getOrElse(transColor)
 		}
 		
-		val nw = if (field.contains(x-1, y-1)) {
-			SpaceSeqToColor(Seq(
-				field(x-1,y  ),
-				field(x-1,y-1),
-				field(x,  y-1)
+		val nw = if (field.contains(x - 1, y - 1)) {
+			spaceSeqToColor(Seq(
+				field(x - 1, y    ),
+				field(x - 1, y - 1),
+				field(x,    y - 1)
 			))
 		} else {transColor}
-		val ne = if (field.contains(x+1, y-1)) {
-			SpaceSeqToColor(Seq(
-				field(x+1,y  ),
-				field(x+1,y-1),
-				field(x,  y-1)
+		val ne = if (field.contains(x + 1, y - 1)) {
+			spaceSeqToColor(Seq(
+				field(x + 1, y    ),
+				field(x + 1, y - 1),
+				field(x,     y - 1)
 			))
 		} else {transColor}
-		val sw = if (field.contains(x-1, y+1)) {
-			SpaceSeqToColor(Seq(
-				field(x-1,y  ),
-				field(x-1,y+1),
-				field(x,  y+1)
+		val sw = if (field.contains(x - 1, y + 1)) {
+			spaceSeqToColor(Seq(
+				field(x - 1, y    ),
+				field(x - 1, y + 1),
+				field(x,     y + 1)
 			))
 		} else {transColor}
-		val se = if (field.contains(x+1, y+1)) {
-			SpaceSeqToColor(Seq(
-				field(x+1,y  ),
-				field(x+1,y+1),
-				field(x,  y+1)
+		val se = if (field.contains(x + 1, y + 1)) {
+			spaceSeqToColor(Seq(
+				field(x + 1, y    ),
+				field(x + 1, y + 1),
+				field(x,     y + 1)
 			))
 		} else {transColor}
 		
 		((
 			new MyIcon(center, nw, ne, sw, se),
-			new SolidColorIcon(transColor,32,32)
+			new SolidColorIcon(transColor, 32, 32)
 		))
 	}
 	
@@ -138,27 +138,27 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 		def paintIcon(c:Component, g:Graphics, x:Int, y:Int)
 		{
 			val nwCorner = new GeneralPath
-			nwCorner.moveTo(x   ,y   )
-			nwCorner.lineTo(x+16,y   )
-			nwCorner.quadTo(x   ,y   ,x   ,y+16)
+			nwCorner.moveTo(x     , y     )
+			nwCorner.lineTo(x + 16, y     )
+			nwCorner.quadTo(x, y, x, y + 16)
 			nwCorner.closePath()
 			
 			val neCorner = new GeneralPath
-			neCorner.moveTo(x+32,y   )
-			neCorner.lineTo(x+32,y+16)
-			neCorner.quadTo(x+32,y   ,x+16,y   )
+			neCorner.moveTo(x + 32, y)
+			neCorner.lineTo(x + 32, y + 16)
+			neCorner.quadTo(x + 32, y, x + 16, y)
 			neCorner.closePath()
 			
 			val swCorner = new GeneralPath
-			swCorner.moveTo(x   ,y+32)
-			swCorner.lineTo(x+16,y+32)
-			swCorner.quadTo(x   ,y+32,x   ,y+16)
+			swCorner.moveTo(x     , y + 32)
+			swCorner.lineTo(x + 16, y + 32)
+			swCorner.quadTo(x     , y + 32, x     , y + 16)
 			swCorner.closePath()
 			
 			val seCorner = new GeneralPath
-			seCorner.moveTo(x+32,y+32)
-			seCorner.lineTo(x+32,y+16)
-			seCorner.quadTo(x+32,y+32,x+16,y+32)
+			seCorner.moveTo(x + 32, y + 32)
+			seCorner.lineTo(x + 32, y + 16)
+			seCorner.quadTo(x + 32, y + 32,x + 16, y + 32)
 			seCorner.closePath()
 		
 			val g2 = g.asInstanceOf[Graphics2D]

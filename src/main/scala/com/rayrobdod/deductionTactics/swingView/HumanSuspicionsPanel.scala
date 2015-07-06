@@ -139,7 +139,7 @@ class HumanSuspicionsPanel(initialSusp:TokenClassSuspicion) extends JPanel
 	private[this] def fireSuspicionsUpdateEvent(e:SuspicionUpdate) = {
 		suspicionsUpdateListeners.foreach{f => f(e)}
 	}
-	def addUpdateListener(f:SuspicionUpdateListener) = {suspicionsUpdateListeners += f}
+	def addUpdateListener(f:SuspicionUpdateListener):Unit = {suspicionsUpdateListeners += f}
 	
 }
 
@@ -158,7 +158,7 @@ object HumanSuspicionsPanel {
 		private val label = new JLabel
 		
 		override def getListCellRendererComponent(list:javax.swing.JList[_ <: Object], value:Object,
-				index:Int, isSelected:Boolean, cellHasFocus:Boolean) = {
+				index:Int, isSelected:Boolean, cellHasFocus:Boolean):JLabel = {
 			
 			label.setIcon( makeIconFor(value, 24) )
 			if (isSelected) {

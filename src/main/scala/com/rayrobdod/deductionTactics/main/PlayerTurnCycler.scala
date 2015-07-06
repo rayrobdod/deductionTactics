@@ -41,7 +41,7 @@ final class PlayerTurnCycler(
 	
 	def run() {
 		var currentState:GameState = initialState
-		def gameEnded = {remainingPlayers(currentState).size == 1}
+		def gameEnded:Boolean = {remainingPlayers(currentState).size == 1}
 		var playerOfCurrentTurn:Int = 0
 		var memos = players.zipWithIndex.map({(p:PlayerAI,i:Int) => p.initialize(i, initialState.copy(tokens = initialState.tokens.hideTokenClasses(i)))}.tupled)
 		

@@ -52,7 +52,7 @@ class TokenClassPanelTypeSelector(modend:AllKnownTokenClassesComponent) extends 
 	
 	class ChangeTokenClassView(tcToComp:Function1[TokenClass,JComponent]) extends ActionListener
 	{
-		def actionPerformed(e:ActionEvent) = {
+		def actionPerformed(e:ActionEvent):Unit = {
 			modend.tokenClassToComponent = tcToComp;
 		}
 	}

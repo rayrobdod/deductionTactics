@@ -31,7 +31,7 @@ import scala.collection.immutable.Seq
 final class WithRandomTeam(val base:PlayerAI) extends DecoratorPlayerAI(base)
 {
 	/** chooses a team randomly */
-	override def selectTokenClasses(size:Int) = randomTeam(size)
+	override def selectTokenClasses(size:Int):Seq[TokenClass] = randomTeam(size)
 	/** chooses a subset of selectedTokenClasses randomly */
 	override def narrowTokenClasses(
 				selectedTokenClasses:Seq[Seq[TokenClass]],

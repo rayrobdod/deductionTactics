@@ -32,7 +32,7 @@ object TilesheetListRenderer extends ListCellRenderer[RectangularTilesheet[Space
 	private val back:ListCellRenderer[java.lang.Object] = new DefaultListCellRenderer()
 	
 	def getListCellRendererComponent(list:JList[_ <: RectangularTilesheet[SpaceClass]], value:RectangularTilesheet[SpaceClass], index:Int,
-			isSelected:Boolean, cellHasFocus:Boolean) =
+			isSelected:Boolean, cellHasFocus:Boolean):java.awt.Component =
 	{
 		back.getListCellRendererComponent(
 				list, value.name, index, isSelected, cellHasFocus)

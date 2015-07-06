@@ -83,10 +83,10 @@ class Top(val maxResultSize:Int) {
 			})
 			
 			object AddRemoveEnableListener extends ListDataListener() {
-				override def intervalAdded(e:ListDataEvent) = contentsChanged(e)
-				override def intervalRemoved(e:ListDataEvent) = contentsChanged(e)
+				override def intervalAdded(e:ListDataEvent):Unit = contentsChanged(e)
+				override def intervalRemoved(e:ListDataEvent):Unit = contentsChanged(e)
 				
-				override def contentsChanged(e:ListDataEvent) {
+				override def contentsChanged(e:ListDataEvent):Unit = {
 					val notEmpty = (selectedClasses.getSize != 0)
 					val notFull = (selectedClasses.getSize != maxResultSize)
 					
@@ -140,7 +140,7 @@ class Top(val maxResultSize:Int) {
 	}
 	
 	
-	def show() = {
+	def show():Unit = {
 		frame.setVisible(true);
 	}
 	
@@ -155,8 +155,8 @@ class Top(val maxResultSize:Int) {
 		val a = selectedClassesList.getModel()
 		
 		class ListModelSeq[A](a:ListModel[A]) extends IndexedSeq[A] {
-			override def apply(index:Int) = a.getElementAt(index)
-			override def length = a.getSize
+			override def apply(index:Int):A = a.getElementAt(index)
+			override def length:Int = a.getSize
 		}
 		
 		new ListModelSeq(a)

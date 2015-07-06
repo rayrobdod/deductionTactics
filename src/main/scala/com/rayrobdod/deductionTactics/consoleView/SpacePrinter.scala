@@ -29,7 +29,7 @@ object SpaceInfoPrinter
 {
 	private def out = System.out
 	
-	def apply(space:Space[SpaceClass]) = {
+	def apply(space:Space[SpaceClass]):Unit = {
 		val spaceClass:SpaceClass = space.typeOfSpace;
 		
 		out.print("Type of space: ");

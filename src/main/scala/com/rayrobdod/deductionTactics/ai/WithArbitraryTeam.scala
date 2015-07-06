@@ -33,7 +33,7 @@ final class WithArbitraryTeam(val base:PlayerAI) extends DecoratorPlayerAI(base)
 	private var input:Int = 0;
 	
 	/** chooses a team randomly */
-	override def selectTokenClasses(size:Int) = {
+	override def selectTokenClasses(size:Int):Seq[TokenClass] = {
 		import javax.swing.JOptionPane.PLAIN_MESSAGE
 		
 		val pane = new javax.swing.JOptionPane;

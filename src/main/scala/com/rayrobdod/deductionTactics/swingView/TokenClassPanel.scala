@@ -25,7 +25,7 @@ import com.rayrobdod.deductionTactics.Directions.Direction
 
 import scala.collection.immutable.Seq
 import javax.swing.{JPanel, JLabel, Icon, JProgressBar,
-		DefaultBoundedRangeModel}
+		DefaultBoundedRangeModel, BoundedRangeModel}
 import java.awt.{GridBagLayout, GridBagConstraints, FlowLayout}
 import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds}
 import com.rayrobdod.swing.GridBagConstraintsFactory
@@ -84,8 +84,8 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 	add(weakRow, RemainderGridBagConstraints)
 	add(weaponWeakPanel, RemainderGridBagConstraints)
 	
-	def canEquals(other:Any) = other.isInstanceOf[TokenClassPanel]
-	override def equals(other:Any) = {
+	def canEquals(other:Any):Boolean = other.isInstanceOf[TokenClassPanel]
+	override def equals(other:Any):Boolean = {
 		if (this.canEquals(other))
 		{
 			val other2 = other.asInstanceOf[TokenClassPanel]
@@ -131,7 +131,7 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 
 object TokenClassPanel
 {
-	def TokenWeakRangeModel(tokenClass:TokenClass, kind:Weaponkind) = {
+	def TokenWeakRangeModel(tokenClass:TokenClass, kind:Weaponkind):BoundedRangeModel = {
 		new DefaultBoundedRangeModel(((tokenClass.weakWeapon(kind)) * 10).intValue, 0, 5, 20)
 	}
 }

@@ -107,7 +107,7 @@ class Top {
 	}
 	
 	
-	def show() = {
+	def show():Unit = {
 		frame.setVisible(true);
 	}
 	
@@ -139,7 +139,7 @@ class IPAddressFormat extends java.text.Format {
 	def format(obj:Any, toAppendTo:StringBuffer, pos:java.text.FieldPosition):StringBuffer = obj match {
 		case x:InetAddress => {
 			toAppendTo.append(x.getHostName());
-			return toAppendTo;
+			toAppendTo
 		}
 		case _ => throw new IllegalArgumentException
 	}
@@ -148,11 +148,11 @@ class IPAddressFormat extends java.text.Format {
 		try {
 			val retVal = InetAddress.getByName(source.substring(pos.getIndex()));
 			pos.setIndex(source.length());
-			return retVal;
+			retVal
 		} catch {
 			case e:java.net.UnknownHostException => {
 				pos.setErrorIndex(pos.getIndex());
-				return null;
+				null
 			}
 		}
 	}

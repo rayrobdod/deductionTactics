@@ -149,7 +149,7 @@ object NetworkClient {
 	case class RequestAttackForStatus(mine:Token, other:Token)
 	
 	
-	def cfnFunctions(field:Field, player:Player) = Map(
+	def cfnFunctions(field:Field, player:Player):Map[String, Any] = Map(
 		"EndOfTurn" -> {() => EndOfTurn},
 		"MyTokens" -> {(i:Int) => player.tokens.myTokens(i)},
 		"OtherTokens" -> {(team:Int,i:Int) => player.tokens.otherTokens(team)(i)},

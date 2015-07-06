@@ -45,7 +45,7 @@ final class ConsoleInterface extends PlayerAI
 	override def takeTurn(player:Int, gameState:GameState, memo:Memo):Seq[GameState.Action] = {
 		val a = memo.asInstanceOf[ConsoleInterfaceMemo]
 		
-		return Seq(a.takeTurnReturnValueLock.synchronized{
+		Seq(a.takeTurnReturnValueLock.synchronized{
 			while (a.takeTurnReturnValue.value == None) { 
 				a.takeTurnReturnValueLock.wait()
 			}
@@ -61,7 +61,7 @@ final class ConsoleInterface extends PlayerAI
 		memo.runner.suspicions = memo.suspicions
 		
 		new Thread(memo.runner, "ConsoleInterface").start()
-		return memo
+		memo
 	}
 	
 	override def notifyTurn(

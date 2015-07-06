@@ -153,7 +153,7 @@ private[ai] object PotentialFieldAI$FuzzyLogic {
 		val far        = trapezoidalFunction(distance, speed/2, speed, speed, speed+range)
 		val outOfRange = trapezoidalFunction(distance, speed, speed + range, INF, INF);
 		
-		override def toString() = {
+		override def toString:String = {
 			"Distance[" +
 					  "speed: " + speed +
 					"; range: " + range +

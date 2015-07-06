@@ -30,7 +30,7 @@ object TokenPrinter extends Function2[Token, TokenClassSuspicion, Unit]
 	private def out = System.out
 	
 	
-	def apply(token:Token, susp:TokenClassSuspicion) = {
+	def apply(token:Token, susp:TokenClassSuspicion):Unit = {
 		out.print(token.currentHitpoints);
 		out.print("/");
 		out.print(Token.maximumHitpoints);

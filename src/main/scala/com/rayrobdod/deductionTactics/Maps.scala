@@ -34,7 +34,7 @@ final case class Arena (
 	val startSpaces:Map[Int,Seq[Seq[(Int, Int)]]]
 ) {
 	def layout:Seq[Seq[SpaceClass]] = layoutStrs.map{_.map{x => SpaceClassFactory(x)}}
-	def field = RectangularField(layout)
+	def field:RectangularField[SpaceClass] = RectangularField(layout)
 	
 	def possiblePlayers:Set[Int] = startSpaces.keySet
 }

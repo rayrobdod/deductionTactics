@@ -93,7 +93,7 @@ class Top(
 	}
 	
 	
-	def show() = {
+	def show():Unit = {
 		frame.setVisible(true);
 	}
 	
@@ -141,7 +141,7 @@ object Top {
 				if (c >= a) {super.addSelectionInterval(a, c)}
 			}
 		}
-		override def setSelectionInterval(a:Int, b:Int) = {
+		override def setSelectionInterval(a:Int, b:Int):Unit = {
 			if (a > b) {
 				this.addSelectionInterval(b, a)
 			} else {
