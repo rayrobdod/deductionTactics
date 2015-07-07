@@ -17,12 +17,13 @@ mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
 
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "20140518")
 
-libraryDependencies += ("com.rayrobdod" %% "json" % "2.0-RC3")
+libraryDependencies += ("com.rayrobdod" %% "json" % "2.0-SNAPSHOT")
 
 libraryDependencies += ("net.sf.opencsv" % "opencsv" % "2.3")
 
 libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0-SNAPSHOT-20150616")
 
+conflictManager := ConflictManager.latestTime
 
 
 packageOptions in (Compile, packageBin) <+= (scalaVersion, sourceDirectory).map{(scalaVersion:String, srcDir:File) =>

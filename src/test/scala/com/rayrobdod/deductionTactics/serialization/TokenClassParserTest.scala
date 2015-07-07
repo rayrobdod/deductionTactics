@@ -21,7 +21,7 @@ package serialization
 import org.scalatest.FunSpec
 import scala.collection.immutable.Seq
 import com.rayrobdod.json.parser.JsonParser
-//import com.rayrobdod.json.builder.MinifiedJsonObjectBuilder
+import com.rayrobdod.json.builder.MinifiedJsonObjectBuilder
 
 class TokenClassParserTest extends FunSpec {
 	describe ("TokenClassParser + TokenClassBuilder") {
@@ -82,9 +82,9 @@ class TokenClassParserTest extends FunSpec {
 				),
 				weakStatus = Statuses.Sleep
 			)
-	//		val res = new TokenClassParser(new MinifiedJsonObjectBuilder).parse(src, Some("""/com/rayrobdod/deductionTactics/tokenClasses/birds/Golden Eagle.png"""))
+			val res = new TokenClassParser(new MinifiedJsonObjectBuilder).parse(src, Some("""/com/rayrobdod/deductionTactics/tokenClasses/birds/Golden Eagle.png"""))
 			
-	//		assertResult(exp){res}
+			assertResult(exp){res}
 		}
 		it ("Lefty Batter") {
 			val exp = """{
@@ -117,9 +117,9 @@ class TokenClassParserTest extends FunSpec {
 				),
 				weakStatus = Statuses.Burn
 			)
-	//		val res = new TokenClassParser(new MinifiedJsonObjectBuilder).parse(src, None)
+			val res = new TokenClassParser(new MinifiedJsonObjectBuilder).parse(src, None)
 			
-	//		assertResult(exp){res}
+			assertResult(exp){res}
 		}
 	}
 }

@@ -61,7 +61,7 @@ class TokenClassNameToImageLocation(sources:Seq[Path]) {
 	
 	final class NameToIconBuilder extends Builder[(String, Option[String])] {
 		override val init:(String, Option[String]) = ("", None)
-		override def apply(folding:Tuple2[String, Option[String]], key:String, value:Object):Tuple2[String, Option[String]] = key match {
+		override def apply(folding:Tuple2[String, Option[String]], key:String, value:Any):Tuple2[String, Option[String]] = key match {
 			case "name" => folding.copy(_1 = value.toString)
 			case "icon" => folding.copy(_2 = Option(value.toString))
 			case _ => folding

@@ -16,7 +16,7 @@
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package com.rayrobdod.deductionTactics
-package meta
+package serialization
 
 import Elements.Element
 import Weaponkinds.Weaponkind
@@ -24,16 +24,14 @@ import Statuses.Status
 import BodyTypes.BodyType
 import Directions.Direction
 
-import com.rayrobdod.deductionTactics.tokenClassToJSON
-
-import scala.collection.immutable.{Map, Seq}
-
-import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
-import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
-import java.nio.charset.StandardCharsets.UTF_8
-import com.rayrobdod.deductionTactics.TokenClass
 import java.io.{ByteArrayOutputStream, DataOutputStream}
 import java.nio.file.{Path, Files}
+import java.nio.charset.StandardCharsets.UTF_8
+import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
+import scala.collection.immutable.{Map, Seq}
+import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
+import com.rayrobdod.json.builder.{Builder, MapBuilder, MinifiedJsonObjectBuilder, MinifiedJsonArrayBuilder}
+import com.rayrobdod.json.parser.{SeqParser}
 
 /**
  * 
@@ -104,40 +102,15 @@ object GenerateBasicTokens
 	
 	
 	def compile(outPath:Path) = {
-		val writer = Files.newBufferedWriter(outPath, UTF_8);
-		writer.write('[')
+		val writer = Files.newBufferedWriter(outPath, UTF_8)
+		val tclassParser = new TokenClassParser(new MapBuilder)
+		val seqParser = new SeqParser(new MinifiedJsonArrayBuilder)
 		
-		classes.zipWithIndex.foreach({(tclass:TokenClass, index:Int) =>
-			if (index != 0) writer.write(',')
-			writer.write( tokenClassToJSON(tclass, nameToIcon) )
-		}.tupled)
+		val json = seqParser.parse({Seq.empty ++
+			classes.map{tclass => tclassParser.parse(tclass, nameToIcon(tclass.name))}
+		})
 		
-		writer.write(']');
+		writer.write(json)
 		writer.close();
 	}
-	
-	def main(args:Array[String]) {
-		val (outDir) = {
-			var outDir:Option[Path] = None
-			
-			var i = 0
-			while (i < args.length) {
-				args(i) match {
-					case "-d" => {
-						outDir = Some(defaultFileSystem getPath args(i+1))
-						i = i + 1;
-					}
-					case _ => {
-						
-					}
-				}
-				i = i + 1;
-			}
-			
-			(outDir.get)
-		}
-		
-		this.compile(outDir)
-	}
 }
-	

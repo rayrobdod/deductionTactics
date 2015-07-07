@@ -2,7 +2,7 @@ import sbt._
 import Keys._
 import java.util.zip.{ZipInputStream, ZipOutputStream, ZipEntry}
 import com.rayrobdod.deductionTactics.meta.CompileTokenClassesToBinary
-import com.rayrobdod.deductionTactics.meta.GenerateBasicTokens
+import com.rayrobdod.deductionTactics.serialization.GenerateBasicTokens
 //import com.github.retronym.SbtOneJar
 
 object DeductionTacticsBuild extends Build {
