@@ -103,12 +103,10 @@ object GenerateBasicTokens
 	
 	def compile(outPath:Path) = {
 		val writer = Files.newBufferedWriter(outPath, UTF_8)
-		val tclassParser = new TokenClassParser(new MapBuilder)
-		val seqParser = new SeqParser(new MinifiedJsonArrayBuilder)
+		val transformer:PartialFunction[Any,Any] = {case x:TokenClass => new TokenClassParser(new MapBuilder).parse(x, nameToIcon(x.name))}
+		val seqParser = new SeqParser(new MinifiedJsonArrayBuilder(transformer = transformer))
 		
-		val json = seqParser.parse({Seq.empty ++
-			classes.map{tclass => tclassParser.parse(tclass, nameToIcon(tclass.name))}
-		})
+		val json = seqParser.parse(classes)
 		
 		writer.write(json)
 		writer.close();
