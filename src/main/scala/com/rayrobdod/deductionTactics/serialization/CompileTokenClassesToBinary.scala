@@ -15,7 +15,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.meta
+package com.rayrobdod.deductionTactics.serialization
 
 import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
@@ -37,7 +37,7 @@ import com.rayrobdod.deductionTactics.CannonicalTokenClassFromBinary.{nameLength
  * @since a.5.0
  * @version a.6.0
  */
-object CompileTokenClassesToBinary // extends scala.App
+object CompileTokenClassesToBinary
 {
 	def compile(sources:Seq[Path], outPath:Path) = {
 		
@@ -80,30 +80,5 @@ object CompileTokenClassesToBinary // extends scala.App
 			// dos.write('\n');
 		}
 		dos.close();
-	}
-	
-	def main(args:Array[String]) {
-		val (sources, outDir) = {
-			var sources:Seq[Path] = Nil
-			var outDir:Option[Path] = None
-		
-			var i = 0
-			while (i < args.length) {
-				args(i) match {
-					case "-d" => {
-						outDir = Some(defaultFileSystem getPath args(i+1))
-						i = i + 1;
-					}
-					case _ => {
-						sources = sources :+ (defaultFileSystem getPath args(i))
-					}
-				}
-				i = i + 1;
-			}
-			
-			(sources, outDir.get)
-		}
-		
-		this.compile(sources, outDir)
 	}
 }

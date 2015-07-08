@@ -15,7 +15,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.meta
+package com.rayrobdod.deductionTactics.serialization
 
 import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
@@ -37,7 +37,6 @@ import java.nio.file.{Path, Files}
  * @version a.6.0
  */
 class TokenClassNameToImageLocation(sources:Seq[Path]) {
-	
 	
 	val map:Map[String, String] = {
 		val a:Seq[Seq[(String, Option[String])]] = sources.map{(jsonPath:Path) =>
