@@ -8,7 +8,7 @@ version := "a.6.0-SNAPSHOT"
 
 scalaVersion := "2.10.5"
 
-crossScalaVersions := Seq("2.10.5", "2.11.6")
+crossScalaVersions := Seq("2.10.5", "2.11.7")
 
 // heavy resource use, including ResourceBundles
 fork := true
@@ -17,13 +17,12 @@ mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
 
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "20140518")
 
-libraryDependencies += ("com.rayrobdod" %% "json" % "2.0-SNAPSHOT")
+libraryDependencies += ("com.rayrobdod" %% "json" % "2.0-RC4")
 
-libraryDependencies += ("net.sf.opencsv" % "opencsv" % "2.3")
+libraryDependencies += ("com.opencsv" % "opencsv" % "3.4")
 
-libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0-SNAPSHOT-20150616")
+libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0-RC1")
 
-conflictManager := ConflictManager.latestTime
 
 
 packageOptions in (Compile, packageBin) <+= (scalaVersion, sourceDirectory).map{(scalaVersion:String, srcDir:File) =>
@@ -92,7 +91,7 @@ excludeFilter in unmanagedResources in Compile := {
 
 
 // scalaTest
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.5" % "test"
 
 testOptions in Test += Tests.Argument("-oS")
 
