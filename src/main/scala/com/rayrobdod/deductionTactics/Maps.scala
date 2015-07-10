@@ -22,7 +22,7 @@ import java.io.{Reader, StringReader, InputStreamReader}
 import java.nio.charset.StandardCharsets.UTF_8
 import scala.collection.immutable.{Seq, Set}
 import scala.collection.JavaConversions.iterableAsScalaIterable
-import au.com.bytecode.opencsv.CSVReader;
+import com.opencsv.CSVReader;
 import com.rayrobdod.util.services.{ResourcesServiceLoader, Services}
 import com.rayrobdod.json.parser.JsonParser
 import com.rayrobdod.json.builder.{Builder, SeqBuilder, MapBuilder}

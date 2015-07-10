@@ -23,7 +23,7 @@ import scala.collection.immutable.{Seq, Set}
  * An enumeration of statuses
  * 
  * May in the future contain what the status does
- * @verion a.6.0
+ * @version a.6.0
  */
 object Statuses {
 	abstract class Status(val id:Int, val name:String) {

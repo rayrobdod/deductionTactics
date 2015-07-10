@@ -15,29 +15,29 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.meta
-
-import com.rayrobdod.deductionTactics.tokenClassToJSON
+package com.rayrobdod.deductionTactics.serialization
 
 import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
-import com.rayrobdod.deductionTactics.TokenClass
 import com.rayrobdod.json.parser.JsonParser
 import com.rayrobdod.json.builder.SeqBuilder
 import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds, TokenClassBuilder, CannonicalTokenClassTemplate}
+import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 import java.io.{ByteArrayOutputStream, DataOutputStream}
 import java.nio.file.{Path, Files}
 
+import com.rayrobdod.deductionTactics.CannonicalTokenClassFromBinary.{nameLength, imageLocLength}
+
 /**
  * Reads a set of JSON-encoded token class files and writes out a composit, minified
- * JSON-encoded token class file
+ * propietary token class file
  * 
  * @author Raymond Dodge
  * @since a.5.0
  * @version a.6.0
  */
-object CompileTokenClassesToJson // extends scala.App
+object CompileTokenClassesToBinary
 {
 	def compile(sources:Seq[Path], outPath:Path) = {
 		
@@ -52,42 +52,33 @@ object CompileTokenClassesToJson // extends scala.App
 			}
 		}.flatten
 		
+		val imageMap = new TokenClassNameToImageLocation(sources)
 		
-		val writer = Files.newBufferedWriter(outPath, UTF_8);
-		writer.write('[')
 		
-		classes.zipWithIndex.foreach({(tclass:TokenClass, index:Int) =>
-			if (index != 0) writer.write(',')
-			writer.write( tokenClassToJSON(tclass) )
-		}.tupled)
+		val os = Files.newOutputStream(outPath)
+		val dos = new DataOutputStream(os);
 		
-		writer.write(']');
-		writer.close();
-	}
-	
-	def main(args:Array[String]) {
-		val (sources, outDir) = {
-			var sources:Seq[Path] = Nil
-			var outDir:Option[Path] = None
+		dos.writeShort(classes.length)
 		
-			var i = 0
-			while (i < args.length) {
-				args(i) match {
-					case "-d" => {
-						outDir = Some(defaultFileSystem getPath args(i+1))
-						i = i + 1;
-					}
-					case _ => {
-						sources = sources :+ (defaultFileSystem getPath args(i))
-					}
-				}
-				i = i + 1;
+		classes.map{(tclass:TokenClass) =>
+			val name:Array[Byte] = (tclass.name.getBytes(UTF_8) ++: Seq.fill(nameLength)(0.byteValue)).toArray
+			dos.write(name, 0, nameLength);
+			dos.writeByte(tclass.atkElement.id.byteValue)
+			dos.writeByte(tclass.atkWeapon.id.byteValue)
+			dos.writeByte(tclass.atkStatus.id.byteValue)
+			dos.writeByte(tclass.body.id.byteValue)
+			dos.writeByte(tclass.range.byteValue)
+			dos.writeByte(tclass.speed.byteValue)
+			dos.writeByte(tclass.weakStatus.id.byteValue)
+			dos.writeByte(tclass.weakDirection.id.byteValue)
+			Weaponkinds.values.foreach{(x:Weaponkind) =>
+				dos.writeFloat(tclass.weakWeapon(x).floatValue)
 			}
+			val imageLoc = (imageMap.map.getOrElse(tclass.name, "").getBytes(UTF_8) ++: Seq.fill(imageLocLength)(0.byteValue)).toArray;
+			dos.write(imageLoc, 0, imageLocLength);
 			
-			(sources, outDir.get)
+			// dos.write('\n');
 		}
-		
-		this.compile(sources, outDir)
+		dos.close();
 	}
 }
-	

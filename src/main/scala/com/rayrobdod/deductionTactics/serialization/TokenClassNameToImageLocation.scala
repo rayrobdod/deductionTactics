@@ -15,7 +15,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.meta
+package com.rayrobdod.deductionTactics.serialization
 
 import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
@@ -37,7 +37,6 @@ import java.nio.file.{Path, Files}
  * @version a.6.0
  */
 class TokenClassNameToImageLocation(sources:Seq[Path]) {
-	
 	
 	val map:Map[String, String] = {
 		val a:Seq[Seq[(String, Option[String])]] = sources.map{(jsonPath:Path) =>
@@ -61,7 +60,7 @@ class TokenClassNameToImageLocation(sources:Seq[Path]) {
 	
 	final class NameToIconBuilder extends Builder[(String, Option[String])] {
 		override val init:(String, Option[String]) = ("", None)
-		override def apply(folding:Tuple2[String, Option[String]], key:String, value:Object):Tuple2[String, Option[String]] = key match {
+		override def apply(folding:Tuple2[String, Option[String]], key:String, value:Any):Tuple2[String, Option[String]] = key match {
 			case "name" => folding.copy(_1 = value.toString)
 			case "icon" => folding.copy(_2 = Option(value.toString))
 			case _ => folding

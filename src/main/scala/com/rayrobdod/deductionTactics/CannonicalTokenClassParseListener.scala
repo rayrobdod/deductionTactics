@@ -90,7 +90,7 @@ final case class CannonicalTokenClassTemplate(
 
 final class TokenClassBuilder extends Builder[CannonicalTokenClassTemplate] {
 	override val init:CannonicalTokenClassTemplate = new CannonicalTokenClassTemplate()
-	override def apply(folding:CannonicalTokenClassTemplate, key:String, value:Object):CannonicalTokenClassTemplate = key match {
+	override def apply(folding:CannonicalTokenClassTemplate, key:String, value:Any):CannonicalTokenClassTemplate = key match {
 		case "name" => folding.copy(nameOpt = Some(value.toString))
 		case "body" => folding.copy(body = Some(BodyTypes.withName(value.toString)))
 		case "element" => folding.copy(atkElement = Some(Elements.withName(value.toString)))

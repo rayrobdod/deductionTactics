@@ -39,58 +39,6 @@ package object deductionTactics
 	def TITLE:String = "Deduction Tactics" //java.lang.Package.getPackage("com.rayrobdod.deductionTactics").getImplementationTitle();
 	
 	
-	/** Creates a valid JSON string representing the specified TokenClass. */
-	def tokenClassToJSON(tclass:TokenClass, nameToIcon:Function1[String, Option[String]] = {(x) => None}):String = {
-		val writer = new java.io.StringWriter();
-		
-		writer.write("{\"name\":\"");
-		writer.write(tclass.name);
-		
-		writer.write("\",\"element\":\"");
-		writer.write(tclass.atkElement.name);
-		
-		writer.write("\",\"atkWeapon\":\"");
-		writer.write(tclass.atkWeapon.name.dropRight(4));
-		
-		writer.write("\",\"atkStatus\":\"");
-		writer.write(tclass.atkStatus.name)
-		
-		writer.write("\",\"body\":\"");
-		writer.write(tclass.body.name)
-		
-		writer.write("\",\"range\":");
-		writer.write(tclass.range.toString)
-		
-		writer.write(",\"speed\":");
-		writer.write(tclass.speed.toString)
-		
-		writer.write(",\"weakStatus\":\"");
-		writer.write(tclass.weakStatus.name)
-		
-		writer.write("\",\"weakDirection\":\"");
-		writer.write(tclass.weakDirection.name)
-		
-		writer.write("\",\"weakWeapon\":{");
-		val weakWeapon = tclass.weakWeapon.foldLeft(new java.lang.StringBuilder){(a,b) => 
-			a.append(",\"")
-			a.append(b._1.name.dropRight(4))
-			a.append("\":")
-			a.append(b._2)
-		}.toString.tail
-		writer.write(weakWeapon)
-		writer.write("}");
-		
-		val iconOpt = nameToIcon(tclass.name);
-		iconOpt.map{(icon:String) => 
-			writer.write(",\"icon\":\"")
-			writer.write(icon)
-			writer.write('"')
-		}
-		
-		writer.write("}");
-		
-		writer.toString();
-	}
 	
 	
 	/* @since a.6.0 */

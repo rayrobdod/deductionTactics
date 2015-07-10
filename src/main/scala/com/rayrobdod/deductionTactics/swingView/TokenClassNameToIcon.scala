@@ -59,7 +59,7 @@ object TokenClassNameToIconFromJson {
 	
 	final class TokenIconBuilder extends Builder[TokenIconParts] {
 		override val init:TokenIconParts = new TokenIconParts()
-		override def apply(folding:TokenIconParts, key:String, value:Object):TokenIconParts = key match {
+		override def apply(folding:TokenIconParts, key:String, value:Any):TokenIconParts = key match {
 			case "name" => folding.copy(name = value.toString)
 			case "icon" => folding.copy(iconLoc = Some(value.toString))
 			case "element" => folding.copy(atkElement = Some(Elements.withName(value.toString)))
