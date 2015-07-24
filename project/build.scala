@@ -3,6 +3,7 @@ import Keys._
 import java.util.zip.{ZipInputStream, ZipOutputStream, ZipEntry}
 import com.rayrobdod.deductionTactics.serialization.CompileTokenClassesToBinary
 import com.rayrobdod.deductionTactics.serialization.GenerateBasicTokens
+import net.tixxit.sbt.benchmark.BenchmarkPlugin
 //import com.github.retronym.SbtOneJar
 
 object DeductionTacticsBuild extends Build {
@@ -69,7 +70,10 @@ object DeductionTacticsBuild extends Build {
 	lazy val root = Project(
 			id = "deductionTactics",
 			base = file("."),
+			configurations = Configurations.default ++
+					BenchmarkPlugin.projectConfigurations,
 			settings = Defaults.coreDefaultSettings ++
+					BenchmarkPlugin.projectSettings ++
 					Seq(proguardTypeSetting) ++
 					compileTokensSettings ++
 					generateBasicTokens

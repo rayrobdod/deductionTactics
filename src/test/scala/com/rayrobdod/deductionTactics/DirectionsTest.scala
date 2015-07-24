@@ -247,6 +247,51 @@ class DirectionsTest extends FunSpec {
 		it ("is contained inside values"){
 			assert(values.contains(enumValue))
 		}
+		describe (".weaknessMultiplier") {
+			val strngDir = Directions((id + 2) % 4)
+			val othogDir1 = Directions((id + 1) % 4)
+			val othogDir2 = Directions((id + 3) % 4)
+				
+			it ("is 2. when pathDirections is contains exactly one " + name) {
+				assertResult(2.0)(enumValue.weaknessMultiplier(Seq(enumValue)))
+			}
+			it ("is 2. when pathDirections is contains exactly two " + name + "s") {
+				assertResult(2.0)(enumValue.weaknessMultiplier(Seq(enumValue, enumValue)))
+			}
+			it ("is .5 when pathDirections is contains one of the element opposite of this") {
+				assertResult(0.5)(enumValue.weaknessMultiplier(Seq(strngDir)))
+			}
+			it ("is .5 when pathDirections is contains two of the element opposite of this") {
+				assertResult(0.5)(enumValue.weaknessMultiplier(Seq(strngDir, strngDir)))
+			}
+			it ("is 1. when pathDirections is contains only orthogDirs (1)") {
+				assertResult(1.0)(enumValue.weaknessMultiplier(Seq(othogDir1)))
+			}
+			it ("is 1. when pathDirections is contains only orthogDirs (2)") {
+				assertResult(1.0)(enumValue.weaknessMultiplier(Seq(othogDir2)))
+			}
+			it ("is 1.5 when pathDirections is contains an orthogDir and a weakDir") {
+				assertResult(1.5)(enumValue.weaknessMultiplier(Seq(othogDir2, enumValue)))
+			}
+			it ("is .75 when pathDirections is contains an orthogDir and a strngDir") {
+				assertResult(0.75)(enumValue.weaknessMultiplier(Seq(othogDir2, strngDir)))
+			}
+			it ("is 2. when pathDirections is contains a " + name + " and one of each othogDir") {
+				assertResult(2.0)(enumValue.weaknessMultiplier(Seq(enumValue, othogDir1, othogDir2)))
+			}
+			it ("is 1. when pathDirections is contains an othogDir and one of each weak and str dir") {
+				assertResult(1.0)(enumValue.weaknessMultiplier(Seq(enumValue, othogDir1, strngDir)))
+			}
+			it ("has a domain between 0.5 and 2.0") {
+				val LENGTH_TO_CHECK = 3
+				val RANGE_TO_CHECK = (-LENGTH_TO_CHECK to LENGTH_TO_CHECK)
+				RANGE_TO_CHECK.flatMap{x => RANGE_TO_CHECK.map{y =>
+					Seq.fill(x){strngDir} ++ Seq.fill(-x){enumValue} ++ Seq.fill(y){othogDir1} ++ Seq.fill(-y){othogDir2}
+				}}.map{enumValue.weaknessMultiplier _}.foreach{x =>
+					assert(0.5 <= x && x <= 2.0)
+				}
+			}
+		}
 	}
 }
 

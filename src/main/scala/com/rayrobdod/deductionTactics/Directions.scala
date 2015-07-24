@@ -19,6 +19,7 @@ package com.rayrobdod.deductionTactics
 
 import com.rayrobdod.boardGame.StrictRectangularSpace
 import scala.collection.immutable.{Seq, Set}
+import scala.language.implicitConversions
 import LoggerInitializer.{cannonicalTokenLogger => Logger}
 
 /**
@@ -68,16 +69,18 @@ object Directions
 			val orthoCount = pathDirections.count(_ == othogDir1) -
 					pathDirections.count(_ == othogDir2)
 			
-			import java.lang.Math.{atan2, PI, abs}		
-			val theta = abs(atan2(orthoCount, parelCount))
+			import scala.math.{max, abs}
+			val MAX_PRESCALE_VALUE = 16
+			val DIAGONAL_VALUE = 16 / 4
 			
-			Logger.finer("(" + pathDirections.count(_ == weakDir) + " - " + pathDirections.count(_ == strngDir)
-					+ "," + pathDirections.count(_ == othogDir1) + " + " + pathDirections.count(_ == othogDir2) + ")")
-			Logger.finer(weakDir + ": (" + parelCount + "," + orthoCount
-					+ ") => theta=" + theta)
-			;
-			val scaler = {(x:Double) => (1 * x * x ) + (.5 *  x) + .5}
-			scaler(1 - (theta / PI)).floatValue
+			val dividend = max(1, max(abs(parelCount), abs(orthoCount * DIAGONAL_VALUE)))
+			val prescale = parelCount * MAX_PRESCALE_VALUE / dividend
+			def scale(x:Int) = if (x >= 0) {
+				((-1.0 / 192) * x + (7.0 / 48)) * x + 1
+			} else {
+				((1.0 / 384) * x + (7.0 / 96)) * x + 1
+			}
+			scale(prescale).floatValue
 		}
 		
 		override def toString:String = "com.rayrobdod.deductionTactics.Directions." + name
@@ -131,9 +134,7 @@ object Directions
 	
 	
 	/** `spaceA is Left of spaceB` */
-	implicit def spaceWithIs(s:StrictRectangularSpace[SpaceClass]):SpaceWithIs = new SpaceWithIs(s)
-	/** `spaceA is Left of spaceB` */
-	class SpaceWithIs(s:StrictRectangularSpace[SpaceClass]) {
+	implicit class SpaceWithIs(s:StrictRectangularSpace[SpaceClass]) {
 		def is(d:Direction):SpaceWithDirection = new SpaceWithDirection(s,d)
 	}
 	/** `spaceA is Left of spaceB` */
