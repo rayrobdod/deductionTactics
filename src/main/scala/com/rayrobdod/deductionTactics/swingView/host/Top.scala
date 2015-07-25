@@ -19,7 +19,7 @@ package com.rayrobdod.deductionTactics.swingView.host
 
 import java.awt.{Component, BorderLayout, FlowLayout, GridLayout, GridBagLayout, GridBagConstraints}
 import java.awt.event.{ActionListener, ActionEvent}
-import javax.swing.{JList, ListCellRenderer, JButton, JPanel, JLabel, JFrame, WindowConstants}
+import javax.swing.{JList, ListCellRenderer, JButton, JPanel, JLabel, JFrame, WindowConstants, ListSelectionModel}
 import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
 import scala.collection.immutable.Seq
 import scala.collection.mutable.Buffer
@@ -60,6 +60,7 @@ class Top {
 			playerCount.setLayoutOrientation(JList.VERTICAL_WRAP)
 			playerCount.setVisibleRowCount(1)
 			mapList.setVisibleRowCount(8)
+			mapList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
 			
 			mapList.setCellRenderer(MyCellRenderer)
 			mapList.addListSelectionListener(new ListSelectionListener(){

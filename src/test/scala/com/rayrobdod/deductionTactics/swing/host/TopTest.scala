@@ -123,6 +123,22 @@ class TopTest extends FunSpec {
 			assert(target.hasBeenCalled)
 			assertResult(Maps.arenas(2)){target.map}
 		}
+		it ("Does not allow multiple arenas to be selected") {
+			val (frame, target) = this.createNextFrameAndListener()
+			
+			val mapList = getMapList(frame)
+			mapList.setSelectedIndices(Array(2, 4))
+			
+			val nextButton:JButton = getButton(frame, "nextButton")
+			nextButton.doClick()
+			
+			// dispose was called
+			assert(! frame.isDisplayable)
+			
+			assertResult(Array(4)){mapList.getSelectedIndices}
+			assert(target.hasBeenCalled)
+			assertResult(Maps.arenas(4)){target.map}
+		}
 		it ("Changes player count when player count is changes") {
 			val (frame, target) = this.createNextFrameAndListener()
 			
