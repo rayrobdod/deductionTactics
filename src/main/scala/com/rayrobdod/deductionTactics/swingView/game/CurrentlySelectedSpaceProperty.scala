@@ -22,6 +22,7 @@ import scala.collection.mutable.Buffer
 import com.rayrobdod.boardGame.RectangularFieldIndex
 
 /**
+ * An observable container for a [[RectangularFieldIndex]]
  * @see javafx.beans.value.ObservableValue
  */
 class CurrentlySelectedSpaceProperty {

@@ -21,6 +21,7 @@ package swingView.game
 import scala.collection.mutable.Buffer
 
 /**
+ * An observable container for an Option[TokenIndex]
  * @see javafx.beans.value.ObservableValue
  */
 class CurrentlySelectedTokenProperty {

@@ -37,11 +37,9 @@ packageOptions in (Compile, packageBin) <+= (scalaVersion, sourceDirectory).map{
 
 javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked")
 
-scalacOptions ++= Seq("-unchecked", "-deprecation" )
-
-scalacOptions <++= scalaVersion.map{(sv:String) =>
-	if (sv.take(3) == "2.1") {Seq("-feature", "-language:implicitConversions")} else {Nil}
-}
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", 
+			"-language:implicitConversions"
+)
 
 excludeFilter in unmanagedSources in Compile := new FileFilter{
 	def accept(n:File) = {

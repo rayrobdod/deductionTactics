@@ -23,6 +23,10 @@ import java.awt.event.ActionEvent
 import javax.swing.{JPanel, AbstractAction}
 import com.rayrobdod.boardGame.{RectangularField, RectangularFieldIndex, StrictRectangularSpace}
 
+/**
+ * Upon a call to action performed, this will move the cursor
+ * and then clear the context-sensitive buttons
+ */
 class MoveCursorAction(
 		name:String,
 		adjustment:Function1[StrictRectangularSpace[SpaceClass], StrictRectangularSpace[SpaceClass]],
@@ -54,6 +58,10 @@ class MoveCursorAction(
 	}
 }
 
+/**
+ * Upon a call to actionPerformed, sets the selected token to None, and removes
+ * all children of pieMenuLayer
+ */
 class ClearSelectionAction(
 		selectedSpace:CurrentlySelectedSpaceProperty,
 		selectedToken:CurrentlySelectedTokenProperty,
@@ -66,6 +74,10 @@ class ClearSelectionAction(
 	}
 }
 
+/**
+ * Upon a call to actionPerformed, selects a particular space and 
+ * depending on context may select the token on that space as well.
+ */
 class SelectAction(
 		selectedSpace:Function0[RectangularFieldIndex],
 		currentTokens:Function0[ListOfTokens],
@@ -119,6 +131,12 @@ class SelectAction(
 	}
 }
 
+/**
+ * Upon a call to actionPerformed, goes through the tokens listed in
+ * currentTokens and selects one that is able to perform actions and
+ * owned by the player indicated by playerNumber
+ * 
+ */
 class SelectNextActionableTokenAction(
 		selectedSpace:CurrentlySelectedSpaceProperty,
 		selectedToken:CurrentlySelectedTokenProperty,
