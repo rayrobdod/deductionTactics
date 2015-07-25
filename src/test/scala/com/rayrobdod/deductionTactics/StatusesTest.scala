@@ -19,8 +19,7 @@ package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.Statuses._
-import org.scalatest.{FunSuite, FunSpec}
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.FunSpec
 
 class StatusesTest extends FunSpec {
 	

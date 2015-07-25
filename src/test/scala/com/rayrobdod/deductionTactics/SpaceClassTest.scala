@@ -17,8 +17,7 @@
 */
 package com.rayrobdod.deductionTactics
 
-import org.scalatest.{FunSuite, FunSpec}
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.FunSpec
 import scala.collection.immutable.Seq
 import scala.language.reflectiveCalls
 import com.rayrobdod.boardGame.SpaceClassMatcher

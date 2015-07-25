@@ -17,8 +17,7 @@
 */
 package com.rayrobdod.deductionTactics
 
-import org.scalatest.{FunSuite, FunSpec}
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.FunSpec
 import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.Statuses._
 import java.nio.charset.StandardCharsets.UTF_8

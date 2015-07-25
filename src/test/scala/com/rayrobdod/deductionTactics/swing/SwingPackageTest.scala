@@ -20,8 +20,7 @@ package swing
 
 import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.{RectangularField, Space}
-import org.scalatest.{FunSuite, FunSpec}
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.FunSpec
 
 class MakeIconForTest extends FunSpec {
 	

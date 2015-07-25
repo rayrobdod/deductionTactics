@@ -19,8 +19,7 @@ package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.Weaponkinds._
-import org.scalatest.{FunSuite, FunSpec}
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.FunSpec
 
 class WeaponkindsTest extends FunSpec {
 	

@@ -19,8 +19,7 @@ package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.Elements._
-import org.scalatest.{FunSuite, FunSpec}
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.FunSpec
 
 class ElementsTest extends FunSpec {
 	describe ("Element") {

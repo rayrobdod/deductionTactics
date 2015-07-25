@@ -20,8 +20,7 @@ package com.rayrobdod.deductionTactics
 import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.StrictRectangularSpaceViaFutures
 import com.rayrobdod.deductionTactics.BodyTypes._
-import org.scalatest.{FunSuite, FunSpec}
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.FunSpec
 
 class BodyTypesTest extends FunSpec {
 	

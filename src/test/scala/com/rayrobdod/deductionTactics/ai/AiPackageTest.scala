@@ -20,8 +20,7 @@ package ai
 
 import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.{RectangularField, Space}
-import org.scalatest.{FunSuite, FunSpec}
-import org.scalatest.prop.PropertyChecks
+import org.scalatest.FunSpec
 
 class MoveRangeOfTest extends FunSpec {
 	val board = RectangularField( Seq.fill(4,4)(UniPassageSpaceClass.apply) )
