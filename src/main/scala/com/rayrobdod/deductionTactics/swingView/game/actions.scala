@@ -147,10 +147,10 @@ class SelectNextActionableTokenAction(
 	def actionPerformed(e:ActionEvent):Unit = {
 		val initialPlayerTokenIndex:Int = selectedToken.get.filter{_._1 == playerNumber}.map{_._2}.getOrElse{-1}
 		val rotation = (currentTokens().alivePlayerTokens(playerNumber) ++ currentTokens().alivePlayerTokens(playerNumber)).drop(initialPlayerTokenIndex + 1)
-		val nextToken = rotation.filter{ListOfTokens.aliveFilter}.filter{x => x.canMoveThisTurn > 0 || x.canAttackThisTurn}.head
-		val nextTokenIndex = currentTokens().indexOf(nextToken)
-		val nextSpaceIndex = field.find{_._2 == nextToken.currentSpace}.get._1
-		selectedToken.set(Option(nextTokenIndex))
-		selectedSpace.set(nextSpaceIndex)
+		val nextToken = rotation.filter{ListOfTokens.aliveFilter}.filter{x => x.canMoveThisTurn > 0 || x.canAttackThisTurn}.headOption
+		val nextTokenIndex = nextToken.map{x => currentTokens().indexOf(x)}
+		val nextSpaceIndex = nextToken.map{x => field.find{_._2 == x.currentSpace}.get._1}
+		selectedToken.set(nextTokenIndex)
+		nextSpaceIndex.foreach{x => selectedSpace.set(x)}
 	}
 }
