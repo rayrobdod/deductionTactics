@@ -79,7 +79,7 @@ class ClearSelectionAction(
  * depending on context may select the token on that space as well.
  */
 class SelectAction(
-		selectedSpace:Function0[RectangularFieldIndex],
+		selectedSpaceIndex:Function0[RectangularFieldIndex],
 		currentTokens:Function0[ListOfTokens],
 		field:RectangularField[SpaceClass],
 		selectedTokenIndex:CurrentlySelectedTokenProperty,
@@ -90,7 +90,8 @@ class SelectAction(
 	def actionPerformed(e:ActionEvent):Unit = {
 		pieMenuLayer.removeAll()
 		
-		val tokenOnThisSpace:Option[Token] = currentTokens().aliveTokens.flatten.filter{_.currentSpace == field(selectedSpace())}.headOption
+		val selectedSpace:StrictRectangularSpace[SpaceClass] = field(selectedSpaceIndex())
+		val tokenOnThisSpace:Option[Token] = currentTokens().aliveTokens.flatten.filter{_.currentSpace == selectedSpace}.headOption
 		val tokenOnThisSpaceIndex:Option[TokenIndex] = tokenOnThisSpace.map{currentTokens().indexOf _}
 		
 		val newSelectedTokenIndex = selectedTokenIndex.get.fold[Option[TokenIndex]]{
@@ -104,22 +105,53 @@ class SelectAction(
 			
 			tokenOnThisSpaceIndex
 		}{(index) =>
+			val selectedToken:Token = currentTokens().tokens(index)
+			val moveCostFun = new MoveToCostFunction(selectedToken, currentTokens())
+			val attackCostFun = new AttackCostFunction(selectedToken, currentTokens())
+			
 			if (index._1 == playerNumber) {
 				// selected token is mine
 				
-				tokenOnThisSpace.fold{
-					val b = generateButton("moveToButton", GameState.TokenMove(currentTokens().tokens(index), field(selectedSpace())))
+				if (selectedToken.currentSpace.distanceTo(selectedSpace, moveCostFun) <= selectedToken.canMoveThisTurn) {
+					// if selected space is within speed, present option to move to space
+					val b = generateButton("moveToButton", GameState.TokenMove(currentTokens().tokens(index), selectedSpace))
 					pieMenuLayer.add(b)
 					b.requestFocusInWindow()
-				}{t =>
-					val b = generateButton("damageAttackButton", GameState.TokenAttackDamage(currentTokens().tokens(index), t))
-					pieMenuLayer.add(b)
-					pieMenuLayer.add(generateButton("statusAttackButton", GameState.TokenAttackStatus(currentTokens().tokens(index), t)))
-					b.requestFocusInWindow()
+				} else {
+					// if selected space is not within speed, present option to move as far along path to space as possible
+					val path = selectedToken.currentSpace.pathTo(selectedSpace, moveCostFun)
+					val endSpace = path.takeWhile{selectedToken.currentSpace.distanceTo(_, moveCostFun) <= selectedToken.canMoveThisTurn}.last
+					
+					if (endSpace != selectedToken.currentSpace) {
+						val b = generateButton("moveTowardsButton", GameState.TokenMove(currentTokens().tokens(index), endSpace))
+						pieMenuLayer.add(b)
+						b.requestFocusInWindow()
+					}
+				}
+				
+				tokenOnThisSpace.foreach[Unit]{t =>
+					if (selectedToken.canAttackThisTurn &&
+						tokenOnThisSpaceIndex.get._1 != playerNumber
+					) {
+						if (selectedToken.currentSpace.distanceTo(t.currentSpace, attackCostFun) <= selectedToken.tokenClass.map{_.range}.getOrElse{0}) {
+							// enemy token is in range
+							val b = generateButton("damageAttackButton", GameState.TokenAttackDamage(currentTokens().tokens(index), t))
+							pieMenuLayer.add(b)
+							pieMenuLayer.add(generateButton("statusAttackButton", GameState.TokenAttackStatus(currentTokens().tokens(index), t)))
+							b.requestFocusInWindow()
+						} else if (ai.attackRangeOf(selectedToken, currentTokens()).contains(t.currentSpace)) {
+							// enemy token is in range + speed
+							
+							// TODO: move then attack
+						} else {
+							// enemy cannot be reached
+						}
+					} else {
+						// cannot attack other token at all
+					}
 				}
 				
 				selectedTokenIndex.get
-				
 			} else {
 				// selected token is not mine
 				tokenOnThisSpaceIndex
