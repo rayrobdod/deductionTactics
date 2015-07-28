@@ -15,11 +15,13 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.swingView
+package com.rayrobdod.deductionTactics.swingView.menuBar
 
 import java.awt.event.{ActionListener, ActionEvent}
 import javax.swing.{JRadioButton, ButtonGroup, JLabel, JComponent, SwingConstants, JPanel}
 import com.rayrobdod.deductionTactics.TokenClass
+import com.rayrobdod.deductionTactics.swingView.TokenClassPanel
+import com.rayrobdod.deductionTactics.swingView.tokenClassToIcon
 
 /**
  * @author Raymond Dodge

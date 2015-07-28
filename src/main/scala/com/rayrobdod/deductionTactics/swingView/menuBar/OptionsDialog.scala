@@ -15,7 +15,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.swingView
+package com.rayrobdod.deductionTactics.swingView.menuBar
 
 import com.rayrobdod.deductionTactics.SpaceClass
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet}
@@ -23,6 +23,8 @@ import java.awt.{Window, Dialog}
 import javax.swing.{JPanel, JList, JLabel, JTextField}
 import java.awt.event.{ActionListener, ActionEvent}
 import com.rayrobdod.swing.GridBagConstraintsFactory
+import com.rayrobdod.deductionTactics.swingView.AvailibleTilesheetListModel
+import com.rayrobdod.deductionTactics.swingView.game.BoardGamePanel
 
 /**
  * An interface for setting options
@@ -33,10 +35,10 @@ class OptionsPanel extends JPanel
 {
 	val currentTilesheet = new JList[RectangularTilesheet[SpaceClass]](AvailibleTilesheetListModel)
 	currentTilesheet.setCellRenderer(TilesheetListRenderer)
-	currentTilesheet.setSelectedValue(game.BoardGamePanel.currentTilesheet, true)
+	currentTilesheet.setSelectedValue(BoardGamePanel.currentTilesheet, true)
 	
 	val movementSpeed = new JTextField(5)
-	movementSpeed.setText(game.BoardGamePanel.movementSpeed.toString)
+	movementSpeed.setText(BoardGamePanel.movementSpeed.toString)
 	
 	this.setLayout(new java.awt.GridBagLayout())
 	this.add(new JLabel("the tilesheet to use"),
@@ -52,8 +54,8 @@ class OptionsPanel extends JPanel
 	object apply extends ActionListener() {
 		override def actionPerformed(e:ActionEvent)
 		{
-			game.BoardGamePanel.currentTilesheet = currentTilesheet.getSelectedValue()
-			game.BoardGamePanel.movementSpeed = Integer.parseInt(movementSpeed.getText)
+			BoardGamePanel.currentTilesheet = currentTilesheet.getSelectedValue()
+			BoardGamePanel.movementSpeed = Integer.parseInt(movementSpeed.getText)
 		}
 	}
 }

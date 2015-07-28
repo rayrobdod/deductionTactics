@@ -46,7 +46,7 @@ class Top {
 		val aisPanel = new ChooseAIsComponent
 		
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-		frame.setJMenuBar(new com.rayrobdod.deductionTactics.swingView.MenuBar)
+		frame.setJMenuBar(new com.rayrobdod.deductionTactics.swingView.menuBar.MenuBar)
 		
 		val mapChoosingPanel = new JPanel(new GridBagLayout());
 		{

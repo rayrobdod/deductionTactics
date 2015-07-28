@@ -15,10 +15,11 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.swingView
+package com.rayrobdod.deductionTactics.swingView.menuBar
 
-import javax.swing.{JMenuBar, JMenu, JMenuItem, JFrame, JScrollPane, JDialog, JLabel}
 import java.awt.event.{ActionListener, ActionEvent}
+import java.awt.BorderLayout.{NORTH, SOUTH}
+import javax.swing.{JMenuBar, JMenu, JMenuItem, JFrame, JScrollPane, JDialog, JLabel}
 import javax.swing.event.{ChangeListener, ChangeEvent}
 import javax.swing.ScrollPaneConstants.{
 		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
@@ -26,9 +27,9 @@ import javax.swing.ScrollPaneConstants.{
 }
 import javax.swing.SwingUtilities.getWindowAncestor
 import com.rayrobdod.deductionTactics.TokenClass
-import com.rayrobdod.deductionTactics.{CannonicalTokenClassTemplate => TokenClassBuilder}
-import java.awt.BorderLayout.{NORTH, SOUTH}
-		
+import com.rayrobdod.deductionTactics.swingView.HumanSuspicionsPanel
+import com.rayrobdod.deductionTactics.swingView.aboutDialogString
+
 /**
  * @author Raymond Dodge
  * @version a.6.0

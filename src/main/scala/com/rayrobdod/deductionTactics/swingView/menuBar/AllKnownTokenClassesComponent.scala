@@ -15,12 +15,13 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.swingView
+package com.rayrobdod.deductionTactics.swingView.menuBar
 
 import javax.swing.{JPanel, JComponent}
 import java.awt.{FlowLayout, Container, Dimension}
 import com.rayrobdod.deductionTactics.{TokenClass}
 import scala.collection.immutable.Seq
+import com.rayrobdod.deductionTactics.swingView.TokenClassPanel
 
 /**
  * @version a.6.0

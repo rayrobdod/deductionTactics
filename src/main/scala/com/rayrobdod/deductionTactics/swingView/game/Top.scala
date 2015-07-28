@@ -207,7 +207,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	frame.getContentPane.add(centerpiece)
 	frame.getContentPane.add(tokenInfoPanel, java.awt.BorderLayout.EAST)
 	frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-	frame.setJMenuBar(new com.rayrobdod.deductionTactics.swingView.MenuBar)
+	frame.setJMenuBar(new com.rayrobdod.deductionTactics.swingView.menuBar.MenuBar)
 	frame.pack()
 	
 	def setVisible(visible:Boolean):Unit = {

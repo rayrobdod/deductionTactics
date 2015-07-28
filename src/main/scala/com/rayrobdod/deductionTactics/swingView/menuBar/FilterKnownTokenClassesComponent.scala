@@ -15,7 +15,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.swingView
+package com.rayrobdod.deductionTactics.swingView.menuBar
 
 import javax.swing.{JList, JButton, JPanel, JFrame, JScrollPane, BoxLayout}
 import javax.swing.BoxLayout.{Y_AXIS => boxYAxis}
@@ -25,6 +25,7 @@ import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.TokenClass
 import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
+import com.rayrobdod.deductionTactics.swingView.TokenClassPanel
 
 /**
  */

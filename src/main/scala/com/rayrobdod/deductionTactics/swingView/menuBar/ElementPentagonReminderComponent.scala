@@ -15,13 +15,14 @@
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package com.rayrobdod.deductionTactics.swingView
+package com.rayrobdod.deductionTactics.swingView.menuBar
 
 import com.rayrobdod.deductionTactics.Elements
 import com.rayrobdod.deductionTactics.Elements.Element
 import javax.swing.{BoxLayout, JPanel, JLabel, SwingConstants}
 import javax.swing.BoxLayout.{PAGE_AXIS => pageAxis}
 import java.awt.GridLayout
+import com.rayrobdod.deductionTactics.swingView.makeIconFor
 
 /**
  * A small component to remind the elemnt relationships
