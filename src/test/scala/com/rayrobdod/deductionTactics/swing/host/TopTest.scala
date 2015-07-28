@@ -190,6 +190,22 @@ class TopTest extends FunSpec {
 			cancelButton.doClick()
 			assert(! frame.isDisplayable)
 		}
+		it ("Does not allow multiple playerCount to be selected") {
+			val (frame, target) = this.createNextFrameAndListener()
+			
+			val playerCount = getPlayerCountList(frame)
+			playerCount.setSelectedIndices(Array(0, 1))
+			
+			val nextButton:JButton = getButton(frame, "nextButton")
+			nextButton.doClick()
+			
+			// dispose was called
+			assert(! frame.isDisplayable)
+			
+			assertResult(Array(1)){playerCount.getSelectedIndices}
+			assert(target.hasBeenCalled)
+			assertResult(4){target.ais.size}
+		}
 		ignore ("Will not continue if no base ai is selected") {
 			val (frame, target) = this.createNextFrameAndListener()
 			

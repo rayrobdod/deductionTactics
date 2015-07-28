@@ -66,9 +66,9 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		val tilesheet = BoardGamePanel.currentTilesheet
 		
 		val fieldLayers = RectangularFieldComponent(field, tilesheet)
-		val tokenLayer = new TokenLayer(field, fieldLayers._2)
-		val highlightLayer = new HighlightMovableSpacesLayer(fieldLayers._2)
-		val cursorLayer = new CursorLayer(fieldLayers._2.spaceBounds _)
+		val tokenLayer = new TokenLayer(field, fieldLayers._1)
+		val highlightLayer = new HighlightMovableSpacesLayer(fieldLayers._1)
+		val cursorLayer = new CursorLayer(fieldLayers._1.spaceBounds _)
 		val pieMenuLayout = new PieMenuLayout
 		val pieMenuLayer = new JPanel(pieMenuLayout)
 		val spaceClassDisplay = new DisplaySpaceClassInfoInCorner
@@ -102,7 +102,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		pieMenuLayer.setBackground(new java.awt.Color(0, true))
 		pieMenuLayer.setOpaque(false)
 		tokenLayer.tokens = tokens
-		fieldLayers._2.addMouseListener(new MouseAdapter() {
+		fieldLayers._1.addMouseListener(new MouseAdapter() {
 			override def mouseClicked(e:MouseEvent):Unit  = {
 				pieMenuLayout.center = e.getPoint()
 				pieMenuLayer.invalidate()
@@ -110,7 +110,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 			}
 		})
 		field.keySet.foreach{x =>
-			fieldLayers._2.addMouseListener(x, new MouseListener() {
+			fieldLayers._1.addMouseListener(x, new MouseListener() {
 				def mouseEntered(e:MouseEvent):Unit  = {}
 				def mouseExited(e:MouseEvent):Unit   = {}
 				def mousePressed(e:MouseEvent):Unit  = {}
@@ -180,13 +180,13 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		val inputMap = rv.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW)
 		val actionMap = rv.getActionMap()
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "MoveLeft")
-		actionMap.put("MoveLeft", new MoveCursorAction("MoveLeft", {x => x.left.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._2.spaceBounds _))
+		actionMap.put("MoveLeft", new MoveCursorAction("MoveLeft", {x => x.left.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "MoveUp")
-		actionMap.put("MoveUp", new MoveCursorAction("MoveUp", {x => x.up.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._2.spaceBounds _))
+		actionMap.put("MoveUp", new MoveCursorAction("MoveUp", {x => x.up.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "MoveRight")
-		actionMap.put("MoveRight", new MoveCursorAction("MoveRight", {x => x.right.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._2.spaceBounds _))
+		actionMap.put("MoveRight", new MoveCursorAction("MoveRight", {x => x.right.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "MoveDown")
-		actionMap.put("MoveDown", new MoveCursorAction("MoveDown", {x => x.down.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._2.spaceBounds _))
+		actionMap.put("MoveDown", new MoveCursorAction("MoveDown", {x => x.down.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0), "Select")
 		actionMap.put("Select", selectAction)
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, 0), "Clear")

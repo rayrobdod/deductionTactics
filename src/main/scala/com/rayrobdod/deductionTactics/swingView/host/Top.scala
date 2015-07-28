@@ -59,6 +59,7 @@ class Top {
 			
 			playerCount.setLayoutOrientation(JList.VERTICAL_WRAP)
 			playerCount.setVisibleRowCount(1)
+			playerCount.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
 			mapList.setVisibleRowCount(8)
 			mapList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
 			
