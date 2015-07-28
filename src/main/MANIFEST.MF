@@ -1,5 +1,5 @@
 Manifest-Version: 1.0  
-Main-Class: com.rayrobdod.deductionTactics.main.SimpleStart
+Main-Class: com.rayrobdod.deductionTactics.main.Main
 Implementation-Vendor: Raymond Dodge
 Implementation-URL: http://rayrobdod.name/programming/java/programs/deductionTactics/
 Implementation-Title: Deduction Tactics
@@ -16,8 +16,8 @@ Implementation-Version: 2.9.3
 Implementation-URL: http://www.scala-lang.org/
 Implementation-Title: Scala
 
-Name: au/com/bytecode/opencsv/
-Implementation-Version: 2.3
+Name: com/opencsv/
+Implementation-Version: 3.4
 Implementation-URL: http://opencsv.sourceforge.net/
 Implementation-Title: opencsv
 

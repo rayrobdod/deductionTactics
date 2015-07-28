@@ -13,6 +13,9 @@ crossScalaVersions := Seq("2.10.5", "2.11.7")
 // heavy resource use, including ResourceBundles
 fork := true
 
+// proguard doesn't see the META-INF without this
+exportJars := true
+
 mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
 
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "20140518")
