@@ -98,7 +98,7 @@ class MenuBar() extends JMenuBar
 			}
 		}))
 		
-		/* a.add(myMenuItem("classesFilterMenu", new ActionListener{
+		a.add(myMenuItem("classesFilterMenu", new ActionListener{
 			def actionPerformed(e:ActionEvent) = {
 				val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
 				
@@ -106,19 +106,19 @@ class MenuBar() extends JMenuBar
 				frame.add(new JScrollPane(display,
 						scrollVerticalAsNeeded, scrollHorizontalNever))
 					
-				val filterClass = new TokenClassBuilder
+				var filterClass = new com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
 				val filterPanel = new HumanSuspicionsPanel(filterClass)
 				frame.add(filterPanel, NORTH)
-				filterPanel.addChangeListener(new ChangeListener(){
-					override def stateChanged(e:ChangeEvent) {
-						display.filter(filterClass)
-					}
-				})
+				filterPanel.addUpdateListener{(update) =>
+					filterClass = update(filterClass)
+					display.applyFilter(filterClass)
+					frame.validate()
+				}
 				frame.setTitle(resources.getString("classesFilterFrameTitle"))
 				frame.setSize(250,600)
 				frame.setVisible(true)
 			}
-		})) */
+		}))
 		
 		a.add(myMenuItem("elementsMenu", new ActionListener{
 			def actionPerformed(e:ActionEvent):Unit = {

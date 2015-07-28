@@ -21,21 +21,20 @@ import javax.swing.{JList, JButton, JPanel, JFrame, JScrollPane, BoxLayout}
 import javax.swing.BoxLayout.{Y_AXIS => boxYAxis}
 import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever}
-import com.rayrobdod.deductionTactics.{TokenClass, CannonicalTokenClassTemplate => TokenClassBuilder }
 import scala.collection.immutable.Seq
+import com.rayrobdod.deductionTactics.TokenClass
+import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 
 /**
- * @author Raymond Dodge
  */
-class FilterKnownTokenClassesComponent extends JPanel
-{
+class FilterKnownTokenClassesComponent extends JPanel {
 	val tokenClassesAndComps = TokenClass.allKnown.map{(x:TokenClass) => (( x, new TokenClassPanel(x) ))}.toMap
 	
 	this.setLayout(new BoxLayout(this, boxYAxis))
-	this.filter(new TokenClassBuilder)
+	this.applyFilter(new TokenClassSuspicion)
 	
-	def filter(tokenClass:TokenClassBuilder) {
+	def applyFilter(tokenClass:TokenClassSuspicion):Unit = {
 		val applicable = tokenClassesAndComps.filterKeys(new TokenClassMatcher(tokenClass))
 		
 		this.removeAll()
@@ -44,42 +43,18 @@ class FilterKnownTokenClassesComponent extends JPanel
 }
 
 /**
- * @author Raymond Dodge
  */
-class TokenClassMatcher(template:TokenClassBuilder) extends Function1[TokenClass,Boolean]
-	{
-		def apply(tc:TokenClass):Boolean = {
-			(
-				eitherIsNoneOrBothAreEqual(template.atkElement, tc.atkElement) &&
-				eitherIsNoneOrBothAreEqual(template.atkWeapon, tc.atkWeapon) &&
-				eitherIsNoneOrBothAreEqual(template.atkStatus, tc.atkStatus) &&
-				eitherIsNoneOrAIsLessThanOrEqualToB(template.range, tc.range) &&
-				eitherIsNoneOrAIsLessThanOrEqualToB(template.speed, tc.speed) &&
-				
-				eitherIsNoneOrBothAreEqual(template.weakDirection, tc.weakDirection) &&
-				eitherIsNoneOrBothAreEqual(template.weakStatus, tc.weakStatus) &&
-				template.weakWeapon.keys.forall{(key:Weaponkind) =>
-						eitherIsNoneOrBothAreEqual(template.weakWeapon(key), tc.weakWeapon(key))} 
-			)
-		}
-		
-		private def eitherIsNoneOrBothAreEqual[A](a:Option[A], b:Option[A]) =
-		{
-			!a.isDefined || !b.isDefined || (a.get == b.get) 
-		}
-		
-		private def eitherIsNoneOrBothAreEqual[A](a:Option[A], b:A) =
-		{
-			!a.isDefined || (a.get == b) 
-		}
-		
-		private def eitherIsNoneOrAIsLessThanOrEqualToB(a:Option[Int], b:Option[Int]) =
-		{
-			!a.isDefined || !b.isDefined || (a.get <= b.get) 
-		}
-		
-		private def eitherIsNoneOrAIsLessThanOrEqualToB(a:Option[Int], b:Int) =
-		{
-			!a.isDefined || (a.get <= b) 
+class TokenClassMatcher(template:TokenClassSuspicion) extends Function1[TokenClass,Boolean] {
+	def apply(tc:TokenClass):Boolean = {
+		template.atkElement.map{_ == tc.atkElement}.getOrElse(true) &&
+		template.atkWeapon.map{_ == tc.atkWeapon}.getOrElse(true) &&
+		template.atkStatus.map{_ == tc.atkStatus}.getOrElse(true) &&
+		(template.speed.getOrElse(0) <= tc.speed) &&
+		(template.range.getOrElse(0) <= tc.range) &&
+		template.weakDirection.map{_ == tc.weakDirection}.getOrElse(true) &&
+		template.weakStatus.map{_ == tc.weakStatus}.getOrElse(true) &&
+		template.weakWeapon.keys.forall{(key:Weaponkind) =>
+			template.weakWeapon(key).map{_ == tc.weakWeapon(key)}.getOrElse(true)
 		}
 	}
+}
