@@ -45,14 +45,6 @@ excludeFilter in unmanagedSources in Compile := new FileFilter{
 	def accept(n:File) = {
 		val abPath = n.getAbsolutePath().replace('\\', '/')
 		(
-			(abPath endsWith "com/rayrobdod/deductionTactics/ai/GangUpAI.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/ai/NetworkClient.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithNetworkServer.scala") ||
-			//
-			(abPath endsWith "com/rayrobdod/deductionTactics/ai/ConsoleInterface_CFN.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/ai/WithConsoleViewport.scala") ||
-			(abPath endsWith "com/rayrobdod/deductionTactics/consoleView/CommandParser.scala") ||
-			(abPath contains "com/rayrobdod/deductionTactics/swingView/ChooserFrame.scala") ||
 			(abPath contains "com/rayrobdod/deductionTactics/main/SimpleStart") ||
 			false
 		)
@@ -64,10 +56,7 @@ excludeFilter in unmanagedResources in Compile := new FileFilter{
 		val abPath = n.getAbsolutePath().replace('\\', '/')
 		(
 			((abPath contains "/Hits/") && !((abPath endsWith "/Hits/Hit.wav") || (abPath endsWith "/Hits/license.txt"))) ||
-			(abPath endsWith "deductionTacticsCombined.svg") ||
-			(abPath endsWith "tokenClasses/basic.json.php") ||
 			(abPath contains "tokenClasses/sportsmen/") ||
-			(abPath contains "tilemaps/Field Chess") ||
 			((abPath contains "deductionTactics/maps/") && (abPath endsWith ".png"))
 		)
 	}
