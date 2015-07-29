@@ -30,7 +30,7 @@ object Statuses {
 		override def toString:String = "com.rayrobdod.deductionTactics.Statuses." + name
 		
 		/**
-		 * Number of moves
+		 * Number of random moves inuced per turn
 		 * @since a.6.0
 		 */
 		def randMovesPerTurn:Int = 0
