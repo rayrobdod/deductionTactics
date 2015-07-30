@@ -24,6 +24,7 @@ import com.rayrobdod.boardGame.RectangularFieldIndex
 /**
  * An observable container for a [[RectangularFieldIndex]]
  * @see javafx.beans.value.ObservableValue
+ * @since a.6.0
  */
 class CurrentlySelectedSpaceProperty {
 	import CurrentlySelectedSpaceProperty.ChangeListener

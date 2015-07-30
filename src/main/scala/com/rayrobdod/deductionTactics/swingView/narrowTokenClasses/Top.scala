@@ -35,6 +35,7 @@ import scala.collection.JavaConversions.asScalaBuffer
 
 /**
  * @pre 0 <= myIndex < choosenClasses.size
+ * @since a.6.0
  */
 class Top(
 		val myIndex:Int,

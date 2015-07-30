@@ -21,6 +21,7 @@ package main
 import scala.collection.immutable.Seq
 import com.rayrobdod.boardGame.{Space, RectangularField}
 
+/** @version a.6.0 */
 object Main {
 	def main(args:Array[String]):Unit = {
 		this.startNewGame()

@@ -28,6 +28,7 @@ import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 import com.rayrobdod.deductionTactics.swingView.TokenClassPanel
 
 /**
+ * @version a.6.0
  */
 class FilterKnownTokenClassesComponent extends JPanel {
 	val tokenClassesAndComps = TokenClass.allKnown.map{(x:TokenClass) => (( x, new TokenClassPanel(x) ))}.toMap
@@ -44,6 +45,7 @@ class FilterKnownTokenClassesComponent extends JPanel {
 }
 
 /**
+ * @version a.6.0
  */
 class TokenClassMatcher(template:TokenClassSuspicion) extends Function1[TokenClass,Boolean] {
 	def apply(tc:TokenClass):Boolean = {

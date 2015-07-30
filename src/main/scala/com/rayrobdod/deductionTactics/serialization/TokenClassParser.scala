@@ -20,6 +20,9 @@ package serialization
 
 import com.rayrobdod.json.builder.Builder
 
+/**
+ * @since a.6.0
+ */
 class TokenClassParser[A](builder:Builder[A]) {
 	
 	def parse(tclass:TokenClass, icon:Option[String]):A = {

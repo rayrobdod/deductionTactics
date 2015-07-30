@@ -35,6 +35,7 @@ import com.rayrobdod.deductionTactics.TokenClass
 import scala.collection.immutable.{Seq, IndexedSeq}
 import scala.collection.JavaConversions.asScalaBuffer
 
+/** @since a.6.0 */
 class Top(val maxResultSize:Int) {
 	private val resources = java.util.ResourceBundle.getBundle("com.rayrobdod.deductionTactics.swingView.text")
 	

@@ -40,7 +40,7 @@ import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
 
 
 /**
- * @version a.6.0
+ * @since a.6.0
  */
 final class TokenLayer(spaces:RectangularField[SpaceClass], tiles:RectangularTilemapComponent) extends JComponent {
 	private[this] var _tokens:ListOfTokens = new ListOfTokens(Nil)
@@ -78,6 +78,7 @@ final class TokenLayer(spaces:RectangularField[SpaceClass], tiles:RectangularTil
 
 object TokenIcon {
 	
+	/** @since a.6.0 */
 	def BeAttackedAnimation(elem:Element, kind:Weaponkind):ImageFrameAnimation = {
 		val effect:BlitzAnimImage = {
 			val effectFile = this.getClass().getResource(attackEffectFile(kind))
@@ -95,6 +96,7 @@ object TokenIcon {
 		new ImageFrameAnimation(effect, EFFECT_FRAME_LENGTH, false)
 	}
 	
+	/** @since a.6.0 */
 	def BeAttackedAnimation(status:Status):ImageFrameAnimation = {
 		val effect:BlitzAnimImage = {
 			val effectFile = this.getClass().getResource("/com/rayrobdod/glyphs/status/" + status.name.toLowerCase + "-i.png")

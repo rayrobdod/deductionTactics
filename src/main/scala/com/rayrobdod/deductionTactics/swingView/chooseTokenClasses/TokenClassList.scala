@@ -22,6 +22,7 @@ import javax.swing.{ListModel, JList, JToolTip}
 import com.rayrobdod.deductionTactics.TokenClass
 import com.rayrobdod.deductionTactics.swingView.chooseTokenClasses.NoWeaponWeakTokenClassListRenderer
 
+/** @since a.6.0 */
 class TokenClassList(dataModel:ListModel[TokenClass]) extends JList[TokenClass](dataModel) {
 	//def this() = this(new javax.swing.DefaultListModel[TokenClass]);
 	
@@ -65,6 +66,7 @@ import java.awt._;
 import javax.swing._;
 import javax.swing.plaf.metal.MetalToolTipUI;
 
+/** @since a.6.0 */
 private[TokenClassList] object MyToolTipUI extends MetalToolTipUI {
 	override def paint(g:Graphics, c:JComponent) {
 		val size = c.getSize()

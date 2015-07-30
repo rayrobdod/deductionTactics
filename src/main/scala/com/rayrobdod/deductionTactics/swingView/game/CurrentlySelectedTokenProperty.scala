@@ -23,6 +23,7 @@ import scala.collection.mutable.Buffer
 /**
  * An observable container for an Option[TokenIndex]
  * @see javafx.beans.value.ObservableValue
+ * @since a.6.0
  */
 class CurrentlySelectedTokenProperty {
 	import CurrentlySelectedTokenProperty.ChangeListener

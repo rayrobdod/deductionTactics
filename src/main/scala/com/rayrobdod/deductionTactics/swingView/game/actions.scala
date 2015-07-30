@@ -26,6 +26,7 @@ import com.rayrobdod.boardGame.{RectangularField, RectangularFieldIndex, StrictR
 /**
  * Upon a call to action performed, this will move the cursor
  * and then clear the context-sensitive buttons
+ * @since a.6.0
  */
 class MoveCursorAction(
 		name:String,
@@ -61,6 +62,7 @@ class MoveCursorAction(
 /**
  * Upon a call to actionPerformed, sets the selected token to None, and removes
  * all children of pieMenuLayer
+ * @since a.6.0
  */
 class ClearSelectionAction(
 		selectedSpace:CurrentlySelectedSpaceProperty,
@@ -77,6 +79,7 @@ class ClearSelectionAction(
 /**
  * Upon a call to actionPerformed, selects a particular space and 
  * depending on context may select the token on that space as well.
+ * @since a.6.0
  */
 class SelectAction(
 		selectedSpaceIndex:Function0[RectangularFieldIndex],
@@ -168,6 +171,7 @@ class SelectAction(
  * currentTokens and selects one that is able to perform actions and
  * owned by the player indicated by playerNumber
  * 
+ * @since a.6.0
  */
 class SelectNextActionableTokenAction(
 		selectedSpace:CurrentlySelectedSpaceProperty,

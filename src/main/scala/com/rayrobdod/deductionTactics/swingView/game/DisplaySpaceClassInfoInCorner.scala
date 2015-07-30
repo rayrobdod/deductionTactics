@@ -23,6 +23,7 @@ import com.rayrobdod.deductionTactics.SpaceClass
 
 /**
  * 
+ * @since a.6.0
  */
 final class DisplaySpaceClassInfoInCorner {
 	private[this] val panel = new JPanel(new GridBagLayout)

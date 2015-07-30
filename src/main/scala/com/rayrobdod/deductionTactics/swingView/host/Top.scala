@@ -33,6 +33,7 @@ import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 
 /**
  * A display for selecting an arena and players
+ * @since a.6.0
  */
 class Top {
 	import Top.NextListener

@@ -29,7 +29,7 @@ import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 
 /**
  * @author Raymond Dodge
- * @version a.7
+ * @since a.6.0
  */
 final class AiChoosingPanels
 {

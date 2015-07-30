@@ -31,12 +31,18 @@ import scala.collection.JavaConversions.iterableAsScalaIterable
  */
 abstract class PlayerAI {
 	
-	/** Selects a set of classes from all avaliable classes */
+	/**
+	 * Selects a set of classes from all avaliable classes
+	 * 
+	 * @since a.6.0
+	 * @param maxResultSize the maximum allowed size of the return value
+	 */
 	def selectTokenClasses(maxResultSize:Int):Seq[TokenClass]
 	
 	/**
 	 * Selects a set of classes from selectedTokenClasses
 	 *
+	 * @since a.6.0
 	 * @param selectedTokenClasses the token classes from which the return value may contain
 	 * @param maxResultSize the maximum allowed size of the return value
 	 * @param otherPlayersSelectedClasses other player's token classes
@@ -51,12 +57,14 @@ abstract class PlayerAI {
 	/**
 	 * The engine calls this to make a player take its turn.
 	 * The turn ends when this method returns to its caller.
+	 * @version a.6.0
 	 */
 	def takeTurn(player:Int, gameState:GameState, memo:ai.Memo):Seq[GameState.Action]
 	
 	/**
 	 * Notification of what another player did on its turn.
 	 * 
+	 * @since a.6.0
 	 * @param player the player who took an action
 	 * @param action the Action taken
 	 * @param beforeState the state before the action was taken
@@ -75,6 +83,8 @@ abstract class PlayerAI {
 	 * called once at the start of the game to allow the
 	 * AI to set up additional listeners or setup an IO
 	 * or other such tasks.
+	 * 
+	 * @version a.6.0
 	 */
 	def initialize(player:Int, initialState:GameState):ai.Memo
 }

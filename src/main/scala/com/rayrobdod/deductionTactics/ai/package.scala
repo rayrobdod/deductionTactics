@@ -142,7 +142,7 @@ package ai {
 		val weakStatus:Option[Status] = None
 	)
 	
-	
+	/** @since a.6.0 */
 	class DecoratorPlayerAI(base:PlayerAI) extends PlayerAI {
 		override def selectTokenClasses(maxResultSize:Int):Seq[TokenClass] = base.selectTokenClasses(maxResultSize)
 		

@@ -66,7 +66,7 @@ package object swingView
 		} else {UnsetNameAndIcon}
 	}
 	
-	/** @since a.5.3 */
+	/** @since a.6.0 */
 	val teamColors:Function1[Int,Color] = Seq(new Color(64,64,255), new Color(255,64,64), new Color(64,255,64), new Color(192,192,64) /*,... */)
 	
 	
@@ -226,7 +226,7 @@ package object swingView
 	
 	
 	/**
-	 * @version a.5.3
+	 * @version a.6.0
 	 */
 	val tokenClassNameToIcon:Map[String, Icon] =
 	{
@@ -250,7 +250,7 @@ package object swingView
 	}
 	
 	/**
-	 * @since a.5.1
+	 * @since a.6.0
 	 */
 	def tokenClassToIcon(tokenClass:TokenClass):Icon = {
 		tokenClassNameToIcon.getOrElse(tokenClass.name,
@@ -278,10 +278,10 @@ package object swingView
 	
 	import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularTilesheetLoader }
 	val tilesheets = new RectangularTilesheetLoader("com.rayrobdod.deductionTactics.view.tilesheet", SpaceClassMatcherFactory).toSeq
+	
 	/**
 	 * A ListModel of all tilesheets.
-	 * Would thought this could have a more immediate use
-	 * @version a.5.3
+	 * @version a.6.0
 	 */
 	final val AvailibleTilesheetListModel:ListModel[RectangularTilesheet[SpaceClass]] = new ScalaSeqListModel(tilesheets)
 	

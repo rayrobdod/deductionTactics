@@ -26,6 +26,9 @@ import scala.collection.immutable.{Seq, Set}
  * @version a.6.0
  */
 object Statuses {
+	/**
+	 * @version a.6.0
+	 */
 	abstract class Status(val id:Int, val name:String) {
 		override def toString:String = "com.rayrobdod.deductionTactics.Statuses." + name
 		

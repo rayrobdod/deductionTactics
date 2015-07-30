@@ -26,6 +26,9 @@ import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 import com.rayrobdod.deductionTactics.swingView.AiChoosingPanels
 import com.rayrobdod.deductionTactics.PlayerAI
 
+/**
+ * @since a.6.0
+ */
 class Top {
 	
 	private val resources = java.util.ResourceBundle.getBundle("com.rayrobdod.deductionTactics.swingView.text")

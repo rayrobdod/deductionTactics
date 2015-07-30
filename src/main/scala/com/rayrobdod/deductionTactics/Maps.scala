@@ -28,6 +28,9 @@ import com.rayrobdod.json.parser.JsonParser
 import com.rayrobdod.json.builder.{Builder, SeqBuilder, MapBuilder}
 import com.rayrobdod.boardGame.RectangularField
 
+/**
+ * @since a.6.0
+ */
 final case class Arena (
 	val name:String,
 	layoutStrs:Seq[Seq[String]],
@@ -41,6 +44,7 @@ final case class Arena (
 
 /**
  * A [[Builder]] for [[Arena]]s
+ * @since a.6.0
  */
 final class ArenaBuilder(baseDir:URL) extends Builder[Arena] {
 	override val init:Arena = new Arena("", Nil, Map.empty)
@@ -107,6 +111,9 @@ object Maps {
 		Seq.empty ++ new ResourcesServiceLoader(SERVICE);
 	}
 	
+	/**
+	 * @since a.6.0
+	 */
 	def arenas:Seq[Arena] = paths.map{x =>
 		var reader:Reader = new StringReader("{}")
 		try {
