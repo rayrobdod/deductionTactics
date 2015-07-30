@@ -115,9 +115,13 @@ class Top(val maxResultSize:Int) {
 		
 		
 		val navButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		frame.getContentPane().add(navButtonPanel, BorderLayout.SOUTH);
 		{
 			navButtonPanel.add(cancelButton)
 			navButtonPanel.add(nextButton)
+			cancelButton.setName("cancelButton")
+			nextButton.setName("nextButton")
+			nextButton.getRootPane.setDefaultButton(nextButton)
 			
 			cancelButton.addActionListener(new ActionListener() {
 				def actionPerformed(e:ActionEvent) {
@@ -135,8 +139,12 @@ class Top(val maxResultSize:Int) {
 		frame.getContentPane().add(new JScrollPane(allClasssesList,
 					scrollVerticalAlways, scrollHorizontalAlways))
 		frame.getContentPane().add(leftPanel, BorderLayout.WEST)
-		frame.getContentPane().add(navButtonPanel, BorderLayout.SOUTH)
 		frame.pack()
+		// pack makes the size larger than desktop
+		frame.setSize(
+				math.min(800, frame.getSize.width),
+				math.min(600, frame.getSize.height)
+		)
 	}
 	
 	
@@ -174,4 +182,3 @@ object Top {
 		t.show();
 	}
 }
-

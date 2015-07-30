@@ -19,8 +19,12 @@ package com.rayrobdod.deductionTactics.swingView.host
 
 import java.awt.{Component, BorderLayout, FlowLayout, GridLayout, GridBagLayout, GridBagConstraints}
 import java.awt.event.{ActionListener, ActionEvent}
-import javax.swing.{JList, ListCellRenderer, JButton, JPanel, JLabel, JFrame, WindowConstants, ListSelectionModel}
+import javax.swing.{JList, ListCellRenderer, JButton, JPanel, JLabel, JFrame, WindowConstants, ListSelectionModel, JScrollPane}
 import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
+import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
+		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
+		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
+		HORIZONTAL_SCROLLBAR_AS_NEEDED => scrollHorizontalAsNeeded}
 import scala.collection.immutable.Seq
 import scala.collection.mutable.Buffer
 import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
@@ -97,15 +101,15 @@ class Top {
 			mapChoosingPanel.add(tokensPerPlayer, GridBagConstraintsFactory(gridx = 1, gridy = 1, fill = GridBagConstraints.BOTH))
 			mapChoosingPanel.add(new JLabel(resources.getString("playersLabel")), GridBagConstraintsFactory(gridx = 0, gridy = 2, fill = GridBagConstraints.BOTH))
 			mapChoosingPanel.add(playerCount, GridBagConstraintsFactory(gridx = 1, gridy = 2, anchor = GridBagConstraints.LINE_START))
-			mapChoosingPanel.add(mapList, GridBagConstraintsFactory(gridx = 2, gridy = 0, gridheight = 3, weighty = 2, weightx = 2, fill = GridBagConstraints.BOTH))
+			mapChoosingPanel.add(new JScrollPane(mapList, scrollVerticalAsNeeded, scrollHorizontalAsNeeded), GridBagConstraintsFactory(gridx = 2, gridy = 0, gridheight = 3, weighty = 2, weightx = 2, fill = GridBagConstraints.BOTH))
 		}
 		
-		val topPanel = new JPanel(new GridLayout(2,1));
+		val topPanel = new JPanel(new GridBagLayout);
 		frame.getContentPane().add(topPanel);
 		{
 			topPanel.setName("topPanel")
-			topPanel.add(mapChoosingPanel)
-			topPanel.add(aisPanel)
+			topPanel.add(mapChoosingPanel, GridBagConstraintsFactory(gridx = 0, gridy = 0, weighty = 1, weightx = 1, fill = GridBagConstraints.BOTH))
+			topPanel.add(aisPanel, GridBagConstraintsFactory(gridx = 0, gridy = 1, weighty = 1, weightx = 1, fill = GridBagConstraints.BOTH))
 		}
 		
 		val buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
