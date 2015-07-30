@@ -57,7 +57,9 @@ final class TokenLayer(spaces:RectangularField[SpaceClass], tiles:RectangularTil
 		val t2:Map[(Int, Int), Option[TokenClass]] = {
 			tokens.tokens.zipWithIndex.flatMap{x =>
 				x._1.zipWithIndex.map{y => (( ((x._2, y._2)), y._1.tokenClass ))}
-			}.toMap
+			}.toMap.filterKeys{(index:(Int, Int)) =>
+				ListOfTokens.aliveFilter(tokens.tokens(index))
+			}
 		}
 		
 		t2.keySet.foreach{x =>

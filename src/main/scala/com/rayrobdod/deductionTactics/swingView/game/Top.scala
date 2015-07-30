@@ -161,7 +161,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 			spaceClassDisplay.showDetailsOf(spaceClass, anchor)
 		}
 		selectedSpace.addChangeListener{x =>
-			val tokenOnSpace:Option[Token] = currentTokens.tokens.flatten.find{_.currentSpace == field(x)}
+			val tokenOnSpace:Option[Token] = currentTokens.aliveTokens.flatten.find{_.currentSpace == field(x)}
 			tokenInfoPanel.removeAll()
 			tokenOnSpace.map{t =>
 				val tokenIndex = currentTokens.indexOf(t)
