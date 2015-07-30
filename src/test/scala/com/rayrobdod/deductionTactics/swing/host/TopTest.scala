@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics.swingView.host
 
 import org.scalatest.{FunSpec}
-import javax.swing.{JFrame, JButton, JPanel, JList}
+import javax.swing.{JFrame, JButton, JPanel, JList, JScrollPane}
 import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.ai.{BlindAttackAI, SwingInterface, WithRandomTeam}
 import com.rayrobdod.deductionTactics.{Arena, PlayerAI, Maps}
@@ -273,8 +273,12 @@ class TopTest extends FunSpec {
 				.find{_.getName == "mapChoosingPanel"}
 				.map{_.asInstanceOf[JPanel]}
 				.map{x => x.getComponents
-					.find{_.getName == "mapList"}
-					.map{_.asInstanceOf[JList[_]]}
+					.find{_.getName == "mapListScrollPane"}
+					.map{_.asInstanceOf[JScrollPane]}
+					.map{x => Option(x.getViewport.getView)
+						.find{_.getName == "mapList"}
+						.map{_.asInstanceOf[JList[_]]}
+					}.flatten
 				}.flatten
 			}.flatten
 			.get

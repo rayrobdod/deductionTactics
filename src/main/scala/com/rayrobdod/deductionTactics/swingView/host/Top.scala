@@ -57,9 +57,11 @@ class Top {
 		{
 			val mapPreviewPicture = new JLabel("Map Preview Picture")
 			val tokensPerPlayer = new JLabel("")
+			val mapListScrollPane = new JScrollPane(mapList, scrollVerticalAsNeeded, scrollHorizontalAsNeeded)
 			
 			mapChoosingPanel.setName("mapChoosingPanel")
 			mapList.setName("mapList")
+			mapListScrollPane.setName("mapListScrollPane")
 			playerCount.setName("playerCount")
 			
 			playerCount.setLayoutOrientation(JList.VERTICAL_WRAP)
@@ -102,7 +104,7 @@ class Top {
 			mapChoosingPanel.add(tokensPerPlayer, GridBagConstraintsFactory(gridx = 1, gridy = 1, fill = GridBagConstraints.BOTH))
 			mapChoosingPanel.add(new JLabel(resources.getString("playersLabel")), GridBagConstraintsFactory(gridx = 0, gridy = 2, fill = GridBagConstraints.BOTH))
 			mapChoosingPanel.add(playerCount, GridBagConstraintsFactory(gridx = 1, gridy = 2, anchor = GridBagConstraints.LINE_START))
-			mapChoosingPanel.add(new JScrollPane(mapList, scrollVerticalAsNeeded, scrollHorizontalAsNeeded), GridBagConstraintsFactory(gridx = 2, gridy = 0, gridheight = 3, weighty = 2, weightx = 2, fill = GridBagConstraints.BOTH))
+			mapChoosingPanel.add(mapListScrollPane, GridBagConstraintsFactory(gridx = 2, gridy = 0, gridheight = 3, weighty = 2, weightx = 2, fill = GridBagConstraints.BOTH))
 		}
 		
 		val topPanel = new JPanel(new GridBagLayout);
