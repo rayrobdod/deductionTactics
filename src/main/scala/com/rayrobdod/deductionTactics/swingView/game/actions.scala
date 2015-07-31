@@ -115,7 +115,12 @@ class SelectAction(
 			if (index._1 == playerNumber) {
 				// selected token is mine
 				
-				if (selectedToken.currentSpace.distanceTo(selectedSpace, moveCostFun) <= selectedToken.canMoveThisTurn) {
+				if (selectedToken.currentSpace == selectedSpace) {
+					// if selected space is current space, present option to perform a null-op
+					val b = generateButton("cancelButton", GameState.TokenMove(currentTokens().tokens(index), selectedSpace))
+					pieMenuLayer.add(b)
+					b.requestFocusInWindow()
+				} else if (selectedToken.currentSpace.distanceTo(selectedSpace, moveCostFun) <= selectedToken.canMoveThisTurn) {
 					// if selected space is within speed, present option to move to space
 					val b = generateButton("moveToButton", GameState.TokenMove(currentTokens().tokens(index), selectedSpace))
 					pieMenuLayer.add(b)
