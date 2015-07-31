@@ -30,6 +30,7 @@ import java.awt.{Graphics, Graphics2D}
 final class PieMenuLayout extends LayoutManager {
 	private[this] val MAX_COMPS_SHOWN = 8
 	private[this] val OFFSET_Y = 16
+	private[this] val OFFSET_X = 24
 	private[this] var _center:Point = new Point()
 	def center:Point = _center
 	def center_=(x:Point):Unit = {
@@ -58,6 +59,14 @@ final class PieMenuLayout extends LayoutManager {
 			comp1.setLocation(new Point(
 				center.x - (comp1.getSize.width / 2),
 				center.y + OFFSET_Y
+			))
+		}
+		if (count > 2) {
+			val comp1 = container.getComponent(2)
+			comp1.setSize(comp1.getPreferredSize)
+			comp1.setLocation(new Point(
+				center.x + OFFSET_X,
+				center.y - (comp1.getSize.height / 2)
 			))
 		}
 	}
