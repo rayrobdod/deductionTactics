@@ -4,7 +4,7 @@ organization := "com.rayrobdod"
 
 organizationHomepage := Some(new URL("http://rayrobdod.name/"))
 
-version := "a.6.0-SNAPSHOT"
+version := "a.6.0"
 
 scalaVersion := "2.10.5"
 
@@ -105,7 +105,7 @@ ProguardKeys.inputFilter in Proguard := { file =>
 }
 
 artifactPath in Proguard <<= (artifactPath in Proguard, proguardType, version).apply{(orig:File, level:String, version:String) =>
-	orig.getParentFile() / ("deductionTactics-" + version + "-full-" + level + ".jar")
+	orig.getParentFile() / ("deductionTactics-" + version + "-withdebug-" + level + ".jar")
 }
 
 javaOptions in (Proguard, ProguardKeys.proguard) += "-Xmx2G"

@@ -7,20 +7,6 @@ Wishlist:
 * Multi-stance tokens
 * The Spy, as described in the Three Hundred Mechanics article.
 
-== a.7.0 ==
-A new token selection scheme, in which each player selects a set of token
-classes independently, that set of tokens that each player chose is revealed to
-everyone, and then each player chooses a subset of the tokens chosen in the
-previous step.
-
-A new swing view, which shows the field and only one token's state at a time.
-
-This broke all animations that did exist.
-
-=== Fixes ===
-Reversing direction multipliers, so that what actually happens agrees with the
-intended and documnted results.
-
 == a.6.0 ==
 
 === Major/Breaking ===
@@ -32,8 +18,19 @@ imperative. Internal stuff. Doesn't matter in the slightest.
 * Tokens are treated as values, not as references.
 * PlayerAIs are expected to be stateless, with a Memo object being passed around instead
 
+A new token selection scheme, in which each player selects a set of token
+classes independently, that set of tokens that each player chose is revealed to
+everyone, and then each player chooses a subset of the tokens chosen in the
+previous step.
+
+A new swing view, which shows the field and only one token's state at a time.
+This broke all animations that did exist.
+
 === Fixes ===
 Players will take the maximum allowed number of tokens, rather than always trying to take five.
+
+Reversing direction multipliers, so that what actually happens agrees with the
+intended and documnted results.
 
 == a.5.3 ==
 * Metastability improvements
