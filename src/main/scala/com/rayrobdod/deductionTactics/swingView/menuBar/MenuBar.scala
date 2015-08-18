@@ -52,7 +52,7 @@ class MenuBar() extends JMenuBar
 		// TODO: disable menu item if Preferences are denied
 		a.add(myMenuItem("optionsMenu", new ActionListener{
 			def actionPerformed(e:ActionEvent):Unit = {
-				val optionsPanel = new OptionsPanel
+				val optionsPanel = new AppearanceOptionsPanel
 				
 				val result = javax.swing.JOptionPane.showOptionDialog(
 						getWindowAncestor(MenuBar.this),

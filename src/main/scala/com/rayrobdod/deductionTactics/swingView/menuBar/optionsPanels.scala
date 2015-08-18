@@ -20,25 +20,26 @@ package com.rayrobdod.deductionTactics.swingView.menuBar
 import com.rayrobdod.deductionTactics.SpaceClass
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet}
 import java.awt.{Window, Dialog}
-import javax.swing.{JPanel, JList, JLabel, JTextField}
+import javax.swing.{JComponent, JPanel, JList, JLabel, JTextField, KeyStroke}
 import java.awt.event.{ActionListener, ActionEvent}
 import com.rayrobdod.swing.GridBagConstraintsFactory
 import com.rayrobdod.deductionTactics.swingView.AvailibleTilesheetListModel
-import com.rayrobdod.deductionTactics.swingView.game.BoardGamePanel
+import com.rayrobdod.deductionTactics.swingView.game.{preferences => gamePreferences}
 
 /**
  * An interface for setting options
- * @author Raymond Dodge
- * @version a.6.0
+ * 
+ * Previously known as OptionsPanel
+ * @version next
  */
-class OptionsPanel extends JPanel
+class AppearanceOptionsPanel extends JPanel
 {
 	val currentTilesheet = new JList[RectangularTilesheet[SpaceClass]](AvailibleTilesheetListModel)
 	currentTilesheet.setCellRenderer(TilesheetListRenderer)
-	currentTilesheet.setSelectedValue(BoardGamePanel.currentTilesheet, true)
+	currentTilesheet.setSelectedValue(gamePreferences.currentTilesheet, true)
 	
 	val movementSpeed = new JTextField(5)
-	movementSpeed.setText(BoardGamePanel.movementSpeed.toString)
+	movementSpeed.setText(gamePreferences.movementSpeed.toString)
 	
 	this.setLayout(new java.awt.GridBagLayout())
 	this.add(new JLabel("the tilesheet to use"),
@@ -54,8 +55,8 @@ class OptionsPanel extends JPanel
 	object apply extends ActionListener() {
 		override def actionPerformed(e:ActionEvent)
 		{
-			BoardGamePanel.currentTilesheet = currentTilesheet.getSelectedValue()
-			BoardGamePanel.movementSpeed = Integer.parseInt(movementSpeed.getText)
+			gamePreferences.currentTilesheet = currentTilesheet.getSelectedValue()
+			gamePreferences.movementSpeed = Integer.parseInt(movementSpeed.getText)
 		}
 	}
 }

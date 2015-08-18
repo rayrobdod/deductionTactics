@@ -3,6 +3,7 @@
 Wishlist:
 * Token Animations
   * Probably in the Liberated Pixel Cup style
+* reasignment of keyboard commands in swingView
 * alternative console-based main method
 * Multi-stance tokens
 * The Spy, as described in the Three Hundred Mechanics article.

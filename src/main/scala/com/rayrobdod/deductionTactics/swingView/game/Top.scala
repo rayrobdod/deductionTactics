@@ -63,7 +63,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	
 	private[this] val centerpiece = {
 		val rv = new JPanel(new com.rayrobdod.swing.layouts.LayeredLayout)
-		val tilesheet = BoardGamePanel.currentTilesheet
+		val tilesheet = preferences.currentTilesheet
 		
 		val fieldLayers = RectangularFieldComponent(field, tilesheet)
 		val tokenLayer = new TokenLayer(field, fieldLayers._1)
@@ -236,59 +236,6 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	
 	def addActionPerformedListener(f:ActionPerformedListener):Unit = {
 		actionPerformedListeners += f
-	}
-}
-
-/**
- * constants used by the BoardGamePanel class
- * @author Raymond Dodge
- * @since a.5.1
- */
-object BoardGamePanel {
-	import java.util.prefs.Preferences;
-	
-	val movementSpeedPrefsKey:String = "tokenMoveSpeed";
-	val tilesheetPrefsKey:String = "tilesheetIndex";
-	private def myPrefs = try {
-		Preferences.userNodeForPackage(this.getClass);
-	} catch {
-		case e:java.security.AccessControlException => NilPreferences
-	}
-	
-	def movementSpeed:Int = {
-		myPrefs.getInt( movementSpeedPrefsKey, 15 );
-	}
-	def movementSpeed_=(x:Int):Unit = {
-		myPrefs.putInt( movementSpeedPrefsKey, x );
-	}
-	
-	/* ... ... ... */
-	def currentTilesheet:RectangularTilesheet[SpaceClass] = {
-		val size = AvailibleTilesheetListModel.getSize()
-		val pref = myPrefs.getInt(tilesheetPrefsKey, 0)
-		
-		AvailibleTilesheetListModel.getElementAt(
-			math.min(size - 1, pref)
-		)
-	}
-	
-	def currentTilesheet_=(x:RectangularTilesheet[SpaceClass]):Unit = {
-		val index = tilesheets.indexOf(x);
-		myPrefs.putInt(tilesheetPrefsKey, index);
-	}
-	
-	
-	
-	private object NilPreferences extends java.util.prefs.AbstractPreferences(null, "") {
-		def getSpi(key:String) = null
-		def putSpi(key:String, value:String) {}
-		def removeSpi(key:String) {}
-		def removeNodeSpi() {}
-		def keysSpi() = new Array(0)
-		def childrenNamesSpi() = new Array(0)
-		def flushSpi() {}
-		def syncSpi() {}
-		def childSpi(key:String) = NilPreferences
 	}
 }
 
