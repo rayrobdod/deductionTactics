@@ -22,6 +22,8 @@ import com.rayrobdod.boardGame.swingView.{RectangularTilesheet}
 import java.awt.{Window, Dialog}
 import javax.swing.{JComponent, JPanel, JList, JLabel, JTextField, KeyStroke}
 import java.awt.event.{ActionListener, ActionEvent}
+import java.awt.event.{KeyEvent, KeyListener, KeyAdapter}
+import java.awt.event.{MouseEvent, MouseListener, MouseAdapter}
 import com.rayrobdod.swing.GridBagConstraintsFactory
 import com.rayrobdod.deductionTactics.swingView.AvailibleTilesheetListModel
 import com.rayrobdod.deductionTactics.swingView.game.{preferences => gamePreferences}
@@ -58,5 +60,47 @@ class AppearanceOptionsPanel extends JPanel
 			gamePreferences.currentTilesheet = currentTilesheet.getSelectedValue()
 			gamePreferences.movementSpeed = Integer.parseInt(movementSpeed.getText)
 		}
+	}
+}
+
+class KeyInputsOptionsPanel extends JPanel {
+	this.setLayout(new java.awt.GridBagLayout())
+	this.add(new JLabel("Move Left: "),
+			GridBagConstraintsFactory( gridx = 0, gridy = 0 ))
+	this.add(new KeyStrokeSetter(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0)),
+			GridBagConstraintsFactory( gridx = 1, gridy = 0 ))
+	
+	//
+	class KeyStrokeSetter(initial:KeyStroke) extends JLabel {
+		private[this] var keyStroke:KeyStroke = initial
+		private[this] var isInInputState:Boolean = false
+		
+		def resetText() {
+			if (isInInputState) {
+				this.setText("Type new input key")
+			} else {
+				this.setText(keyStroke.toString)
+			}
+			this.repaint()
+		}
+		this.resetText()
+		
+		this.addMouseListener(new MouseAdapter() {
+			override def mouseClicked(e:MouseEvent) {
+				KeyStrokeSetter.this.isInInputState = ! KeyStrokeSetter.this.isInInputState
+				KeyStrokeSetter.this.resetText()
+			}
+		})
+		this.addKeyListener(new KeyAdapter() {
+			override def keyReleased(e:KeyEvent) {
+				if (KeyStrokeSetter.this.isInInputState) {
+					KeyStrokeSetter.this.keyStroke = KeyStroke.getKeyStrokeForEvent(e)
+					KeyStrokeSetter.this.isInInputState = false
+					KeyStrokeSetter.this.resetText()
+				}
+			}
+		})
+		
+		this.setFocusable(true)
 	}
 }

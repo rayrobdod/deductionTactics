@@ -19,7 +19,7 @@ package com.rayrobdod.deductionTactics.swingView.menuBar
 
 import java.awt.event.{ActionListener, ActionEvent}
 import java.awt.BorderLayout.{NORTH, SOUTH}
-import javax.swing.{JMenuBar, JMenu, JMenuItem, JFrame, JScrollPane, JDialog, JLabel}
+import javax.swing.{JMenuBar, JMenu, JMenuItem, JFrame, JScrollPane, JDialog, JLabel, JTabbedPane}
 import javax.swing.event.{ChangeListener, ChangeEvent}
 import javax.swing.ScrollPaneConstants.{
 		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
@@ -52,11 +52,14 @@ class MenuBar() extends JMenuBar
 		// TODO: disable menu item if Preferences are denied
 		a.add(myMenuItem("optionsMenu", new ActionListener{
 			def actionPerformed(e:ActionEvent):Unit = {
-				val optionsPanel = new AppearanceOptionsPanel
+				val tabbedPane = new JTabbedPane()
+				val appearancePanel = new AppearanceOptionsPanel
+				tabbedPane.add(appearancePanel, resources.getString("optionsAppearance"))
+				tabbedPane.add(new KeyInputsOptionsPanel, resources.getString("optionsKeyboard"))
 				
 				val result = javax.swing.JOptionPane.showOptionDialog(
 						getWindowAncestor(MenuBar.this),
-						optionsPanel,
+						tabbedPane,
 						resources.getString("optionsFrameTitle"),
 						javax.swing.JOptionPane.DEFAULT_OPTION,
 						javax.swing.JOptionPane.PLAIN_MESSAGE,
@@ -69,7 +72,7 @@ class MenuBar() extends JMenuBar
 				)
 				
 				if (result == 0) { // Apply selected
-					optionsPanel.apply.actionPerformed(null)
+					appearancePanel.apply.actionPerformed(null)
 				}
 			}
 		}))
