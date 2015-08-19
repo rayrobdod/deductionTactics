@@ -32,7 +32,7 @@ import com.rayrobdod.deductionTactics.swingView.aboutDialogString
 
 /**
  * @author Raymond Dodge
- * @version a.6.0
+ * @version next
  */
 class MenuBar() extends JMenuBar
 {
@@ -54,8 +54,9 @@ class MenuBar() extends JMenuBar
 			def actionPerformed(e:ActionEvent):Unit = {
 				val tabbedPane = new JTabbedPane()
 				val appearancePanel = new AppearanceOptionsPanel
+				val keyboardPanel = new KeyInputsOptionsPanel
 				tabbedPane.add(appearancePanel, resources.getString("optionsAppearance"))
-				tabbedPane.add(new KeyInputsOptionsPanel, resources.getString("optionsKeyboard"))
+				tabbedPane.add(keyboardPanel, resources.getString("optionsKeyboard"))
 				
 				val result = javax.swing.JOptionPane.showOptionDialog(
 						getWindowAncestor(MenuBar.this),
@@ -73,6 +74,7 @@ class MenuBar() extends JMenuBar
 				
 				if (result == 0) { // Apply selected
 					appearancePanel.apply.actionPerformed(null)
+					keyboardPanel.apply.actionPerformed(null)
 				}
 			}
 		}))

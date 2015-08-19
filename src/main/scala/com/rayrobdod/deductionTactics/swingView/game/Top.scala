@@ -32,7 +32,7 @@ import com.rayrobdod.deductionTactics.swingView.{AvailibleTilesheetListModel, ti
 
 /**
  * @author Raymond Dodge
- * @version a.6.0
+ * @version next
  */
 class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[SpaceClass]) {
 	import Top._
@@ -179,8 +179,8 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		rv.setFocusable(true)
 		val inputMap = rv.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW)
 		val actionMap = rv.getActionMap()
-		KeyboardActions.values.foreach{x =>
-			inputMap.put(x.defaultKey, x)
+		preferences.inputMap.foreach{x =>
+			inputMap.put(x._2, x._1)
 		}
 		actionMap.put(KeyboardActions.MoveLeft, new MoveCursorAction("MoveLeft", {x => x.left.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
 		actionMap.put(KeyboardActions.MoveUp, new MoveCursorAction("MoveUp", {x => x.up.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))

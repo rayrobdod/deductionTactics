@@ -20,16 +20,17 @@ package com.rayrobdod.deductionTactics.swingView.menuBar
 import com.rayrobdod.deductionTactics.SpaceClass
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet}
 import java.awt.{Window, Dialog}
-import javax.swing.{JComponent, JPanel, JList, JLabel, JTextField, KeyStroke}
+import javax.swing.{JComponent, JPanel, JList, JButton, JLabel, JTextField, KeyStroke}
 import java.awt.event.{ActionListener, ActionEvent}
 import java.awt.event.{KeyEvent, KeyListener, KeyAdapter}
 import java.awt.event.{MouseEvent, MouseListener, MouseAdapter}
 import com.rayrobdod.swing.GridBagConstraintsFactory
 import com.rayrobdod.deductionTactics.swingView.AvailibleTilesheetListModel
-import com.rayrobdod.deductionTactics.swingView.game.{preferences => gamePreferences}
+import com.rayrobdod.deductionTactics.swingView.game.{preferences => gamePreferences, KeyboardActions}
+import KeyboardActions.KeyboardAction
 
 /**
- * An interface for setting options
+ * A user interface for setting options
  * 
  * Previously known as OptionsPanel
  * @version next
@@ -63,38 +64,48 @@ class AppearanceOptionsPanel extends JPanel
 	}
 }
 
+/**
+ * A user interface for setting options
+ * 
+ * @since next
+ */
 class KeyInputsOptionsPanel extends JPanel {
-	this.setLayout(new java.awt.GridBagLayout())
-	this.add(new JLabel("Move Left: "),
-			GridBagConstraintsFactory( gridx = 0, gridy = 0 ))
-	this.add(new KeyStrokeSetter(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0)),
-			GridBagConstraintsFactory( gridx = 1, gridy = 0 ))
+	private val resources = java.util.ResourceBundle.getBundle("com.rayrobdod.deductionTactics.swingView.text")
+	
+	this.setLayout(new java.awt.GridLayout(0,2))
+	gamePreferences.inputMap.foreach{x =>
+		val labelStr = resources.getString("optionsKeyboard" + x._1.name)
+		KeyInputsOptionsPanel.this.add(new JLabel(labelStr))
+		KeyInputsOptionsPanel.this.add(new KeyStrokeSetter(x._1, x._2))
+	}
 	
 	//
-	class KeyStrokeSetter(initial:KeyStroke) extends JLabel {
-		private[this] var keyStroke:KeyStroke = initial
+	class KeyStrokeSetter(val action:KeyboardAction, initial:KeyStroke) extends JButton {
+		private[this] var _keyStroke:KeyStroke = initial
 		private[this] var isInInputState:Boolean = false
+		def keyStroke:KeyStroke = _keyStroke
 		
 		def resetText() {
 			if (isInInputState) {
 				this.setText("Type new input key")
 			} else {
-				this.setText(keyStroke.toString)
+				this.setText(_keyStroke.toString)
 			}
 			this.repaint()
 		}
 		this.resetText()
 		
-		this.addMouseListener(new MouseAdapter() {
-			override def mouseClicked(e:MouseEvent) {
+		this.addActionListener(new ActionListener() {
+			override def actionPerformed(e:ActionEvent) {
 				KeyStrokeSetter.this.isInInputState = ! KeyStrokeSetter.this.isInInputState
+				KeyStrokeSetter.this.requestFocus()
 				KeyStrokeSetter.this.resetText()
 			}
 		})
 		this.addKeyListener(new KeyAdapter() {
-			override def keyReleased(e:KeyEvent) {
+			override def keyPressed(e:KeyEvent) {
 				if (KeyStrokeSetter.this.isInInputState) {
-					KeyStrokeSetter.this.keyStroke = KeyStroke.getKeyStrokeForEvent(e)
+					KeyStrokeSetter.this._keyStroke = KeyStroke.getKeyStrokeForEvent(e)
 					KeyStrokeSetter.this.isInInputState = false
 					KeyStrokeSetter.this.resetText()
 				}
@@ -102,5 +113,16 @@ class KeyInputsOptionsPanel extends JPanel {
 		})
 		
 		this.setFocusable(true)
+	}
+	
+	object apply extends ActionListener() {
+		override def actionPerformed(e:ActionEvent):Unit = {
+			gamePreferences.inputMap = Map.empty ++ (
+				KeyInputsOptionsPanel.this.getComponents
+					.filter{_.isInstanceOf[KeyStrokeSetter]}
+					.map{_.asInstanceOf[KeyStrokeSetter]}
+					.map{x => ((x.action, x.keyStroke))}
+			)
+		}
 	}
 }

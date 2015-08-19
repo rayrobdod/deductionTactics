@@ -18,8 +18,11 @@
 package com.rayrobdod.deductionTactics
 package swingView.game
 
+import javax.swing.{KeyStroke, InputMap}
+import scala.collection.immutable.Map
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularFieldComponent}
 import com.rayrobdod.deductionTactics.swingView.{AvailibleTilesheetListModel, tilesheets, TokenPanel}
+import KeyboardActions.KeyboardAction
 
 
 /**
@@ -34,6 +37,8 @@ object preferences {
 	
 	private val movementSpeedPrefsKey:String = "tokenMoveSpeed";
 	private val tilesheetPrefsKey:String = "tilesheetIndex";
+	private val keyboardPrefsKey:String = "keyboardKeys";
+	
 	private def myPrefs = try {
 		Preferences.userNodeForPackage(this.getClass);
 	} catch {
@@ -60,6 +65,28 @@ object preferences {
 	def currentTilesheet_=(x:RectangularTilesheet[SpaceClass]):Unit = {
 		val index = tilesheets.indexOf(x);
 		myPrefs.putInt(tilesheetPrefsKey, index);
+	}
+	
+	/* @since next */
+	def inputMap:Map[KeyboardAction, KeyStroke] = {
+		val keyPrefs = myPrefs.node(keyboardPrefsKey)
+		
+		Map.empty ++ KeyboardActions.values.map{(a:KeyboardAction) =>
+			((a, KeyStroke.getKeyStroke(
+					keyPrefs.getInt(a.name + "Code", a.defaultKey.getKeyCode),
+					keyPrefs.getInt(a.name + "Mods", a.defaultKey.getModifiers)
+			)))
+		}
+	}
+	
+	/* @since next */
+	def inputMap_=(x:Map[KeyboardAction, KeyStroke]) = {
+		val keyPrefs = myPrefs.node(keyboardPrefsKey)
+		
+		x.foreach({(a:KeyboardAction, s:KeyStroke) =>
+			keyPrefs.putInt(a.name + "Code", s.getKeyCode)
+			keyPrefs.putInt(a.name + "Mods", s.getModifiers)
+		}.tupled)
 	}
 	
 	
