@@ -28,6 +28,7 @@ import com.rayrobdod.json.builder.{Builder, SeqBuilder, MapBuilder}
 import java.io.{ByteArrayOutputStream, DataOutputStream}
 import java.net.URL
 import javax.imageio.ImageIO
+import scala.collection.immutable.{Seq, Map}
 
 /**
  * Reads a set of JSON-encoded token class files and creates a map from

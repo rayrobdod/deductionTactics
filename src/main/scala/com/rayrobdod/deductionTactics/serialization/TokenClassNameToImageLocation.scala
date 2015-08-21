@@ -18,6 +18,7 @@
 package com.rayrobdod.deductionTactics.serialization
 
 import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
+import scala.collection.immutable.{Seq, Map}
 import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
 import com.rayrobdod.deductionTactics.{TokenClass,

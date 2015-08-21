@@ -23,7 +23,7 @@ import Weaponkinds.Weaponkind
 import Statuses.Status
 import java.io.PrintStream
 import com.rayrobdod.deductionTactics.consoleView._
-import scala.collection.immutable.Seq
+import scala.collection.immutable.{Seq, Map}
 
 /**
  * A decorator for PlayerAIs. It prints to console events that happen

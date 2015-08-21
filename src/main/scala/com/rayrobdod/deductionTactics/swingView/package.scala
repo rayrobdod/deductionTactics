@@ -33,10 +33,9 @@ import java.awt.Image.{SCALE_SMOOTH => imageScaleSmooth}
 
 import java.net.URL
 import javax.imageio.ImageIO
+import scala.collection.immutable.{Seq, Map}
 import com.kitfox.svg.app.beans.SVGIcon
 import com.rayrobdod.swing.{NameAndIcon, ScalaSeqListModel}
-
-import scala.collection.immutable.{Map => IMap}
 
 
 package object swingView
@@ -80,7 +79,7 @@ package object swingView
 	def unknownIcon(size:Int = DEFAULT_SIZE):Icon = makeSVGIcon("/com/rayrobdod/glyphs/unknown.svg", size)
 	
 	
-	private var iconCache = IMap.empty[(AnyRef, Int), Icon];
+	private var iconCache = Map.empty[(AnyRef, Int), Icon];
 	
 	
 	/**
@@ -171,7 +170,7 @@ package object swingView
 	 * @version 2013 Jun 30 - copied over from deductionTactics.package
 	 */
 	def loadIcon(resource:String, size:Int):Icon = {
-		val (path:String, frac:String) = resource.split('#').toSeq match {
+		val (path:String, frac:String) = resource.split('#').to[Seq] match {
 			case Seq(a, b) => (a, b)
 			case Seq(a)    => (a, "")
 		}
@@ -233,7 +232,7 @@ package object swingView
 		import scala.collection.JavaConversions.iterableAsScalaIterable
 		import com.rayrobdod.util.services.ResourcesServiceLoader
 		
-		val a:Seq[URL] = new ResourcesServiceLoader(TokenClass.SERVICE).toSeq
+		val a:Seq[URL] = new ResourcesServiceLoader(TokenClass.SERVICE).to[Seq]
 		
 		// Binary version
 		val b:Seq[Map[String, Icon]] = a.map{(jsonPath:URL) =>
@@ -244,7 +243,7 @@ package object swingView
 				new TokenClassNameToIconFromJson(Seq(jsonPath)).map
 			}
 		}
-		val e = b.foldLeft(IMap.empty[String, Icon]){_ ++ _}
+		val e = b.foldLeft(Map.empty[String, Icon]){_ ++ _}
 		
 		e
 	}

@@ -20,7 +20,7 @@ package com.rayrobdod.deductionTactics
 import java.net.URL
 import java.io.{Reader, StringReader, InputStreamReader}
 import java.nio.charset.StandardCharsets.UTF_8
-import scala.collection.immutable.{Seq, Set}
+import scala.collection.immutable.{Seq, Set, Map}
 import scala.collection.JavaConversions.iterableAsScalaIterable
 import com.opencsv.CSVReader;
 import com.rayrobdod.util.services.{ResourcesServiceLoader, Services}
