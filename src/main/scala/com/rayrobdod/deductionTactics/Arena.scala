@@ -101,20 +101,21 @@ final class ArenaBuilder(baseDir:URL) extends Builder[Arena] {
 /**
  * An object that deals with Maps
  * 
+ * Previously known as Maps
  * @version a.6.0
  */
-// ???: Rename to ArenaService
-object Maps {
-	private val SERVICE = "com.rayrobdod.deductionTactics.Maps"
+object Arena {
+	private val SERVICE = "com.rayrobdod.deductionTactics.Arena"
 	
 	private val paths:Seq[URL] = {
 		Seq.empty ++ new ResourcesServiceLoader(SERVICE);
 	}
 	
 	/**
+	 * Previously known as arenas
 	 * @since a.6.0
 	 */
-	def arenas:Seq[Arena] = paths.map{x =>
+	def fromService:Seq[Arena] = paths.map{x =>
 		var reader:Reader = new StringReader("{}")
 		try {
 			reader = new java.io.InputStreamReader(x.openStream(), UTF_8)
