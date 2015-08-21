@@ -44,6 +44,16 @@ scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature",
 			"-language:implicitConversions"
 )
 
+scalacOptions in doc in Compile ++= Seq(
+		"-doc-title", name.value,
+		"-doc-version", version.value,
+		"-doc-root-content", ((scalaSource in Compile).value / "rootdoc.txt").toString,
+		"-diagrams",
+		"-external-urls", "scala=http://www.scala-lang.org/api/" + scalaVersion.value + "/",
+		"-sourcepath", baseDirectory.value.toString,
+		"-doc-source-url", "https://github.com/rayrobdod/deductionTactics/tree/" + version.value + "€{FILE_PATH}.scala"
+)
+
 excludeFilter in unmanagedSources in Compile := new FileFilter{
 	def accept(n:File) = {
 		val abPath = n.getAbsolutePath().replace('\\', '/')
