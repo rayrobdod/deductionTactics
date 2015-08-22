@@ -28,7 +28,7 @@ import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVe
 import scala.collection.immutable.Seq
 import scala.collection.mutable.Buffer
 import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
-import com.rayrobdod.deductionTactics.{Arena, Maps, PlayerAI}
+import com.rayrobdod.deductionTactics.{Arena, PlayerAI}
 import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 
 /**
@@ -46,7 +46,7 @@ class Top {
 	private val nextButton = new JButton(resources.getString("nextButton"))
 	
 	{
-		val mapList:JList[Arena] = new JList(new ScalaSeqListModel(Maps.arenas))
+		val mapList:JList[Arena] = new JList(new ScalaSeqListModel(Arena.fromService))
 		val playerCount:JList[Int] = new JList(new ScalaSeqListModel(Seq.empty[Int]))
 		val aisPanel = new ChooseAIsComponent
 		
@@ -138,7 +138,7 @@ class Top {
 					nextListeners.foreach{x:NextListener =>
 						x.apply(
 							aisPanel.getAIs,
-							Maps.arenas(mapList.getSelectedIndex)
+							Arena.fromService(mapList.getSelectedIndex)
 						)
 					}
 				}

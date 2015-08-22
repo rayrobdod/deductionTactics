@@ -21,7 +21,7 @@ import org.scalatest.{FunSpec}
 import javax.swing.{JFrame, JButton, JPanel, JList, JScrollPane}
 import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.ai.{BlindAttackAI, SwingInterface, WithRandomTeam}
-import com.rayrobdod.deductionTactics.{Arena, PlayerAI, Maps}
+import com.rayrobdod.deductionTactics.{Arena, PlayerAI}
 import com.rayrobdod.boardGame.{RectangularField, Space}
 import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 
@@ -121,7 +121,7 @@ class TopTest extends FunSpec {
 			assert(! frame.isDisplayable)
 			
 			assert(target.hasBeenCalled)
-			assertResult(Maps.arenas(2)){target.map}
+			assertResult(Arena.fromService(2)){target.map}
 		}
 		it ("Does not allow multiple arenas to be selected") {
 			val (frame, target) = this.createNextFrameAndListener()
@@ -137,7 +137,7 @@ class TopTest extends FunSpec {
 			
 			assertResult(Array(4)){mapList.getSelectedIndices}
 			assert(target.hasBeenCalled)
-			assertResult(Maps.arenas(4)){target.map}
+			assertResult(Arena.fromService(4)){target.map}
 		}
 		it ("Changes player count when player count is changes") {
 			val (frame, target) = this.createNextFrameAndListener()
