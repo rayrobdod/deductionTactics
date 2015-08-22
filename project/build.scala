@@ -1,6 +1,7 @@
 import sbt._
 import Keys._
 import java.util.zip.{ZipInputStream, ZipOutputStream, ZipEntry}
+import scala.collection.immutable.{Seq => ISeq}
 import com.rayrobdod.deductionTactics.serialization.CompileTokenClassesToBinary
 import com.rayrobdod.deductionTactics.serialization.GenerateBasicTokens
 import net.tixxit.sbt.benchmark.BenchmarkPlugin
@@ -45,7 +46,7 @@ object DeductionTacticsBuild extends Build {
 			val out2 = (target in compileTokens in Compile).value.toPath
 			
 			java.nio.file.Files.createDirectories(out2.getParent())
-			CompileTokenClassesToBinary.compile(in2, out2)
+			CompileTokenClassesToBinary.compile(in2.to[ISeq], out2)
 			
 			Seq(out2.toFile)
 		},

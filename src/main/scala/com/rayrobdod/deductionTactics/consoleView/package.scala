@@ -17,6 +17,8 @@
 */
 package com.rayrobdod.deductionTactics
 
+import scala.collection.immutable.{Seq, Map}
+
 /**
  * 
  * @author Raymond Dodge

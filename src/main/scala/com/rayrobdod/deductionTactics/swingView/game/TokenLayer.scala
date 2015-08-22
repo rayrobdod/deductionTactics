@@ -28,7 +28,7 @@ import com.rayrobdod.deductionTactics.Directions.Direction
 import java.awt.Graphics
 import javax.swing.{JComponent, Icon}
 import javax.imageio.ImageIO
-import scala.collection.immutable.Seq
+import scala.collection.immutable.{Seq, Map}
 import com.rayrobdod.util.BlitzAnimImage
 import com.rayrobdod.animation.{AnimationIcon, ImageFrameAnimation,
 		NextFrameListener, AnimationEndedListener,

@@ -17,7 +17,7 @@
 */
 package com.rayrobdod
 
-import com.rayrobdod.boardGame.{Space => BoardGameSpace}
+import com.rayrobdod.boardGame.Space
 
 /**
  * classes for DeductionTactics
@@ -42,14 +42,14 @@ package object deductionTactics
 	
 	
 	/* @since a.6.0 */
-	final class AttackCostFunction(t:Token, l:ListOfTokens) extends BoardGameSpace.CostFunction[SpaceClass] {
-		override def apply(from:BoardGameSpace[_ <: SpaceClass], to:BoardGameSpace[_ <: SpaceClass]):Int = {
+	final class AttackCostFunction(t:Token, l:ListOfTokens) extends Space.CostFunction[SpaceClass] {
+		override def apply(from:Space[_ <: SpaceClass], to:Space[_ <: SpaceClass]):Int = {
 			to.typeOfSpace.canAttack(t,l)(from, to)
 		}
 	}
 	/* @since a.6.0 */
-	final class MoveToCostFunction(t:Token, l:ListOfTokens) extends BoardGameSpace.CostFunction[SpaceClass] {
-		override def apply(from:BoardGameSpace[_ <: SpaceClass], to:BoardGameSpace[_ <: SpaceClass]):Int = {
+	final class MoveToCostFunction(t:Token, l:ListOfTokens) extends Space.CostFunction[SpaceClass] {
+		override def apply(from:Space[_ <: SpaceClass], to:Space[_ <: SpaceClass]):Int = {
 			to.typeOfSpace.canEnter(t,l)(from, to)
 		}
 	}

@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import scala.collection.immutable.Seq
+import scala.collection.immutable.{Seq, Map}
 import com.rayrobdod.deductionTactics.{PlayerAI}
 import java.awt.event.{ActionListener, ActionEvent}
 
