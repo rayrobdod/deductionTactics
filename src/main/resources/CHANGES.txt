@@ -6,6 +6,12 @@ Wishlist:
 * alternative console-based main method
 * Multi-stance tokens
 * The Spy, as described in the Three Hundred Mechanics article.
+* Hot-swapping preferences
+
+== next ==
+
+=== Minor ===
+Allow reasignment of keyboard commands in swingView
 
 == a.6.0 ==
 

@@ -32,7 +32,7 @@ import com.rayrobdod.deductionTactics.swingView.{AvailibleTilesheetListModel, ti
 
 /**
  * @author Raymond Dodge
- * @version a.6.0
+ * @version next
  */
 class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[SpaceClass]) {
 	import Top._
@@ -63,7 +63,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	
 	private[this] val centerpiece = {
 		val rv = new JPanel(new com.rayrobdod.swing.layouts.LayeredLayout)
-		val tilesheet = BoardGamePanel.currentTilesheet
+		val tilesheet = preferences.currentTilesheet
 		
 		val fieldLayers = RectangularFieldComponent(field, tilesheet)
 		val tokenLayer = new TokenLayer(field, fieldLayers._1)
@@ -179,20 +179,16 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		rv.setFocusable(true)
 		val inputMap = rv.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW)
 		val actionMap = rv.getActionMap()
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "MoveLeft")
-		actionMap.put("MoveLeft", new MoveCursorAction("MoveLeft", {x => x.left.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "MoveUp")
-		actionMap.put("MoveUp", new MoveCursorAction("MoveUp", {x => x.up.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "MoveRight")
-		actionMap.put("MoveRight", new MoveCursorAction("MoveRight", {x => x.right.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "MoveDown")
-		actionMap.put("MoveDown", new MoveCursorAction("MoveDown", {x => x.down.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_X, 0), "Select")
-		actionMap.put("Select", selectAction)
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, 0), "Clear")
-		actionMap.put("Clear", clearSelectionAction)
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), "FindNextActionableToken")
-		actionMap.put("FindNextActionableToken", new SelectNextActionableTokenAction(selectedSpace, selectedTokenIndex, {() => currentTokens}, field, playerNumber))
+		preferences.inputMap.foreach{x =>
+			inputMap.put(x._2, x._1)
+		}
+		actionMap.put(KeyboardActions.MoveLeft, new MoveCursorAction("MoveLeft", {x => x.left.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
+		actionMap.put(KeyboardActions.MoveUp, new MoveCursorAction("MoveUp", {x => x.up.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
+		actionMap.put(KeyboardActions.MoveRight, new MoveCursorAction("MoveRight", {x => x.right.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
+		actionMap.put(KeyboardActions.MoveDown, new MoveCursorAction("MoveDown", {x => x.down.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
+		actionMap.put(KeyboardActions.Select, selectAction)
+		actionMap.put(KeyboardActions.Clear, clearSelectionAction)
+		actionMap.put(KeyboardActions.FindNextToken, new SelectNextActionableTokenAction(selectedSpace, selectedTokenIndex, {() => currentTokens}, field, playerNumber))
 		
 		rv.add(pieMenuLayer)
 		rv.add(cursorLayer)
@@ -236,59 +232,6 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	
 	def addActionPerformedListener(f:ActionPerformedListener):Unit = {
 		actionPerformedListeners += f
-	}
-}
-
-/**
- * constants used by the BoardGamePanel class
- * @author Raymond Dodge
- * @since a.5.1
- */
-object BoardGamePanel {
-	import java.util.prefs.Preferences;
-	
-	val movementSpeedPrefsKey:String = "tokenMoveSpeed";
-	val tilesheetPrefsKey:String = "tilesheetIndex";
-	private def myPrefs = try {
-		Preferences.userNodeForPackage(this.getClass);
-	} catch {
-		case e:java.security.AccessControlException => NilPreferences
-	}
-	
-	def movementSpeed:Int = {
-		myPrefs.getInt( movementSpeedPrefsKey, 15 );
-	}
-	def movementSpeed_=(x:Int):Unit = {
-		myPrefs.putInt( movementSpeedPrefsKey, x );
-	}
-	
-	/* ... ... ... */
-	def currentTilesheet:RectangularTilesheet[SpaceClass] = {
-		val size = AvailibleTilesheetListModel.getSize()
-		val pref = myPrefs.getInt(tilesheetPrefsKey, 0)
-		
-		AvailibleTilesheetListModel.getElementAt(
-			math.min(size - 1, pref)
-		)
-	}
-	
-	def currentTilesheet_=(x:RectangularTilesheet[SpaceClass]):Unit = {
-		val index = tilesheets.indexOf(x);
-		myPrefs.putInt(tilesheetPrefsKey, index);
-	}
-	
-	
-	
-	private object NilPreferences extends java.util.prefs.AbstractPreferences(null, "") {
-		def getSpi(key:String) = null
-		def putSpi(key:String, value:String) {}
-		def removeSpi(key:String) {}
-		def removeNodeSpi() {}
-		def keysSpi() = new Array(0)
-		def childrenNamesSpi() = new Array(0)
-		def flushSpi() {}
-		def syncSpi() {}
-		def childSpi(key:String) = NilPreferences
 	}
 }
 
