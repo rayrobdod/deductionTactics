@@ -35,7 +35,7 @@ class WithAutorecordTest extends FunSpec {
 		override def initialize(player:Int, initialState:GameState):Memo = new SimpleMemo
 		override def notifyTurn(player:Int,action:GameState.Result,beforeState:GameState,afterState:GameState,memo:Memo):Memo = memo
 	}
-	val myTokenClass = new TokenClassBlunt("Sample",
+	val myTokenClass = new TokenClass("Sample",
 			BodyTypes.Humanoid,
 			Elements.Fire,
 			Weaponkinds.Bladekind,

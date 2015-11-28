@@ -126,7 +126,7 @@ class GameStateTest extends FunSpec {
 			currentSpace = field(x,y),
 			canMoveThisTurn = 3,
 			canAttackThisTurn = true,
-			tokenClass = Some(new TokenClassBlunt("Sample",
+			tokenClass = Some(new TokenClass("Sample",
 					BodyTypes.Humanoid,
 					Elements.Fire,
 					Weaponkinds.Bladekind,

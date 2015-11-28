@@ -67,7 +67,7 @@ class SpaceClassTest extends FunSpec {
 			assert(! enumValue.unapply(SpaceClassFactory("asdfasddf")))
 		}
 		it ("Move cost for a lone humanoid token is " + groundedMoveCost) {
-			val flamingSwordsmanToken = new Token(null, tokenClass = Some(new TokenClassBlunt(
+			val flamingSwordsmanToken = new Token(null, tokenClass = Some(new TokenClass(
 				name = "Flaming Swordsman",
 				body = BodyTypes.Humanoid,
 				atkElement = Elements.Fire,
@@ -85,7 +85,7 @@ class SpaceClassTest extends FunSpec {
 			}
 		}
 		it ("Attack cost for a lone humanoid token is " + attackCost) {
-			val flamingSwordsmanToken = new Token(null, tokenClass = Some(new TokenClassBlunt(
+			val flamingSwordsmanToken = new Token(null, tokenClass = Some(new TokenClass(
 				name = "Flaming Swordsman",
 				body = BodyTypes.Humanoid,
 				atkElement = Elements.Fire,
@@ -103,7 +103,7 @@ class SpaceClassTest extends FunSpec {
 			}
 		}
 		it ("Move cost for a lone flying token is " + flyingMoveCost) {
-			val flyingToken = new Token(null, tokenClass = Some(new TokenClassBlunt(
+			val flyingToken = new Token(null, tokenClass = Some(new TokenClass(
 				name = "Flaming Swordsman",
 				body = BodyTypes.Avian,
 				atkElement = Elements.Fire,

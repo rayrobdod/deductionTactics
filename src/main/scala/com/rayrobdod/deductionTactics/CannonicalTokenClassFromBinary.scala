@@ -36,7 +36,7 @@ object CannonicalTokenClassFromBinary {
 	 * @since a.6.1
 	 */
 	def apply(reader:java.io.DataInput):TokenClass = {
-		val retVal = new TokenClassBlunt(
+		val retVal = new TokenClass(
 			name = {
 				val bytes = new Array[Byte](nameLength)
 				reader.readFully(bytes)

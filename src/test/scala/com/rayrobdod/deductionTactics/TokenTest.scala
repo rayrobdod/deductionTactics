@@ -319,7 +319,7 @@ class TokenTest extends FunSpec {
 		val adjacentSpaces = Nil
 		val typeOfSpace = AttackOnlySpaceClass.apply
 	}
-	def sample3SpeedTokenClass = new TokenClassBlunt("Sample",
+	def sample3SpeedTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Fire,
 		Weaponkinds.Bladekind,
@@ -329,7 +329,7 @@ class TokenTest extends FunSpec {
 		Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
 		Statuses.Burn
 	)
-	def sample5SpeedTokenClass = new TokenClassBlunt("Sample",
+	def sample5SpeedTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Fire,
 		Weaponkinds.Bladekind,
@@ -339,7 +339,7 @@ class TokenTest extends FunSpec {
 		Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
 		Statuses.Burn
 	)
-	def weaponWeakTokenClass = new TokenClassBlunt("Sample",
+	def weaponWeakTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Fire,
 		Weaponkinds.Bladekind,
@@ -349,7 +349,7 @@ class TokenTest extends FunSpec {
 		Weaponkinds.values.map{(a) => ((a, 2f))}.toMap,
 		Statuses.Burn
 	)
-	def weaponResistTokenClass = new TokenClassBlunt("Sample",
+	def weaponResistTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Fire,
 		Weaponkinds.Bladekind,
@@ -359,7 +359,7 @@ class TokenTest extends FunSpec {
 		Weaponkinds.values.map{(a) => ((a, .5f))}.toMap,
 		Statuses.Burn
 	)
-	def elementWeakTokenClass = new TokenClassBlunt("Sample",
+	def elementWeakTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Electric,
 		Weaponkinds.Bladekind,
@@ -369,7 +369,7 @@ class TokenTest extends FunSpec {
 		Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
 		Statuses.Burn
 	)
-	def multipleWeakTokenClass = new TokenClassBlunt("Sample",
+	def multipleWeakTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Electric,
 		Weaponkinds.Bladekind,
@@ -379,7 +379,7 @@ class TokenTest extends FunSpec {
 		Weaponkinds.values.map{(a) => ((a, 2f))}.toMap,
 		Statuses.Burn
 	)
-	def multipleResistTokenClass = new TokenClassBlunt("Sample",
+	def multipleResistTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Frost,
 		Weaponkinds.Bladekind,

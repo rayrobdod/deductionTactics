@@ -65,7 +65,7 @@ final case class CannonicalTokenClassTemplate(
 			// B*CKING DELAYED EXECUTION
 			weakWeapon.values.foreach{_.get}
 			
-			new TokenClassBlunt (
+			new TokenClass (
 				CannonicalTokenClassTemplate.this.name,
 				CannonicalTokenClassTemplate.this.body.get,
 				CannonicalTokenClassTemplate.this.atkElement.get,

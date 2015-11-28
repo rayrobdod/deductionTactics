@@ -39,7 +39,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 					case x:Int => x.byteValue
 				})
 			)
-			val exp = new TokenClassBlunt(
+			val exp = new TokenClass(
 				name = "Eagle",
 				body = BodyTypes.Avian,
 				atkElement = Elements.Fire,
@@ -73,7 +73,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 					0000000000 000000"""
 				)
 			)
-			val exp = new TokenClassBlunt(
+			val exp = new TokenClass(
 				name = "Eagle",
 				body = BodyTypes.Avian,
 				atkElement = Elements.Fire,
@@ -108,7 +108,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 					case x:Int => x.byteValue
 				})
 			)
-			val exp = new TokenClassBlunt(
+			val exp = new TokenClass(
 				name = "Lefty Batter",
 				body = BodyTypes.Humanoid,
 				atkElement = Elements.Sound,

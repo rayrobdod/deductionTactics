@@ -29,102 +29,32 @@ import scala.collection.immutable.{Seq, Map}
  * A description of the attributes of a unit.
  * 
  * @author Raymond Dodge
- * @version a.6.0
+ * @version a.6.1
+ * 
+ * @constructor
+ * @param name A class's name
+ * @param body A class's bodytype.
+ * @param atkElement The element a unit attacks with. Also determines it's defenses against elements.
+ * @param atkWeapon The weapon a unit attacks with.
+ * @param atkStatus The status a unit attacks with.
+ * @param range How far away from itself a unit can attack.
+ * @param speed How far a unit can move in one turn.
+ * @param weakDirection When a unit is attacked from this direction, the attack is strongest
+ * @param weakWeapon The weaknesses when a unit is attacked form a type of weapon
+ * @param weakStatus When a unit is attacked while suffering this status, the attack is strongest
  */
-trait TokenClass
-{
-	/** A class's name */
-	def name:String
-	
-	/** A class's bodytype. */
-	def body:BodyType
-	
-	/** The element a unit attacks with. Also determines it's defenses against elements. */
-	def atkElement:Element
-	/** The weapon a unit attacks with. */
-	def atkWeapon:Weaponkind
-	/** The status a unit attacks with. */
-	def atkStatus:Status
-	/** How far away from itself a unit can attack. */
-	def range:Int
-	/** How far a unit can move in one turn. */
-	def speed:Int
-	
-	/** When a unit is attacked from this direction, the attack is strongest */
-	def weakDirection:Direction
-	/** The weaknesses when a unit is attacked form a type of weapon */
-	def weakWeapon:Map[Weaponkind,Float]
-	/** When a unit is attacked while suffering this status, the attack is strongest */
-	def weakStatus:Status
-	
-	
-	/////////////////////////// Object Overrides //////////////////////////////
-	
-	override def toString:String = {
-		this.getClass.getName + " " +
-			"{ name: " + name +
-			"; body: " + body +
-			"; atkElement: " + atkElement +
-			"; atkWeapon: " + atkWeapon +
-			"; atkStatus: " + atkStatus +
-			"; range: " + range +
-			"; speed: " + speed +
-			"; weakDirection: " + weakDirection +
-			"; weakWeapon: " + weakWeapon +
-			"; weakStatus: " + weakStatus +
-			" }";
-	}
-	
-	override def hashCode:Int = {
-		(body.id << 28) + (atkElement.id) << 24 + (atkWeapon.id << 20) + (atkStatus.id << 16) +
-		(range << 12) + (speed << 8) + (weakDirection.id << 4) + (weakStatus.id << 0)
-	}
-	
-	protected def canEquals(other:Any):Boolean = {other.isInstanceOf[TokenClass]}
-	
-	override def equals(other:Any):Boolean = {
-		if (! (this.canEquals(other))) { return false; }
-		val other2 = other.asInstanceOf[TokenClass]
-		if (! (other2.canEquals(this))) { return false; }
-		
-		other2.name == this.name &&
-				other2.body == this.body &&
-				other2.atkElement == this.atkElement &&
-				other2.atkWeapon == this.atkWeapon &&
-				other2.atkStatus == this.atkStatus &&
-				other2.range == this.range &&
-				other2.speed == this.speed &&
-				other2.weakDirection == this.weakDirection &&
-				other2.weakWeapon == this.weakWeapon &&
-				other2.weakStatus == this.weakStatus
-	}
-}
-
-
-
-
-/**
- * A TokenClass that has all of its values defined
- * directly in the constructor
- * @author Raymond Dodge
- * @version a.6.0
- */
-final class TokenClassBlunt(
-	override val name:String,
-	
-	override val body:BodyType,
-	override val atkElement:Element,
-	override val atkWeapon:Weaponkind,
-	override val atkStatus:Status,
-	override val range:Int,
-	override val speed:Int,
-	
-	override val weakDirection:Direction,
-	override val weakWeapon:Map[Weaponkind,Float],
-	override val weakStatus:Status
-) extends TokenClass
-
-
+final case class TokenClass(
+	val name:String,
+	val body:BodyType,
+	val atkElement:Element,
+	val atkWeapon:Weaponkind,
+	val atkStatus:Status,
+	val range:Int,
+	val speed:Int,
+	val weakDirection:Direction,
+	val weakWeapon:Map[Weaponkind,Float],
+	val weakStatus:Status
+)
 
 
 
