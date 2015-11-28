@@ -20,7 +20,6 @@ package com.rayrobdod.deductionTactics
 import com.rayrobdod.boardGame.StrictRectangularSpace
 import scala.collection.immutable.{Seq, Set}
 import scala.language.implicitConversions
-import LoggerInitializer.{cannonicalTokenLogger => Logger}
 
 /**
  * An enumeration of directions
@@ -125,8 +124,6 @@ object Directions
 			
 			candidates.getOrElse(Some(next), null)
 		}.tupled)
-		
-		Logger.finer(pathDirections.toString)
 		
 		pathDirections
 	}

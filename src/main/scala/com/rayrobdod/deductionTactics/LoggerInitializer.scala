@@ -27,10 +27,6 @@ private[deductionTactics] object LoggerInitializer
 	val finerConsoleHander = new ConsoleHandler()
 	finerConsoleHander.setLevel(Level.FINER)
 	
-	val cannonicalTokenLogger = Logger.getLogger(
-			"com.rayrobdod.deductionTactics.CannonicalToken")
-	cannonicalTokenLogger.addHandler(finerConsoleHander)
-	cannonicalTokenLogger.setLevel(Level.WARNING)
 	
 	val turnCyclerLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.PlayerTurnCycler")
@@ -42,10 +38,6 @@ private[deductionTactics] object LoggerInitializer
 	elementsLogger.addHandler(finerConsoleHander)
 	elementsLogger.setLevel(Level.WARNING)
 	
-	val tokenClassDecoderLogger = Logger.getLogger(
-			"com.rayrobdod.deductionTactics.CannonicalTokenClassDecoder")
-	tokenClassDecoderLogger.addHandler(finerConsoleHander)
-	tokenClassDecoderLogger.setLevel(Level.WARNING)
 	
 	val mouseListenerLogger = Logger.getLogger(
 			"com.rayrobdod.deductionTactics.swingView.MoveTokenMouseListener")

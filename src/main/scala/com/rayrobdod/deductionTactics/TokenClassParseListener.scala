@@ -22,23 +22,21 @@ import Weaponkinds.Weaponkind
 import Statuses.Status
 import BodyTypes.BodyType
 import Directions.Direction
-import com.rayrobdod.deductionTactics.{TokenClass => CannonicalTokenClass}
 
 import scala.collection.Seq
 import scala.collection.immutable.{Map, Seq => ISeq}
 import com.rayrobdod.json.parser.JsonParser
 import com.rayrobdod.json.builder.{Builder, MapBuilder}
 import java.io.{StringReader, InputStreamReader}
-import LoggerInitializer.{tokenClassDecoderLogger => Logger}
 
 
 
 /**
- * A builder for CannonicalTokenClasses.
+ * A builder for TokenClasses.
  * @since a.4.1
- * @version a.6.0
+ * @version a.6.1
  */
-final case class CannonicalTokenClassTemplate(
+final case class TokenClassTemplate(
 	val nameOpt:Option[String] = None,
 	val body:Option[BodyType] = None,
 	val atkElement:Option[Element] = None,
@@ -60,22 +58,22 @@ final case class CannonicalTokenClassTemplate(
 	/**
 	 * @throws IllegalStateException if required fields were not set
 	 */
-	def build():CannonicalTokenClass = {
+	def build():TokenClass = {
 		try {
 			// B*CKING DELAYED EXECUTION
 			weakWeapon.values.foreach{_.get}
 			
 			new TokenClass (
-				CannonicalTokenClassTemplate.this.name,
-				CannonicalTokenClassTemplate.this.body.get,
-				CannonicalTokenClassTemplate.this.atkElement.get,
-				CannonicalTokenClassTemplate.this.atkWeapon.get,
-				CannonicalTokenClassTemplate.this.atkStatus.get,
-				CannonicalTokenClassTemplate.this.range.get,
-				CannonicalTokenClassTemplate.this.speed.get,
-				CannonicalTokenClassTemplate.this.weakDirection.getOrElse(arbitraryDirection),
-				CannonicalTokenClassTemplate.this.weakWeapon.map{(a) => ((a._1, a._2.get))},
-				CannonicalTokenClassTemplate.this.weakStatus.get
+				TokenClassTemplate.this.name,
+				TokenClassTemplate.this.body.get,
+				TokenClassTemplate.this.atkElement.get,
+				TokenClassTemplate.this.atkWeapon.get,
+				TokenClassTemplate.this.atkStatus.get,
+				TokenClassTemplate.this.range.get,
+				TokenClassTemplate.this.speed.get,
+				TokenClassTemplate.this.weakDirection.getOrElse(arbitraryDirection),
+				TokenClassTemplate.this.weakWeapon.map{(a) => ((a._1, a._2.get))},
+				TokenClassTemplate.this.weakStatus.get
 			)
 		} catch {
 			// TODO: be more specific?
@@ -88,9 +86,9 @@ final case class CannonicalTokenClassTemplate(
 
 
 
-final class TokenClassBuilder extends Builder[CannonicalTokenClassTemplate] {
-	override val init:CannonicalTokenClassTemplate = new CannonicalTokenClassTemplate()
-	override def apply(folding:CannonicalTokenClassTemplate, key:String, value:Any):CannonicalTokenClassTemplate = key match {
+final class TokenClassBuilder extends Builder[TokenClassTemplate] {
+	override val init:TokenClassTemplate = new TokenClassTemplate()
+	override def apply(folding:TokenClassTemplate, key:String, value:Any):TokenClassTemplate = key match {
 		case "name" => folding.copy(nameOpt = Some(value.toString))
 		case "body" => folding.copy(body = Some(BodyTypes.withName(value.toString)))
 		case "element" => folding.copy(atkElement = Some(Elements.withName(value.toString)))
@@ -110,5 +108,5 @@ final class TokenClassBuilder extends Builder[CannonicalTokenClassTemplate] {
 		case _ => folding
 	}
 	override def childBuilder(key:String):Builder[_] = new MapBuilder
-	override val resultType:Class[CannonicalTokenClassTemplate] = classOf[CannonicalTokenClassTemplate]
+	override val resultType:Class[TokenClassTemplate] = classOf[TokenClassTemplate]
 }

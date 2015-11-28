@@ -99,7 +99,7 @@ object TokenClassNameToIconFromJson {
  * @since a.6.0
  */
 class TokenClassNameToIconFromBinary(sources:Seq[URL]) {
-	import com.rayrobdod.deductionTactics.CannonicalTokenClassFromBinary.{nameLength, enumsLength, imageLocLength}
+	import com.rayrobdod.deductionTactics.TokenClassFromBinary.{nameLength, enumsLength, imageLocLength}
 
 	
 	val map:Map[String, Icon] = {

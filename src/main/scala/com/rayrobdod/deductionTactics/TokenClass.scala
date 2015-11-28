@@ -89,7 +89,7 @@ object TokenClass
 				val count = dis.readShort()
 				
 				val retVal = (1 to count).map{(a) =>
-					CannonicalTokenClassFromBinary(dis)
+					TokenClassFromBinary(dis)
 				}
 				dis.close();
 				retVal
@@ -98,7 +98,7 @@ object TokenClass
 				try {
 					val jsonReader = new java.io.InputStreamReader(jsonPath.openStream(), UTF_8)
 					
-					new JsonParser(new SeqBuilder(new TokenClassBuilder)).parse(jsonReader).map{_.asInstanceOf[CannonicalTokenClassTemplate].build}
+					new JsonParser(new SeqBuilder(new TokenClassBuilder)).parse(jsonReader).map{_.asInstanceOf[TokenClassTemplate].build}
 				} finally {
 					jsonReader.close()
 				}

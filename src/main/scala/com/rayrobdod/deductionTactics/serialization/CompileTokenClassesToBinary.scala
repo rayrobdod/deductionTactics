@@ -23,12 +23,12 @@ import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
 import java.nio.charset.StandardCharsets.UTF_8
 import com.rayrobdod.json.parser.JsonParser
 import com.rayrobdod.json.builder.SeqBuilder
-import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds, TokenClassBuilder, CannonicalTokenClassTemplate}
+import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds, TokenClassBuilder, TokenClassTemplate}
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 import java.io.{ByteArrayOutputStream, DataOutputStream}
 import java.nio.file.{Path, Files}
 
-import com.rayrobdod.deductionTactics.CannonicalTokenClassFromBinary.{nameLength, imageLocLength}
+import com.rayrobdod.deductionTactics.TokenClassFromBinary.{nameLength, imageLocLength}
 
 /**
  * Reads a set of JSON-encoded token class files and writes out a composit, minified
@@ -47,7 +47,7 @@ object CompileTokenClassesToBinary
 			try {
 				val jsonReader = Files.newBufferedReader(jsonPath, UTF_8)
 				
-				new JsonParser(new SeqBuilder(new TokenClassBuilder)).parse(jsonReader).map{_.asInstanceOf[CannonicalTokenClassTemplate].build}
+				new JsonParser(new SeqBuilder(new TokenClassBuilder)).parse(jsonReader).map{_.asInstanceOf[TokenClassTemplate].build}
 			} finally {
 				jsonReader.close()
 			}
