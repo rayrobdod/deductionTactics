@@ -57,7 +57,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 				),
 				weakStatus = Statuses.Sleep
 			)
-			val res = new CannonicalTokenClassFromBinary(src)
+			val res = CannonicalTokenClassFromBinary(src)
 			
 			assertResult(exp){res}
 		}
@@ -91,7 +91,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 				),
 				weakStatus = Statuses.Sleep
 			)
-			val res = new CannonicalTokenClassFromBinary(src)
+			val res = CannonicalTokenClassFromBinary(src)
 			
 			assertResult(exp){res}
 		}
@@ -126,7 +126,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 				),
 				weakStatus = Statuses.Burn
 			)
-			val res = new CannonicalTokenClassFromBinary(src)
+			val res = CannonicalTokenClassFromBinary(src)
 			
 			assertResult(exp){res}
 		}
@@ -147,7 +147,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 				})
 			)
 			intercept[IndexOutOfBoundsException] {
-				new CannonicalTokenClassFromBinary(src)
+				CannonicalTokenClassFromBinary(src)
 			}
 		}
 	}

@@ -159,7 +159,7 @@ object TokenClass
 				val count = dis.readShort()
 				
 				val retVal = (1 to count).map{(a) =>
-					new CannonicalTokenClassFromBinary(dis)
+					CannonicalTokenClassFromBinary(dis)
 				}
 				dis.close();
 				retVal
