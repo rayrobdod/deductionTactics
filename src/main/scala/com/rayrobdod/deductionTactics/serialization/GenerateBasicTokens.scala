@@ -84,9 +84,11 @@ object GenerateBasicTokens
 				weakStatus = d.weakStatus,
 			
 				body = BodyTypes.Humanoid,
+				isSpy = false,
 				range = 1,
 				speed = 3,
-				weakDirection = DontCare
+				weakDirection = DontCare,
+				stanceGroup = TokenClass.SingleStanceGroup
 			)
 		}.tupled)}.tupled).flatten.toSeq.sorted(TokenClassOrdering)
 	}

@@ -34,10 +34,12 @@ class BlindAttackAITest extends FunSpec {
 				elem,
 				weap,
 				Statuses.Burn,
+				false,
 				1, 3,
 				Directions.Left,
 				Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
-				Statuses.Burn
+				Statuses.Burn,
+				TokenClass.SingleStanceGroup
 			)
 		}
 	}

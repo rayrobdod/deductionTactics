@@ -131,10 +131,12 @@ class GameStateTest extends FunSpec {
 					Elements.Fire,
 					Weaponkinds.Bladekind,
 					Statuses.Burn,
+					false,
 					3, 3,
 					Directions.Left,
 					Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
-					Statuses.Burn
+					Statuses.Burn,
+					TokenClass.SingleStanceGroup
 			))
 		)
 	}

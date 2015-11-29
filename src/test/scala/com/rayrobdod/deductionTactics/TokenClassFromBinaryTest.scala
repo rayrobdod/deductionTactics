@@ -55,7 +55,9 @@ class TokenClassFromBinaryTest extends FunSpec {
 					Weaponkinds.Whipkind -> 1.5f,
 					Weaponkinds.Powderkind -> .5f
 				),
-				weakStatus = Statuses.Sleep
+				weakStatus = Statuses.Sleep,
+				isSpy = false,
+				stanceGroup = TokenClass.SingleStanceGroup
 			)
 			val res = TokenClassFromBinary(src)
 			
@@ -89,7 +91,9 @@ class TokenClassFromBinaryTest extends FunSpec {
 					Weaponkinds.Whipkind -> 1.5f,
 					Weaponkinds.Powderkind -> .5f
 				),
-				weakStatus = Statuses.Sleep
+				weakStatus = Statuses.Sleep,
+				isSpy = false,
+				stanceGroup = TokenClass.SingleStanceGroup
 			)
 			val res = TokenClassFromBinary(src)
 			
@@ -124,7 +128,9 @@ class TokenClassFromBinaryTest extends FunSpec {
 					Weaponkinds.Whipkind -> 1f,
 					Weaponkinds.Powderkind -> 1.25f
 				),
-				weakStatus = Statuses.Burn
+				weakStatus = Statuses.Burn,
+				isSpy = false,
+				stanceGroup = TokenClass.SingleStanceGroup
 			)
 			val res = TokenClassFromBinary(src)
 			

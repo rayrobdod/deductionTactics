@@ -54,7 +54,10 @@ object TokenClassFromBinary {
 			weakDirection = Directions(reader.readByte()),
 			weakWeapon = Weaponkinds.values.map{(x:Weaponkind) =>
 				((x, reader.readFloat() ))
-			}.toMap
+			}.toMap,
+			
+			isSpy = false,
+			stanceGroup = TokenClass.SingleStanceGroup
 		)
 		reader.skipBytes(imageLocLength)
 		retVal

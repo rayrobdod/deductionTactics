@@ -262,7 +262,9 @@ object Top {
 							Weaponkinds.Whipkind -> 1.5f,
 							Weaponkinds.Powderkind -> .5f
 						),
-						weakStatus = Statuses.Sleep
+						weakStatus = Statuses.Sleep,
+						isSpy = false,
+						stanceGroup = TokenClass.SingleStanceGroup
 					)),
 					currentSpace = field((1,2))
 				),
@@ -285,7 +287,9 @@ object Top {
 							Weaponkinds.Whipkind -> 1.5f,
 							Weaponkinds.Powderkind -> .5f
 						),
-						weakStatus = Statuses.Sleep
+						weakStatus = Statuses.Sleep,
+						isSpy = false,
+						stanceGroup = TokenClass.SingleStanceGroup
 					)),
 					currentSpace = field((6,3))
 				),
