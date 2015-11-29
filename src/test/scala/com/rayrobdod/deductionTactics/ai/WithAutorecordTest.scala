@@ -233,6 +233,24 @@ class WithAutorecordTest extends FunSpec {
 				assertResult(Some(exElem))(retVal.suspicions(attackerIndex).atkElement)
 				assertResult(Some(exKind))(retVal.suspicions(attackerIndex).atkWeapon)
 			}
+			it ("Records Spy (weakStatus) updates weakStatus suspicion") {
+				val spiedOnIndex = ((3,3))
+				val exStatus = Statuses.Blind
+				val info = new TokenClassTemplate(weakStatus = Some(exStatus))
+				val action = GameState.SpyResult(0, spiedOnIndex, info)
+				val inMemo = new SimpleMemo
+				val ai = new WithAutorecord(new StubPlayerAI)
+				
+				val retVal = ai.notifyTurn(0, action, null, null, inMemo)
+				
+				assertResult(Some(exStatus))(retVal.suspicions(spiedOnIndex).weakStatus)
+			}
+			ignore ("Records Spy (weakStatus) does not update weakDirection") {
+			}
+			ignore ("Records Spy (weakDirection) does not update weakStatus") {
+			}
+			ignore ("Records Spy (weakDirection) updates weakDirection") {
+			}
 		}
 	}
 }

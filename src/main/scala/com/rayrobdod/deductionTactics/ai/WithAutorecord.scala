@@ -49,6 +49,12 @@ final class WithAutorecord(val base:PlayerAI) extends DecoratorPlayerAI(base)
 				
 				b.updateSuspicion(attackerIndex, newSusp)
 			}
+			case GameState.SpyResult(_, spiedOnIndex, info) => {
+				val oldSusp = b.suspicions.get(spiedOnIndex).getOrElse(new TokenClassSuspicion)
+				val newSusp = oldSusp.copy(weakStatus = info.weakStatus.orElse(oldSusp.weakStatus))
+				
+				b.updateSuspicion(spiedOnIndex, newSusp)
+			}
 			case _ => {b}
 		}
 	}
