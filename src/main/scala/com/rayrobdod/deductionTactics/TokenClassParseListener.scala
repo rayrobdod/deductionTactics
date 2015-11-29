@@ -77,7 +77,7 @@ final case class TokenClassTemplate(
 				TokenClassTemplate.this.weakDirection.getOrElse(arbitraryDirection),
 				TokenClassTemplate.this.weakWeapon.map{(a) => ((a._1, a._2.get))},
 				TokenClassTemplate.this.weakStatus.get,
-				this.stanceGroup.get
+				this.stanceGroup.getOrElse(TokenClass.SingleStanceGroup)
 			)
 		} catch {
 			// TODO: be more specific?
