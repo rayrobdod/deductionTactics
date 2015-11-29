@@ -60,7 +60,7 @@ object Elements {
 			values.find{_.name equalsIgnoreCase s}.get
 		} catch {
 			case x:NoSuchElementException => 
-				val y = new NoSuchElementException("No element with name: "+ s)
+				val y = new NoSuchElementException("No element with name: " + s)
 				y.initCause(x)
 				throw y
 		}

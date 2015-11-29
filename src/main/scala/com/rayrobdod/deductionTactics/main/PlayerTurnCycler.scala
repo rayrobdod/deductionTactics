@@ -40,7 +40,7 @@ final class PlayerTurnCycler(
 		var timeBetweenTurns:Int = 500
 ) extends Runnable {
 	
-	def run() { 
+	def run():Unit = { 
 		try {
 			var currentState:GameState = initialState
 			def gameEnded:Boolean = {remainingPlayers(currentState).size == 1}

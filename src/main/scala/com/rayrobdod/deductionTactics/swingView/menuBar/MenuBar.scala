@@ -105,7 +105,7 @@ class MenuBar() extends JMenuBar
 		}))
 		
 		a.add(myMenuItem("classesFilterMenu", new ActionListener{
-			def actionPerformed(e:ActionEvent) = {
+			def actionPerformed(e:ActionEvent):Unit = {
 				val frame:JDialog = new JDialog(getWindowAncestor(MenuBar.this))
 				
 				val display = new FilterKnownTokenClassesComponent()
