@@ -22,6 +22,7 @@ import Weaponkinds.Weaponkind
 import Statuses.Status
 import BodyTypes.BodyType
 import Directions.Direction
+import scala.collection.immutable.BitSet
 
 /**
  * Constants relating to TokenClassFromBinary
@@ -36,12 +37,16 @@ object TokenClassFromBinary {
 	 * @since a.6.1
 	 */
 	def apply(reader:java.io.DataInput):TokenClass = {
+		val name = {
+			val bytes = new Array[Byte](nameLength)
+			reader.readFully(bytes)
+			new String(bytes.takeWhile{_ != 0})
+		}
+		val flags = BitSet.fromBitMaskNoCopy(Array[Long](reader.readByte()))
+		
 		val retVal = new TokenClass(
-			name = {
-				val bytes = new Array[Byte](nameLength)
-				reader.readFully(bytes)
-				new String(bytes.takeWhile{_ != 0})
-			},
+			name = name,
+			isSpy = flags(0),
 			
 			atkElement = Elements(reader.readByte()),
 			atkWeapon = Weaponkinds(reader.readByte()),
@@ -56,7 +61,6 @@ object TokenClassFromBinary {
 				((x, reader.readFloat() ))
 			}.toMap,
 			
-			isSpy = false,
 			stanceGroup = TokenClass.SingleStanceGroup
 		)
 		reader.skipBytes(imageLocLength)
@@ -64,7 +68,7 @@ object TokenClassFromBinary {
 	}
 	
 	val nameLength = 20;
-	val enumsLength = 8 + (5 * 4); // 8 bytes + 5 floats
+	val enumsLength = 9 + (5 * 4); // 9 bytes + 5 floats
 	val imageLocLength = 80;
 	
 	val totalLength = nameLength + enumsLength + imageLocLength;

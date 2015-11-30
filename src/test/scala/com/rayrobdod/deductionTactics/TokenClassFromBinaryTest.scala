@@ -30,7 +30,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 			val src = new java.io.DataInputStream(
 				new java.io.ByteArrayInputStream((
 					"Eagle".getBytes(UTF_8) ++ Seq.fill(15){0} ++
-					Seq(Elements.Fire.id, Weaponkinds.Spearkind.id, Statuses.Blind.id,
+					Seq(1, Elements.Fire.id, Weaponkinds.Spearkind.id, Statuses.Blind.id,
 							BodyTypes.Avian.id, 1, 4, Statuses.Sleep.id, Directions.Left.id) ++
 					Seq(0.75f, 2f, 1f, 1.5f, 0.5f).map{java.lang.Float.floatToIntBits _}.flatMap{x => java.nio.ByteBuffer.allocate(4).putInt(x).array()} ++
 					Seq.fill(TokenClassFromBinary.imageLocLength){0}
@@ -56,7 +56,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 					Weaponkinds.Powderkind -> .5f
 				),
 				weakStatus = Statuses.Sleep,
-				isSpy = false,
+				isSpy = true,
 				stanceGroup = TokenClass.SingleStanceGroup
 			)
 			val res = TokenClassFromBinary(src)
@@ -67,7 +67,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 			val src = new java.io.DataInputStream(
 				new java.io.ByteArrayInputStream(hexArray"""
 					4561676c65 0000000000 0000000000 0000000000
-					0202020101 0400003f40 0000400000 003f800000
+					000202020101 0400003f40 0000400000 003f800000
 					3fc000003f 0000000000 0000000000 0000000000
 					0000000000 0000000000 0000000000 0000000000
 					0000000000 0000000000 0000000000 0000000000
@@ -103,7 +103,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 			val src = new java.io.DataInputStream(
 				new java.io.ByteArrayInputStream((
 					"Lefty Batter".getBytes(UTF_8) ++ Seq.fill(8){0} ++
-					Seq(Elements.Sound.id, Weaponkinds.Bluntkind.id, Statuses.Neuro.id,
+					Seq(0, Elements.Sound.id, Weaponkinds.Bluntkind.id, Statuses.Neuro.id,
 							BodyTypes.Humanoid.id, 1, 3, Statuses.Burn.id, Directions.Right.id) ++
 					Seq(2f, .5f, 1.5f, 1f, 1.25f).map{java.lang.Float.floatToIntBits _}.flatMap{x => java.nio.ByteBuffer.allocate(4).putInt(x).array()} ++
 					Seq.fill(TokenClassFromBinary.imageLocLength){0}
