@@ -32,7 +32,7 @@ import com.rayrobdod.boardGame.{Space, StrictRectangularSpace}
  * @param timeBetweenTurns a delay between turns incase the turns are moving too quickly.
  * 
  * @author Raymond Dodge
- * @version a.6.0
+ * @version a.6.1
  */
 final class PlayerTurnCycler(
 		val players:Seq[PlayerAI],
@@ -88,6 +88,9 @@ final class PlayerTurnCycler(
 								
 								Logger.finer("Token Attack for Damage")
 								Some(currentState.tokenAttackStatus(playerOfCurrentTurn, a, d2))
+							case GameState.ChangeStance(t,n) =>
+								Logger.finer("Token Change Stance")
+								Some(currentState.changeStance(playerOfCurrentTurn, t, n))
 							case GameState.EndOfTurn =>
 								val a = endTurn(currentState)
 								playerOfCurrentTurn = (playerOfCurrentTurn + 1) % currentState.tokens.tokens.size
@@ -113,12 +116,17 @@ final class PlayerTurnCycler(
 									playerSeenState.tokens.indexOf(d),
 									a.tokenClass.get.atkStatus
 								)
+							case GameState.ChangeStance(t,n) =>
+								GameState.ChangeStanceResult(
+									playerOfCurrentTurn,
+									playerSeenState.tokens.indexOf(t)
+								)
 							case GameState.EndOfTurn =>
 								GameState.EndOfTurn
 						}
 						
 						newState.foreach{(a:GameState) =>
-							players.zipWithIndex.foreach({(p:PlayerAI, i:Int) =>
+							players.zipWithIndex.filter{x => result.tellPlayer(x._2)}.foreach({(p:PlayerAI, i:Int) =>
 								Logger.finer("Notifying Player " + i)
 								
 								val beforeView = asSeenByPlayer(currentState, i)

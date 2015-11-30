@@ -105,6 +105,9 @@ class GameStateTest extends FunSpec {
 				assertResult(false)(afterState.tokens.tokens(0)(0).canAttackThisTurn)
 			}
 		}
+		describe ("changeState") {
+			ignore ("Should change the token's tokenClass") {}
+		}
 	}
 	
 	

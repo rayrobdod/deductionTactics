@@ -139,6 +139,28 @@ final case class GameState (
 		GameState(board, newTokens)
 	}
 	
+	
+	/* @since a.6.1 */
+	def changeStance(player:Int, token:Token, newStance:TokenClass):GameState = {
+		val indexOfToken = this.tokens.indexOf(token)
+		
+		if (indexOfToken._1 != player) { throw new IllegalArgumentException("That's not your token!") }
+		if (token.tokenClass.get.stanceGroup == TokenClass.SingleStanceGroup) { throw new IllegalArgumentException("Token cannot change stance") }
+		if (token.tokenClass.get.stanceGroup != newStance.stanceGroup) { throw new IllegalArgumentException("Token cannot change stance") }
+		if (! (TokenClass.allKnown contains newStance)) { throw new IllegalArgumentException("Unknown new stance") }
+		
+		val newToken = token.copy(
+			tokenClass = Some(newStance)
+		)
+		
+		val newTokens = new ListOfTokens(
+			tokens.tokens.updated(indexOfToken._1,
+				tokens.tokens(indexOfToken._1).updated(indexOfToken._2, newToken)
+			)
+		)
+		
+		GameState(board, newTokens)
+	}
 }
 
 /**
@@ -150,13 +172,22 @@ object GameState {
 	case class TokenMove(token:Token, space:Space[SpaceClass]) extends Action
 	case class TokenAttackDamage(attacker:Token, attackee:Token) extends Action
 	case class TokenAttackStatus(attacker:Token, attackee:Token) extends Action
+	/** @since a.6.1 */
+	case class ChangeStance(token:Token, newStance:TokenClass) extends Action
 	object EndOfTurn extends Action with Result
 	
 	
-	sealed trait Result
+	sealed trait Result {
+		/** @since a.6.1 */
+		def tellPlayer(player:Int) = true
+	}
 	
 	case class TokenMoveResult(tokenIndex:TokenIndex, space:Space[SpaceClass]) extends Result
 	case class TokenAttackDamageResult(attackerIndex:TokenIndex, attackeeIndex:TokenIndex, elem:Element, kind:Weaponkind) extends Result
 	case class TokenAttackStatusResult(attackerIndex:TokenIndex, attackeeIndex:TokenIndex, status:Status) extends Result
-	
+	/** Doesn't provide any information, but can be used as a 'stuff worked', I guess?
+	 * @since a.6.1 */
+	case class ChangeStanceResult(playerToTell:Int, tokenIndex:TokenIndex) extends Result {
+		override def tellPlayer(player:Int) = {player == playerToTell}
+	}
 }
