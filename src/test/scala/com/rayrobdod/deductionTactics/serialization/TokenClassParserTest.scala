@@ -48,7 +48,7 @@ class TokenClassParserTest extends FunSpec {
 			)
 			val res = new TokenClassParser(new TokenClassBuilder).parse(src, None).build
 			
-			assertResult(src){res}
+			assertResult(Seq(src)){res}
 		}
 	}
 	ignore ("TokenClassParser + JsonBuilder") {

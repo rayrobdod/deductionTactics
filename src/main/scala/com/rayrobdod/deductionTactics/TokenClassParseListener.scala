@@ -23,10 +23,9 @@ import Statuses.Status
 import BodyTypes.BodyType
 import Directions.Direction
 
-import scala.collection.Seq
-import scala.collection.immutable.{Map, Seq => ISeq}
+import scala.collection.immutable.{Map, Seq}
 import com.rayrobdod.json.parser.JsonParser
-import com.rayrobdod.json.builder.{Builder, MapBuilder}
+import com.rayrobdod.json.builder.{Builder, SeqBuilder, MapBuilder}
 import java.io.{StringReader, InputStreamReader}
 
 
@@ -37,48 +36,60 @@ import java.io.{StringReader, InputStreamReader}
  * @version a.6.1
  */
 final case class TokenClassTemplate(
-	val nameOpt:Option[String] = None,
-	val body:Option[BodyType] = None,
-	val atkElement:Option[Element] = None,
-	val atkWeapon:Option[Weaponkind] = None,
-	val atkStatus:Option[Status] = None,
-	val isSpy:Option[Boolean] = None,
-	val range:Option[Int] = None,
-	val speed:Option[Int] = None,
-	val weakDirection:Option[Direction] = None,
-	val weakWeapon:Map[Weaponkind,Option[Float]] = Weaponkinds.values.zipAll(Nil, null, None).toMap,
-	val weakStatus:Option[Status] = None,
-	val stanceGroup:Option[TokenClass.StanceGroup] = None
+	val nameOpt:Seq[String] = Nil,
+	val body:Seq[BodyType] = Nil,
+	val atkElement:Seq[Element] = Nil,
+	val atkWeapon:Seq[Weaponkind] = Nil,
+	val atkStatus:Seq[Status] = Nil,
+	val isSpy:Seq[Boolean] = Nil,
+	val range:Seq[Int] = Nil,
+	val speed:Seq[Int] = Nil,
+	val weakDirection:Seq[Direction] = Nil,
+	val weakWeapon:Map[Weaponkind,Seq[Float]] = Weaponkinds.values.zipAll(Nil, null, Nil).toMap,
+	val weakStatus:Seq[Status] = Nil
 ) {
-	def name:String = nameOpt.getOrElse("???")
+	def stances:Int = this.productIterator.flatMap{
+		_ match {
+			case x:Map[_, Seq[_]] => x.values
+			case x:Seq[_] => Seq(x)
+		}
+	}.map{_.size}.max
 	
 	private def arbitraryDirection:Direction = {
-		val nameHash = this.name.hashCode
+		val nameHash = this.nameOpt.toList.hashCode
 		Directions.values((nameHash % Directions.values.length + Directions.values.length) % Directions.values.length)
 	}
 	
 	/**
 	 * @throws IllegalStateException if required fields were not set
 	 */
-	def build():TokenClass = {
+	def build():Seq[TokenClass] = {
 		try {
 			// B*CKING DELAYED EXECUTION
-			weakWeapon.values.foreach{_.get}
+			weakWeapon.values.foreach{_.foreach{_.doubleValue}}
 			
-			new TokenClass (
-				TokenClassTemplate.this.name,
-				TokenClassTemplate.this.body.get,
-				TokenClassTemplate.this.atkElement.get,
-				TokenClassTemplate.this.atkWeapon.get,
-				TokenClassTemplate.this.atkStatus.get,
-				this.isSpy.getOrElse(false),
-				TokenClassTemplate.this.range.get,
-				TokenClassTemplate.this.speed.get,
-				TokenClassTemplate.this.weakDirection.getOrElse(arbitraryDirection),
-				TokenClassTemplate.this.weakWeapon.map{(a) => ((a._1, a._2.get))},
-				TokenClassTemplate.this.weakStatus.get,
-				this.stanceGroup.getOrElse(TokenClass.SingleStanceGroup)
-			)
+			val stanceGroup = if (stances == 1) {TokenClass.SingleStanceGroup} else {new TokenClass.MultipleStanceGroup}
+			
+			implicit class GetOrLastSeq[A](x:Seq[A]) {
+				def getOrLastOption(i:Int):Option[A] = {x.lift.apply(i).orElse(x.lastOption)}
+			}
+			
+			(0 until stances).map{i:Int =>
+				new TokenClass(
+					this.nameOpt.getOrLastOption(i).get,
+					this.body.getOrLastOption(i).get,
+					this.atkElement.getOrLastOption(i).get,
+					this.atkWeapon.getOrLastOption(i).get,
+					this.atkStatus.getOrLastOption(i).get,
+					this.isSpy.getOrLastOption(i).getOrElse(false),
+					this.range.getOrLastOption(i).get,
+					this.speed.getOrLastOption(i).get,
+					this.weakDirection.getOrLastOption(i).getOrElse(arbitraryDirection),
+					this.weakWeapon.map{(a) => ((a._1, a._2.getOrLastOption(i).get))},
+					this.weakStatus.getOrLastOption(i).get,
+					stanceGroup
+				)
+			}
 		} catch {
 			// TODO: be more specific?
 			case e:java.util.NoSuchElementException => throw new IllegalStateException(
@@ -93,25 +104,49 @@ final case class TokenClassTemplate(
 final class TokenClassBuilder extends Builder[TokenClassTemplate] {
 	override val init:TokenClassTemplate = new TokenClassTemplate()
 	override def apply(folding:TokenClassTemplate, key:String, value:Any):TokenClassTemplate = key match {
-		case "name" => folding.copy(nameOpt = Some(value.toString))
-		case "body" => folding.copy(body = Some(BodyTypes.withName(value.toString)))
-		case "element" => folding.copy(atkElement = Some(Elements.withName(value.toString)))
-		case "atkWeapon" => folding.copy(atkWeapon = Some(Weaponkinds.withName(value.toString)))
-		case "atkStatus" => folding.copy(atkStatus = Some(Statuses.withName(value.toString)))
-		case "range" => folding.copy(range = Some(value.toString.toInt))
-		case "speed" => folding.copy(speed = Some(value.toString.toInt))
-		case "weakStatus" => folding.copy(weakStatus = Some(Statuses.withName(value.toString)))
+		case "name" => folding.copy(nameOpt = jsonValueAsStringSeq(value))
+		case "body" => folding.copy(body = jsonValueAsStringSeq(value).map{BodyTypes.withName _})
+		case "element" => folding.copy(atkElement = jsonValueAsStringSeq(value).map{Elements.withName _})
+		case "atkWeapon" => folding.copy(atkWeapon = jsonValueAsStringSeq(value).map{Weaponkinds.withName _})
+		case "atkStatus" => folding.copy(atkStatus = jsonValueAsStringSeq(value).map{Statuses.withName _})
+		case "range" => folding.copy(range = jsonValueAsIntSeq(value))
+		case "speed" => folding.copy(speed = jsonValueAsIntSeq(value))
+		case "weakStatus" => folding.copy(weakStatus = jsonValueAsStringSeq(value).map{Statuses.withName _})
 		case "weakDirection" => {
 			if (value != "DontCare") {
-				folding.copy(weakDirection = Some(Directions.withName(value.toString)))
+				folding.copy(weakDirection = jsonValueAsStringSeq(value).map{Directions.withName _})
 			} else {
-				folding.copy(weakDirection = None)
+				folding.copy(weakDirection = Nil)
 			}
 		}
-		case "weakWeapon" => folding.copy(weakWeapon = value.asInstanceOf[Map[_,_]].map{x:(Any,Any) => ((Weaponkinds.withName(x._1.toString), Option(x._2.toString.toFloat)))})
-		case "isSpy" => folding.copy(isSpy = Some(value.asInstanceOf[Boolean]))
+		case "weakWeapon" => folding.copy(weakWeapon = value.asInstanceOf[Map[_,_]].map{x:(Any,Any) => ((Weaponkinds.withName(x._1.toString), jsonValueAsFloatSeq(x._2)))})
+		case "isSpy" => folding.copy(isSpy = jsonValueAsBooleanSeq(value))
 		case _ => folding
 	}
-	override def childBuilder(key:String):Builder[_] = new MapBuilder
+	override def childBuilder(key:String):Builder[_] = key match {
+		case "weakWeapon" => new MapBuilder(Function.const(new SeqBuilder))
+		case _ => new SeqBuilder
+	}
 	override val resultType:Class[TokenClassTemplate] = classOf[TokenClassTemplate]
+	
+	def jsonValueAsStringSeq(x:Any):Seq[String] = x match {
+		case y:String => Seq(y)
+		case y:Seq[_] => y.map{_.toString}
+	}
+	def jsonValueAsIntSeq(x:Any):Seq[Int] = x match {
+		case y:Int => Seq(y)
+		case y:Long => Seq(y.intValue)
+		case y:Seq[_] => y.map{jsonValueAsIntSeq}.flatten
+	}
+	def jsonValueAsFloatSeq(x:Any):Seq[Float] = x match {
+		case y:Int => Seq(y.floatValue)
+		case y:Long => Seq(y.floatValue)
+		case y:Float => Seq(y)
+		case y:Double => Seq(y.floatValue)
+		case y:Seq[_] => y.map{jsonValueAsFloatSeq}.flatten
+	}
+	def jsonValueAsBooleanSeq(x:Any):Seq[Boolean] = x match {
+		case y:Boolean => Seq(y)
+		case y:Seq[_] => y.map{jsonValueAsBooleanSeq}.flatten
+	}
 }

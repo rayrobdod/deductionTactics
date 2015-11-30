@@ -39,7 +39,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 					case x:Int => x.byteValue
 				})
 			)
-			val exp = new TokenClass(
+			val exp = Seq(new TokenClass(
 				name = "Eagle",
 				body = BodyTypes.Avian,
 				atkElement = Elements.Fire,
@@ -58,7 +58,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 				weakStatus = Statuses.Sleep,
 				isSpy = false,
 				stanceGroup = TokenClass.SingleStanceGroup
-			)
+			))
 			val res = TokenClassFromBinary(src)
 			
 			assertResult(exp){res}
@@ -75,7 +75,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 					0000000000 000000"""
 				)
 			)
-			val exp = new TokenClass(
+			val exp = Seq(new TokenClass(
 				name = "Eagle",
 				body = BodyTypes.Avian,
 				atkElement = Elements.Fire,
@@ -94,7 +94,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 				weakStatus = Statuses.Sleep,
 				isSpy = false,
 				stanceGroup = TokenClass.SingleStanceGroup
-			)
+			))
 			val res = TokenClassFromBinary(src)
 			
 			assertResult(exp){res}
@@ -112,7 +112,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 					case x:Int => x.byteValue
 				})
 			)
-			val exp = new TokenClass(
+			val exp = Seq(new TokenClass(
 				name = "Lefty Batter",
 				body = BodyTypes.Humanoid,
 				atkElement = Elements.Sound,
@@ -131,7 +131,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 				weakStatus = Statuses.Burn,
 				isSpy = false,
 				stanceGroup = TokenClass.SingleStanceGroup
-			)
+			))
 			val res = TokenClassFromBinary(src)
 			
 			assertResult(exp){res}

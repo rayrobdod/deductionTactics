@@ -51,7 +51,7 @@ object CompileTokenClassesToBinary
 			} finally {
 				jsonReader.close()
 			}
-		}.flatten
+		}.flatten.flatten
 		
 		val imageMap = new TokenClassNameToImageLocation(sources)
 		

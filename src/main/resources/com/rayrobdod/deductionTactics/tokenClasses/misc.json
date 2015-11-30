@@ -197,24 +197,11 @@
 	"weakDirection":"DontCare",
 	"isSpy":true
 },{
-	"comment":"I actually think I'll make the format the other one, where both stances are in the same JsonObject",
-	"comment2":"The intention is to make both Rangers alternate stances", 
-	"name":"Ranger (sword)",
+	"name":["Ranger (sword)", "Ranger (arrow)"],
 	"element":"Electric",
-	"atkWeapon":"Blade",
+	"atkWeapon":["Blade", "Spear"],
 	"atkStatus":"Blind",
-	"range":1,
-	"speed":3,
-	"body":"Human",
-	"weakWeapon":{"blade":1,"blunt":0.75,"spear":2,"whip":1.5,"powder":0.5},
-	"weakStatus":"Neuro",
-	"weakDirection":"Down"
-},{
-	"name":"Ranger (arrow)",
-	"element":"Electric",
-	"atkWeapon":"Spear",
-	"atkStatus":"Blind",
-	"range":2,
+	"range":[1, 2],
 	"speed":3,
 	"body":"Human",
 	"weakWeapon":{"blade":1,"blunt":0.75,"spear":2,"whip":1.5,"powder":0.5},

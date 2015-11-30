@@ -99,7 +99,7 @@ object TokenClass
 		val a:Seq[URL] = Seq.empty ++ new ResourcesServiceLoader(SERVICE)
 		
 		// Binary version
-		val b:Seq[Seq[TokenClass]] = a.map{(jsonPath:URL) =>
+		val b:Seq[Seq[Seq[TokenClass]]] = a.map{(jsonPath:URL) =>
 			if (jsonPath.toString.endsWith(".rrd-dt-tokenClass")) {
 			
 				val is = jsonPath.openStream()
@@ -123,7 +123,7 @@ object TokenClass
 				}
 			}
 		}
-		val e = b.flatten
+		val e = b.flatten.flatten
 		
 		
 		Seq.empty ++ e
