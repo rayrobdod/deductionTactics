@@ -236,7 +236,7 @@ class WithAutorecordTest extends FunSpec {
 			it ("Records Spy (weakStatus) updates weakStatus suspicion") {
 				val spiedOnIndex = ((3,3))
 				val exStatus = Statuses.Blind
-				val info = new TokenClassTemplate(weakStatus = Some(exStatus))
+				val info = new TokenClassSuspicion(weakStatus = Some(exStatus))
 				val action = GameState.SpyResult(0, spiedOnIndex, info)
 				val inMemo = new SimpleMemo
 				val ai = new WithAutorecord(new StubPlayerAI)

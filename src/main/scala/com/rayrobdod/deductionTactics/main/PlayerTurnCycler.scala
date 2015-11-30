@@ -121,7 +121,7 @@ final class PlayerTurnCycler(
 								val tokenToSpyOn = scala.util.Random.shuffle(spyOnCandidates).head
 								val indexToSpyOn = currentState.tokens.indexOf(tokenToSpyOn)
 								// TODO: choose an attribute randomly and disclose that attribute
-								val info = new TokenClassTemplate(weakStatus = Some(tokenToSpyOn.tokenClass.get.weakStatus))
+								val info = new ai.TokenClassSuspicion(weakStatus = Some(tokenToSpyOn.tokenClass.get.weakStatus))
 								GameState.SpyResult(playerSeenState.tokens.indexOf(a)._1, indexToSpyOn, info)
 							case GameState.EndOfTurn =>
 								GameState.EndOfTurn

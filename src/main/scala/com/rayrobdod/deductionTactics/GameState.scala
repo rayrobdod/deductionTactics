@@ -186,7 +186,7 @@ object GameState {
 	case class TokenAttackDamageResult(attackerIndex:TokenIndex, attackeeIndex:TokenIndex, elem:Element, kind:Weaponkind) extends Result
 	case class TokenAttackStatusResult(attackerIndex:TokenIndex, attackeeIndex:TokenIndex, status:Status) extends Result
 	/* @since a.6.1 */
-	case class SpyResult(playerToTell:Int, tokenIndex:TokenIndex, information:TokenClassTemplate) extends Result {
+	case class SpyResult(playerToTell:Int, tokenIndex:TokenIndex, information:ai.TokenClassSuspicion) extends Result {
 		override def tellPlayer(player:Int) = {player == playerToTell}
 	}
 	
