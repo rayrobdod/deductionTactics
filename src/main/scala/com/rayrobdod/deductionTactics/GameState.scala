@@ -24,6 +24,7 @@ import com.rayrobdod.boardGame.{RectangularField, Space}
 
 /**
  * @since a.6.0
+ * @version a.6.1
  */
 final case class GameState (
 	val board:RectangularField[SpaceClass],
@@ -139,6 +140,27 @@ final case class GameState (
 		GameState(board, newTokens)
 	}
 	
+	/* @since a.6.1 */
+	def spy(player:Int, spier:Token):GameState = {
+		val indexOfSpier = this.tokens.indexOf(spier)
+		
+		if (indexOfSpier._1 != player) { throw new IllegalArgumentException("That's not your token!") }
+		if (!spier.canAttackThisTurn) { throw new IllegalArgumentException("Token has acted this turn; cannot spy") }
+		if (spier.canMoveThisTurn != spier.tokenClass.get.speed) { throw new IllegalArgumentException("Token has acted this turn; cannot spy") }
+		
+		val newSpier = spier.copy(
+			canAttackThisTurn = false,
+			canMoveThisTurn = 0
+		)
+		
+		val newTokens = new ListOfTokens(
+			tokens.tokens.updated(indexOfSpier._1,
+				tokens.tokens(indexOfSpier._1).updated(indexOfSpier._2, newSpier)
+			)
+		)
+		
+		GameState(board, newTokens)
+	}
 	
 	/* @since a.6.1 */
 	def changeStance(player:Int, token:Token, newStance:TokenClass):GameState = {
@@ -173,6 +195,8 @@ object GameState {
 	case class TokenAttackDamage(attacker:Token, attackee:Token) extends Action
 	case class TokenAttackStatus(attacker:Token, attackee:Token) extends Action
 	/** @since a.6.1 */
+	case class Spy(spier:Token) extends Action
+	/** @since a.6.1 */
 	case class ChangeStance(token:Token, newStance:TokenClass) extends Action
 	object EndOfTurn extends Action with Result
 	
@@ -185,6 +209,11 @@ object GameState {
 	case class TokenMoveResult(tokenIndex:TokenIndex, space:Space[SpaceClass]) extends Result
 	case class TokenAttackDamageResult(attackerIndex:TokenIndex, attackeeIndex:TokenIndex, elem:Element, kind:Weaponkind) extends Result
 	case class TokenAttackStatusResult(attackerIndex:TokenIndex, attackeeIndex:TokenIndex, status:Status) extends Result
+	/* @since a.6.1 */
+	case class SpyResult(playerToTell:Int, tokenIndex:TokenIndex, information:ai.TokenClassSuspicion) extends Result {
+		override def tellPlayer(player:Int) = {player == playerToTell}
+	}
+	
 	/** Doesn't provide any information, but can be used as a 'stuff worked', I guess?
 	 * @since a.6.1 */
 	case class ChangeStanceResult(playerToTell:Int, tokenIndex:TokenIndex) extends Result {

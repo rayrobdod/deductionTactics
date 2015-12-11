@@ -105,6 +105,23 @@ class GameStateTest extends FunSpec {
 				assertResult(false)(afterState.tokens.tokens(0)(0).canAttackThisTurn)
 			}
 		}
+		describe ("spy") {
+			it ("Should not mutate the initial state"){
+				val initialState = genSimpleGameState()
+				val afterState = initialState.spy(0,
+						initialState.tokens.tokens(0)(0)
+				)
+				assertResult(Token.maximumHitpoints)(initialState.tokens.tokens(1)(0).currentHitpoints)
+			}
+			it ("Should use up the Spyer's attack and move"){
+				val initialState = genSimpleGameState()
+				val afterState = initialState.spy(0,
+						initialState.tokens.tokens(0)(0)
+				)
+				assertResult(false)(afterState.tokens.tokens(0)(0).canAttackThisTurn)
+				assertResult(0)(afterState.tokens.tokens(0)(0).canMoveThisTurn)
+			}
+		}
 		describe ("changeState") {
 			ignore ("Should change the token's tokenClass") {}
 		}
@@ -134,7 +151,7 @@ class GameStateTest extends FunSpec {
 					Elements.Fire,
 					Weaponkinds.Bladekind,
 					Statuses.Burn,
-					false,
+					true,
 					3, 3,
 					Directions.Left,
 					Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,

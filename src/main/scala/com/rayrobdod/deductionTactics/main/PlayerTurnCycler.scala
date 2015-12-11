@@ -40,7 +40,7 @@ final class PlayerTurnCycler(
 		var timeBetweenTurns:Int = 500
 ) extends Runnable {
 	
-	def run() { 
+	def run():Unit = { 
 		try {
 			var currentState:GameState = initialState
 			def gameEnded:Boolean = {remainingPlayers(currentState).size == 1}
@@ -88,6 +88,9 @@ final class PlayerTurnCycler(
 								
 								Logger.finer("Token Attack for Damage")
 								Some(currentState.tokenAttackStatus(playerOfCurrentTurn, a, d2))
+							case GameState.Spy(a) =>
+								Logger.finer("Spy")
+								Some(currentState.spy(playerOfCurrentTurn, a))
 							case GameState.ChangeStance(t,n) =>
 								Logger.finer("Token Change Stance")
 								Some(currentState.changeStance(playerOfCurrentTurn, t, n))
@@ -116,6 +119,13 @@ final class PlayerTurnCycler(
 									playerSeenState.tokens.indexOf(d),
 									a.tokenClass.get.atkStatus
 								)
+							case GameState.Spy(a) =>
+								val spyOnCandidates = currentState.tokens.aliveNotPlayerTokens(playerSeenState.tokens.indexOf(a)._1).flatten
+								val tokenToSpyOn = scala.util.Random.shuffle(spyOnCandidates).head
+								val indexToSpyOn = currentState.tokens.indexOf(tokenToSpyOn)
+								// TODO: choose an attribute randomly and disclose that attribute
+								val info = new ai.TokenClassSuspicion(weakStatus = Some(tokenToSpyOn.tokenClass.get.weakStatus))
+								GameState.SpyResult(playerSeenState.tokens.indexOf(a)._1, indexToSpyOn, info)
 							case GameState.ChangeStance(t,n) =>
 								GameState.ChangeStanceResult(
 									playerOfCurrentTurn,

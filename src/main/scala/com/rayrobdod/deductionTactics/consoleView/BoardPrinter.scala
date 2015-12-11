@@ -1,4 +1,3 @@
-package com.rayrobdod.deductionTactics
 /*
 	Deduction Tactics
 	Copyright (C) 2012-2015  Raymond Dodge
@@ -16,6 +15,7 @@ package com.rayrobdod.deductionTactics
 	You should have received a copy of the GNU General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+package com.rayrobdod.deductionTactics
 package consoleView
 
 import com.rayrobdod.boardGame.{StrictRectangularSpace, RectangularField, Space}

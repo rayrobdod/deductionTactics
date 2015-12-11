@@ -24,14 +24,8 @@ import Statuses.Status
 import BodyTypes.BodyType
 import Directions.Direction
 
-import java.io.{ByteArrayOutputStream, DataOutputStream}
 import java.nio.file.{Path, Files}
-import java.nio.charset.StandardCharsets.UTF_8
-import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
 import scala.collection.immutable.{Map, Seq}
-import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
-import com.rayrobdod.json.builder.{Builder, MapBuilder, MinifiedJsonObjectBuilder, MinifiedJsonArrayBuilder}
-import com.rayrobdod.json.parser.{SeqParser}
 
 /**
  * 
@@ -41,9 +35,9 @@ import com.rayrobdod.json.parser.{SeqParser}
  */
 object GenerateBasicTokens
 {
-	case class ElementAttributes(unitName:String, atkStatus:Status)
-	case class WeaponkindAttributes(unitName:String, weakStatus:Status, weakWeapon:Map[Weaponkind, Double])
-	object TokenClassOrdering extends Ordering[TokenClass] {
+	private case class ElementAttributes(unitName:String, atkStatus:Status)
+	private case class WeaponkindAttributes(unitName:String, weakStatus:Status, weakWeapon:Map[Weaponkind, Double])
+	private object TokenClassOrdering extends Ordering[TokenClass] {
 		def compare(a:TokenClass, b:TokenClass) = {
 			if (a.atkElement != b.atkElement) {
 				a.atkElement.id compareTo b.atkElement.id
@@ -55,23 +49,23 @@ object GenerateBasicTokens
 		}
 	}
 	
-	val elements = Map(
+	private val elements = Map(
 		Elements.Light    -> ElementAttributes(unitName = "Shining", atkStatus = Statuses.Blind),
 		Elements.Electric -> ElementAttributes(unitName = "Static",  atkStatus = Statuses.Neuro),
 		Elements.Fire     -> ElementAttributes(unitName = "Flaming", atkStatus = Statuses.Burn),
 		Elements.Frost    -> ElementAttributes(unitName = "Frosty",  atkStatus = Statuses.Sleep),
 		Elements.Sound    -> ElementAttributes(unitName = "Sonic",   atkStatus = Statuses.Confuse)
 	)
-	val weapons = Map(
+	private val weapons = Map(
 		Weaponkinds.Bladekind  -> WeaponkindAttributes(unitName = "Swordsman", weakStatus = Statuses.Sleep,   weakWeapon = Map(Weaponkinds.Bladekind -> .5 ,Weaponkinds.Bluntkind -> .75,Weaponkinds.Spearkind -> 1.5,Weaponkinds.Whipkind -> 2  ,Weaponkinds.Powderkind -> 1  )),
 		Weaponkinds.Bluntkind  -> WeaponkindAttributes(unitName = "Clubsman",  weakStatus = Statuses.Burn,    weakWeapon = Map(Weaponkinds.Bladekind -> 1.5,Weaponkinds.Bluntkind -> .5 ,Weaponkinds.Spearkind -> 2  ,Weaponkinds.Whipkind -> 1  ,Weaponkinds.Powderkind -> .75)),
 		Weaponkinds.Spearkind  -> WeaponkindAttributes(unitName = "Pikeman",   weakStatus = Statuses.Blind,   weakWeapon = Map(Weaponkinds.Bladekind -> 2  ,Weaponkinds.Bluntkind -> 1  ,Weaponkinds.Spearkind -> .5 ,Weaponkinds.Whipkind -> .75,Weaponkinds.Powderkind -> 1.5)),
 		Weaponkinds.Whipkind   -> WeaponkindAttributes(unitName = "Whipman",   weakStatus = Statuses.Confuse, weakWeapon = Map(Weaponkinds.Bladekind -> 1  ,Weaponkinds.Bluntkind -> 1.5,Weaponkinds.Spearkind -> .75,Weaponkinds.Whipkind -> .5 ,Weaponkinds.Powderkind -> 2  )),
 		Weaponkinds.Powderkind -> WeaponkindAttributes(unitName = "Powderman", weakStatus = Statuses.Neuro,   weakWeapon = Map(Weaponkinds.Bladekind -> .75,Weaponkinds.Bluntkind -> 2  ,Weaponkinds.Spearkind -> 1  ,Weaponkinds.Whipkind -> 1.5,Weaponkinds.Powderkind -> .5 ))
 	)
-	val DontCare = new Direction(-1, "DontCare", {(a) => Some(a)})
+	private val DontCare = new Direction(-1, "DontCare", {(a) => Some(a)})
 	
-	private val classes = {
+	val classes = {
 		elements.map({( a:Element, b:ElementAttributes ) =>
 		weapons.map({( c:Weaponkind, d:WeaponkindAttributes) =>
 			
@@ -92,25 +86,11 @@ object GenerateBasicTokens
 			)
 		}.tupled)}.tupled).flatten.toSeq.sorted(TokenClassOrdering)
 	}
-	val nameToIcon:Function1[String, Option[String]] = {(className:String) =>
-		val base = """C:/Users/Raymond/Documents/Programming/Java/Games/DeductionTactics/src/main/resources"""
+	def nameToIcon(base:Path)(className:String):Option[String] = {
 		val pack = """/com/rayrobdod/deductionTactics/tokenClasses/basic/"""
 		val retVal = pack + className + ".png"
 		
-		
-		val location:Option[Path] = Some(defaultFileSystem.getPath(base + retVal))
+		val location:Option[Path] = Some(base resolve retVal)
 		location.filter{ Files.exists(_) }.map{(x) => retVal}
-	}
-	
-	
-	def compile(outPath:Path) = {
-		val writer = Files.newBufferedWriter(outPath, UTF_8)
-		val transformer:PartialFunction[Any,Any] = {case x:TokenClass => new TokenClassParser(new MapBuilder).parse(x, nameToIcon(x.name))}
-		val seqParser = new SeqParser(new MinifiedJsonArrayBuilder(transformer = transformer))
-		
-		val json = seqParser.parse(classes)
-		
-		writer.write(json)
-		writer.close();
 	}
 }

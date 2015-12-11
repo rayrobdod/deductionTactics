@@ -1,6 +1,6 @@
 /*
 	Deduction Tactics
-	Copyright (C) 2012-2013  Raymond Dodge
+	Copyright (C) 2012-2015  Raymond Dodge
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import com.rayrobdod.deductionTactics.TokenClassFromBinary.{nameLength, imageLoc
  */
 object CompileTokenClassesToBinary
 {
-	def compile(sources:Seq[Path], outPath:Path) = {
+	def compile(sources:Seq[Path], outPath:Path):Unit = {
 		
 		val classes:Seq[TokenClass] = sources.map{(jsonPath:Path) =>
 			var jsonReader:java.io.Reader = new java.io.StringReader("[]")
@@ -64,6 +64,7 @@ object CompileTokenClassesToBinary
 		classes.map{(tclass:TokenClass) =>
 			val name:Array[Byte] = (tclass.name.getBytes(UTF_8) ++: Seq.fill(nameLength)(0.byteValue)).toArray
 			dos.write(name, 0, nameLength);
+			dos.writeByte(if (tclass.isSpy) {1} else {0})
 			dos.writeByte(tclass.atkElement.id.byteValue)
 			dos.writeByte(tclass.atkWeapon.id.byteValue)
 			dos.writeByte(tclass.atkStatus.id.byteValue)
