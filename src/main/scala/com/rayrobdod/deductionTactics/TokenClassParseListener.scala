@@ -42,11 +42,13 @@ final case class TokenClassTemplate(
 	val atkElement:Option[Element] = None,
 	val atkWeapon:Option[Weaponkind] = None,
 	val atkStatus:Option[Status] = None,
+	val isSpy:Option[Boolean] = None,
 	val range:Option[Int] = None,
 	val speed:Option[Int] = None,
 	val weakDirection:Option[Direction] = None,
 	val weakWeapon:Map[Weaponkind,Option[Float]] = Weaponkinds.values.zipAll(Nil, null, None).toMap,
-	val weakStatus:Option[Status] = None
+	val weakStatus:Option[Status] = None,
+	val stanceGroup:Option[TokenClass.StanceGroup] = None
 ) {
 	def name:String = nameOpt.getOrElse("???")
 	
@@ -69,11 +71,13 @@ final case class TokenClassTemplate(
 				TokenClassTemplate.this.atkElement.get,
 				TokenClassTemplate.this.atkWeapon.get,
 				TokenClassTemplate.this.atkStatus.get,
+				this.isSpy.getOrElse(false),
 				TokenClassTemplate.this.range.get,
 				TokenClassTemplate.this.speed.get,
 				TokenClassTemplate.this.weakDirection.getOrElse(arbitraryDirection),
 				TokenClassTemplate.this.weakWeapon.map{(a) => ((a._1, a._2.get))},
-				TokenClassTemplate.this.weakStatus.get
+				TokenClassTemplate.this.weakStatus.get,
+				this.stanceGroup.getOrElse(TokenClass.SingleStanceGroup)
 			)
 		} catch {
 			// TODO: be more specific?
@@ -105,6 +109,7 @@ final class TokenClassBuilder extends Builder[TokenClassTemplate] {
 			}
 		}
 		case "weakWeapon" => folding.copy(weakWeapon = value.asInstanceOf[Map[_,_]].map{x:(Any,Any) => ((Weaponkinds.withName(x._1.toString), Option(x._2.toString.toFloat)))})
+		case "isSpy" => folding.copy(isSpy = Some(value.asInstanceOf[Boolean]))
 		case _ => folding
 	}
 	override def childBuilder(key:String):Builder[_] = new MapBuilder

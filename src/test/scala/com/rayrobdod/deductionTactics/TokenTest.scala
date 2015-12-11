@@ -324,70 +324,84 @@ class TokenTest extends FunSpec {
 		Elements.Fire,
 		Weaponkinds.Bladekind,
 		Statuses.Burn,
+		false,
 		1, 3,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
-		Statuses.Burn
+		Statuses.Burn,
+		TokenClass.SingleStanceGroup
 	)
 	def sample5SpeedTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Fire,
 		Weaponkinds.Bladekind,
 		Statuses.Burn,
+		false,
 		1, 5,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
-		Statuses.Burn
+		Statuses.Burn,
+		TokenClass.SingleStanceGroup
 	)
 	def weaponWeakTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Fire,
 		Weaponkinds.Bladekind,
 		Statuses.Burn,
+		false,
 		1, 5,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, 2f))}.toMap,
-		Statuses.Burn
+		Statuses.Burn,
+		TokenClass.SingleStanceGroup
 	)
 	def weaponResistTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Fire,
 		Weaponkinds.Bladekind,
 		Statuses.Burn,
+		false,
 		1, 5,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, .5f))}.toMap,
-		Statuses.Burn
+		Statuses.Burn,
+		TokenClass.SingleStanceGroup
 	)
 	def elementWeakTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Electric,
 		Weaponkinds.Bladekind,
 		Statuses.Burn,
+		false,
 		1, 3,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
-		Statuses.Burn
+		Statuses.Burn,
+		TokenClass.SingleStanceGroup
 	)
 	def multipleWeakTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Electric,
 		Weaponkinds.Bladekind,
 		Statuses.Burn,
+		false,
 		1, 3,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, 2f))}.toMap,
-		Statuses.Burn
+		Statuses.Burn,
+		TokenClass.SingleStanceGroup
 	)
 	def multipleResistTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
 		Elements.Frost,
 		Weaponkinds.Bladekind,
 		Statuses.Burn,
+		false,
 		1, 3,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, .5f))}.toMap,
-		Statuses.Burn
+		Statuses.Burn,
+		TokenClass.SingleStanceGroup
 	)
 }
 

@@ -42,7 +42,9 @@ class TokenClassParserTest extends FunSpec {
 					Weaponkinds.Whipkind -> 1.5f,
 					Weaponkinds.Powderkind -> .5f
 				),
-				weakStatus = Statuses.Sleep
+				weakStatus = Statuses.Sleep,
+				isSpy = false,
+				stanceGroup = TokenClass.SingleStanceGroup
 			)
 			val res = new TokenClassParser(new TokenClassBuilder).parse(src, None).build
 			
@@ -80,7 +82,9 @@ class TokenClassParserTest extends FunSpec {
 					Weaponkinds.Whipkind -> 1.5f,
 					Weaponkinds.Powderkind -> .5f
 				),
-				weakStatus = Statuses.Sleep
+				weakStatus = Statuses.Sleep,
+				isSpy = false,
+				stanceGroup = TokenClass.SingleStanceGroup
 			)
 			val res = new TokenClassParser(new MinifiedJsonObjectBuilder).parse(src, Some("""/com/rayrobdod/deductionTactics/tokenClasses/birds/Golden Eagle.png"""))
 			
@@ -115,7 +119,9 @@ class TokenClassParserTest extends FunSpec {
 					Weaponkinds.Whipkind -> 1f,
 					Weaponkinds.Powderkind -> 1.25f
 				),
-				weakStatus = Statuses.Burn
+				weakStatus = Statuses.Burn,
+				isSpy = false,
+				stanceGroup = TokenClass.SingleStanceGroup
 			)
 			val res = new TokenClassParser(new MinifiedJsonObjectBuilder).parse(src, None)
 			

@@ -159,6 +159,14 @@ class SelectAction(
 					}
 				}
 				
+				if (selectedToken.tokenClass.map{_.isSpy}.getOrElse(false) &&
+							selectedToken.canAttackThisTurn
+							&& selectedToken.canMoveThisTurn == selectedToken.tokenClass.map{_.speed}.getOrElse(-1)
+				) {
+					val b = generateButton("spyButton", GameState.Spy(currentTokens().tokens(index)))
+					pieMenuLayer.add(b)
+				}
+				
 				selectedTokenIndex.get
 			} else {
 				// selected token is not mine

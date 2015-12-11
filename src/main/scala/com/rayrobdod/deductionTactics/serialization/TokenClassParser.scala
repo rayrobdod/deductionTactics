@@ -37,6 +37,7 @@ class TokenClassParser[A](builder:Builder[A]) {
 		val i:A = builder.apply(h, "weakStatus", tclass.weakStatus.name)
 		val j:A = builder.apply(i, "weakDirection", tclass.weakDirection.name)
 		val k:A = builder.apply(j, "weakWeapon", tclass.weakWeapon.map{x => ((x._1.name.dropRight(4), x._2))})
+		val m:A = builder.apply(k, "isSpy", tclass.isSpy)
 		val l:A = icon.map{x => builder.apply(k, "icon", x)}.getOrElse(k)
 		l
 	}

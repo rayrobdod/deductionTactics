@@ -54,7 +54,9 @@ class TokenClassFromJsonTest extends FunSpec {
 					Weaponkinds.Whipkind -> 1.5f,
 					Weaponkinds.Powderkind -> .5f
 				),
-				weakStatus = Statuses.Sleep
+				weakStatus = Statuses.Sleep,
+				isSpy = false,
+				stanceGroup = TokenClass.SingleStanceGroup
 			)
 			val res = new JsonParser(new TokenClassBuilder).parse(src).build
 			
@@ -91,7 +93,9 @@ class TokenClassFromJsonTest extends FunSpec {
 					Weaponkinds.Whipkind -> 1f,
 					Weaponkinds.Powderkind -> 1.25f
 				),
-				weakStatus = Statuses.Burn
+				weakStatus = Statuses.Burn,
+				isSpy = false,
+				stanceGroup = TokenClass.SingleStanceGroup
 			)
 			val res = new JsonParser(new TokenClassBuilder).parse(src).build
 			

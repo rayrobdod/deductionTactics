@@ -37,6 +37,7 @@ import scala.collection.immutable.{Seq, Map}
  * @param atkElement The element a unit attacks with. Also determines it's defenses against elements.
  * @param atkWeapon The weapon a unit attacks with.
  * @param atkStatus The status a unit attacks with.
+ * @param isSpy Whether the unit can perform the "Spy" action
  * @param range How far away from itself a unit can attack.
  * @param speed How far a unit can move in one turn.
  * @param weakDirection When a unit is attacked from this direction, the attack is strongest
@@ -49,11 +50,13 @@ final case class TokenClass(
 	val atkElement:Element,
 	val atkWeapon:Weaponkind,
 	val atkStatus:Status,
+	val isSpy:Boolean,
 	val range:Int,
 	val speed:Int,
 	val weakDirection:Direction,
 	val weakWeapon:Map[Weaponkind,Float],
-	val weakStatus:Status
+	val weakStatus:Status,
+	val stanceGroup:TokenClass.StanceGroup
 )
 
 
@@ -67,6 +70,22 @@ final case class TokenClass(
 object TokenClass
 {
 	val SERVICE = "com.rayrobdod.deductionTactics.TokenClass"
+	
+	/**
+	 * Indicates token classes that are alternate stances of eachother
+	 * @since a.6.1
+	 */
+	sealed trait StanceGroup
+	/** 
+	 * This tokenclass is not related to any other class via stance
+	 * @since a.6.1
+	 */
+	object SingleStanceGroup extends StanceGroup
+	/** 
+	 * If two TokenClasses have the same MultipleStanceGroup, then it is possible to hotswap between the two
+	 * @since a.6.1
+	 */
+	final class MultipleStanceGroup extends StanceGroup
 	
 	val allKnown:Seq[TokenClass] =
 	{

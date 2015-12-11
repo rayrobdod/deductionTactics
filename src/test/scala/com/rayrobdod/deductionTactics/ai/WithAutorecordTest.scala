@@ -40,10 +40,12 @@ class WithAutorecordTest extends FunSpec {
 			Elements.Fire,
 			Weaponkinds.Bladekind,
 			Statuses.Burn,
+			false,
 			1, 2,
 			Directions.Left,
 			Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
-			Statuses.Burn
+			Statuses.Burn,
+			TokenClass.SingleStanceGroup
 	)
 	
 	
@@ -230,6 +232,56 @@ class WithAutorecordTest extends FunSpec {
 				
 				assertResult(Some(exElem))(retVal.suspicions(attackerIndex).atkElement)
 				assertResult(Some(exKind))(retVal.suspicions(attackerIndex).atkWeapon)
+			}
+			it ("Records Spy (weakStatus) updates weakStatus suspicion") {
+				val spiedOnIndex = ((3,3))
+				val exStatus = Statuses.Blind
+				val info = new TokenClassSuspicion(weakStatus = Some(exStatus))
+				val action = GameState.SpyResult(0, spiedOnIndex, info)
+				val inMemo = new SimpleMemo
+				val ai = new WithAutorecord(new StubPlayerAI)
+				
+				val retVal = ai.notifyTurn(0, action, null, null, inMemo)
+				
+				assertResult(Some(exStatus))(retVal.suspicions(spiedOnIndex).weakStatus)
+			}
+			it ("Records Spy (weakStatus) does not update weakDirection") {
+				val spiedOnIndex = ((3,3))
+				val exStatus = Statuses.Blind
+				val exDir = Directions.Left
+				val info = new TokenClassSuspicion(weakStatus = Some(exStatus))
+				val action = GameState.SpyResult(0, spiedOnIndex, info)
+				val inMemo = new SimpleMemo().updateSuspicion((3,3), new TokenClassSuspicion(weakDirection = Some(exDir)))
+				val ai = new WithAutorecord(new StubPlayerAI)
+				
+				val retVal = ai.notifyTurn(0, action, null, null, inMemo)
+				
+				assertResult(Some(exDir))(retVal.suspicions(spiedOnIndex).weakDirection)
+			}
+			it ("Records Spy (weakDirection) does not update weakStatus") {
+				val spiedOnIndex = ((3,3))
+				val exStatus = Statuses.Blind
+				val exDir = Directions.Left
+				val info = new TokenClassSuspicion(weakDirection = Some(exDir))
+				val action = GameState.SpyResult(0, spiedOnIndex, info)
+				val inMemo = new SimpleMemo().updateSuspicion((3,3), new TokenClassSuspicion(weakStatus = Some(exStatus)))
+				val ai = new WithAutorecord(new StubPlayerAI)
+				
+				val retVal = ai.notifyTurn(0, action, null, null, inMemo)
+				
+				assertResult(Some(exStatus))(retVal.suspicions(spiedOnIndex).weakStatus)
+			}
+			ignore ("Records Spy (weakDirection) updates weakDirection") {
+				val spiedOnIndex = ((3,3))
+				val exDir = Directions.Left
+				val info = new TokenClassSuspicion(weakDirection = Some(exDir))
+				val action = GameState.SpyResult(0, spiedOnIndex, info)
+				val inMemo = new SimpleMemo
+				val ai = new WithAutorecord(new StubPlayerAI)
+				
+				val retVal = ai.notifyTurn(0, action, null, null, inMemo)
+				
+				assertResult(Some(exDir))(retVal.suspicions(spiedOnIndex).weakDirection)
 			}
 		}
 	}

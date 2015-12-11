@@ -32,7 +32,7 @@ import com.rayrobdod.boardGame.{Space, StrictRectangularSpace}
  * @param timeBetweenTurns a delay between turns incase the turns are moving too quickly.
  * 
  * @author Raymond Dodge
- * @version a.6.0
+ * @version a.6.1
  */
 final class PlayerTurnCycler(
 		val players:Seq[PlayerAI],
@@ -88,6 +88,9 @@ final class PlayerTurnCycler(
 								
 								Logger.finer("Token Attack for Damage")
 								Some(currentState.tokenAttackStatus(playerOfCurrentTurn, a, d2))
+							case GameState.Spy(a) =>
+								Logger.finer("Spy")
+								Some(currentState.spy(playerOfCurrentTurn, a))
 							case GameState.EndOfTurn =>
 								val a = endTurn(currentState)
 								playerOfCurrentTurn = (playerOfCurrentTurn + 1) % currentState.tokens.tokens.size
@@ -113,12 +116,19 @@ final class PlayerTurnCycler(
 									playerSeenState.tokens.indexOf(d),
 									a.tokenClass.get.atkStatus
 								)
+							case GameState.Spy(a) =>
+								val spyOnCandidates = currentState.tokens.aliveNotPlayerTokens(playerSeenState.tokens.indexOf(a)._1).flatten
+								val tokenToSpyOn = scala.util.Random.shuffle(spyOnCandidates).head
+								val indexToSpyOn = currentState.tokens.indexOf(tokenToSpyOn)
+								// TODO: choose an attribute randomly and disclose that attribute
+								val info = new ai.TokenClassSuspicion(weakStatus = Some(tokenToSpyOn.tokenClass.get.weakStatus))
+								GameState.SpyResult(playerSeenState.tokens.indexOf(a)._1, indexToSpyOn, info)
 							case GameState.EndOfTurn =>
 								GameState.EndOfTurn
 						}
 						
 						newState.foreach{(a:GameState) =>
-							players.zipWithIndex.foreach({(p:PlayerAI, i:Int) =>
+							players.zipWithIndex.filter{x => result.tellPlayer(x._2)}.foreach({(p:PlayerAI, i:Int) =>
 								Logger.finer("Notifying Player " + i)
 								
 								val beforeView = asSeenByPlayer(currentState, i)

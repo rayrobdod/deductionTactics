@@ -64,6 +64,7 @@ object CompileTokenClassesToBinary
 		classes.map{(tclass:TokenClass) =>
 			val name:Array[Byte] = (tclass.name.getBytes(UTF_8) ++: Seq.fill(nameLength)(0.byteValue)).toArray
 			dos.write(name, 0, nameLength);
+			dos.writeByte(if (tclass.isSpy) {1} else {0})
 			dos.writeByte(tclass.atkElement.id.byteValue)
 			dos.writeByte(tclass.atkWeapon.id.byteValue)
 			dos.writeByte(tclass.atkStatus.id.byteValue)
