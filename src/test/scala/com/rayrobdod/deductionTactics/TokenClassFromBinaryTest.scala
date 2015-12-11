@@ -23,7 +23,7 @@ import com.rayrobdod.deductionTactics.Statuses._
 import java.nio.charset.StandardCharsets.UTF_8
 
 class TokenClassFromBinaryTest extends FunSpec {
-	import TokenClassFromBinary.HexArrayStringConverter;
+	import TokenClassFromBinary2.HexArrayStringConverter;
 	
 	describe ("TokenClass + Binary Parsing (Happy)") {
 		it ("Eagle") {
@@ -33,13 +33,13 @@ class TokenClassFromBinaryTest extends FunSpec {
 					Seq(Elements.Fire.id, Weaponkinds.Spearkind.id, Statuses.Blind.id,
 							BodyTypes.Avian.id, 1, 4, Statuses.Sleep.id, Directions.Left.id) ++
 					Seq(0.75f, 2f, 1f, 1.5f, 0.5f).map{java.lang.Float.floatToIntBits _}.flatMap{x => java.nio.ByteBuffer.allocate(4).putInt(x).array()} ++
-					Seq.fill(CannonicalTokenClassFromBinary.imageLocLength){0}
+					Seq.fill(TokenClassFromBinary.imageLocLength){0}
 				).map{
 					case x:Byte => x
 					case x:Int => x.byteValue
 				})
 			)
-			val exp = new TokenClassBlunt(
+			val exp = new TokenClass(
 				name = "Eagle",
 				body = BodyTypes.Avian,
 				atkElement = Elements.Fire,
@@ -57,7 +57,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 				),
 				weakStatus = Statuses.Sleep
 			)
-			val res = new CannonicalTokenClassFromBinary(src)
+			val res = TokenClassFromBinary(src)
 			
 			assertResult(exp){res}
 		}
@@ -73,7 +73,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 					0000000000 000000"""
 				)
 			)
-			val exp = new TokenClassBlunt(
+			val exp = new TokenClass(
 				name = "Eagle",
 				body = BodyTypes.Avian,
 				atkElement = Elements.Fire,
@@ -91,7 +91,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 				),
 				weakStatus = Statuses.Sleep
 			)
-			val res = new CannonicalTokenClassFromBinary(src)
+			val res = TokenClassFromBinary(src)
 			
 			assertResult(exp){res}
 		}
@@ -102,13 +102,13 @@ class TokenClassFromBinaryTest extends FunSpec {
 					Seq(Elements.Sound.id, Weaponkinds.Bluntkind.id, Statuses.Neuro.id,
 							BodyTypes.Humanoid.id, 1, 3, Statuses.Burn.id, Directions.Right.id) ++
 					Seq(2f, .5f, 1.5f, 1f, 1.25f).map{java.lang.Float.floatToIntBits _}.flatMap{x => java.nio.ByteBuffer.allocate(4).putInt(x).array()} ++
-					Seq.fill(CannonicalTokenClassFromBinary.imageLocLength){0}
+					Seq.fill(TokenClassFromBinary.imageLocLength){0}
 				).map{
 					case x:Byte => x
 					case x:Int => x.byteValue
 				})
 			)
-			val exp = new TokenClassBlunt(
+			val exp = new TokenClass(
 				name = "Lefty Batter",
 				body = BodyTypes.Humanoid,
 				atkElement = Elements.Sound,
@@ -126,7 +126,7 @@ class TokenClassFromBinaryTest extends FunSpec {
 				),
 				weakStatus = Statuses.Burn
 			)
-			val res = new CannonicalTokenClassFromBinary(src)
+			val res = TokenClassFromBinary(src)
 			
 			assertResult(exp){res}
 		}
@@ -140,21 +140,21 @@ class TokenClassFromBinaryTest extends FunSpec {
 					Seq(Elements.Sound.id, 5, Statuses.Neuro.id,
 							BodyTypes.Humanoid.id, 1, 3, Statuses.Burn.id, Directions.Right.id) ++
 					Seq(2f, .5f, 1.5f, 1f, 1.25f).map{java.lang.Float.floatToIntBits _}.flatMap{x => java.nio.ByteBuffer.allocate(4).putInt(x).array()} ++
-					Seq.fill(CannonicalTokenClassFromBinary.imageLocLength){0}
+					Seq.fill(TokenClassFromBinary.imageLocLength){0}
 				).map{
 					case x:Byte => x
 					case x:Int => x.byteValue
 				})
 			)
 			intercept[IndexOutOfBoundsException] {
-				new CannonicalTokenClassFromBinary(src)
+				TokenClassFromBinary(src)
 			}
 		}
 	}
 	
 }
 
-object TokenClassFromBinary {
+object TokenClassFromBinary2 {
 	// String Interpolation
 	implicit class HexArrayStringConverter(val sc: StringContext) extends AnyVal {
 		def hexArray(args: Any*):Array[Byte] = {

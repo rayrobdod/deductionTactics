@@ -26,7 +26,7 @@ import com.rayrobdod.json.builder.MinifiedJsonObjectBuilder
 class TokenClassParserTest extends FunSpec {
 	describe ("TokenClassParser + TokenClassBuilder") {
 		it ("is an identity") {
-			val src = new TokenClassBlunt(
+			val src = new TokenClass(
 				name = "Eagle",
 				body = BodyTypes.Avian,
 				atkElement = Elements.Fire,
@@ -64,7 +64,7 @@ class TokenClassParserTest extends FunSpec {
 				"weakWeapon":{"Whip":1.5,"Blunt":2.0,"Blade":0.75,"Powder":0.5,"Spear":1.0},
 				"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Golden Eagle.png"
 			}""".replaceAll("""[\n\r\t]""","")
-			val src = new TokenClassBlunt(
+			val src = new TokenClass(
 				name = "Eagle",
 				body = BodyTypes.Avian,
 				atkElement = Elements.Fire,
@@ -99,7 +99,7 @@ class TokenClassParserTest extends FunSpec {
 				"weakDirection":"Right",
 				"weakWeapon":{"Whip":1.0,"Blunt":0.5,"Blade":2.0,"Powder":1.25,"Spear":1.5}
 			}""".replaceAll("""[\n\r\t]""","")
-			val src = new TokenClassBlunt(
+			val src = new TokenClass(
 				name = "Lefty Batter",
 				body = BodyTypes.Humanoid,
 				atkElement = Elements.Sound,

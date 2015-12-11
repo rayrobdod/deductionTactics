@@ -38,7 +38,7 @@ class TokenClassFromJsonTest extends FunSpec {
 				"weakDirection":"DontCare",
 				"icon":"/com/rayrobdod/deductionTactics/tokenClasses/birds/Golden Eagle.png"
 			}"""
-			val exp = new TokenClassBlunt(
+			val exp = new TokenClass(
 				name = "Eagle",
 				body = BodyTypes.Avian,
 				atkElement = Elements.Fire,
@@ -75,7 +75,7 @@ class TokenClassFromJsonTest extends FunSpec {
 				"weakDirection":"Right",
 				"iconc":"" 
 			}"""
-			val exp = new TokenClassBlunt(
+			val exp = new TokenClass(
 				name = "Lefty Batter",
 				body = BodyTypes.Humanoid,
 				atkElement = Elements.Sound,

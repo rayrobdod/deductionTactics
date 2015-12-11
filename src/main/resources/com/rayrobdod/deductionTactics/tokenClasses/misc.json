@@ -170,4 +170,54 @@
 	"weakStatus":"Burn",
 	"weakDirection":"DontCare",
 	"icon":"/com/rayrobdod/deductionTactics/tokenClasses/misc/Snowman.png" 
+},{
+	"comment":"Holmes",
+	"name":"Detective",
+	"element":"Light",
+	"atkWeapon":"Powder",
+	"atkStatus":"Sleep",
+	"range":1,
+	"speed":3,
+	"body":"Human",
+	"weakWeapon":{"blade":2,"blunt":1,"spear":1.5,"whip":0.5,"powder":0.75},
+	"weakStatus":"Snake",
+	"weakDirection":"DontCare",
+	"isSpy":true
+},{
+	"comment":"Ms. Vitch",
+	"name":"Infiltrator",
+	"element":"Frost",
+	"atkWeapon":"Blade",
+	"atkStatus":"Confuse",
+	"range":1,
+	"speed":3,
+	"body":"Human",
+	"weakWeapon":{"blade":0.75,"blunt":1.5,"spear":1,"whip":2,"powder":0.5},
+	"weakStatus":"Neuro",
+	"weakDirection":"DontCare",
+	"isSpy":true
+},{
+	"comment":"I actually think I'll make the format the other one, where both stances are in the same JsonObject",
+	"comment2":"The intention is to make both Rangers alternate stances", 
+	"name":"Ranger (sword)",
+	"element":"Electric",
+	"atkWeapon":"Blade",
+	"atkStatus":"Blind",
+	"range":1,
+	"speed":3,
+	"body":"Human",
+	"weakWeapon":{"blade":1,"blunt":0.75,"spear":2,"whip":1.5,"powder":0.5},
+	"weakStatus":"Neuro",
+	"weakDirection":"Down"
+},{
+	"name":"Ranger (arrow)",
+	"element":"Electric",
+	"atkWeapon":"Spear",
+	"atkStatus":"Blind",
+	"range":2,
+	"speed":3,
+	"body":"Human",
+	"weakWeapon":{"blade":1,"blunt":0.75,"spear":2,"whip":1.5,"powder":0.5},
+	"weakStatus":"Neuro",
+	"weakDirection":"Down"
 }]

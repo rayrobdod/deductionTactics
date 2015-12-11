@@ -24,7 +24,7 @@ import org.scalatest.FunSpec
 
 class MoveRangeOfTest extends FunSpec {
 	val board = RectangularField( Seq.fill(4,4)(UniPassageSpaceClass.apply) )
-	val myTokenClass = Some(new TokenClassBlunt("Sample",
+	val myTokenClass = Some(new TokenClass("Sample",
 			BodyTypes.Humanoid,
 			Elements.Fire,
 			Weaponkinds.Bladekind,

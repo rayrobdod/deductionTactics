@@ -246,7 +246,7 @@ object Top {
 		val tokens = new ListOfTokens(Seq(
 			Seq(
 				new Token(
-					tokenClass = Some(new TokenClassBlunt(
+					tokenClass = Some(new TokenClass(
 						name = "Flaming Spearman",
 						body = BodyTypes.Humanoid,
 						atkElement = Elements.Fire,
@@ -269,7 +269,7 @@ object Top {
 				new Token(
 					canMoveThisTurn = 3,
 					canAttackThisTurn = true,
-					tokenClass = Some(new TokenClassBlunt(
+					tokenClass = Some(new TokenClass(
 						name = "Frosty Whipman",
 						body = BodyTypes.Humanoid,
 						atkElement = Elements.Frost,

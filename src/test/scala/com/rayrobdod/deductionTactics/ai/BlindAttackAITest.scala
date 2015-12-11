@@ -29,7 +29,7 @@ class BlindAttackAITest extends FunSpec {
 	
 	val tokenClasses = Elements.values.flatMap{elem =>
 		Weaponkinds.values.map{weap =>
-			new TokenClassBlunt("Sample",
+			new TokenClass("Sample",
 				BodyTypes.Humanoid,
 				elem,
 				weap,

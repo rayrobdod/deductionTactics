@@ -69,7 +69,7 @@ object GenerateBasicTokens
 		elements.map({( a:Element, b:ElementAttributes ) =>
 		weapons.map({( c:Weaponkind, d:WeaponkindAttributes) =>
 			
-			new TokenClassBlunt(
+			new TokenClass(
 				name = b.unitName + " " + d.unitName,
 				atkElement = a,
 				atkWeapon = c,
