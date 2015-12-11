@@ -85,7 +85,7 @@ object GenerateBasicTokens
 		}.tupled)}.tupled).flatten.toSeq.sorted(TokenClassOrdering)
 	}
 	def nameToIcon(base:Path)(className:String):Option[String] = {
-		val pack = """com/rayrobdod/deductionTactics/tokenClasses/basic/"""
+		val pack = """/com/rayrobdod/deductionTactics/tokenClasses/basic/"""
 		val retVal = pack + className + ".png"
 		
 		val location:Option[Path] = Some(base resolve retVal)
