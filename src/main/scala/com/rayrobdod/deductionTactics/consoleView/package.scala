@@ -36,9 +36,9 @@ package object consoleView
 		
 		val tokensToEnemyChars = tokens.tokens.flatten.zip(enemyChars).toMap
 		
-		if (tokens.tokens.flatten.size != tokensToEnemyChars.size)
+		if (tokens.tokens.flatten.size != tokensToEnemyChars.size) {
 			throw new IllegalArgumentException("list of tokens contained more tokens than this is capable of supporting.")
-		
+		}
 		
 		val returnValue:Map[TokenIndex, Char] = {
 			tokens.tokens.zipWithIndex.map({(ts:Seq[Token], i:Int) =>

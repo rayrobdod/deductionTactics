@@ -36,8 +36,6 @@ object TokenClassPrinter extends Function1[TokenClass,Unit]
 	private def out = System.out
 	private val elseString = "Unknown"
 	
-	val getName = {(x:{def name:String}) => x.name}
-	
 	
 	def apply(tokenClass:TokenClass):Unit = {
 		out.println(tokenClass.name);

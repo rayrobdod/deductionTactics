@@ -1,6 +1,6 @@
 /*
 	Deduction Tactics
-	Copyright (C) 2012-2013  Raymond Dodge
+	Copyright (C) 2012-2015  Raymond Dodge
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import com.rayrobdod.deductionTactics.CannonicalTokenClassFromBinary.{nameLength
  */
 object CompileTokenClassesToBinary
 {
-	def compile(sources:Seq[Path], outPath:Path) = {
+	def compile(sources:Seq[Path], outPath:Path):Unit = {
 		
 		val classes:Seq[TokenClass] = sources.map{(jsonPath:Path) =>
 			var jsonReader:java.io.Reader = new java.io.StringReader("[]")

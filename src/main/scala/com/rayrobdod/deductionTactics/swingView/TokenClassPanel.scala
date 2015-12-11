@@ -63,7 +63,7 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 	
 	object weaponWeakPanel extends JPanel(new java.awt.GridLayout(5,1)){
 		val addends:Seq[JProgressBar] = Weaponkinds.values.map{(e:Weaponkind) => 
-			val retVal = new JProgressBar(TokenClassPanel.TokenWeakRangeModel(tokenClass, e))
+			val retVal = new JProgressBar(TokenClassPanel.tokenWeakRangeModel(tokenClass, e))
 			retVal.setString(e.name)
 			// retVal.setStringPainted(true)
 			this.add(retVal)
@@ -86,17 +86,14 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 	
 	def canEquals(other:Any):Boolean = other.isInstanceOf[TokenClassPanel]
 	override def equals(other:Any):Boolean = {
-		if (this.canEquals(other))
-		{
+		if (this.canEquals(other)) {
 			val other2 = other.asInstanceOf[TokenClassPanel]
-			if (other2.canEquals(this))
-			{
+			if (other2.canEquals(this)) {
 				this.tokenClass == other2.tokenClass
-			}
-			else false
-		}
-		else false
+			} else { false }
+		} else { false }
 	}
+	override def hashCode:Int = this.tokenClass.hashCode
 	
 	{
 		this.icon.setIcon(tokenClassToIcon(tokenClass))
@@ -112,7 +109,7 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 		this.weakDirection.setIcon( makeIconFor(tokenClass.weakDirection, ICON_SIZE) )
 		this.weaponWeakPanel.addends.zip(Weaponkinds.values).foreach(
 			{(bar:JProgressBar, e:Weaponkind) =>
-				bar.setModel(TokenClassPanel.TokenWeakRangeModel(tokenClass, e))
+				bar.setModel(TokenClassPanel.tokenWeakRangeModel(tokenClass, e))
 		}.tupled)
 	}
 	
@@ -129,9 +126,9 @@ class TokenClassPanel(val tokenClass:TokenClass) extends JPanel(new GridBagLayou
 	}
 }
 
-object TokenClassPanel
+private object TokenClassPanel
 {
-	def TokenWeakRangeModel(tokenClass:TokenClass, kind:Weaponkind):BoundedRangeModel = {
+	private def tokenWeakRangeModel(tokenClass:TokenClass, kind:Weaponkind):BoundedRangeModel = {
 		new DefaultBoundedRangeModel(((tokenClass.weakWeapon(kind)) * 10).intValue, 0, 5, 20)
 	}
 }

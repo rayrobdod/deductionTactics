@@ -16,7 +16,7 @@ fork := true
 // proguard doesn't see the META-INF without this
 exportJars := true
 
-mainClass := Some("com.rayrobdod.deductionTactics.main.Main")
+mainClass in Compile := Some("com.rayrobdod.deductionTactics.main.Main")
 
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "20140518")
 

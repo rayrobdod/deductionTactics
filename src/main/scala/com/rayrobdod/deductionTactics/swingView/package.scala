@@ -178,7 +178,7 @@ package object swingView
 		val fracRect = if (fracMatcher.matches) {
 			Some(( fracMatcher.group(1).toInt, fracMatcher.group(2).toInt,
 				fracMatcher.group(3).toInt, fracMatcher.group(4).toInt ))
-		} else None
+		} else { None }
 		
 		path.split('.').last match {
 			case "svg" => makeSVGIcon(path, size)
