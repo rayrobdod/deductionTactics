@@ -32,8 +32,7 @@ environment:
     JAVA_HOME: C:\Program Files (x86)\Java\jdk1.7.0
     SBT_CROSS_TARGET: scala-2.11
 build_script:
-  - cmd: '%SBT_CMD% "set scalacOptions in doc in Compile ++= Seq(""-diagrams-dot-path"", ""C:/graphviz/release/bin/dot.exe"")" "set publishTo := Some(Resolver.file(""file"", baseDirectory.value / ""publish""))" ++%SCALA_VERSION% compile proguard:proguard publish'
-  - cmd: 'move .\target\%SBT_CROSS_TARGET%\proguard .\proguard'
+  - cmd: '%SBT_CMD% "set scalacOptions in doc in Compile ++= Seq(""-diagrams-dot-path"", ""C:/graphviz/release/bin/dot.exe"")" "set publishTo := Some(Resolver.file(""file"", baseDirectory.value / ""publish""))" ++%SCALA_VERSION% compile publish'
 test_script:
   # primary purpose is to package, but might as well test too, I guess.
   - cmd: '%SBT_CMD% ++%SCALA_VERSION% test'
