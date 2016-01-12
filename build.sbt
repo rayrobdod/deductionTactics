@@ -6,9 +6,9 @@ organizationHomepage := Some(new URL("http://rayrobdod.name/"))
 
 version := "a.6.1-SNAPSHOT"
 
-scalaVersion := "2.10.5"
+scalaVersion := "2.10.6"
 
-crossScalaVersions := Seq("2.10.5", "2.11.7")
+crossScalaVersions := Seq("2.10.6", "2.11.7")
 
 // heavy resource use, including ResourceBundles
 fork := true
@@ -18,13 +18,15 @@ exportJars := true
 
 mainClass in Compile := Some("com.rayrobdod.deductionTactics.main.Main")
 
-libraryDependencies += ("com.rayrobdod" %% "utilities" % "20140518")
+resolvers += ("rayrobdod" at "http://ivy.rayrobdod.name/")
 
-libraryDependencies += ("com.rayrobdod" %% "json" % "2.0-RC4")
+libraryDependencies += ("com.rayrobdod" %% "utilities" % "20160112")
+
+libraryDependencies += ("com.rayrobdod" %% "json" % "2.0-RC6")
 
 libraryDependencies += ("com.opencsv" % "opencsv" % "3.4")
 
-libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0-RC1")
+libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0-RC2")
 
 
 
@@ -38,21 +40,20 @@ packageOptions in (Compile, packageBin) <+= (scalaVersion, sourceDirectory).map{
 
 
 
-javacOptions ++= Seq("-Xlint:deprecation", "-Xlint:unchecked")
+javacOptions in Compile ++= Seq("-Xlint:deprecation", "-Xlint:unchecked", "-source", "1.7", "-target", "1.7")
 
-scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", 
-			"-language:implicitConversions"
-)
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-target:jvm-1.7")
 
 scalacOptions in doc in Compile ++= Seq(
 		"-doc-title", name.value,
 		"-doc-version", version.value,
 		"-doc-root-content", ((scalaSource in Compile).value / "rootdoc.txt").toString,
 		"-diagrams",
-		"-external-urls", "scala=http://www.scala-lang.org/api/" + scalaVersion.value + "/",
 		"-sourcepath", baseDirectory.value.toString,
 		"-doc-source-url", "https://github.com/rayrobdod/deductionTactics/tree/" + version.value + "€{FILE_PATH}.scala"
 )
+
+autoAPIMappings in doc in Compile := true
 
 excludeFilter in unmanagedSources in Compile := new FileFilter{
 	def accept(n:File) = {
@@ -102,6 +103,8 @@ proguardSettings
 
 proguardType := "mini" 
 
+ProguardKeys.proguardVersion in Proguard := "5.2.1"
+
 ProguardKeys.options in Proguard <+= (baseDirectory in Compile, proguardType).map{"-include '"+_+"/"+_+".proguard'"}
 
 ProguardKeys.inputFilter in Proguard := { file =>
@@ -119,5 +122,3 @@ artifactPath in Proguard <<= (artifactPath in Proguard, proguardType, version).a
 }
 
 javaOptions in (Proguard, ProguardKeys.proguard) += "-Xmx2G"
-
-
