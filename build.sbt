@@ -94,7 +94,10 @@ excludeFilter in unmanagedResources in Compile := {
 // scalaTest
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.5" % "test"
 
-testOptions in Test += Tests.Argument("-oS")
+testOptions in Test += Tests.Argument("-oS",
+  // to allow appveyor to show tests in friendly view
+  "-u", s"${crossTarget.value}/test-results-junit"
+)
 
 scalastyleConfig := baseDirectory.value / "project" / "scalastyle-config.xml"
 
