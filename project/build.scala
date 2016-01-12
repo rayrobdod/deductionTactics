@@ -6,7 +6,7 @@ import com.rayrobdod.deductionTactics.TokenClass
 import com.rayrobdod.deductionTactics.serialization.CompileTokenClassesToBinary
 import com.rayrobdod.deductionTactics.serialization.GenerateBasicTokens
 import com.rayrobdod.deductionTactics.serialization.TokenClassParser
-import net.tixxit.sbt.benchmark.BenchmarkPlugin
+//import net.tixxit.sbt.benchmark.BenchmarkPlugin
 import java.nio.file.{Path, Files}
 import java.nio.charset.StandardCharsets.UTF_8
 import com.rayrobdod.json.builder.{Builder, MapBuilder, MinifiedJsonObjectBuilder, MinifiedJsonArrayBuilder}
@@ -87,10 +87,10 @@ object DeductionTacticsBuild extends Build {
 	lazy val root = Project(
 			id = "deductionTactics",
 			base = file("."),
-			configurations = Configurations.default ++
-					BenchmarkPlugin.projectConfigurations,
+			configurations = Configurations.default, //+
+//					BenchmarkPlugin.projectConfigurations,
 			settings = Defaults.coreDefaultSettings ++
-					BenchmarkPlugin.projectSettings ++
+//					BenchmarkPlugin.projectSettings ++
 					Seq(proguardTypeSetting) ++
 					compileTokensSettings ++
 					generateBasicTokens

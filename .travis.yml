@@ -1,0 +1,17 @@
+language: scala
+
+scala:
+   - 2.10.6
+   - 2.11.7
+
+jdk: 
+   - oraclejdk8
+   - oraclejdk7
+   - openjdk7
+
+
+script:
+  - sbt coverage test
+
+after_success:
+  - sbt coveralls
