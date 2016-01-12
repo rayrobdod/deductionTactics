@@ -11,7 +11,7 @@ jdk:
 
 
 script:
-  - sbt coverage test
+  - sbt set\ testOptions\ in\ Test\ +=\ Tests.Argument\(\"-l\",\ \"com.rayrobdod.deductionTactics.swingView.RequiresGui\"\) coverage test
 
 after_success:
   - sbt coveralls
