@@ -28,7 +28,7 @@ import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 class TopTest extends FunSpec {
 	
 	describe ("host.Top") {
-		it ("Has values selected by default") {
+		it ("Has values selected by default", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val nextButton:JButton = getButton(frame, "nextButton")
@@ -52,7 +52,7 @@ class TopTest extends FunSpec {
 				)
 			))){target.map}
 		}
-		it ("Does not call the NextListener if cancel is called") {
+		it ("Does not call the NextListener if cancel is called", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val cancelButton:JButton = getButton(frame, "cancelButton")
@@ -63,7 +63,7 @@ class TopTest extends FunSpec {
 			
 			assert(! target.hasBeenCalled)
 		}
-		it ("Changes ai in return value when a new base ai is selected (1)") {
+		it ("Changes ai in return value when a new base ai is selected (1)", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val aisComp = getAIsComponent(frame)
@@ -78,7 +78,7 @@ class TopTest extends FunSpec {
 			assert(target.hasBeenCalled)
 			assertResult(Seq(new BlindAttackAI, new SwingInterface)){target.ais}
 		}
-		it ("Changes ai in return value when a new base ai is selected (2)") {
+		it ("Changes ai in return value when a new base ai is selected (2)", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val aisComp = getAIsComponent(frame)
@@ -93,7 +93,7 @@ class TopTest extends FunSpec {
 			assert(target.hasBeenCalled)
 			assertResult(Seq(new SwingInterface, new BlindAttackAI)){target.ais}
 		}
-		it ("Changes ai in return value when a new decorator ai is selected (2)") {
+		it ("Changes ai in return value when a new decorator ai is selected (2)", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val aisComp = getAIsComponent(frame)
@@ -108,7 +108,7 @@ class TopTest extends FunSpec {
 			assert(target.hasBeenCalled)
 			assertResult(Seq(new SwingInterface, new WithRandomTeam(new SwingInterface))){target.ais}
 		}
-		it ("Changes arena in return value when a new arena is selected") {
+		it ("Changes arena in return value when a new arena is selected", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val mapList = getMapList(frame)
@@ -123,7 +123,7 @@ class TopTest extends FunSpec {
 			assert(target.hasBeenCalled)
 			assertResult(Arena.fromService(2)){target.map}
 		}
-		it ("Does not allow multiple arenas to be selected") {
+		it ("Does not allow multiple arenas to be selected", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val mapList = getMapList(frame)
@@ -139,7 +139,7 @@ class TopTest extends FunSpec {
 			assert(target.hasBeenCalled)
 			assertResult(Arena.fromService(4)){target.map}
 		}
-		it ("Changes player count when player count is changes") {
+		it ("Changes player count when player count is changes", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val playerCount = getPlayerCountList(frame)
@@ -154,7 +154,7 @@ class TopTest extends FunSpec {
 			assert(target.hasBeenCalled)
 			assertResult(Seq(new SwingInterface, new SwingInterface, new SwingInterface, new SwingInterface)){target.ais}
 		}
-		it ("Will not continue if no arena is selected") {
+		it ("Will not continue if no arena is selected", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val mapList = getMapList(frame)
@@ -172,7 +172,7 @@ class TopTest extends FunSpec {
 			cancelButton.doClick()
 			assert(! frame.isDisplayable)
 		}
-		it ("Will not continue if no playerCount is selected") {
+		it ("Will not continue if no playerCount is selected", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val playerCount = getPlayerCountList(frame)
@@ -190,7 +190,7 @@ class TopTest extends FunSpec {
 			cancelButton.doClick()
 			assert(! frame.isDisplayable)
 		}
-		it ("Does not allow multiple playerCount to be selected") {
+		it ("Does not allow multiple playerCount to be selected", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val playerCount = getPlayerCountList(frame)
@@ -206,7 +206,7 @@ class TopTest extends FunSpec {
 			assert(target.hasBeenCalled)
 			assertResult(4){target.ais.size}
 		}
-		ignore ("Will not continue if no base ai is selected") {
+		ignore ("Will not continue if no base ai is selected", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val aisComp = getAIsComponent(frame)

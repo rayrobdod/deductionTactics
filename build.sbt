@@ -94,7 +94,12 @@ excludeFilter in unmanagedResources in Compile := {
 // scalaTest
 libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.5" % "test"
 
-testOptions in Test += Tests.Argument("-oS", "-u", s"${crossTarget.value}/test-results-junit")
+testOptions in Test += Tests.Argument("-oS",
+  // to allow appveyor to show tests in friendly view
+  "-u", s"${crossTarget.value}/test-results-junit",
+  // travis runs headless and therefore cannot run this
+  "-l", "com.rayrobdod.deductionTactics.swingView.RequiresGui"
+)
 
 scalastyleConfig := baseDirectory.value / "project" / "scalastyle-config.xml"
 
