@@ -4,11 +4,11 @@ organization := "com.rayrobdod"
 
 organizationHomepage := Some(new URL("http://rayrobdod.name/"))
 
-version := "a.6.1-SNAPSHOT"
+version := "SNAPSHOT"
 
-scalaVersion := "2.10.6"
+scalaVersion := "2.10.7"
 
-crossScalaVersions := Seq("2.10.6", "2.11.7")
+crossScalaVersions := Seq("2.10.7", "2.11.12")
 
 // heavy resource use, including ResourceBundles
 fork := true
@@ -30,19 +30,40 @@ libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0")
 
 
 
-packageOptions in (Compile, packageBin) <+= (scalaVersion, sourceDirectory).map{(scalaVersion:String, srcDir:File) =>
-	val manifest = new java.util.jar.Manifest(new java.io.FileInputStream(srcDir + "/main/MANIFEST.MF"))
-	//
-	manifest.getAttributes("scala/").putValue("Implementation-Version", scalaVersion)
-	//
+packageOptions in (Compile, packageBin) += {
+	val manifest = new java.util.jar.Manifest()
+	manifest.getEntries().put("scala/", {
+		val attrs = new java.util.jar.Attributes()
+		attrs.putValue("Implementation-Title", "Scala")
+		attrs.putValue("Implementation-URL", "http://www.scala-lang.org/")
+		attrs.putValue("Implementation-Version", scalaVersion.value)
+		attrs
+	})
+	manifest.getEntries().put("com/kitfox/svg/", {
+		val attrs = new java.util.jar.Attributes()
+		attrs.putValue("Implementation-Title", "SvgSalamander")
+		attrs.putValue("Implementation-URL", "http://svgsalamander.java.net/")
+		attrs.putValue("Implementation-Date", "January 11 2013")
+		attrs
+	})
+	manifest.getMainAttributes().putValue("Implementation-URL", "http://rayrobdod.name/programming/java/programs/deductionTactics/")
 	Package.JarManifest( manifest )
 }
 
 
-
 javacOptions in Compile ++= Seq("-Xlint:deprecation", "-Xlint:unchecked", "-source", "1.7", "-target", "1.7")
 
-scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature", "-target:jvm-1.7")
+scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
+
+scalacOptions ++= (scalaBinaryVersion.value match {
+	case "2.10" | "2.11" => Seq("-target:jvm-1.7")
+	case _ => Seq("-target:jvm-1.8")
+})
+
+scalacOptions ++= (scalaBinaryVersion.value match {
+	case "2.10" => Seq()
+	case _ => Seq("-Ywarn-unused-import", "-Ywarn-unused", "-Xlint:_", "-Xlint:-adapted-args", "-Xfuture", "-Xcheckinit")
+})
 
 scalacOptions in doc in Compile ++= Seq(
 		"-doc-title", name.value,
@@ -80,19 +101,19 @@ excludeFilter in unmanagedResources in Compile := new FileFilter{
 // license nonsense
 licenses += (("GPLv3 or later", new java.net.URL("http://www.gnu.org/licenses/") ))
 
-mappings in (Compile, packageSrc) <+= baseDirectory.map{(b) => (new File(b, "LICENSE.txt"), "LICENSE.txt" )}
+mappings in (Compile, packageSrc) += (new File(baseDirectory.value, "LICENSE.txt"), "LICENSE.txt" )
 
-mappings in (Compile, packageBin) <+= baseDirectory.map{(b) => (new File(b, "LICENSE.txt"), "LICENSE.txt" )}
+mappings in (Compile, packageBin) += (new File(baseDirectory.value, "LICENSE.txt"), "LICENSE.txt" )
 
 
 // Token compiling
 excludeFilter in unmanagedResources in Compile := {
-	(excludeFilter in unmanagedResources in Compile).value || (includeFilter in compileTokens).value
+	(excludeFilter in unmanagedResources in Compile).value || (includeFilter in tokensCompile).value
 }
 
 
 // scalaTest
-libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.5" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 
 testOptions in Test += Tests.Argument("-oS",
   // to allow appveyor to show tests in friendly view
@@ -102,15 +123,17 @@ testOptions in Test += Tests.Argument("-oS",
 scalastyleConfig := baseDirectory.value / "project" / "scalastyle-config.xml"
 
 // proguard
-proguardSettings
+enablePlugins(SbtProguard)
 
-proguardType := "mini" 
+val proguardType = settingKey[String]("level of proguard compression")
 
-ProguardKeys.proguardVersion in Proguard := "5.2.1"
+proguardType := "mini" // "micro"
 
-ProguardKeys.options in Proguard <+= (baseDirectory in Compile, proguardType).map{"-include '"+_+"/"+_+".proguard'"}
+proguardVersion in Proguard := "6.0"
 
-ProguardKeys.inputFilter in Proguard := { file =>
+proguardOptions in Proguard += "-include " + ((baseDirectory in Compile).value / (proguardType.value + ".proguard"))
+
+proguardInputFilter in Proguard := { file =>
 	if (file.name.startsWith("deduction-tactics")) {
 		None
 	} else if (file.name.startsWith("rt")) {
@@ -120,8 +143,12 @@ ProguardKeys.inputFilter in Proguard := { file =>
 	}
 }
 
-artifactPath in Proguard <<= (artifactPath in Proguard, proguardType, version).apply{(orig:File, level:String, version:String) =>
-	orig.getParentFile() / ("deductionTactics-" + version + "-withdebug-" + level + ".jar")
+proguardOptions in Proguard := (proguardOptions in Proguard).value.map{line =>
+	if (line contains "scala") {line.replaceAll("-libraryjars (.+)", "-injars $1(**.class)")} else {line}
 }
 
-javaOptions in (Proguard, ProguardKeys.proguard) += "-Xmx2G"
+artifactPath in Proguard := {
+	(artifactPath in Proguard).value.getParentFile() / (s"deductionTactics-fatjar-${proguardType.value}.jar")
+}
+
+javaOptions in (Proguard, proguard) += "-Xmx2G"

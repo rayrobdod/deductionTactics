@@ -17,10 +17,10 @@
 -keep class com.rayrobdod.deductionTactics.ai.* extends com.rayrobdod.deductionTactics.PlayerAI
 
 # SpaceClasses that Deduction Tactics uses
--keep class com.rayrobdod.deductionTactics.* extends com.rayrobdod.boardGame.SpaceClass
+-keep class com.rayrobdod.deductionTactics.* extends com.rayrobdod.deductionTactics.SpaceClass
 
 # SpaceClassConstructors that Deduction Tactics uses
--keep class com.rayrobdod.deductionTactics.* extends com.rayrobdod.boardGame.SpaceClassConstructor
+-keep class com.rayrobdod.deductionTactics.* extends com.rayrobdod.deductionTactics.SpaceClassFactory
 
 -keep,allowshrinking class com.rayrobdod.deductionTactics.PlayerAI
 

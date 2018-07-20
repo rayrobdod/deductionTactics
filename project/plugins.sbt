@@ -1,23 +1,14 @@
-addSbtPlugin("com.typesafe.sbt" % "sbt-proguard" % "0.2.2")
+addSbtPlugin("com.lightbend.sbt" % "sbt-proguard" % "0.3.0")
 
 resolvers += Classpaths.sbtPluginReleases
 
-// No support for 2.12
-if (System.getProperty("scoverage.disable") != "true") {
-  addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.0.4")
-} else {
-  TaskKey[Unit]("asfdsdfasdf") := {}
-}
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.1")
 
-if (System.getProperty("scoverage.disable", "") != "true") {
-  addSbtPlugin("org.scoverage" % "sbt-coveralls" % "1.0.0")
-} else {
-  TaskKey[Unit]("asfdsdfasdf") := {}
-}
+addSbtPlugin("org.scoverage" % "sbt-coveralls" % "1.2.2")
 
 // only works with scala 2.11
-// addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "0.94.6")
+// addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "1.0.4")
 
-addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.7.0")
+addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
 
 //addSbtPlugin("com.github.retronym" % "sbt-onejar" % "0.8")
