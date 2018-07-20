@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics
 package consoleView
 
-import scala.collection.immutable.{Seq, Map}
+import scala.collection.immutable.Map
 import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
 import com.rayrobdod.boardGame.{RectangularSpace}
 

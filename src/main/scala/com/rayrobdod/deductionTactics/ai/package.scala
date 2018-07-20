@@ -22,14 +22,11 @@ import BodyTypes.BodyType
 import Directions.Direction
 import Elements.Element
 import Weaponkinds.Weaponkind
-import Statuses.{Status, Sleep}
+import Statuses.Status
 
 import scala.util.Random
 import scala.collection.immutable.{Seq, Map}
 import com.rayrobdod.boardGame.Space
-import com.rayrobdod.deductionTactics.LoggerInitializer.{
-				observeMovementLogger => somLogger}
-import scala.runtime.{AbstractFunction1 => Function1, AbstractFunction2 => AFunction2}
 
 /**
  * @author Raymond Dodge

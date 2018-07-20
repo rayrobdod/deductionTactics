@@ -17,11 +17,7 @@
 */
 package com.rayrobdod.deductionTactics
 
-import Elements.Element
 import Weaponkinds.Weaponkind
-import Statuses.Status
-import BodyTypes.BodyType
-import Directions.Direction
 import scala.collection.immutable.BitSet
 
 /**

@@ -19,11 +19,9 @@ package com.rayrobdod.deductionTactics.swingView.menuBar
 
 import com.rayrobdod.deductionTactics.SpaceClass
 import com.rayrobdod.boardGame.swingView.{RectangularTilesheet}
-import java.awt.{Window, Dialog}
-import javax.swing.{JComponent, JPanel, JList, JButton, JLabel, JTextField, KeyStroke}
+import javax.swing.{JPanel, JList, JButton, JLabel, JTextField, KeyStroke}
 import java.awt.event.{ActionListener, ActionEvent}
-import java.awt.event.{KeyEvent, KeyListener, KeyAdapter}
-import java.awt.event.{MouseEvent, MouseListener, MouseAdapter}
+import java.awt.event.{KeyEvent, KeyAdapter}
 import com.rayrobdod.swing.GridBagConstraintsFactory
 import com.rayrobdod.deductionTactics.swingView.AvailibleTilesheetListModel
 import com.rayrobdod.deductionTactics.swingView.game.{preferences => gamePreferences, KeyboardActions}
@@ -56,7 +54,7 @@ class AppearanceOptionsPanel extends JPanel
 	
 	
 	object apply extends ActionListener() {
-		override def actionPerformed(e:ActionEvent)
+		override def actionPerformed(e:ActionEvent):Unit =
 		{
 			gamePreferences.currentTilesheet = currentTilesheet.getSelectedValue()
 			gamePreferences.movementSpeed = Integer.parseInt(movementSpeed.getText)
@@ -85,7 +83,7 @@ class KeyInputsOptionsPanel extends JPanel {
 		private[this] var isInInputState:Boolean = false
 		def keyStroke:KeyStroke = _keyStroke
 		
-		def resetText() {
+		def resetText():Unit = {
 			if (isInInputState) {
 				this.setText("Type new input key")
 			} else {
@@ -96,14 +94,14 @@ class KeyInputsOptionsPanel extends JPanel {
 		this.resetText()
 		
 		this.addActionListener(new ActionListener() {
-			override def actionPerformed(e:ActionEvent) {
+			override def actionPerformed(e:ActionEvent):Unit = {
 				KeyStrokeSetter.this.isInInputState = ! KeyStrokeSetter.this.isInInputState
 				KeyStrokeSetter.this.requestFocus()
 				KeyStrokeSetter.this.resetText()
 			}
 		})
 		this.addKeyListener(new KeyAdapter() {
-			override def keyPressed(e:KeyEvent) {
+			override def keyPressed(e:KeyEvent):Unit = {
 				if (KeyStrokeSetter.this.isInInputState) {
 					KeyStrokeSetter.this._keyStroke = KeyStroke.getKeyStrokeForEvent(e)
 					KeyStrokeSetter.this.isInInputState = false

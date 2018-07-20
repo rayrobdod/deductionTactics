@@ -19,8 +19,8 @@ package com.rayrobdod.deductionTactics
 package swingView.game
 
 import java.awt.event.KeyEvent
-import javax.swing.{KeyStroke, Action}
-import scala.collection.immutable.{Seq, Set}
+import javax.swing.KeyStroke
+import scala.collection.immutable.Seq
 
 /**
  * The set of actions that can be input via keyboard commands

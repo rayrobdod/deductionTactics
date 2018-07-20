@@ -44,7 +44,7 @@ final class DisplaySpaceClassInfoInCorner {
 	/**
 	 * @param placeInCorner see [[java.awt.GridBagConstraints#anchor]]
 	 */
-	def showDetailsOf(t:SpaceClass, placeInCorner:Int) {
+	def showDetailsOf(t:SpaceClass, placeInCorner:Int):Unit = {
 		panel.removeAll()
 		constrs.anchor = placeInCorner
 		panel.add(new JLabel(t.toString), constrs)

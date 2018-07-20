@@ -18,8 +18,7 @@
 package com.rayrobdod.deductionTactics
 
 import com.rayrobdod.boardGame.StrictRectangularSpace
-import scala.collection.immutable.{Seq, Set}
-import scala.language.implicitConversions
+import scala.collection.immutable.Seq
 
 /**
  * An enumeration of directions

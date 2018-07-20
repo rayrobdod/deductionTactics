@@ -17,7 +17,7 @@
 */
 package com.rayrobdod.deductionTactics
 
-import scala.collection.immutable.{Seq, Set}
+import scala.collection.immutable.Seq
 
 /**
  * An enumeration of statuses

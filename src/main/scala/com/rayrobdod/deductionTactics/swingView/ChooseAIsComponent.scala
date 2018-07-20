@@ -18,13 +18,11 @@
 package com.rayrobdod.deductionTactics.swingView
 
 import scala.collection.immutable.Seq
-import javax.swing.{JPanel, BoxLayout, JList, AbstractListModel, JScrollPane, ListSelectionModel, JLabel}
+import javax.swing.{JPanel, JList, JScrollPane, ListSelectionModel, JLabel}
 import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
-		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
-		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
 		HORIZONTAL_SCROLLBAR_AS_NEEDED => scrollHorizontalAsNeeded}
 import com.rayrobdod.deductionTactics.PlayerAI
-import java.awt.{GridLayout, GridBagConstraints, GridBagLayout, Component, Insets}
+import java.awt.{GridBagConstraints, GridBagLayout, Component, Insets}
 import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 
 /**

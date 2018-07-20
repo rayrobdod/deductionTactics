@@ -18,7 +18,6 @@
 package com.rayrobdod.deductionTactics.swingView.game
 
 import java.awt.{Point, Dimension, Component, Container, LayoutManager}
-import java.awt.{Graphics, Graphics2D}
 
 /**
  * A layer to be place on top of a [[com.rayrobdod.boardGame.swingView.RectangularTilemapComponent]];

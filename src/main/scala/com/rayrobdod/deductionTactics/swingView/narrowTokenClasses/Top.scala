@@ -22,13 +22,10 @@ import java.awt._
 import java.awt.event._
 import javax.swing._
 import javax.swing.ScrollPaneConstants.{
-		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
-		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
-		HORIZONTAL_SCROLLBAR_ALWAYS => scrollHorizontalAlways
+		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever
 }
-import javax.swing.event._
-import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
+import com.rayrobdod.swing.ScalaSeqListModel
 import com.rayrobdod.deductionTactics.TokenClass
 import scala.collection.immutable.Seq
 import scala.collection.JavaConversions.asScalaBuffer
@@ -81,12 +78,12 @@ class Top(
 			nextButton.getRootPane.setDefaultButton(nextButton)
 			
 			cancelButton.addActionListener(new ActionListener() {
-				def actionPerformed(e:ActionEvent) {
+				def actionPerformed(e:ActionEvent):Unit = {
 					Top.this.frame.dispose();
 				}
 			})
 			nextButton.addActionListener(new ActionListener() {
-				def actionPerformed(e:ActionEvent) {
+				def actionPerformed(e:ActionEvent):Unit = {
 					Top.this.frame.dispose();
 				}
 			})
@@ -106,7 +103,7 @@ class Top(
 		frame.setVisible(true);
 	}
 	
-	def addNextActionListener(a:ActionListener) {
+	def addNextActionListener(a:ActionListener):Unit = {
 		nextButton.addActionListener(a)
 	}
 	
@@ -128,7 +125,7 @@ object Top {
 		
 		val t = new Top(1, l, 4);
 		t.addNextActionListener(new ActionListener() {
-			def actionPerformed(e:ActionEvent) {
+			def actionPerformed(e:ActionEvent):Unit = {
 				Top.main(new Array[String](0))
 			}
 		})

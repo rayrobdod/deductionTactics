@@ -17,15 +17,13 @@
 */
 package com.rayrobdod.deductionTactics.serialization
 
-import java.nio.file.FileSystems.{getDefault => defaultFileSystem, newFileSystem}
-import scala.collection.immutable.{Seq, Map}
-import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
+import scala.collection.immutable.Seq
 import java.nio.charset.StandardCharsets.UTF_8
 import com.rayrobdod.json.parser.JsonParser
 import com.rayrobdod.json.builder.SeqBuilder
 import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds, TokenClassBuilder, TokenClassTemplate}
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
-import java.io.{ByteArrayOutputStream, DataOutputStream}
+import java.io.DataOutputStream
 import java.nio.file.{Path, Files}
 
 import com.rayrobdod.deductionTactics.TokenClassFromBinary.{nameLength, imageLocLength}

@@ -17,14 +17,8 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
-import com.rayrobdod.deductionTactics.Elements.Element
-import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
-import com.rayrobdod.deductionTactics.Statuses.Status
-import com.rayrobdod.deductionTactics.BodyTypes.BodyType
-import com.rayrobdod.deductionTactics.Directions.Direction
-
 import java.awt.{GridBagLayout, GridBagConstraints}
-import javax.swing.{JPanel, JLabel, JList, ListCellRenderer}
+import javax.swing.{JPanel, JLabel}
 import com.rayrobdod.deductionTactics.Token
 import com.rayrobdod.swing.{GridBagConstraintsFactory}
 import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion

@@ -19,7 +19,6 @@ package com.rayrobdod.deductionTactics
 
 import com.rayrobdod.boardGame.Space
 import com.rayrobdod.boardGame.SpaceClassMatcher
-import scala.collection.immutable.{Seq => ISeq}
 
 /*
  *        Class Name        | Move            | Attack

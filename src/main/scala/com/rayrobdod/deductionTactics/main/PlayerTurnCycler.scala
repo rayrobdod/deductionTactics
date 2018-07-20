@@ -20,7 +20,6 @@ package main
 
 import scala.collection.immutable.{Seq, Set, BitSet}
 import LoggerInitializer.{turnCyclerLogger => Logger}
-import java.util.logging.Level
 import PlayerTurnCycler._
 import com.rayrobdod.boardGame.{Space, StrictRectangularSpace}
 

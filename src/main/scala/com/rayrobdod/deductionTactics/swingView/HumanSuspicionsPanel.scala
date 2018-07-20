@@ -20,22 +20,18 @@ package com.rayrobdod.deductionTactics.swingView
 import com.rayrobdod.deductionTactics._
 
 import com.rayrobdod.deductionTactics.Elements.Element
+import com.rayrobdod.deductionTactics.Weaponkinds
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 import com.rayrobdod.deductionTactics.Statuses.Status
-import com.rayrobdod.deductionTactics.BodyTypes.BodyType
 import com.rayrobdod.deductionTactics.Directions.Direction
 
-import java.awt.{GridBagLayout, GridBagConstraints, FlowLayout}
-import javax.swing.{JPanel, JLabel, Icon, JProgressBar,
-		DefaultBoundedRangeModel, JComboBox, JSpinner,
-		SpinnerNumberModel, SpinnerListModel
-}
+import java.awt.{GridBagLayout, GridBagConstraints}
+import javax.swing.{JPanel, JLabel, JComboBox, JSpinner, SpinnerNumberModel}
 import java.awt.event.{ActionListener, ActionEvent}
 import javax.swing.event.{ChangeListener, ChangeEvent}
 import scala.collection.immutable.Seq
 import scala.collection.mutable.Buffer
 import com.rayrobdod.swing.{GridBagConstraintsFactory, ScalaSeqListModel, AbstractComboBoxModel}
-import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds}
 import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
 
 /** 

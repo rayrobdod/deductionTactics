@@ -18,12 +18,12 @@
 package com.rayrobdod.deductionTactics
 
 import java.net.URL
-import java.io.{Reader, StringReader, InputStreamReader}
+import java.io.{Reader, StringReader}
 import java.nio.charset.StandardCharsets.UTF_8
 import scala.collection.immutable.{Seq, Set, Map}
 import scala.collection.JavaConversions.iterableAsScalaIterable
 import com.opencsv.CSVReader;
-import com.rayrobdod.util.services.{ResourcesServiceLoader, Services}
+import com.rayrobdod.util.services.{ResourcesServiceLoader}
 import com.rayrobdod.json.parser.JsonParser
 import com.rayrobdod.json.builder.{Builder, SeqBuilder, MapBuilder}
 import com.rayrobdod.boardGame.RectangularField

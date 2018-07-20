@@ -19,8 +19,7 @@ package com.rayrobdod.deductionTactics.swingView.menuBar
 
 import com.rayrobdod.deductionTactics.Elements
 import com.rayrobdod.deductionTactics.Elements.Element
-import javax.swing.{BoxLayout, JPanel, JLabel, SwingConstants}
-import javax.swing.BoxLayout.{PAGE_AXIS => pageAxis}
+import javax.swing.{JPanel, JLabel, SwingConstants}
 import java.awt.GridLayout
 import com.rayrobdod.deductionTactics.swingView.makeIconFor
 

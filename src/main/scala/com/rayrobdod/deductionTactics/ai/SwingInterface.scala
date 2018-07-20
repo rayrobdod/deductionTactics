@@ -23,7 +23,6 @@ import com.rayrobdod.deductionTactics.{PlayerAI}
 import java.awt.event.{ActionListener, ActionEvent}
 
 import com.rayrobdod.deductionTactics.swingView.chooseTokenClasses
-import com.rayrobdod.deductionTactics.swingView.narrowTokenClasses
 import com.rayrobdod.deductionTactics.swingView.game
 
 

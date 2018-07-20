@@ -18,11 +18,7 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import Elements.Element
-import Weaponkinds.Weaponkind
-import Statuses.Status
 import javax.sound.sampled.AudioSystem
-import scala.collection.immutable.Seq
 
 /**
  * Only has one sound so far...

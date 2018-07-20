@@ -20,7 +20,6 @@ package com.rayrobdod.deductionTactics.swingView.join
 import java.awt._
 import java.awt.event._
 import javax.swing._
-import javax.swing.event._
 import java.net.InetAddress
 import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
 import com.rayrobdod.deductionTactics.swingView.AiChoosingPanels
@@ -76,12 +75,12 @@ class Top {
 			buttonPanel.add(nextButton)
 			
 			cancelButton.addActionListener(new ActionListener() {
-				def actionPerformed(e:ActionEvent) {
+				def actionPerformed(e:ActionEvent):Unit = {
 					Top.this.frame.dispose();
 				}
 			})
 			nextButton.addActionListener(new ActionListener() {
-				def actionPerformed(e:ActionEvent) {
+				def actionPerformed(e:ActionEvent):Unit = {
 					Top.this.frame.dispose();
 				}
 			})
@@ -118,7 +117,7 @@ class Top {
 		frame.setVisible(visible)
 	}
 	
-	def addNextActionListener(a:ActionListener) {
+	def addNextActionListener(a:ActionListener):Unit = {
 		nextButton.addActionListener(a)
 	}
 	
@@ -129,7 +128,7 @@ object Top {
 	def main(args:Array[String]):Unit = {
 		val t = new Top();
 		t.addNextActionListener(new ActionListener() {
-			def actionPerformed(e:ActionEvent) {
+			def actionPerformed(e:ActionEvent):Unit = {
 				System.out.println(t.getAi)
 				Top.main(new Array[String](0))
 			}

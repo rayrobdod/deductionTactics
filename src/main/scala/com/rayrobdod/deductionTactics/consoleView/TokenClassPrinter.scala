@@ -17,16 +17,11 @@
 */
 package com.rayrobdod.deductionTactics.consoleView
 
-import com.rayrobdod.deductionTactics.Elements.Element
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
-import com.rayrobdod.deductionTactics.Statuses.Status
-import com.rayrobdod.deductionTactics.BodyTypes.BodyType
-import com.rayrobdod.deductionTactics.Directions.Direction
 
 import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
-import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds}
+import com.rayrobdod.deductionTactics.TokenClass
 import scala.runtime.{AbstractFunction1 => Function1}
-import scala.language.reflectiveCalls
 
 /**
  * @version a.6.0

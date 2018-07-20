@@ -17,16 +17,12 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
-import com.rayrobdod.deductionTactics.Elements.Element
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
-import com.rayrobdod.deductionTactics.Statuses.Status
-import com.rayrobdod.deductionTactics.BodyTypes.BodyType
-import com.rayrobdod.deductionTactics.Directions.Direction
 
 import scala.collection.immutable.Seq
-import javax.swing.{JPanel, JLabel, Icon, JProgressBar,
+import javax.swing.{JPanel, JLabel, JProgressBar,
 		DefaultBoundedRangeModel, BoundedRangeModel}
-import java.awt.{GridBagLayout, GridBagConstraints, FlowLayout}
+import java.awt.{GridBagLayout, GridBagConstraints}
 import com.rayrobdod.deductionTactics.{TokenClass, Weaponkinds}
 import com.rayrobdod.swing.GridBagConstraintsFactory
 

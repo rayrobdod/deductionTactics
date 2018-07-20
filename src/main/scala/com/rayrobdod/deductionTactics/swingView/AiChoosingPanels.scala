@@ -17,15 +17,12 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
-import scala.collection.immutable.Seq
 import javax.swing.{JList, JScrollPane, ListSelectionModel}
 import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
-		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
-		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
 		HORIZONTAL_SCROLLBAR_AS_NEEDED => scrollHorizontalAsNeeded}
 import com.rayrobdod.deductionTactics.PlayerAI
-import java.awt.{Component, Insets}
-import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
+import java.awt.Component
+import com.rayrobdod.swing.ScalaSeqListModel
 
 /**
  * @author Raymond Dodge

@@ -17,9 +17,8 @@
 */
 package com.rayrobdod.deductionTactics.swingView.game
 
-import java.awt.{Shape, Rectangle, Polygon}
+import java.awt.{Shape, Polygon}
 import java.awt.geom.Area
-import java.awt.Color
 import java.awt.{Graphics, Graphics2D}
 import javax.swing.JComponent
 import com.rayrobdod.boardGame.RectangularFieldIndex
@@ -36,7 +35,7 @@ final class CursorLayer(
 ) extends JComponent {
 	private[this] var currentShape:Shape = new Area()
 	
-	override def paintComponent(g:Graphics) {
+	override def paintComponent(g:Graphics):Unit = {
 		val g2 = g.asInstanceOf[Graphics2D]
 		
 		g2.setColor(this.getForeground())

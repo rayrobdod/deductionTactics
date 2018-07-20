@@ -22,7 +22,6 @@ import com.rayrobdod.boardGame.{Space, RectangularSpace}
 import com.rayrobdod.deductionTactics.Statuses.Sleep
 import scala.collection.immutable.Seq
 import LoggerInitializer.{sleepAbuserAILogger => Logger}
-import scala.math.Ordering
 import scala.util.Random
 
 /**

@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{Space, RectangularField, StrictRectangularSpace}
+import com.rayrobdod.boardGame.{Space, StrictRectangularSpace}
 import scala.collection.immutable.{Map, Set, Seq}
 import LoggerInitializer.{fieldPotentialAiLogger => Logger}
 import java.util.logging.Level
@@ -91,7 +91,6 @@ final class FieldPotentialAI extends PlayerAI
 		// setup recorders
 		
 		if (Logger.isLoggable(Level.FINER)) {
-			import java.awt.event.{WindowEvent, WindowAdapter}
 			import javax.swing.{JFrame, JLabel}
 			
 			val list = initialState.tokens

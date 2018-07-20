@@ -18,16 +18,15 @@
 package com.rayrobdod.deductionTactics
 package swingView.game
 
-import javax.swing.{SwingUtilities, JFrame, JPanel, JButton, WindowConstants, KeyStroke, AbstractAction, JScrollPane}
+import javax.swing.{SwingUtilities, JFrame, JPanel, JButton, WindowConstants}
 import java.text.MessageFormat
 import java.awt.event.{MouseEvent, MouseListener, MouseAdapter}
 import java.awt.event.{ActionEvent, ActionListener}
-import java.awt.event.KeyEvent
 import scala.collection.mutable.Buffer
 import scala.collection.immutable.{Seq, Map}
 import com.rayrobdod.boardGame.RectangularField
-import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularFieldComponent}
-import com.rayrobdod.deductionTactics.swingView.{AvailibleTilesheetListModel, tilesheets, TokenPanel}
+import com.rayrobdod.boardGame.swingView.RectangularFieldComponent
+import com.rayrobdod.deductionTactics.swingView.TokenPanel
 
 
 /**

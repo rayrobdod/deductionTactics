@@ -22,18 +22,13 @@ package game
 import com.rayrobdod.deductionTactics.Elements.Element
 import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
 import com.rayrobdod.deductionTactics.Statuses.Status
-import com.rayrobdod.deductionTactics.BodyTypes.BodyType
-import com.rayrobdod.deductionTactics.Directions.Direction
 
 import java.awt.Graphics
 import javax.swing.{JComponent, Icon}
 import javax.imageio.ImageIO
-import scala.collection.immutable.{Seq, Map}
+import scala.collection.immutable.Map
 import com.rayrobdod.util.BlitzAnimImage
-import com.rayrobdod.animation.{AnimationIcon, ImageFrameAnimation,
-		NextFrameListener, AnimationEndedListener,
-		NextFrameEvent, AnimationEndedEvent
-}
+import com.rayrobdod.animation.ImageFrameAnimation
 import com.rayrobdod.boardGame.RectangularField
 import com.rayrobdod.boardGame.swingView._
 import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion

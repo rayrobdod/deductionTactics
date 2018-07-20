@@ -23,11 +23,8 @@ import Statuses.Status
 import BodyTypes.BodyType
 import Directions.Direction
 
-import scala.collection.Seq
-import scala.collection.immutable.{Map, Seq => ISeq}
-import com.rayrobdod.json.parser.JsonParser
+import scala.collection.immutable.Map
 import com.rayrobdod.json.builder.{Builder, MapBuilder}
-import java.io.{StringReader, InputStreamReader}
 
 
 

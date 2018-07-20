@@ -17,17 +17,13 @@
 */
 package com.rayrobdod.deductionTactics.swingView
 
-import javax.swing.{Icon, ImageIcon}
-import scala.collection.JavaConversions.{iterableAsScalaIterable, mapAsJavaMap}
+import javax.swing.Icon
 import java.nio.charset.StandardCharsets.UTF_8
 import com.rayrobdod.deductionTactics.{Weaponkinds, Elements}
-import com.rayrobdod.deductionTactics.Weaponkinds.Weaponkind
-	
+
 import com.rayrobdod.json.parser.JsonParser
 import com.rayrobdod.json.builder.{Builder, SeqBuilder, MapBuilder}
-import java.io.{ByteArrayOutputStream, DataOutputStream}
 import java.net.URL
-import javax.imageio.ImageIO
 import scala.collection.immutable.{Seq, Map}
 
 /**

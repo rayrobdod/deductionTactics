@@ -18,10 +18,10 @@
 package com.rayrobdod.deductionTactics
 package swingView.game
 
-import javax.swing.{KeyStroke, InputMap}
+import javax.swing.KeyStroke
 import scala.collection.immutable.Map
-import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularFieldComponent}
-import com.rayrobdod.deductionTactics.swingView.{AvailibleTilesheetListModel, tilesheets, TokenPanel}
+import com.rayrobdod.boardGame.swingView.RectangularTilesheet
+import com.rayrobdod.deductionTactics.swingView.{AvailibleTilesheetListModel, tilesheets}
 import KeyboardActions.KeyboardAction
 
 
@@ -93,13 +93,13 @@ object preferences {
 	
 	private object NilPreferences extends java.util.prefs.AbstractPreferences(null, "") {
 		def getSpi(key:String) = null
-		def putSpi(key:String, value:String) {}
-		def removeSpi(key:String) {}
-		def removeNodeSpi() {}
+		def putSpi(key:String, value:String):Unit = {}
+		def removeSpi(key:String):Unit = {}
+		def removeNodeSpi():Unit = {}
 		def keysSpi() = new Array(0)
 		def childrenNamesSpi() = new Array(0)
-		def flushSpi() {}
-		def syncSpi() {}
+		def flushSpi():Unit = {}
+		def syncSpi():Unit = {}
 		def childSpi(key:String) = NilPreferences
 	}
 }

@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics.ai
 
 import scala.collection.immutable.{Seq, Map}
-import com.rayrobdod.deductionTactics.{PlayerAI, Token, GameState, TokenClass}
+import com.rayrobdod.deductionTactics.{PlayerAI, GameState, TokenClass}
 import com.rayrobdod.deductionTactics.consoleView.BoardNavigator
 
 /**

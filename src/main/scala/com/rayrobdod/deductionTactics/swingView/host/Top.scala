@@ -17,13 +17,11 @@
 */
 package com.rayrobdod.deductionTactics.swingView.host
 
-import java.awt.{Component, BorderLayout, FlowLayout, GridLayout, GridBagLayout, GridBagConstraints}
+import java.awt.{Component, BorderLayout, FlowLayout, GridBagLayout, GridBagConstraints}
 import java.awt.event.{ActionListener, ActionEvent}
 import javax.swing.{JList, ListCellRenderer, JButton, JPanel, JLabel, JFrame, WindowConstants, ListSelectionModel, JScrollPane}
 import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
 import javax.swing.ScrollPaneConstants.{VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
-		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
-		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
 		HORIZONTAL_SCROLLBAR_AS_NEEDED => scrollHorizontalAsNeeded}
 import scala.collection.immutable.Seq
 import scala.collection.mutable.Buffer
@@ -128,12 +126,12 @@ class Top {
 			nextButton.getRootPane.setDefaultButton(nextButton)
 			
 			cancelButton.addActionListener(new ActionListener() {
-				def actionPerformed(e:ActionEvent) {
+				def actionPerformed(e:ActionEvent):Unit = {
 					Top.this.frame.dispose();
 				}
 			})
 			nextButton.addActionListener(new ActionListener() {
-				def actionPerformed(e:ActionEvent) {
+				def actionPerformed(e:ActionEvent):Unit = {
 					Top.this.frame.dispose();
 					nextListeners.foreach{x:NextListener =>
 						x.apply(
@@ -153,7 +151,7 @@ class Top {
 		frame.setVisible(b);
 	}
 	
-	def addNextListener(a:NextListener) {
+	def addNextListener(a:NextListener):Unit = {
 		nextListeners append a
 	}
 }

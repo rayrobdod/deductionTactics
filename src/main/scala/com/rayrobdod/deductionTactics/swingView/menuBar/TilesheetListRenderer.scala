@@ -17,10 +17,9 @@
 */
 package com.rayrobdod.deductionTactics.swingView.menuBar
 
-import com.rayrobdod.boardGame.swingView.{RectangularTilesheet}
+import com.rayrobdod.boardGame.swingView.RectangularTilesheet
 import com.rayrobdod.deductionTactics.SpaceClass
-import javax.swing.{AbstractListModel, DefaultListCellRenderer,
-		JList, ListCellRenderer, JLabel}
+import javax.swing.{DefaultListCellRenderer, JList, ListCellRenderer}
 
 
 /**

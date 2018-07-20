@@ -19,20 +19,18 @@ package com.rayrobdod.deductionTactics.swingView
 package chooseTokenClasses
 
 import javax.swing.{JList, JPanel, ButtonGroup, JButton, BoxLayout,
-		JScrollPane, JRadioButton, AbstractListModel, ListCellRenderer,
+		JScrollPane, JRadioButton, ListCellRenderer,
 		DefaultListModel
 }
-import javax.swing.event.{ListSelectionListener, ListSelectionEvent}
 import javax.swing.ScrollPaneConstants.{
-		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
 		HORIZONTAL_SCROLLBAR_ALWAYS => scrollHorizontalAlways
 }
-import javax.swing.BoxLayout.{Y_AXIS => boxYAxis, X_AXIS => boxXAxis}
+import javax.swing.BoxLayout.{Y_AXIS => boxYAxis}
 import java.awt.BorderLayout
 import java.awt.event.{ActionListener, ActionEvent}
-import com.rayrobdod.deductionTactics.{PlayerAI, TokenClass}
+import com.rayrobdod.deductionTactics.TokenClass
 import com.rayrobdod.swing.{MapToNameAndIconCellRenderer, ScalaSeqListModel}
 import scala.collection.immutable.Seq
 import scala.collection.JavaConversions.iterableAsScalaIterable

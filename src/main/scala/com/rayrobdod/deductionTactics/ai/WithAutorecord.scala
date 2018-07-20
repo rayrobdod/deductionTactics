@@ -18,8 +18,6 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import scala.collection.immutable.Seq
-
 /**
  * A decorator for PlayerAIs. It adds a set of listeners to the tokens and
  * player that can help determine various things about the tokens.

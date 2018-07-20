@@ -21,11 +21,10 @@ package serialization
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.Status
-import BodyTypes.BodyType
 import Directions.Direction
 
 import java.nio.file.{Path, Files}
-import scala.collection.immutable.{Map, Seq}
+import scala.collection.immutable.Map
 
 /**
  * 

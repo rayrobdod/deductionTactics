@@ -29,7 +29,7 @@ final class TokenSelector (
 ) extends Runnable {
 	var shouldStop:Boolean = false
 	
-	def run() {
+	def run():Unit = {
 		while (! shouldStop) {
 			val c = inStream.read.toChar
 			val charToTokenIndex:Map[Char, TokenIndex] = tokensToLetters(currentState.tokens, Some(player)).map{_.swap}.toMap

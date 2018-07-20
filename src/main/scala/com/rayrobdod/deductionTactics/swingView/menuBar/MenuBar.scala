@@ -19,14 +19,12 @@ package com.rayrobdod.deductionTactics.swingView.menuBar
 
 import java.awt.event.{ActionListener, ActionEvent}
 import java.awt.BorderLayout.{NORTH, SOUTH}
-import javax.swing.{JMenuBar, JMenu, JMenuItem, JFrame, JScrollPane, JDialog, JLabel, JTabbedPane}
-import javax.swing.event.{ChangeListener, ChangeEvent}
+import javax.swing.{JMenuBar, JMenu, JMenuItem, JScrollPane, JDialog, JLabel, JTabbedPane}
 import javax.swing.ScrollPaneConstants.{
 		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever
 }
 import javax.swing.SwingUtilities.getWindowAncestor
-import com.rayrobdod.deductionTactics.TokenClass
 import com.rayrobdod.deductionTactics.swingView.HumanSuspicionsPanel
 import com.rayrobdod.deductionTactics.swingView.aboutDialogString
 

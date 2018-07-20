@@ -18,9 +18,6 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import Elements.Element
-import Weaponkinds.Weaponkind
-import Statuses.Status
 import java.io.PrintStream
 import com.rayrobdod.deductionTactics.consoleView._
 import scala.collection.immutable.{Seq, Map}
@@ -109,7 +106,7 @@ final class WithConsoleEventPrinting(val base:PlayerAI) extends DecoratorPlayerA
 		sharedToken:SharedActiveTokenProperty,
 		eventLog:Seq[String],
 		suspicions:Map[(Int, Int), TokenClassSuspicion]
-	) {
+	):Unit = {
 		outStream.println( controlCursorToTop )
 		outStream.println( controlClearRest )
 		BoardPrinter.apply(outStream, afterState.tokens, afterState.board, Option(player), None, sharedToken.value)

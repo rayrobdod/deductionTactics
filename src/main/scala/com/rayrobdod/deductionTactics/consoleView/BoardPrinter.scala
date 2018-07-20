@@ -54,7 +54,7 @@ object BoardPrinter{
 	private val (tl, tr, bl, br, horiz, vert) = (',', '.', '`', '\'', '-', '|')
 	
 	/** @version a.6.0 */
-	def apply(out:PrintStream, tokens:ListOfTokens, field:RectangularField[SpaceClass], team:Option[Int], cursor:Option[Space[SpaceClass]] = None, selected:Option[TokenIndex] = None) {
+	def apply(out:PrintStream, tokens:ListOfTokens, field:RectangularField[SpaceClass], team:Option[Int], cursor:Option[Space[SpaceClass]] = None, selected:Option[TokenIndex] = None):Unit = {
 		val strings = spaceStrings(tokens, field, team, cursor, selected)
 		
 		strings.foreach{ x => out.print( x ) }

@@ -17,8 +17,7 @@
 */
 package com.rayrobdod.deductionTactics
 
-import scala.collection.immutable.{Seq, Set}
-import com.rayrobdod.deductionTactics.LoggerInitializer.{elementsLogger => logger}
+import scala.collection.immutable.Seq
 
 /**
  * An enumeration of elements

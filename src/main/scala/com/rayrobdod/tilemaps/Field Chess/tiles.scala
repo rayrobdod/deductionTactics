@@ -135,7 +135,7 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 		def getIconWidth:Int = 32;
 		def getIconHeight:Int = 32;
 		
-		def paintIcon(c:Component, g:Graphics, x:Int, y:Int)
+		def paintIcon(c:Component, g:Graphics, x:Int, y:Int):Unit =
 		{
 			val nwCorner = new GeneralPath
 			nwCorner.moveTo(x     , y     )

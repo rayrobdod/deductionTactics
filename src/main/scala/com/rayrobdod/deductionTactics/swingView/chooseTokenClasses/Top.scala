@@ -23,14 +23,12 @@ import java.awt.event._
 import javax.swing._
 import javax.swing.BoxLayout.{Y_AXIS => boxYAxis, X_AXIS => boxXAxis}
 import javax.swing.ScrollPaneConstants.{
-		VERTICAL_SCROLLBAR_AS_NEEDED => scrollVerticalAsNeeded,
 		VERTICAL_SCROLLBAR_ALWAYS => scrollVerticalAlways,
 		HORIZONTAL_SCROLLBAR_NEVER => scrollHorizontalNever,
 		HORIZONTAL_SCROLLBAR_ALWAYS => scrollHorizontalAlways
 }
 import javax.swing.event._
-import java.net.InetAddress
-import com.rayrobdod.swing.{ScalaSeqListModel, GridBagConstraintsFactory}
+import com.rayrobdod.swing.ScalaSeqListModel
 import com.rayrobdod.deductionTactics.TokenClass
 import scala.collection.immutable.{Seq, IndexedSeq}
 import scala.collection.JavaConversions.asScalaBuffer
@@ -125,12 +123,12 @@ class Top(val maxResultSize:Int) {
 			nextButton.getRootPane.setDefaultButton(nextButton)
 			
 			cancelButton.addActionListener(new ActionListener() {
-				def actionPerformed(e:ActionEvent) {
+				def actionPerformed(e:ActionEvent):Unit = {
 					Top.this.frame.dispose();
 				}
 			})
 			nextButton.addActionListener(new ActionListener() {
-				def actionPerformed(e:ActionEvent) {
+				def actionPerformed(e:ActionEvent):Unit = {
 					Top.this.frame.dispose();
 				}
 			})
@@ -153,7 +151,7 @@ class Top(val maxResultSize:Int) {
 		frame.setVisible(true);
 	}
 	
-	def addNextActionListener(a:ActionListener) {
+	def addNextActionListener(a:ActionListener):Unit = {
 		nextButton.addActionListener(a)
 	}
 	
@@ -176,7 +174,7 @@ object Top {
 	def main(args:Array[String]):Unit = {
 		val t = new Top(5);
 		t.addNextActionListener(new ActionListener() {
-			def actionPerformed(e:ActionEvent) {
+			def actionPerformed(e:ActionEvent):Unit = {
 				Top.main(new Array[String](0))
 			}
 		})
