@@ -17,112 +17,145 @@
 */
 package com.rayrobdod.deductionTactics
 
-import java.net.URL
-import java.io.{Reader, StringReader}
-import java.nio.charset.StandardCharsets.UTF_8
-import scala.collection.immutable.{Seq, Set, Map}
-import scala.collection.JavaConversions.iterableAsScalaIterable
-import com.opencsv.CSVReader;
-import com.rayrobdod.util.services.{ResourcesServiceLoader}
-import com.rayrobdod.json.parser.JsonParser
-import com.rayrobdod.json.builder.{Builder, SeqBuilder, MapBuilder}
+import scala.collection.immutable.{Seq, Set}
 import com.rayrobdod.boardGame.RectangularField
 
 /**
+ * Represents a board upon which a battle will take place
  * @since a.6.0
+ * @version next
  */
-final case class Arena (
+final case class Arena(
 	val name:String,
-	layoutStrs:Seq[Seq[String]],
-	val startSpaces:Map[Int,Seq[Seq[(Int, Int)]]]
+	val field:RectangularField[SpaceClass],
+	startSpacesSeq:Seq[Seq[Seq[(Int, Int)]]]
 ) {
-	def layout:Seq[Seq[SpaceClass]] = layoutStrs.map{_.map{x => SpaceClassFactory(x)}}
-	def field:RectangularField[SpaceClass] = RectangularField(layout)
+	def possiblePlayers:Set[Int] = startSpacesSeq.map{_.size}.toSet
 	
-	def possiblePlayers:Set[Int] = startSpaces.keySet
+	def startSpacesWithPlayerCount(playerCount:Int):Seq[Seq[(Int, Int)]] = startSpacesSeq.filter{_.size == playerCount}.head
+	
+	override def toString:String = s"Arena[name = $name]" 
 }
 
 /**
- * A [[Builder]] for [[Arena]]s
- * @since a.6.0
- */
-final class ArenaBuilder(baseDir:URL) extends Builder[Arena] {
-	override val init:Arena = new Arena("", Nil, Map.empty)
-	override def apply(folding:Arena, key:String, value:Any):Arena = key match {
-		case "name" => folding.copy(name = value.toString)
-		case "layout" => {
-			val layoutPath:URL = new URL(baseDir, value.toString)
-			var layoutReader:Reader = new StringReader("")
-			val result = try {
-				layoutReader = new java.io.InputStreamReader(layoutPath.openStream(), UTF_8)
-				
-				val layoutParser = new CSVReader(layoutReader);
-				val letterTable3 = layoutParser.readAll();
-				Seq.empty ++ letterTable3.map{Seq.empty ++ _}
-			} finally {
-				layoutReader.close()
-			}
-			folding.copy(layoutStrs = result)
-		}
-		case "classMap" => folding
-		case "deductionTactics::startSpaces" => {
-			folding.copy(startSpaces = value match {
-				case a:String => {
-					val spacePath = new URL(baseDir, value.toString)
-					var spaceReader:Reader = new StringReader("{}")
-					try {
-						spaceReader = new java.io.InputStreamReader(spacePath.openStream(), UTF_8)
-						new JsonParser(childBuilder(key)).parse(spaceReader).asInstanceOf[Map[_,_]].map{x => ((x._1.toString.toInt, castToStartSpaces(x._2)))}
-					} finally {
-						spaceReader.close()
-					}
-				}
-				case a:Map[_,_] => {
-					a.map{x => ((x._1.toString.toInt, castToStartSpaces(x._2)))}
-				}
-			})
-		}
-		case _ => folding
-	}
-	override def childBuilder(key:String):Builder[_] = key match {
-		case "deductionTactics::startSpaces" => new MapBuilder({x:String => new SeqBuilder})
-	}
-	override val resultType:Class[Arena] = classOf[Arena]
-	
-	private def castToStartSpaces(x:Any):Seq[Seq[Tuple2[Int,Int]]] = {
-		def tuple(x:Any):Tuple2[Int,Int] = x match {case Seq(a:Long,b:Long) => Tuple2(a.intValue, b.intValue)}
-		def seqTuple(x:Any):Seq[(Int,Int)] = x match {case x:Seq[_] => x.map{tuple _}}
-		def seqSeqTuple(x:Any):Seq[Seq[(Int,Int)]] = x match {case x:Seq[_] => x.map{seqTuple _}}
-		
-		seqSeqTuple(x)
-	}
-}
-
-/**
- * An object that deals with Maps
  * 
- * Previously known as Maps
- * @version a.6.0
+ * @version next
  */
 object Arena {
-	private val SERVICE = "com.rayrobdod.deductionTactics.Arena"
-	
-	private val paths:Seq[URL] = {
-		Seq.empty ++ new ResourcesServiceLoader(SERVICE);
-	}
-	
-	/**
-	 * Previously known as arenas
-	 * @since a.6.0
-	 */
-	def fromService:Seq[Arena] = paths.map{x =>
-		var reader:Reader = new StringReader("{}")
-		try {
-			reader = new java.io.InputStreamReader(x.openStream(), UTF_8)
-			new JsonParser(new ArenaBuilder(x)).parse(reader)
-		} finally {
-			reader.close()
-		}
-	}
-	
+	val getAll:Seq[Arena] = Seq(
+		Arena(name = "Empty Field",
+			field = RectangularField(
+				Seq.fill(10, 10)(UniPassageSpaceClass.apply)
+			),
+			startSpacesSeq = Seq(
+				Seq(
+					Seq((1 -> 5), (1 -> 3), (1 -> 7), (1 -> 1), (1 -> 9), (1 -> 4), (1 -> 6), (1 -> 2), (1 -> 8), (1 -> 0)),
+					Seq((8 -> 5), (8 -> 3), (8 -> 7), (8 -> 1), (8 -> 9), (8 -> 4), (8 -> 6), (8 -> 2), (8 -> 8), (8 -> 0))
+				),
+				Seq(
+					Seq((1 -> 5), (1 -> 3), (1 -> 7), (1 -> 4), (1 -> 6)),
+					Seq((8 -> 5), (8 -> 3), (8 -> 7), (8 -> 4), (8 -> 6)),
+					Seq((5 -> 1), (3 -> 1), (7 -> 1), (4 -> 1), (6 -> 1)),
+					Seq((5 -> 8), (3 -> 8), (7 -> 8), (4 -> 8), (6 -> 8))
+				)
+			)
+		),
+		Arena(name = "Pit Arena",
+			field = RectangularField(
+				Seq(
+					"  ||||||||||||||||  ",
+					"  :..............:  ",
+					"  |..............|  ",
+					"  :..          ..:  ",
+					"  |..          ..|  ",
+					"  :..          ..:  ",
+					"  |..          ..|  ",
+					"                    ",
+					"                    ",
+					"  |..          ..|  ",
+					"  :..          ..:  ",
+					"  |..          ..|  ",
+					"  :..          ..:  ",
+					"  |..............|  ",
+					"  :..............:  ",
+					"  ||||||||||||||||  "
+				).map{_.map{char => SpaceClassFactory("" + char)}}
+			),
+			startSpacesSeq = Seq(
+				Seq(
+					Seq((0 -> 1), (0 -> 2), (0 -> 3), (0 -> 4), (0 -> 5), (0 -> 10), (0 -> 11), (0 -> 12), (0 -> 13), (0 -> 14)),
+					Seq((19 -> 14), (19 -> 13), (19 -> 12), (19 -> 11), (19 -> 10), (19 -> 5), (19 -> 4), (19 -> 3), (19 -> 2), (19 -> 1))
+				)
+			)
+		),
+		Arena(name = "Tournament Bracket",
+			field = RectangularField(
+				(for(
+					(line, x) <- Seq(
+						"|||||||||||||||||||||||||||||",
+						"||||||||||||     ||||||||||||",
+						"||||||||||||     ||||||||||||",
+						"|||||||               |||||||",
+						"||||||| ||||     |||| |||||||",
+						"|||||     ||     ||     |||||",
+						"|||||     |||||||||     |||||",
+						"|||         |||||         |||",
+						"||| |     | ||||| |     | |||",
+						"||| ||||||| ||||| ||||||| |||",
+						"|     |||     |     |||     |",
+						"|     |||     |     |||     |",
+						"|     |||     |     |||     |",
+						"|     |||     |     |||     |",
+						"|||||||||||||||||||||||||||||"
+					).zipWithIndex;
+					(char, y) <- line.zipWithIndex
+				) yield {
+					(x -> y) -> SpaceClassFactory("" + char)
+				}).toMap
+			),
+			startSpacesSeq = Seq(
+				Seq(
+					Seq(( 2 -> 13), (10 -> 13), (16 -> 13), (24 -> 13)),
+					Seq((26 -> 13), (18 -> 13), (12 -> 13), ( 4 -> 13))
+				)
+			)
+		),
+		Arena(name = "Tripath",
+			field = RectangularField(
+				(for(
+					(line, x) <- Seq(
+						"||||||||||||||||||||",
+						"||||||||||||||||||||",
+						"||ss |..    ..| ss||",
+						"|ss              ss|",
+						"|s   |..    ..|   s|",
+						"|    ||||::||||    |",
+						"|    |..    ..|    |",
+						"|                  |",
+						"|    |..    ..|    |",
+						"|    ||||::||||    |",
+						"|s   |..    ..|   s|",
+						"|ss              ss|",
+						"||ss |..    ..| ss||",
+						"||||||||||||||||||||",
+						"||||||||||||||||||||"
+					).zipWithIndex;
+					(char, y) <- line.zipWithIndex
+				) yield {
+					(x -> y) -> SpaceClassFactory("" + char)
+				}).toMap
+			),
+			startSpacesSeq = Seq(
+				Seq(
+					Seq((2 -> 7), (2 -> 6), (2 -> 8), (1 -> 6), (1 -> 8)),
+					Seq((17 -> 7), (17 -> 6), (17 -> 8), (18 -> 6), (18 -> 8))
+				),
+				Seq(
+					Seq((8 -> 2), (9 -> 2), (10 -> 2), (11 -> 2)),
+					Seq((6 -> 7), (7 -> 7), (12 -> 7), (13 -> 7)),
+					Seq((8 -> 12), (9 -> 12), (10 -> 12), (11 -> 12))
+				)
+			)
+		)
+	)
 }

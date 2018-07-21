@@ -28,18 +28,18 @@ class ArenaSerializationTest extends FunSpec {
 	describe ("ArenaService") {
 		it ("First is named \"Empty Field\"") {
 			assertResult("Empty Field"){
-				Arena.fromService(0).name
+				Arena.getAll(0).name
 			}
 		}
 		it ("First has an arena that is empty") {
-			Arena.fromService(0).field.foreach{x =>
+			Arena.getAll(0).field.foreach{x =>
 				val (index, space) = x
 				val spaceClass = space.typeOfSpace
 				assertResult(UniPassageSpaceClass.apply){spaceClass}
 			}
 		}
 		it ("First has an possible players count of 2 or 4") {
-			assertResult(Set(2,4)){Arena.fromService(0).possiblePlayers}
+			assertResult(Set(2,4)){Arena.getAll(0).possiblePlayers}
 		}
 		it ("First has starting spaces for 2 of Seq(...)") {
 			val exp = Seq(Seq(
@@ -66,14 +66,14 @@ class ArenaSerializationTest extends FunSpec {
 				Tuple2(8,0)
 			))
 			
-			assertResult(exp){Arena.fromService(0).startSpaces(2)}
+			assertResult(exp){Arena.getAll(0).startSpacesWithPlayerCount(2)}
 		}
 		
 		
 		
 		it ("Third is named \"Tournament Bracket\"") {
 			assertResult("Tournament Bracket"){
-				Arena.fromService(2).name
+				Arena.getAll(2).name
 			}
 		}
 		it ("Third has starting spaces for 2 of Seq(...)") {
@@ -89,7 +89,7 @@ class ArenaSerializationTest extends FunSpec {
 				Tuple2(4 ,13)
 			))
 			
-			assertResult(exp){Arena.fromService(2).startSpaces(2)}
+			assertResult(exp){Arena.getAll(2).startSpacesWithPlayerCount(2)}
 		}
 	}
 }

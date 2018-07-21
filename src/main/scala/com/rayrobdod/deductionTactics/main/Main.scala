@@ -36,7 +36,7 @@ object Main {
 	private def chooseTokens(ais:Seq[PlayerAI], map:Arena):Unit = {
 		val t = new Thread(new Runnable(){
 			def run():Unit = {
-				val startSpaces = map.startSpaces(ais.size)
+				val startSpaces = map.startSpacesWithPlayerCount(ais.size)
 				
 				val startCounts = startSpaces.map{_.size}
 				val selectedClasses:Seq[Seq[TokenClass]] = ais.zip(startCounts).map{x => x._1.selectTokenClasses(x._2 * 2)}
@@ -44,7 +44,7 @@ object Main {
 				val narrowedClasses:Seq[Seq[TokenClass]] = ais.zip(startCounts).zipWithIndex.map{x => x._1._1.narrowTokenClasses(selectedClasses, x._1._2, x._2)}
 				// TODO: short circuit and stop if any AI returns an empty list
 				
-				val field = RectangularField(map.layout)
+				val field = map.field
 				val TokenClassToSpaceIndex:Seq[Seq[(TokenClass, (Int, Int))]] = narrowedClasses.zip(startSpaces).map({(x:Seq[TokenClass],y:Seq[(Int, Int)]) => x.zip(y)}.tupled)
 				val tokenClassToSpace:Seq[Seq[(Option[TokenClass], Space[SpaceClass])]] = TokenClassToSpaceIndex.map{_.map{(x) => ((Option(x._1), field(x._2._1, x._2._2) ))}}
 				

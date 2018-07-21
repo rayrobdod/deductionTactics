@@ -44,7 +44,7 @@ class Top {
 	private val nextButton = new JButton(resources.getString("nextButton"))
 	
 	{
-		val mapList:JList[Arena] = new JList(new ScalaSeqListModel(Arena.fromService))
+		val mapList:JList[Arena] = new JList(new ScalaSeqListModel(Arena.getAll))
 		val playerCount:JList[Int] = new JList(new ScalaSeqListModel(Seq.empty[Int]))
 		val aisPanel = new ChooseAIsComponent
 		
@@ -85,7 +85,7 @@ class Top {
 			playerCount.addListSelectionListener(new ListSelectionListener(){
 				override def valueChanged(e:ListSelectionEvent):Unit = {
 					if (! mapList.isSelectionEmpty && ! playerCount.isSelectionEmpty) {
-						tokensPerPlayer.setText(mapList.getSelectedValue.startSpaces(playerCount.getSelectedValue).map{_.size}.mkString("[", ",", "]"))
+						tokensPerPlayer.setText(mapList.getSelectedValue.startSpacesWithPlayerCount(playerCount.getSelectedValue).map{_.size}.mkString("[", ",", "]"))
 						nextButton.setEnabled(true)
 						aisPanel.players = playerCount.getSelectedValue
 					} else {
@@ -136,7 +136,7 @@ class Top {
 					nextListeners.foreach{x:NextListener =>
 						x.apply(
 							aisPanel.getAIs,
-							Arena.fromService(mapList.getSelectedIndex)
+							Arena.getAll(mapList.getSelectedIndex)
 						)
 					}
 				}

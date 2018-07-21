@@ -21,7 +21,7 @@ import org.scalatest.{FunSpec}
 import javax.swing.{JFrame, JButton, JPanel, JList, JScrollPane}
 import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.ai.{BlindAttackAI, SwingInterface, WithRandomTeam}
-import com.rayrobdod.deductionTactics.{Arena, PlayerAI}
+import com.rayrobdod.deductionTactics.{Arena, PlayerAI, UniPassageSpaceClass, SpaceClass}
 import com.rayrobdod.boardGame.{RectangularField, Space}
 import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 
@@ -39,18 +39,28 @@ class TopTest extends FunSpec {
 			
 			assert(target.hasBeenCalled)
 			assertResult(Seq(new SwingInterface, new SwingInterface)){target.ais}
-			assertResult(Arena("Empty Field", Seq.fill(10,10){" "}, Map(
-				2 -> List(
-					List((1,5), (1,3), (1,7), (1,1), (1,9), (1,4), (1,6), (1,2), (1,8), (1,0)),
-					List((8,5), (8,3), (8,7), (8,1), (8,9), (8,4), (8,6), (8,2), (8,8), (8,0))
+			assertResult(Arena("Empty Field",
+				RectangularField(
+					(for(
+						x <- 0 until 10;
+						y <- 0 until 10
+					) yield {
+						((x, y), UniPassageSpaceClass.apply)
+					}).toMap
 				),
-				4 -> List(
-					List((1,5), (1,3), (1,7), (1,4), (1,6)),
-					List((8,5), (8,3), (8,7), (8,4), (8,6)),
-					List((5,1), (3,1), (7,1), (4,1), (6,1)),
-					List((5,8), (3,8), (7,8), (4,8), (6,8))
+				startSpacesSeq = Seq(
+					Seq(
+						Seq((1 -> 5), (1 -> 3), (1 -> 7), (1 -> 1), (1 -> 9), (1 -> 4), (1 -> 6), (1 -> 2), (1 -> 8), (1 -> 0)),
+						Seq((8 -> 5), (8 -> 3), (8 -> 7), (8 -> 1), (8 -> 9), (8 -> 4), (8 -> 6), (8 -> 2), (8 -> 8), (8 -> 0))
+					),
+					Seq(
+						Seq((1 -> 5), (1 -> 3), (1 -> 7), (1 -> 4), (1 -> 6)),
+						Seq((8 -> 5), (8 -> 3), (8 -> 7), (8 -> 4), (8 -> 6)),
+						Seq((5 -> 1), (3 -> 1), (7 -> 1), (4 -> 1), (6 -> 1)),
+						Seq((5 -> 8), (3 -> 8), (7 -> 8), (4 -> 8), (6 -> 8))
+					)
 				)
-			))){target.map}
+			)){target.map}
 		}
 		it ("Does not call the NextListener if cancel is called", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
@@ -121,13 +131,13 @@ class TopTest extends FunSpec {
 			assert(! frame.isDisplayable)
 			
 			assert(target.hasBeenCalled)
-			assertResult(Arena.fromService(2)){target.map}
+			assertResult(Arena.getAll(2)){target.map}
 		}
 		it ("Does not allow multiple arenas to be selected", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
 			
 			val mapList = getMapList(frame)
-			mapList.setSelectedIndices(Array(2, 4))
+			mapList.setSelectedIndices(Array(1, 3))
 			
 			val nextButton:JButton = getButton(frame, "nextButton")
 			nextButton.doClick()
@@ -135,9 +145,9 @@ class TopTest extends FunSpec {
 			// dispose was called
 			assert(! frame.isDisplayable)
 			
-			assertResult(Array(4)){mapList.getSelectedIndices}
+			assertResult(Array(3)){mapList.getSelectedIndices}
 			assert(target.hasBeenCalled)
-			assertResult(Arena.fromService(4)){target.map}
+			assertResult(Arena.getAll(3)){target.map}
 		}
 		it ("Changes player count when player count is changes", RequiresGui) {
 			val (frame, target) = this.createNextFrameAndListener()
@@ -311,7 +321,7 @@ class TopTest extends FunSpec {
 		
 		private var _hasBeenCalled:Boolean = false
 		private var _ais:Seq[PlayerAI] = Nil
-		private var _map:Arena = Arena("", Nil, Map.empty)
+		private var _map:Arena = Arena("", RectangularField(Map.empty[(Int, Int),SpaceClass]), Seq.empty)
 		def hasBeenCalled:Boolean = _hasBeenCalled
 		def ais:Seq[PlayerAI] = _ais
 		def map:Arena = _map
