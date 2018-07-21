@@ -36,6 +36,7 @@ import com.rayrobdod.boardGame.RectangularSpace
 import com.rayrobdod.boardGame.RectangularIndex
 import com.rayrobdod.boardGame.view.Tilesheet
 import com.rayrobdod.boardGame.view.RectangularDimension
+import com.rayrobdod.boardGame.view.Swing
 
 
 package object swingView
@@ -258,9 +259,33 @@ package object swingView
 	}
 	
 	
-	val tilesheets:Seq[RectangularTilesheet] = Seq(
-		FieldChessTilesheet
-	)
+	val tilesheets:Seq[RectangularTilesheet] = {
+		def readResource(name:String):RectangularTilesheet = {
+			val baseUrl = this.getClass.getClassLoader.getResource(name)
+			if (baseUrl == null) {throw new IllegalStateException("Resource missing")}
+			var asStream:java.io.Reader = new java.io.StringReader("")
+			try {
+				asStream = new java.io.InputStreamReader(this.getClass.getClassLoader.getResourceAsStream(name), UTF_8)
+				val builder = Swing.VisualizationRuleBasedRectangularTilesheetBuilder(baseUrl, SpaceClassMatcherFactory)
+				val parser = new com.rayrobdod.json.parser.JsonParser
+				
+				parser.parse(builder, asStream).fold(
+					{x => x},
+					{x:Nothing => x},
+					{x => throw new java.text.ParseException(x.toString, 0)},
+					{(x,extra) => throw new java.text.ParseException(x.toString, extra.charIndex)}
+				)
+			} finally {
+				asStream.close()
+			}
+		}
+		
+		Seq(
+			FieldChessTilesheet,
+			readResource("com/rayrobdod/tilemaps/Castle Dungeon/rules.json"),
+			readResource("com/rayrobdod/tilemaps/Field Contrast/rules.json")
+		)
+	}
 	
 	/**
 	 * A ListModel of all tilesheets.
