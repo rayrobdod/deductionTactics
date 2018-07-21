@@ -106,6 +106,16 @@ mappings in (Compile, packageSrc) += (new File(baseDirectory.value, "LICENSE.txt
 mappings in (Compile, packageBin) += (new File(baseDirectory.value, "LICENSE.txt"), "LICENSE.txt" )
 
 
+//buildinfo
+enablePlugins(BuildInfoPlugin)
+buildInfoKeys := Seq[BuildInfoKey](
+	name,
+	BuildInfoKey.map(version) {case (k,v) => (k,
+	  if (v == "SNAPSHOT") { s"$v (${java.time.Instant.now()})" } else {v}
+	)}
+)
+buildInfoPackage := "com.rayrobdod.deductionTactics"
+
 
 // scalaTest
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"

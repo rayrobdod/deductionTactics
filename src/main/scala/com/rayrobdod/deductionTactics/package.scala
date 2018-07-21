@@ -27,18 +27,6 @@ package object deductionTactics
 {
 	type TokenIndex = Tuple2[Int, Int]
 	
-	/** Returns a formatted version number for this package based on a found MANIFEST.MF */
-	def VERSION:String = {
-		val v = java.lang.Package.getPackage("com.rayrobdod.deductionTactics").getImplementationVersion();
-		
-		// Manifest doesn't like alpha chars in version numbers
-		if (v != null) v else "Unversioned";
-	}
-	
-	/** A title for use in About dialogs */
-	def TITLE:String = "Deduction Tactics" //java.lang.Package.getPackage("com.rayrobdod.deductionTactics").getImplementationTitle();
-	
-	
 	
 	
 	/* @since a.6.0 */

@@ -267,7 +267,7 @@ package object swingView
 	final val UnsetNameAndIcon:NameAndIcon = new MyNameAndIcon("Unset", unknownIcon())
 	
 	
-	import com.rayrobdod.deductionTactics.{TITLE => appName, VERSION => version}
+	import com.rayrobdod.deductionTactics.BuildInfo
 	/** @since a.5.2 */
 	private val runningOn = "Running on Java; " + System.getProperty("java.vendor") + " " + System.getProperty("java.version")
 	
@@ -287,7 +287,7 @@ package object swingView
 				val len = reader.read(array)
 				new String(array, 0, len)
 			}
-			java.text.MessageFormat.format(readAllChars, appName, version, runningOn)
+			java.text.MessageFormat.format(readAllChars, BuildInfo.name, BuildInfo.version, runningOn)
 		} finally {
 			reader.close()
 		}
