@@ -54,8 +54,7 @@ final case class TokenClass(
 	val speed:Int,
 	val weakDirection:Direction,
 	val weakWeapon:Map[Weaponkind,Float],
-	val weakStatus:Status,
-	val stanceGroup:TokenClass.StanceGroup
+	val weakStatus:Status
 )
 
 
@@ -67,22 +66,6 @@ final case class TokenClass(
  */
 object TokenClass
 {
-	/**
-	 * Indicates token classes that are alternate stances of eachother
-	 * @since a.6.1
-	 */
-	sealed trait StanceGroup
-	/** 
-	 * This tokenclass is not related to any other class via stance
-	 * @since a.6.1
-	 */
-	object SingleStanceGroup extends StanceGroup
-	/** 
-	 * If two TokenClasses have the same MultipleStanceGroup, then it is possible to hotswap between the two
-	 * @since a.6.1
-	 */
-	final class MultipleStanceGroup extends StanceGroup
-	
 	private[this] final class WeaponWeaknessMap(blade:Float, blunt:Float, spear:Float, whip:Float, powder:Float) extends Map[Weaponkind, Float] {
 		override def apply(key:Weaponkind):Float = key match {
 			case Weaponkinds.Bladekind => this.blade
@@ -129,8 +112,7 @@ object TokenClass
 				body = BodyTypes.Humanoid,
 				isSpy = false,
 				range = 1,
-				speed = 3,
-				stanceGroup = TokenClass.SingleStanceGroup
+				speed = 3
 			)
 		}
 	}
@@ -146,8 +128,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 0.75f, blunt = 2f, spear = 1f, whip = 1.5f, powder = 0.5f),
 			weakStatus = Statuses.Sleep,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Falcon",
@@ -160,8 +141,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 2f, spear = 0.75f, whip = 1.5f, powder = 0.5f),
 			weakStatus = Statuses.Blind,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Penguin",
@@ -175,8 +155,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 1.5f, spear = 0.75f, whip = 2f, powder = 0.5f),
 			weakStatus = Statuses.Confuse,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Turkey",
@@ -189,8 +168,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 2f, spear = 0.75f, whip = 1.5f, powder = 0.5f),
 			weakStatus = Statuses.Burn,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Bluebird",
@@ -204,8 +182,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 1.5f, spear = 0.75f, whip = 2f, powder = 0.5f),
 			weakStatus = Statuses.Confuse,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Cardinal",
@@ -219,8 +196,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 2f, spear = 0.75f, whip = 1.5f, powder = 0.5f),
 			weakStatus = Statuses.Sleep,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Crow",
@@ -234,8 +210,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.5f, blunt = 2f, spear = 1f, whip = 0.75f, powder = 0.5f),
 			weakStatus = Statuses.Neuro,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Parrot",
@@ -248,8 +223,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.5f, blunt = 2f, spear = 1f, whip = 1.5f, powder = 0.5f),
 			weakStatus = Statuses.Confuse,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Thunderbird",
@@ -264,8 +238,7 @@ object TokenClass
 			weakStatus = Statuses.Blind,
 			// Thunderbolts come from eyes, apparently,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Pigeon",
@@ -281,8 +254,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.5f, blunt = 0.5f, spear = 0.75f, whip = 1f, powder = 2f),
 			weakStatus = Statuses.Sleep,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Owl",
@@ -295,8 +267,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 1.5f, spear = 0.5f, whip = 0.75f, powder = 2f),
 			weakStatus = Statuses.Sleep,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Phoenix",
@@ -310,8 +281,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.5f, blunt = 1f, spear = 0.75f, whip = 2f, powder = 0.5f),
 			weakStatus = Statuses.Sleep,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		)
 	)
 	private[this] def sportTokens:Seq[TokenClass] = Seq(
@@ -326,8 +296,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 0.75f, blunt = 1f, spear = 2f, whip = 0.5f, powder = 1.5f),
 			weakStatus = Statuses.Blind,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Baseball Pitcher",
@@ -340,8 +309,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 2f, spear = 0.5f, whip = 1.5f, powder = 0.75f),
 			weakStatus = Statuses.Blind,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Baseball Batter",
@@ -354,8 +322,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 2f, blunt = 0.5f, spear = 1.5f, whip = 1f, powder = 1.25f),
 			weakStatus = Statuses.Burn,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			// not sure how important direction it - it seems like the first thing someone would find out, after attacking elements
@@ -369,8 +336,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 2f, blunt = 0.5f, spear = 1.5f, whip = 1f, powder = 1.25f),
 			weakStatus = Statuses.Burn,
 			weakDirection = Directions.Right,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Soccer Striker",
@@ -383,8 +349,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.25f, blunt = 1.5f, spear = 2f, whip = 1f, powder = 0.5f),
 			weakStatus = Statuses.Snake,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Pigskin Quarterback",
@@ -397,8 +362,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 0.75f, blunt = 2f, spear = 1.5f, whip = 0.5f, powder = 1f),
 			weakStatus = Statuses.Blind,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Pigskin Lineback",
@@ -412,8 +376,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 0.75f, blunt = 0.5f, spear = 1.5f, whip = 1f, powder = 2f),
 			weakStatus = Statuses.Confuse,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Hockey Player",
@@ -426,8 +389,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.5f, blunt = 0.75f, spear = 2f, whip = 1f, powder = 0.5f),
 			weakStatus = Statuses.Sleep,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Lacrosse Sticksman",
@@ -440,8 +402,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 2f, blunt = 0.5f, spear = 1f, whip = 0.75f, powder = 1.5f),
 			weakStatus = Statuses.Snake,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Tennis Racketman",
@@ -454,8 +415,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 0.75f, blunt = 1f, spear = 1.5f, whip = 0.5f, powder = 2f),
 			weakStatus = Statuses.Blind,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Golfer",
@@ -468,8 +428,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 0.5f, blunt = 1f, spear = 2f, whip = 1.5f, powder = 0.75f),
 			weakStatus = Statuses.Blind,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Runner",
@@ -483,8 +442,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.25f, blunt = 2f, spear = 1f, whip = 0.5f, powder = 1.5f),
 			weakStatus = Statuses.Snake,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Volleyball hitter",
@@ -498,8 +456,7 @@ object TokenClass
 			weakStatus = Statuses.Blind,
 			// All lighting comes from the east side, so clearly the sun is that way
 			weakDirection = Directions.Right,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		)
 	)
 	private[this] def miscTokens:Seq[TokenClass] = Seq(
@@ -514,8 +471,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 0.5f, spear = 1.75f, whip = 2f, powder = 1f),
 			weakStatus = Statuses.Neuro,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Farmer",
@@ -528,8 +484,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.5f ,blunt = 0.5f, spear = 0.75f ,whip = 1f, powder = 2f),
 			weakStatus = Statuses.Blind,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Umbreallaswordsman",
@@ -542,8 +497,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.5f, blunt = 1f, spear = 2f ,whip = 0.75f, powder = 0.5f),
 			weakStatus = Statuses.Blind,
 			weakDirection = Directions.Down,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Umbreallagunsman",
@@ -556,8 +510,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.5f, blunt = 1f, spear = 2f ,whip = 1f, powder = 0.75f),
 			weakStatus = Statuses.Blind,
 			weakDirection = Directions.Down,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Pyro",
@@ -570,8 +523,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 2f, blunt = 1.5f, spear = 0.5f ,whip = 0.5f, powder = 0.75f),
 			weakStatus = Statuses.Neuro,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Torchbearer",
@@ -584,8 +536,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 0.75f, blunt = 0.5f, spear = 1.5f ,whip = 2f, powder = 1f),
 			weakStatus = Statuses.Sleep,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Yoyoer",
@@ -598,8 +549,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 2f, blunt = 0.5f, spear = 1.5f, whip = 1f, powder = 0.75f),
 			weakStatus = Statuses.Confuse,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Flashlightman",
@@ -612,8 +562,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 1.5f, spear = 2f, whip = 0.75f, powder = 0.5f),
 			weakStatus = Statuses.Confuse,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Medic",
@@ -627,8 +576,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 0.5f, blunt = 0.75f, spear = 2f, whip = 1f, powder = 1.5f),
 			weakStatus = Statuses.Confuse,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Haunted Hoodie",
@@ -643,8 +591,7 @@ object TokenClass
 			// Silence shouldn't become an option, but if it did…
 			weakStatus = Statuses.Sleep,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			// This one isn't decorated; a more shocking one later?
@@ -658,8 +605,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 2f, blunt = 0.75f, spear = 1f, whip = 0.75f, powder = 0.5f),
 			weakStatus = Statuses.Burn,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Snowman",
@@ -672,8 +618,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 1.5f, spear = 0.75f, whip = 0.5f, powder = 2f),
 			weakStatus = Statuses.Burn,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			// Holmes
@@ -687,8 +632,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 2f, blunt = 1f, spear = 1.5f, whip = 0.5f, powder = 0.75f),
 			weakStatus = Statuses.Snake,
 			weakDirection = Directions.Left,
-			isSpy = true,
-			stanceGroup = SingleStanceGroup
+			isSpy = true
 		),
 		TokenClass(
 			// Ms. Vitch, TF2 Spy
@@ -703,8 +647,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 0.75f, blunt = 1.5f, spear = 1f, whip = 2f, powder = 0.5f),
 			weakStatus = Statuses.Neuro,
 			weakDirection = Directions.Left,
-			isSpy = true,
-			stanceGroup = SingleStanceGroup
+			isSpy = true
 		),
 		TokenClass(
 			name = "Eavesdropper",
@@ -717,8 +660,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 1.5f, spear = 0.75f, whip = 0.5f, powder = 2f),
 			weakStatus = Statuses.Confuse,
 			weakDirection = Directions.Left,
-			isSpy = true,
-			stanceGroup = SingleStanceGroup
+			isSpy = true
 		),
 		TokenClass(
 			// I actually think I'll make the format the other one, where both stances are in the same JsonObject
@@ -733,8 +675,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 0.75f, spear = 2f, whip = 1.5f, powder = 0.5f),
 			weakStatus = Statuses.Neuro,
 			weakDirection = Directions.Down,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Ranger (arrow)",
@@ -747,8 +688,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1f, blunt = 0.75f, spear = 2f, whip = 1.5f, powder = 0.5f),
 			weakStatus = Statuses.Neuro,
 			weakDirection = Directions.Down,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		
 		TokenClass(
@@ -763,8 +703,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.25f, blunt = 0.5f, spear = 1.5f, whip = 1f, powder = 2f),
 			weakStatus = Statuses.Blind,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Yellow Tiger",
@@ -778,8 +717,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.25f, blunt = 0.5f, spear = 1.5f, whip = 1f, powder = 2f),
 			weakStatus = Statuses.Blind,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		),
 		TokenClass(
 			name = "Cyan Leopard",
@@ -793,8 +731,7 @@ object TokenClass
 			weakWeapon = new WeaponWeaknessMap(blade = 1.25f, blunt = 0.5f, spear = 1.5f, whip = 1f, powder = 2f),
 			weakStatus = Statuses.Blind,
 			weakDirection = Directions.Left,
-			isSpy = false,
-			stanceGroup = SingleStanceGroup
+			isSpy = false
 		)
 	)
 	

@@ -78,8 +78,7 @@ class SpaceClassTest extends FunSpec {
 				weakDirection = Directions.Down,
 				weakWeapon = Map.empty.withDefaultValue(1f),
 				weakStatus = Statuses.Burn,
-				isSpy = false,
-				stanceGroup = TokenClass.SingleStanceGroup
+				isSpy = false
 			)))
 			
 			assertResult(groundedMoveCost){
@@ -98,8 +97,7 @@ class SpaceClassTest extends FunSpec {
 				weakDirection = Directions.Down,
 				weakWeapon = Map.empty.withDefaultValue(1f),
 				weakStatus = Statuses.Burn,
-				isSpy = false,
-				stanceGroup = TokenClass.SingleStanceGroup
+				isSpy = false
 			)))
 			
 			assertResult(attackCost){
@@ -118,8 +116,7 @@ class SpaceClassTest extends FunSpec {
 				weakDirection = Directions.Down,
 				weakWeapon = Map.empty.withDefaultValue(1f),
 				weakStatus = Statuses.Burn,
-				isSpy = false,
-				stanceGroup = TokenClass.SingleStanceGroup
+				isSpy = false
 			)))
 			
 			assertResult(flyingMoveCost){

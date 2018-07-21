@@ -328,8 +328,7 @@ class TokenTest extends FunSpec {
 		1, 3,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
-		Statuses.Burn,
-		TokenClass.SingleStanceGroup
+		Statuses.Burn
 	)
 	def sample5SpeedTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
@@ -340,8 +339,7 @@ class TokenTest extends FunSpec {
 		1, 5,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
-		Statuses.Burn,
-		TokenClass.SingleStanceGroup
+		Statuses.Burn
 	)
 	def weaponWeakTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
@@ -352,8 +350,7 @@ class TokenTest extends FunSpec {
 		1, 5,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, 2f))}.toMap,
-		Statuses.Burn,
-		TokenClass.SingleStanceGroup
+		Statuses.Burn
 	)
 	def weaponResistTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
@@ -364,8 +361,7 @@ class TokenTest extends FunSpec {
 		1, 5,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, .5f))}.toMap,
-		Statuses.Burn,
-		TokenClass.SingleStanceGroup
+		Statuses.Burn
 	)
 	def elementWeakTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
@@ -376,8 +372,7 @@ class TokenTest extends FunSpec {
 		1, 3,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
-		Statuses.Burn,
-		TokenClass.SingleStanceGroup
+		Statuses.Burn
 	)
 	def multipleWeakTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
@@ -388,8 +383,7 @@ class TokenTest extends FunSpec {
 		1, 3,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, 2f))}.toMap,
-		Statuses.Burn,
-		TokenClass.SingleStanceGroup
+		Statuses.Burn
 	)
 	def multipleResistTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,
@@ -400,8 +394,7 @@ class TokenTest extends FunSpec {
 		1, 3,
 		Directions.Left,
 		Weaponkinds.values.map{(a) => ((a, .5f))}.toMap,
-		Statuses.Burn,
-		TokenClass.SingleStanceGroup
+		Statuses.Burn
 	)
 }
 

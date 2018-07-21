@@ -33,8 +33,7 @@ class MoveRangeOfTest extends FunSpec {
 			1, 2,
 			Directions.Left,
 			Weaponkinds.values.map{(a) => ((a, 1f))}.toMap,
-			Statuses.Burn,
-			TokenClass.SingleStanceGroup
+			Statuses.Burn
 	))
 	
 	describe ("moveRangeOf") {
