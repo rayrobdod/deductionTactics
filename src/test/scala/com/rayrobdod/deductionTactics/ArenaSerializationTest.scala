@@ -23,7 +23,6 @@ import com.rayrobdod.deductionTactics.Statuses._
 import java.nio.charset.StandardCharsets.UTF_8
 
 class ArenaSerializationTest extends FunSpec {
-	import TokenClassFromBinary2.HexArrayStringConverter;
 	
 	describe ("ArenaService") {
 		it ("First is named \"Empty Field\"") {

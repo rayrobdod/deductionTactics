@@ -223,26 +223,7 @@ package object swingView
 	/**
 	 * @version a.6.0
 	 */
-	val tokenClassNameToIcon:Map[String, Icon] =
-	{
-		import scala.collection.JavaConversions.iterableAsScalaIterable
-		import com.rayrobdod.util.services.ResourcesServiceLoader
-		
-		val a:Seq[URL] = new ResourcesServiceLoader(TokenClass.SERVICE).to[Seq]
-		
-		// Binary version
-		val b:Seq[Map[String, Icon]] = a.map{(jsonPath:URL) =>
-			if (jsonPath.toString.endsWith(".rrd-dt-tokenClass")) {
-			
-				new TokenClassNameToIconFromBinary(Seq(jsonPath)).map
-			} else { // assume JSON
-				new TokenClassNameToIconFromJson(Seq(jsonPath)).map
-			}
-		}
-		val e = b.foldLeft(Map.empty[String, Icon]){_ ++ _}
-		
-		e
-	}
+	val tokenClassNameToIcon:Map[String, Icon] = Map.empty
 	
 	/**
 	 * @since a.6.0

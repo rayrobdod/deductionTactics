@@ -106,11 +106,6 @@ mappings in (Compile, packageSrc) += (new File(baseDirectory.value, "LICENSE.txt
 mappings in (Compile, packageBin) += (new File(baseDirectory.value, "LICENSE.txt"), "LICENSE.txt" )
 
 
-// Token compiling
-excludeFilter in unmanagedResources in Compile := {
-	(excludeFilter in unmanagedResources in Compile).value || (includeFilter in tokensCompile).value
-}
-
 
 // scalaTest
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
