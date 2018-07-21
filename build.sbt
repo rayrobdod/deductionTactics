@@ -22,11 +22,9 @@ resolvers += ("rayrobdod" at "http://ivy.rayrobdod.name/")
 
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "20160112")
 
-libraryDependencies += ("com.rayrobdod" %% "json" % "2.0")
-
 libraryDependencies += ("com.opencsv" % "opencsv" % "3.4")
 
-libraryDependencies += ("com.rayrobdod" %% "board-game-generic" % "3.0.0")
+libraryDependencies += ("com.rayrobdod" %% "tile-view-swing" % "4.0-SNAPSHOT")
 
 
 

@@ -18,11 +18,10 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.Space
+import com.rayrobdod.boardGame.RectangularSpace
 import scala.collection.immutable.Seq
 import scala.collection.mutable.PriorityQueue
 import LoggerInitializer.{blindAttackAILogger => Logger}
-import java.util.logging.Level
 
 
 /**
@@ -83,7 +82,7 @@ final class BlindAttackAI extends PlayerAI
 		// return the first legal move
 		Seq(
 			actions.filter{_ match {
-				case GameState.TokenMove(t:Token, s:Space[_]) =>
+				case GameState.TokenMove(t:Token, s:RectangularSpace[_]) =>
 					val distance = t.currentSpace.distanceTo(s, new MoveToCostFunction(t, gameState.tokens))
 					
 					Logger.finer( ((distance, t.canMoveThisTurn)).toString )

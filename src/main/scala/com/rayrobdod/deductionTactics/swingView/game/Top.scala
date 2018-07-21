@@ -25,7 +25,8 @@ import java.awt.event.{ActionEvent, ActionListener}
 import scala.collection.mutable.Buffer
 import scala.collection.immutable.{Seq, Map}
 import com.rayrobdod.boardGame.RectangularField
-import com.rayrobdod.boardGame.swingView.RectangularFieldComponent
+import com.rayrobdod.boardGame.RectangularIndex
+import com.rayrobdod.boardGame.view.{Swing, IconLocation, RectangularDimension}
 import com.rayrobdod.deductionTactics.swingView.TokenPanel
 
 
@@ -55,7 +56,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 	
 	private[this] val tokenInfoPanel = new JPanel(new java.awt.BorderLayout)
 	tokenInfoPanel.setPreferredSize({
-		val a = new TokenPanel(new Token(field(0,0)), new ai.TokenClassSuspicion(), {x => })
+		val a = new TokenPanel(new Token(field.space(0,0).get), new ai.TokenClassSuspicion(), {x => })
 		a.doLayout
 		a.getPreferredSize
 	})
@@ -64,10 +65,10 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		val rv = new JPanel(new com.rayrobdod.swing.layouts.LayeredLayout)
 		val tilesheet = preferences.currentTilesheet
 		
-		val fieldLayers = RectangularFieldComponent(field, tilesheet)
-		val tokenLayer = new TokenLayer(field, fieldLayers._1)
-		val highlightLayer = new HighlightMovableSpacesLayer(fieldLayers._1)
-		val cursorLayer = new CursorLayer(fieldLayers._1.spaceBounds _)
+		val fieldLayers = Swing.renderable(field, tilesheet)
+		val tokenLayer = new TokenLayer(field)
+		val highlightLayer = new HighlightMovableSpacesLayer()
+		val cursorLayer = new CursorLayer()
 		val pieMenuLayout = new PieMenuLayout
 		val pieMenuLayer = new JPanel(pieMenuLayout)
 		val spaceClassDisplay = new DisplaySpaceClassInfoInCorner
@@ -101,15 +102,15 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		pieMenuLayer.setBackground(new java.awt.Color(0, true))
 		pieMenuLayer.setOpaque(false)
 		tokenLayer.tokens = tokens
-		fieldLayers._1.addMouseListener(new MouseAdapter() {
+		fieldLayers._1.component.addMouseListener(new MouseAdapter() {
 			override def mouseClicked(e:MouseEvent):Unit  = {
 				pieMenuLayout.center = e.getPoint()
 				pieMenuLayer.invalidate()
 				pieMenuLayer.validate()
 			}
 		})
-		field.keySet.foreach{x =>
-			fieldLayers._1.addMouseListener(x, new MouseListener() {
+		field.foreachIndex{x =>
+			fieldLayers._1.component.addMouseListener(new MouseListener() {
 				def mouseEntered(e:MouseEvent):Unit  = {}
 				def mouseExited(e:MouseEvent):Unit   = {}
 				def mousePressed(e:MouseEvent):Unit  = {}
@@ -121,7 +122,8 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 						clearSelectionAction.actionPerformed(null)
 						
 					} else if (SwingUtilities.isLeftMouseButton(e)) {
-						selectedSpace.set(x)
+						val locs = implicitly[IconLocation[RectangularIndex, RectangularDimension]]
+						selectedSpace.set(locs.hit((e.getX, e.getY), new RectangularDimension(32, 32)))
 						selectAction.actionPerformed(null)
 						
 					} else {
@@ -150,9 +152,9 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 			highlightLayer.update(selectedToken, currentTokens, field, susp.flatMap{_.speed}.getOrElse(0), susp.flatMap{_.range}.getOrElse(0))
 		}
 		selectedSpace.addChangeListener{x =>
-			val spaceClass = field(x).typeOfSpace
-			val putInNorth = x._2 > (field.keySet.map{_._2}.max / 2)
-			val putInWest  = x._1 > (field.keySet.map{_._1}.max / 2)
+			val spaceClass = field.spaceClass(x).get
+			val putInNorth = x._2 > (field.mapIndex{_._2}.max / 2)
+			val putInWest  = x._1 > (field.mapIndex{_._1}.max / 2)
 			val anchor = {
 				(if (putInNorth == putInWest) {2} else {0}) +
 				(if (putInWest) {16} else {12})
@@ -160,7 +162,7 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 			spaceClassDisplay.showDetailsOf(spaceClass, anchor)
 		}
 		selectedSpace.addChangeListener{x =>
-			val tokenOnSpace:Option[Token] = currentTokens.aliveTokens.flatten.find{_.currentSpace == field(x)}
+			val tokenOnSpace:Option[Token] = currentTokens.aliveTokens.flatten.find{y => Some(y.currentSpace) == field.space(x)}
 			tokenInfoPanel.removeAll()
 			tokenOnSpace.map{t =>
 				val tokenIndex = currentTokens.indexOf(t)
@@ -181,10 +183,10 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		preferences.inputMap.foreach{x =>
 			inputMap.put(x._2, x._1)
 		}
-		actionMap.put(KeyboardActions.MoveLeft, new MoveCursorAction("MoveLeft", {x => x.left.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
-		actionMap.put(KeyboardActions.MoveUp, new MoveCursorAction("MoveUp", {x => x.up.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
-		actionMap.put(KeyboardActions.MoveRight, new MoveCursorAction("MoveRight", {x => x.right.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
-		actionMap.put(KeyboardActions.MoveDown, new MoveCursorAction("MoveDown", {x => x.down.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout, fieldLayers._1.spaceBounds _))
+		actionMap.put(KeyboardActions.MoveLeft, new MoveCursorAction("MoveLeft", {x => x.east.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout))
+		actionMap.put(KeyboardActions.MoveUp, new MoveCursorAction("MoveUp", {x => x.north.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout))
+		actionMap.put(KeyboardActions.MoveRight, new MoveCursorAction("MoveRight", {x => x.west.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout))
+		actionMap.put(KeyboardActions.MoveDown, new MoveCursorAction("MoveDown", {x => x.south.getOrElse(x)}, selectedSpace, field, pieMenuLayer, pieMenuLayout))
 		actionMap.put(KeyboardActions.Select, selectAction)
 		actionMap.put(KeyboardActions.Clear, clearSelectionAction)
 		actionMap.put(KeyboardActions.FindNextToken, new SelectNextActionableTokenAction(selectedSpace, selectedTokenIndex, {() => currentTokens}, field, playerNumber))
@@ -193,9 +195,9 @@ class Top(tokens:ListOfTokens, playerNumber:Int, val field:RectangularField[Spac
 		rv.add(cursorLayer)
 		rv.add(spaceClassDisplay.component)
 		rv.add(highlightLayer)
-		rv.add(fieldLayers._2)
+		rv.add(fieldLayers._2.component)
 		rv.add(tokenLayer)
-		rv.add(fieldLayers._1)
+		rv.add(fieldLayers._1.component)
 		rv
 	}
 	
@@ -265,7 +267,7 @@ object Top {
 						isSpy = false,
 						stanceGroup = TokenClass.SingleStanceGroup
 					)),
-					currentSpace = field((1,2))
+					currentSpace = field.space((1,2)).get
 				),
 				new Token(
 					canMoveThisTurn = 3,
@@ -290,16 +292,16 @@ object Top {
 						isSpy = false,
 						stanceGroup = TokenClass.SingleStanceGroup
 					)),
-					currentSpace = field((6,3))
+					currentSpace = field.space((6,3)).get
 				),
 				new Token(
 					canMoveThisTurn = 1,
 					canAttackThisTurn = true,
-					currentSpace = field((5,0))
+					currentSpace = field.space((5,0)).get
 				)
 			), Seq(
-				Token( currentSpace = field((3,5)) ),
-				Token( currentSpace = field((5,5)) )
+				Token( currentSpace = field.space((3,5)).get ),
+				Token( currentSpace = field.space((5,5)).get )
 			)
 		))
 		

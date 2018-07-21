@@ -20,7 +20,7 @@ package consoleView
 
 import scala.collection.immutable.Map
 import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
-import com.rayrobdod.boardGame.{RectangularSpace}
+import com.rayrobdod.boardGame.RectangularSpace
 
 /**
  * A console application that can let a user navigate a RectangularField
@@ -36,7 +36,7 @@ class BoardNavigator(
 		val in:java.io.InputStream = System.in
 ) extends Runnable {
 	
-	private var currentSpace:RectangularSpace[SpaceClass] = currentState.board(0,0);
+	private var currentSpace:RectangularSpace[SpaceClass] = currentState.board.space(0,0).get;
 	private var selected:Option[TokenIndex] = None;
 	private var continue:Boolean = true;
 	var suspicions:Map[(Int, Int), TokenClassSuspicion] = Map.empty
@@ -74,10 +74,10 @@ class BoardNavigator(
 			
 			val char = in.read(); 
 			
-			if (char == PressUp)     currentSpace = currentSpace.up.getOrElse(currentSpace).asInstanceOf[RectangularSpace[SpaceClass]]
-			if (char == PressLeft)   currentSpace = currentSpace.left.getOrElse(currentSpace).asInstanceOf[RectangularSpace[SpaceClass]]
-			if (char == PressDown)   currentSpace = currentSpace.down.getOrElse(currentSpace).asInstanceOf[RectangularSpace[SpaceClass]]
-			if (char == PressRight)  currentSpace = currentSpace.right.getOrElse(currentSpace).asInstanceOf[RectangularSpace[SpaceClass]]
+			if (char == PressUp)     currentSpace = currentSpace.north.getOrElse(currentSpace)
+			if (char == PressLeft)   currentSpace = currentSpace.west.getOrElse(currentSpace)
+			if (char == PressDown)   currentSpace = currentSpace.south.getOrElse(currentSpace)
+			if (char == PressRight)  currentSpace = currentSpace.east.getOrElse(currentSpace)
 			if (char == PressNextTurn) setNextAction(GameState.EndOfTurn)
 			if (char == PressQuit)   System.exit(0)
 			if (char == PressSelect) { tokenOnSpace match {

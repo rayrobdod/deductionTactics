@@ -19,31 +19,31 @@ package com.rayrobdod.deductionTactics
 package swingView.game
 
 import scala.collection.mutable.Buffer
-import com.rayrobdod.boardGame.RectangularFieldIndex
+import com.rayrobdod.boardGame.RectangularIndex
 
 /**
- * An observable container for a [[RectangularFieldIndex]]
+ * An observable container for a [[RectangularIndex]]
  * @see javafx.beans.value.ObservableValue
  * @since a.6.0
  */
 class CurrentlySelectedSpaceProperty {
 	import CurrentlySelectedSpaceProperty.ChangeListener
 	
-	private[this] var value:RectangularFieldIndex = (0,0)
+	private[this] var value:RectangularIndex = (0,0)
 	private[this] val changeListeners:Buffer[ChangeListener] = Buffer.empty
 	
 	def addChangeListener(l:ChangeListener):Unit = {
 		changeListeners += l
 	}
 	
-	def set(s:RectangularFieldIndex):Unit = {
+	def set(s:RectangularIndex):Unit = {
 		this.value = s
 		changeListeners.foreach{_.apply(s)}
 	}
 	
-	def get:RectangularFieldIndex = this.value
+	def get:RectangularIndex = this.value
 }
 
 object CurrentlySelectedSpaceProperty {
-	type ChangeListener = Function1[RectangularFieldIndex, Unit]
+	type ChangeListener = Function1[RectangularIndex, Unit]
 }

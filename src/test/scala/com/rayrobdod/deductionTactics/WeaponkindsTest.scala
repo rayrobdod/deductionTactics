@@ -17,7 +17,6 @@
 */
 package com.rayrobdod.deductionTactics
 
-import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.Weaponkinds._
 import org.scalatest.FunSpec
 
@@ -71,7 +70,7 @@ class WeaponkindsTest extends FunSpec {
 	}
 	
 	
-	private def happySuite(id:Int, name:String, enumValue:Weaponkind) {
+	private def happySuite(id:Int, name:String, enumValue:Weaponkind):Unit = {
 		it ("id is " + id){
 			assertResult(id)(enumValue.id)
 		}

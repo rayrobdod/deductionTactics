@@ -27,20 +27,20 @@ class SelectNextActionableTokenActionTest extends FunSpec {
 	
 	val field:RectangularField[SpaceClass] = RectangularField(Seq.fill(7,7){SlowPassageSpaceClass.apply})
 	val allActionableTokens = new ListOfTokens(Seq(
-			Seq(new Token(field((1,1)), canAttackThisTurn = true), new Token(field((5,5)), canAttackThisTurn = true)),
-			Seq(new Token(field((2,2)), canAttackThisTurn = true), new Token(field((3,4)), canAttackThisTurn = true))
+			Seq(new Token(field.space((1,1)).get, canAttackThisTurn = true), new Token(field.space((5,5)).get, canAttackThisTurn = true)),
+			Seq(new Token(field.space((2,2)).get, canAttackThisTurn = true), new Token(field.space((3,4)).get, canAttackThisTurn = true))
 	))
 	val halfActionableTokens = new ListOfTokens(Seq(
-			Seq(new Token(field((1,1)), canAttackThisTurn = false), new Token(field((5,5)), canAttackThisTurn = true)),
-			Seq(new Token(field((2,2)), canAttackThisTurn = true), new Token(field((3,4)), canAttackThisTurn = false))
+			Seq(new Token(field.space((1,1)).get, canAttackThisTurn = false), new Token(field.space((5,5)).get, canAttackThisTurn = true)),
+			Seq(new Token(field.space((2,2)).get, canAttackThisTurn = true), new Token(field.space((3,4)).get, canAttackThisTurn = false))
 	))
 	val noActionableTokens = new ListOfTokens(Seq(
-			Seq(new Token(field((1,1)), canAttackThisTurn = false), new Token(field((5,5)), canAttackThisTurn = false)),
-			Seq(new Token(field((2,2)), canAttackThisTurn = false), new Token(field((3,4)), canAttackThisTurn = false))
+			Seq(new Token(field.space((1,1)).get, canAttackThisTurn = false), new Token(field.space((5,5)).get, canAttackThisTurn = false)),
+			Seq(new Token(field.space((2,2)).get, canAttackThisTurn = false), new Token(field.space((3,4)).get, canAttackThisTurn = false))
 	))
 	val playerOneActionableTokens = new ListOfTokens(Seq(
-			Seq(new Token(field((1,1)), canAttackThisTurn = false), new Token(field((5,5)), canAttackThisTurn = false)),
-			Seq(new Token(field((2,2)), canAttackThisTurn = true), new Token(field((3,4)), canAttackThisTurn = true))
+			Seq(new Token(field.space((1,1)).get, canAttackThisTurn = false), new Token(field.space((5,5)).get, canAttackThisTurn = false)),
+			Seq(new Token(field.space((2,2)).get, canAttackThisTurn = true), new Token(field.space((3,4)).get, canAttackThisTurn = true))
 	))
 	
 	

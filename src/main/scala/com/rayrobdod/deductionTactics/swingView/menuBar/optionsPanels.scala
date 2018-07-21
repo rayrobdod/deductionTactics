@@ -17,13 +17,17 @@
 */
 package com.rayrobdod.deductionTactics.swingView.menuBar
 
-import com.rayrobdod.deductionTactics.SpaceClass
-import com.rayrobdod.boardGame.swingView.{RectangularTilesheet}
-import javax.swing.{JPanel, JList, JButton, JLabel, JTextField, KeyStroke}
 import java.awt.event.{ActionListener, ActionEvent}
 import java.awt.event.{KeyEvent, KeyAdapter}
+import javax.swing.{JPanel, JList, JButton, JLabel, JTextField, KeyStroke, Icon}
 import com.rayrobdod.swing.GridBagConstraintsFactory
+import com.rayrobdod.boardGame.RectangularSpace
+import com.rayrobdod.boardGame.RectangularIndex
+import com.rayrobdod.boardGame.view.Tilesheet
+import com.rayrobdod.boardGame.view.RectangularDimension
+import com.rayrobdod.deductionTactics.SpaceClass
 import com.rayrobdod.deductionTactics.swingView.AvailibleTilesheetListModel
+import com.rayrobdod.deductionTactics.swingView.RectangularTilesheet
 import com.rayrobdod.deductionTactics.swingView.game.{preferences => gamePreferences, KeyboardActions}
 import KeyboardActions.KeyboardAction
 
@@ -35,7 +39,7 @@ import KeyboardActions.KeyboardAction
  */
 class AppearanceOptionsPanel extends JPanel
 {
-	val currentTilesheet = new JList[RectangularTilesheet[SpaceClass]](AvailibleTilesheetListModel)
+	val currentTilesheet = new JList[RectangularTilesheet](AvailibleTilesheetListModel)
 	currentTilesheet.setCellRenderer(TilesheetListRenderer)
 	currentTilesheet.setSelectedValue(gamePreferences.currentTilesheet, true)
 	

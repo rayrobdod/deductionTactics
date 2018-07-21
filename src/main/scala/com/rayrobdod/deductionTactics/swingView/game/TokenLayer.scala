@@ -30,14 +30,18 @@ import scala.collection.immutable.Map
 import com.rayrobdod.util.BlitzAnimImage
 import com.rayrobdod.animation.ImageFrameAnimation
 import com.rayrobdod.boardGame.RectangularField
-import com.rayrobdod.boardGame.swingView._
+import com.rayrobdod.boardGame.RectangularIndex
+import com.rayrobdod.boardGame.view.{IconLocation, RectangularDimension}
+import com.rayrobdod.boardGame.view._
+import com.rayrobdod.boardGame.view.Swing._
 import com.rayrobdod.deductionTactics.ai.TokenClassSuspicion
+import com.rayrobdod.deductionTactics.swingView.RectangularTilesheet
 
 
 /**
  * @since a.6.0
  */
-final class TokenLayer(spaces:RectangularField[SpaceClass], tiles:RectangularTilemapComponent) extends JComponent {
+final class TokenLayer(spaces:RectangularField[SpaceClass])(implicit locations:IconLocation[RectangularIndex, RectangularDimension]) extends JComponent {
 	private[this] var _tokens:ListOfTokens = new ListOfTokens(Nil)
 	var suspicions:Map[(Int, Int), TokenClassSuspicion] = Map.empty
 	
@@ -63,8 +67,8 @@ final class TokenLayer(spaces:RectangularField[SpaceClass], tiles:RectangularTil
 				generateGenericIcon(y.atkElement, y.atkWeapon)
 			}
 			val space = tokens.tokens(x).currentSpace
-			val spaceIndex = spaces.find(_._2 == space).get._1
-			val bounds = tiles.spaceBounds(spaceIndex).getBounds
+			val spaceIndex = spaces.indexOfSpace(space).get
+			val bounds = locations.bounds(spaceIndex, new RectangularDimension(32, 32)).getBounds
 			
 			icon.paintIcon(this, g, bounds.x, bounds.y)
 		}

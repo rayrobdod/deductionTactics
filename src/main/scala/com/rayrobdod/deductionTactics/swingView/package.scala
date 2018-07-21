@@ -27,15 +27,21 @@ import java.nio.charset.StandardCharsets.UTF_8
 import javax.swing.{ImageIcon, Icon, ListModel}
 import java.awt.Image.{SCALE_SMOOTH => imageScaleSmooth}
 
-import java.net.URL
 import javax.imageio.ImageIO
 import scala.collection.immutable.{Seq, Map}
 import com.kitfox.svg.app.beans.SVGIcon
 import com.rayrobdod.swing.{NameAndIcon, ScalaSeqListModel}
+import com.rayrobdod.boardGame.RectangularField
+import com.rayrobdod.boardGame.RectangularSpace
+import com.rayrobdod.boardGame.RectangularIndex
+import com.rayrobdod.boardGame.view.Tilesheet
+import com.rayrobdod.boardGame.view.RectangularDimension
 
 
 package object swingView
 {
+	type RectangularTilesheet = Tilesheet[SpaceClass, RectangularIndex, RectangularDimension, Icon]
+	
 	/** @since a.5.0 */
 	private[swingView] implicit def elementToNameAndIcon = {(e:Element) =>
 		if (e != null) {
@@ -252,14 +258,15 @@ package object swingView
 	}
 	
 	
-	import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularTilesheetLoader }
-	val tilesheets = new RectangularTilesheetLoader("com.rayrobdod.deductionTactics.view.tilesheet", SpaceClassMatcherFactory).toSeq
+	val tilesheets:Seq[RectangularTilesheet] = Seq(
+		FieldChessTilesheet
+	)
 	
 	/**
 	 * A ListModel of all tilesheets.
 	 * @version a.6.0
 	 */
-	final val AvailibleTilesheetListModel:ListModel[RectangularTilesheet[SpaceClass]] = new ScalaSeqListModel(tilesheets)
+	final val AvailibleTilesheetListModel:ListModel[RectangularTilesheet] = new ScalaSeqListModel(tilesheets)
 	
 	
 	
@@ -292,4 +299,13 @@ package object swingView
 			reader.close()
 		}
 	}
+	
+	
+	
+	implicit class RectangularFieldOps(base:RectangularField[SpaceClass]) {
+		def indexOfSpace(space:RectangularSpace[_]):Option[RectangularIndex] = {
+			base.mapIndex{idx => ((base.space(idx) == Some(space), idx))}.find{_._1}.map{_._2}
+		}
+	}
+	
 }

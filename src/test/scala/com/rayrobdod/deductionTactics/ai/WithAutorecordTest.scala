@@ -19,7 +19,6 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.{RectangularField, Space}
 import org.scalatest.FunSpec
 
 /**

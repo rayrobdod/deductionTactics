@@ -22,21 +22,24 @@ import java.awt.Color
 import java.awt.{Graphics, Graphics2D}
 import javax.swing.JComponent
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.{Space, RectangularField}
-import com.rayrobdod.boardGame.swingView.RectangularTilemapComponent
+import com.rayrobdod.boardGame.{RectangularIndex, RectangularField, RectangularSpace}
+import com.rayrobdod.boardGame.view.{IconLocation, RectangularDimension}
 import com.rayrobdod.deductionTactics.{Token, ListOfTokens, SpaceClass, AttackCostFunction, MoveToCostFunction}
+import com.rayrobdod.deductionTactics.swingView.RectangularFieldOps
 import HighlightMovableSpacesLayer._
 
 /**
  * A component that can be added to a FieldComponent's tokenLayer to
  * show what spaces a token can move to 
  *
- * @author Raymond Dodge
  * @since a.6.0
+ * @version next
  */
 final class HighlightMovableSpacesLayer(
-	tilemap:RectangularTilemapComponent
+	implicit locations:IconLocation[RectangularIndex, RectangularDimension]
 ) extends JComponent {
+	private[this] val dimension:RectangularDimension = new RectangularDimension(32, 32)
+	
 	private[this] var currentSpeeds:Seq[Shape] = Seq.empty;
 	private[this] var currentRanges:Seq[Shape] = Seq.empty;
 	private[this] var maximumSpeeds:Seq[Shape] = Seq.empty;
@@ -70,12 +73,15 @@ final class HighlightMovableSpacesLayer(
 			val atf = new AttackCostFunction(selectedToken, list)
 			val mcf = new MoveToCostFunction(selectedToken, list)
 			
-			val curSpeedSpaces = selectedToken.currentSpace.spacesWithin(tokenCurSpeed, mcf) - selectedToken.currentSpace
+			val curSpeedSpaces = selectedToken.currentSpace.spacesWithin(tokenCurSpeed, mcf).toSet - selectedToken.currentSpace
 			val curRangeSpaces = if (selectedToken.canAttackThisTurn) {(curSpeedSpaces + selectedToken.currentSpace).map{_.spacesWithin(tokenMaxRange, atf)}.flatten -- curSpeedSpaces - selectedToken.currentSpace} else {Seq.empty}
-			val maxSpeedSpaces = selectedToken.currentSpace.spacesWithin(tokenMaxSpeed, mcf) -- curSpeedSpaces - selectedToken.currentSpace
+			val maxSpeedSpaces = selectedToken.currentSpace.spacesWithin(tokenMaxSpeed, mcf).toSet -- curSpeedSpaces - selectedToken.currentSpace
 			val maxRangeSpaces = (maxSpeedSpaces + selectedToken.currentSpace).map{_.spacesWithin(tokenMaxRange, atf)}.flatten -- maxSpeedSpaces -- curSpeedSpaces - selectedToken.currentSpace
 			
-			val spaceToShape = {(x:Space[SpaceClass]) => tilemap.spaceBounds(field.map{x => ((x._2:Space[SpaceClass], x._1)) }.apply(x))}
+			val spaceToShape = {(space:RectangularSpace[SpaceClass]) =>
+				val idx = field.indexOfSpace(space).get
+				locations.bounds(idx, dimension)
+			}
 			
 			this.currentSpeeds = Seq.empty ++ curSpeedSpaces.map(spaceToShape)
 			this.currentRanges = Seq.empty ++ curRangeSpaces.map(spaceToShape)

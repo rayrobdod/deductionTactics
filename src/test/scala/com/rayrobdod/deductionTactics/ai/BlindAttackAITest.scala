@@ -19,7 +19,7 @@ package com.rayrobdod.deductionTactics
 package ai
 
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.{RectangularField, Space}
+import com.rayrobdod.boardGame.RectangularField
 import org.scalatest.FunSpec
 
 /**
@@ -104,15 +104,15 @@ class BlindAttackAITest extends FunSpec {
 			
 			it ("when no attacks are possible, moves") {
 				val gameState = GameState(field,
-					new ListOfTokens(Seq(Seq(myT), Seq(Token(field(0,3)))))
+					new ListOfTokens(Seq(Seq(myT), Seq(Token(field.space((0,3)).get))))
 				)
-				val exp = Seq(GameState.TokenMove(myT, field(0,1)))
+				val exp = Seq(GameState.TokenMove(myT, field.space((0,1)).get))
 				val res = (new BlindAttackAI).takeTurn(0, gameState, null)
 				
 				assertResult(exp){res}
 			}
 			it ("when attacks is possible, attacks") {
-				val otT = Token(field(0,1))
+				val otT = Token(field.space((0,1)).get)
 				val gameState = GameState(field,
 					new ListOfTokens(Seq(Seq(myT), Seq(otT)))
 				)
@@ -123,7 +123,7 @@ class BlindAttackAITest extends FunSpec {
 			}
 			it ("when nothing else is possible, EndsTurn") {
 				val gameState = GameState(field,
-					new ListOfTokens(Seq(Seq(Token(field(0,0))), Seq(Token(field(0,3)))))
+					new ListOfTokens(Seq(Seq(Token(field.space((0,0)).get)), Seq(Token(field.space((0,3)).get))))
 				)
 				val exp = Seq(GameState.EndOfTurn)
 				val res = (new BlindAttackAI).takeTurn(0, gameState, null)

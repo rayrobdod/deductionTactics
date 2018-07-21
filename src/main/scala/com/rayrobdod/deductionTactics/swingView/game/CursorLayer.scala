@@ -21,7 +21,8 @@ import java.awt.{Shape, Polygon}
 import java.awt.geom.Area
 import java.awt.{Graphics, Graphics2D}
 import javax.swing.JComponent
-import com.rayrobdod.boardGame.RectangularFieldIndex
+import com.rayrobdod.boardGame.RectangularIndex
+import com.rayrobdod.boardGame.view.{IconLocation, RectangularDimension}
 
 /**
  * A layer to be place on top of a [[com.rayrobdod.boardGame.swingView.RectangularTilemapComponent]];
@@ -31,7 +32,7 @@ import com.rayrobdod.boardGame.RectangularFieldIndex
  * @since a.6.0
  */
 final class CursorLayer(
-	spaceBounds:Function1[RectangularFieldIndex, Shape]
+	implicit locations:IconLocation[RectangularIndex, RectangularDimension]
 ) extends JComponent {
 	private[this] var currentShape:Shape = new Area()
 	
@@ -42,8 +43,8 @@ final class CursorLayer(
 		g2.fill(currentShape)
 	}
 	
-	def update(spaceIndex:RectangularFieldIndex):Unit = {
-		currentShape = cursorShape(spaceBounds(spaceIndex))
+	def update(spaceIndex:RectangularIndex):Unit = {
+		currentShape = cursorShape(locations.bounds(spaceIndex, new RectangularDimension(32, 32)))
 		this.repaint()
 	}
 	

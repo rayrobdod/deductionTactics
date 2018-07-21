@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics
 package consoleView
 
-import com.rayrobdod.boardGame.{StrictRectangularSpace, RectangularField, Space}
+import com.rayrobdod.boardGame.{RectangularSpace, RectangularIndex, RectangularField}
 import java.io.PrintStream
 
 /**
@@ -37,8 +37,9 @@ object BoardPrinter{
 	}
 	
 	/** @version a.6.0 */
-	def spaceStrings(tokens:ListOfTokens, field:RectangularField[SpaceClass], team:Option[Int], cursor:Option[Space[SpaceClass]] = None, selected:Option[TokenIndex] = None):Seq[String] = {
-		field.toSeq.sortBy{x:((Int, Int), Any) => (x._1._1 << 16) + x._1._2}.map({(index:(Int, Int), space:StrictRectangularSpace[SpaceClass]) =>
+	def spaceStrings(tokens:ListOfTokens, field:RectangularField[SpaceClass], team:Option[Int], cursor:Option[RectangularSpace[SpaceClass]] = None, selected:Option[TokenIndex] = None):Seq[String] = {
+		field.mapIndex{x => x}.sortBy{x => (x._1 << 16) + x._2}.map{index:RectangularIndex =>
+			val space:RectangularSpace[SpaceClass] = field.space(index).get
 			val newLine = (if (index._1 == 0) {"\n"} else {""}) 
 			val tokenOnSpace:Option[Token] = tokens.aliveTokens.flatten.filter{_.currentSpace == space}.headOption
 			
@@ -48,13 +49,13 @@ object BoardPrinter{
 			val tokenColor = if (selected.map{tokens.tokens(_)} == tokenOnSpace) {scala.Console.BOLD} else {"\u001b[21m"}
 			
 			newLine + scala.Console.RESET + cursorColor + spaceClassColor + tokenColor + tokenString
-		}.tupled)
+		}
 	}
 	
 	private val (tl, tr, bl, br, horiz, vert) = (',', '.', '`', '\'', '-', '|')
 	
 	/** @version a.6.0 */
-	def apply(out:PrintStream, tokens:ListOfTokens, field:RectangularField[SpaceClass], team:Option[Int], cursor:Option[Space[SpaceClass]] = None, selected:Option[TokenIndex] = None):Unit = {
+	def apply(out:PrintStream, tokens:ListOfTokens, field:RectangularField[SpaceClass], team:Option[Int], cursor:Option[RectangularSpace[SpaceClass]] = None, selected:Option[TokenIndex] = None):Unit = {
 		val strings = spaceStrings(tokens, field, team, cursor, selected)
 		
 		strings.foreach{ x => out.print( x ) }

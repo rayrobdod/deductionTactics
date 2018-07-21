@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics.swingView.game
 
 import org.scalatest.FunSpec
-import com.rayrobdod.boardGame.RectangularFieldIndex
+import com.rayrobdod.boardGame.RectangularIndex
 
 class CurrentlySelectedSpacePropertyTest extends FunSpec {
 	
@@ -49,9 +49,9 @@ class CurrentlySelectedSpacePropertyTest extends FunSpec {
 	
 	class SetOnceChangeListner extends CurrentlySelectedSpaceProperty.ChangeListener {
 		private[this] var _hasBeenCalled:Boolean = false
-		private[this] var _setTo:RectangularFieldIndex = (-1,-1)
+		private[this] var _setTo:RectangularIndex = (-1,-1)
 		
-		def apply(x:RectangularFieldIndex) = {
+		def apply(x:RectangularIndex) = {
 			if (_hasBeenCalled) {
 				throw new IllegalStateException("ChangeListener called twice")
 			} else {
@@ -61,6 +61,6 @@ class CurrentlySelectedSpacePropertyTest extends FunSpec {
 		}
 		
 		def hasBeenCalled = _hasBeenCalled
-		def setTo:RectangularFieldIndex = _setTo
+		def setTo:RectangularIndex = _setTo
 	}
 }

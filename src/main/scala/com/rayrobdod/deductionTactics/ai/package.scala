@@ -26,7 +26,7 @@ import Statuses.Status
 
 import scala.util.Random
 import scala.collection.immutable.{Seq, Map}
-import com.rayrobdod.boardGame.Space
+import com.rayrobdod.boardGame.RectangularSpace
 
 /**
  * @author Raymond Dodge
@@ -62,7 +62,7 @@ package object ai
 	 * determines the spaces a token can attack
 	 * @version a.6.0
 	 */
-	def attackRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspicion = new TokenClassSuspicion()):Set[Space[SpaceClass]] =
+	def attackRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspicion = new TokenClassSuspicion()):Set[RectangularSpace[SpaceClass]] =
 	{
 		if (token.currentStatus == Statuses.Blind) {
 			Set.empty
@@ -82,7 +82,7 @@ package object ai
 	 * determines the spaces a token can move to
 	 * @version a.6.0
 	 */
-	def moveRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspicion = new TokenClassSuspicion()):Set[Space[SpaceClass]] =
+	def moveRangeOf(token:Token, list:ListOfTokens, susp:TokenClassSuspicion = new TokenClassSuspicion()):Set[RectangularSpace[SpaceClass]] =
 	{
 		val statusSpeedLimit = token.currentStatus match {
 			case Statuses.Snake => 1

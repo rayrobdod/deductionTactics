@@ -17,8 +17,6 @@
 */
 package com.rayrobdod.deductionTactics
 
-import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.StrictRectangularSpaceViaFutures
 import com.rayrobdod.deductionTactics.BodyTypes._
 import org.scalatest.FunSpec
 
@@ -66,7 +64,7 @@ class BodyTypesTest extends FunSpec {
 	}
 	
 	
-	private def happySuite(id:Int, name:String, enumValue:BodyType) {
+	private def happySuite(id:Int, name:String, enumValue:BodyType):Unit = {
 		it ("id is " + id){
 			assertResult(id)(enumValue.id)
 		}

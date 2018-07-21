@@ -21,7 +21,7 @@ package main
 import scala.collection.immutable.{Seq, Set, BitSet}
 import LoggerInitializer.{turnCyclerLogger => Logger}
 import PlayerTurnCycler._
-import com.rayrobdod.boardGame.{Space, StrictRectangularSpace}
+import com.rayrobdod.boardGame.RectangularSpace
 
 /**
  * Iterates through the players, handing out turns to each in turn.
@@ -187,9 +187,9 @@ object PlayerTurnCycler {
 	)
 	
 	private def performConfusionMove(player:Int, t:Token, gs:GameState):GameState = {
-		val possibleDestinations:Seq[Space[SpaceClass]] = scala.util.Random.shuffle(t.currentSpace.adjacentSpaces.to[Seq])
-		val a = possibleDestinations.collect{case x:StrictRectangularSpace[SpaceClass] => x}
-		val b:Seq[(StrictRectangularSpace[SpaceClass], Option[Token], Int)] = a.map{s => Tuple3(
+		val possibleDestinations:Seq[RectangularSpace[SpaceClass]] = scala.util.Random.shuffle(t.currentSpace.adjacentSpaces.to[Seq])
+		val a = possibleDestinations.collect{case x:RectangularSpace[SpaceClass] => x}
+		val b:Seq[(RectangularSpace[SpaceClass], Option[Token], Int)] = a.map{s => Tuple3(
 			s,
 			gs.tokens.aliveTokens.flatten.find(t => t.currentSpace == s),
 			t.currentSpace.distanceTo(s, new MoveToCostFunction(t, gs.tokens))

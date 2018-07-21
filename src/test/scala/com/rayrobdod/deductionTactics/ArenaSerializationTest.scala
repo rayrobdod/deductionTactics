@@ -19,8 +19,6 @@ package com.rayrobdod.deductionTactics
 
 import org.scalatest.FunSpec
 import scala.collection.immutable.Seq
-import com.rayrobdod.deductionTactics.Statuses._
-import java.nio.charset.StandardCharsets.UTF_8
 
 class ArenaSerializationTest extends FunSpec {
 	
@@ -31,8 +29,8 @@ class ArenaSerializationTest extends FunSpec {
 			}
 		}
 		it ("First has an arena that is empty") {
-			Arena.getAll(0).field.foreach{x =>
-				val (index, space) = x
+			Arena.getAll(0).field.foreachIndex{index =>
+				val space = Arena.getAll(0).field.space(index).get
 				val spaceClass = space.typeOfSpace
 				assertResult(UniPassageSpaceClass.apply){spaceClass}
 			}

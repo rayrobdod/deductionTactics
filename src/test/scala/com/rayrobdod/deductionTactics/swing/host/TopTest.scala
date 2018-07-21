@@ -22,7 +22,7 @@ import javax.swing.{JFrame, JButton, JPanel, JList, JScrollPane}
 import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.ai.{BlindAttackAI, SwingInterface, WithRandomTeam}
 import com.rayrobdod.deductionTactics.{Arena, PlayerAI, UniPassageSpaceClass, SpaceClass}
-import com.rayrobdod.boardGame.{RectangularField, Space}
+import com.rayrobdod.boardGame.RectangularField
 import com.rayrobdod.deductionTactics.swingView.ChooseAIsComponent
 
 class TopTest extends FunSpec {

@@ -18,8 +18,6 @@
 package com.rayrobdod.deductionTactics
 package swing
 
-import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.{RectangularField, Space}
 import org.scalatest.FunSpec
 
 class MakeIconForTest extends FunSpec {

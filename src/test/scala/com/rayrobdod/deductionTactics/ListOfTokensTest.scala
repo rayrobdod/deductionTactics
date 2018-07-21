@@ -18,17 +18,20 @@
 package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.{RectangularField, Space}
+import com.rayrobdod.boardGame.RectangularSpace
 import org.scalatest.FunSpec
 
 class ListOfTokensTest extends FunSpec {
-	class ZeroDSpace extends Space[SpaceClass] {
-		override def adjacentSpaces = Seq.empty
+	class IsolatedSpace extends RectangularSpace[SpaceClass] {
+		override def east:Option[RectangularSpace[SpaceClass]] = None
+		override def north:Option[RectangularSpace[SpaceClass]] = None
+		override def south:Option[RectangularSpace[SpaceClass]] = None
+		override def west:Option[RectangularSpace[SpaceClass]] = None
 		override def typeOfSpace = FreePassageSpaceClass.apply
 	}
 	val halfAlive = new ListOfTokens(Seq(
-			Seq(new Token(new ZeroDSpace), new Token(new ZeroDSpace, 0)),
-			Seq(new Token(new ZeroDSpace), new Token(new ZeroDSpace, 0))
+			Seq(new Token(new IsolatedSpace), new Token(new IsolatedSpace, 0)),
+			Seq(new Token(new IsolatedSpace), new Token(new IsolatedSpace, 0))
 	))
 			
 	
