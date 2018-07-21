@@ -66,47 +66,29 @@ class ChooseAIsComponent extends JPanel
 	}
 	
 	val aiLists:Seq[JList[PlayerAI]] = Seq.fill(maxPlayers){
-		val ret = new JList[PlayerAI](new ScalaSeqListModel(PlayerAI.baseServiceSeq))
+		val ret = new JList[PlayerAI](new ScalaSeqListModel(PlayerAI.basePlayerAIs))
 		ret.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
 		ret
 	}
-	val aiDLists:Seq[JList[Class[_ <: PlayerAI]]] = Seq.fill(maxPlayers){new JList[Class[_ <: PlayerAI]](new ScalaSeqListModel(PlayerAI.decoratorServiceSeq))}
+	val aiDLists:Seq[JList[PlayerAI => PlayerAI]] = Seq.fill(maxPlayers){new JList[PlayerAI => PlayerAI](new ScalaSeqListModel(PlayerAI.decoratorPlayerAIs))}
 	
 	val aiListsScrollPane = aiLists.map{(list:JList[PlayerAI]) =>
 			new JScrollPane(list, scrollVerticalAsNeeded, scrollHorizontalAsNeeded)
 	}
-	val aiDListsScrollPane = aiDLists.map{(list:JList[Class[_ <: PlayerAI]]) =>
+	val aiDListsScrollPane = aiDLists.map{(list:JList[PlayerAI => PlayerAI]) =>
 			new JScrollPane(list, scrollVerticalAsNeeded, scrollHorizontalAsNeeded)
 	}
 	aiLists.foreach{_.setSelectedIndex(0)}
 	
 	
 	def getAIs:Seq[PlayerAI] = {
-		import java.util.ServiceConfigurationError;
-		import java.lang.reflect.Constructor;
 		import scala.collection.JavaConversions.iterableAsScalaIterable
 		
-		aiLists.zip(aiDLists).map({(baseList:JList[PlayerAI], decList:JList[Class[_ <: PlayerAI]]) =>
+		aiLists.zip(aiDLists).map({(baseList:JList[PlayerAI], decList:JList[PlayerAI => PlayerAI]) =>
 			val base:PlayerAI = baseList.getSelectedValue
-			val decs:Iterable[Class[_ <: PlayerAI]] = decList.getSelectedValuesList
+			val decs:Iterable[PlayerAI => PlayerAI] = decList.getSelectedValuesList
 			
-			decs.foldLeft(base){(base:PlayerAI, dec:Class[_ <: PlayerAI]) =>
-				try
-				{
-					val builder:Constructor[_ <: PlayerAI] = dec.getConstructor(classOf[PlayerAI])
-					
-					builder.newInstance(base).asInstanceOf[PlayerAI]
-				}
-				catch
-				{
-					case e:NoSuchMethodException => throw new ServiceConfigurationError(
-							"Class " + dec + " does not have required constructor <init>(PlayerAI)",
-							e)
-					case e:InstantiationException => throw new ServiceConfigurationError(
-							"Class " + dec + " is abstract.", e)
-				}
-			}
-			
+			decs.foldLeft(base){(base:PlayerAI, dec:PlayerAI => PlayerAI) => dec.apply(base)}
 		}.tupled).take(players);
 	}
 	

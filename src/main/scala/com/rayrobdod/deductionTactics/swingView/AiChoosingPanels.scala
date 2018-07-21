@@ -30,43 +30,30 @@ import com.rayrobdod.swing.ScalaSeqListModel
  */
 final class AiChoosingPanels
 {
-	private val baseList = new JList(new ScalaSeqListModel(PlayerAI.baseServiceSeq))
-	private val decoratorList = new JList(new ScalaSeqListModel(PlayerAI.decoratorServiceSeq))
+	private val baseList = new JList(new ScalaSeqListModel(PlayerAI.basePlayerAIs))
+	private val decoratorList = new JList(new ScalaSeqListModel(PlayerAI.decoratorPlayerAIs))
 	
 	val baseComponent:Component = {
 		baseList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
 		baseList.setSelectedIndex(0)
-		baseList.setVisibleRowCount(math.min(6, PlayerAI.baseServiceSeq.size))
+		baseList.setVisibleRowCount(math.min(6, PlayerAI.basePlayerAIs.size))
 		
 		new JScrollPane(baseList, scrollVerticalAsNeeded, scrollHorizontalAsNeeded)
 	}
 	val decoratorComponent:Component = {
 		decoratorList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
-		decoratorList.setVisibleRowCount(math.min(6, PlayerAI.decoratorServiceSeq.size))
+		decoratorList.setVisibleRowCount(math.min(6, PlayerAI.decoratorPlayerAIs.size))
 		
 		new JScrollPane(decoratorList, scrollVerticalAsNeeded, scrollHorizontalAsNeeded)
 	}
 	
 	
 	def createAi:PlayerAI = {
-		import java.util.ServiceConfigurationError;
-		import java.lang.reflect.Constructor;
 		import scala.collection.JavaConversions.iterableAsScalaIterable
 		
 		val base:PlayerAI = baseList.getSelectedValue
-		val decs:Iterable[Class[_ <: PlayerAI]] = decoratorList.getSelectedValuesList
+		val decs:Iterable[PlayerAI => PlayerAI] = decoratorList.getSelectedValuesList
 		
-		decs.foldLeft(base){(base:PlayerAI, dec:Class[_ <: PlayerAI]) =>
-			try {
-				val builder:Constructor[_ <: PlayerAI] = dec.getConstructor(classOf[PlayerAI])
-				builder.newInstance(base).asInstanceOf[PlayerAI]
-			} catch {
-				case e:NoSuchMethodException => throw new ServiceConfigurationError(
-						"Class " + dec + " does not have required constructor <init>(PlayerAI)",
-						e)
-				case e:InstantiationException => throw new ServiceConfigurationError(
-						"Class " + dec + " is abstract.", e)
-			}	
-		}
+		decs.foldLeft(base){(base:PlayerAI, dec:PlayerAI => PlayerAI) => dec(base)}
 	}
 }

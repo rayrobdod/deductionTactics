@@ -22,7 +22,6 @@ import com.rayrobdod.boardGame.Space
 import scala.collection.immutable.Seq
 import scala.collection.mutable.PriorityQueue
 import LoggerInitializer.{blindAttackAILogger => Logger}
-import java.util.logging.Level
 
 
 /**

@@ -18,7 +18,6 @@
 package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.Seq
-import scala.collection.JavaConversions.iterableAsScalaIterable
 
 
 
@@ -90,35 +89,38 @@ abstract class PlayerAI {
 }
 
 /**
- * A service provider for getting player AIs
+ * Provides a list of PlayerAI
  * 
  * There are two types of PlayerAI.
- 
- * The bases are listed in (a) file(s) in the classpath at
- * "/META-INF/services/com.rayrobdod.deductionTactics.PlayerAI".
- * The bases extends PlayerAI and have a no-arg constructor
- 
- * The decorators are listed in (a) file(s) in the classpath at
- * "/META-INF/services/com.rayrobdod.deductionTactics.PlayerAIDecorator".
- * The bases extends PlayerAI and have a one PlayerAI arg constructor
  */
-object PlayerAI
-{
-	import java.util.ServiceLoader
-	import com.rayrobdod.util.services.ClassServiceLoader
+object PlayerAI {
 	
-	/** A service loader that lists the known PlayerAIs */
-	val baseServiceLoader = ServiceLoader.load[PlayerAI](classOf[PlayerAI])
+	val basePlayerAIs:Seq[PlayerAI] = Seq(
+		/// Interfaces the player can use
+		new com.rayrobdod.deductionTactics.ai.SwingInterface,
+		new com.rayrobdod.deductionTactics.ai.ConsoleInterface,
+		
+		/// Computer opponents
+		new com.rayrobdod.deductionTactics.ai.BlindAttackAI,
+		new com.rayrobdod.deductionTactics.ai.SleepAbuserAI,
+		new com.rayrobdod.deductionTactics.ai.FieldPotentialAI
+		
+		/// A network client that recieves commands over the net
+		
+		/// cheating computer opponents; basically things that can exploit known bugs
+	)
 	
-	/** The values from the serviceLoader, turned into a Seq for convenience */
-	def baseServiceSeq:Seq[PlayerAI] = {
-		Seq.empty ++ iterableAsScalaIterable(baseServiceLoader)
-	}
-	
-	/** A service loader that lists the known PlayerAI decorators */
-	val decoratorServiceLoader = new ClassServiceLoader[PlayerAI](classOf[PlayerAI], "com.rayrobdod.deductionTactics.PlayerAIDecorator")
-	
-	def decoratorServiceSeq:Seq[Class[_ <: PlayerAI]] = {
-		Seq.empty ++ iterableAsScalaIterable(decoratorServiceLoader)
-	}
+	val decoratorPlayerAIs:Seq[PlayerAI => PlayerAI] = Seq(
+		/// Helpers
+		{base:PlayerAI => new com.rayrobdod.deductionTactics.ai.WithAutorecord(base)},
+		
+		/// Team Choosing algorithm overrides
+		{base:PlayerAI => new com.rayrobdod.deductionTactics.ai.WithRandomTeam(base)},
+		{base:PlayerAI => new com.rayrobdod.deductionTactics.ai.WithArbitraryTeam(base)},
+		
+		/// user interface stuff
+		{base:PlayerAI => new com.rayrobdod.deductionTactics.ai.WithSound(base)},
+		{base:PlayerAI => new com.rayrobdod.deductionTactics.ai.WithSwingViewport(base)},
+		{base:PlayerAI => new com.rayrobdod.deductionTactics.ai.WithConsoleEventPrinting(base)}
+	)
 }

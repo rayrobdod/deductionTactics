@@ -27,7 +27,6 @@ import java.nio.charset.StandardCharsets.UTF_8
 import javax.swing.{ImageIcon, Icon, ListModel}
 import java.awt.Image.{SCALE_SMOOTH => imageScaleSmooth}
 
-import java.net.URL
 import javax.imageio.ImageIO
 import scala.collection.immutable.{Seq, Map}
 import com.kitfox.svg.app.beans.SVGIcon
