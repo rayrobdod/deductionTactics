@@ -31,10 +31,18 @@ import javax.imageio.ImageIO
 import scala.collection.immutable.{Seq, Map}
 import com.kitfox.svg.app.beans.SVGIcon
 import com.rayrobdod.swing.{NameAndIcon, ScalaSeqListModel}
+import com.rayrobdod.boardGame.RectangularField
+import com.rayrobdod.boardGame.RectangularSpace
+import com.rayrobdod.boardGame.RectangularIndex
+import com.rayrobdod.boardGame.view.Tilesheet
+import com.rayrobdod.boardGame.view.RectangularDimension
+import com.rayrobdod.boardGame.view.Swing
 
 
 package object swingView
 {
+	type RectangularTilesheet = Tilesheet[SpaceClass, RectangularIndex, RectangularDimension, Icon]
+	
 	/** @since a.5.0 */
 	private[swingView] implicit def elementToNameAndIcon = {(e:Element) =>
 		if (e != null) {
@@ -251,14 +259,39 @@ package object swingView
 	}
 	
 	
-	import com.rayrobdod.boardGame.swingView.{RectangularTilesheet, RectangularTilesheetLoader }
-	val tilesheets = new RectangularTilesheetLoader("com.rayrobdod.deductionTactics.view.tilesheet", SpaceClassMatcherFactory).toSeq
+	val tilesheets:Seq[RectangularTilesheet] = {
+		def readResource(name:String):RectangularTilesheet = {
+			val baseUrl = this.getClass.getClassLoader.getResource(name)
+			if (baseUrl == null) {throw new IllegalStateException("Resource missing")}
+			var asStream:java.io.Reader = new java.io.StringReader("")
+			try {
+				asStream = new java.io.InputStreamReader(this.getClass.getClassLoader.getResourceAsStream(name), UTF_8)
+				val builder = Swing.VisualizationRuleBasedRectangularTilesheetBuilder(baseUrl, SpaceClassMatcherFactory)
+				val parser = new com.rayrobdod.json.parser.JsonParser
+				
+				parser.parse(builder, asStream).fold(
+					{x => x},
+					{x:Nothing => x},
+					{x => throw new java.text.ParseException(x.toString, 0)},
+					{(x,extra) => throw new java.text.ParseException(x.toString, extra.charIndex)}
+				)
+			} finally {
+				asStream.close()
+			}
+		}
+		
+		Seq(
+			FieldChessTilesheet,
+			readResource("com/rayrobdod/tilemaps/Castle Dungeon/rules.json"),
+			readResource("com/rayrobdod/tilemaps/Field Contrast/rules.json")
+		)
+	}
 	
 	/**
 	 * A ListModel of all tilesheets.
 	 * @version a.6.0
 	 */
-	final val AvailibleTilesheetListModel:ListModel[RectangularTilesheet[SpaceClass]] = new ScalaSeqListModel(tilesheets)
+	final val AvailibleTilesheetListModel:ListModel[RectangularTilesheet] = new ScalaSeqListModel(tilesheets)
 	
 	
 	
@@ -291,4 +324,13 @@ package object swingView
 			reader.close()
 		}
 	}
+	
+	
+	
+	implicit class RectangularFieldOps(base:RectangularField[SpaceClass]) {
+		def indexOfSpace(space:RectangularSpace[_]):Option[RectangularIndex] = {
+			base.mapIndex{idx => ((base.space(idx) == Some(space), idx))}.find{_._1}.map{_._2}
+		}
+	}
+	
 }

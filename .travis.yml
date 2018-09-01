@@ -1,17 +1,44 @@
 language: scala
 
 scala:
-   - 2.10.6
-   - 2.11.7
+   - 2.10.7
+   - 2.11.12
 
-jdk: 
+jdk:
+   - oraclejdk10
    - oraclejdk8
    - oraclejdk7
    - openjdk7
 
+before_install:
+  - export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start
+
+install:
+   - |
+      pushd /tmp
+      git clone --branch=4.0-RC1 --depth=2 -- https://github.com/rayrobdod/json.git json
+      cd json
+      echo sbt.version=0.13.17>project/build.properties
+      sbt ++$TRAVIS_SCALA_VERSION publishLocal
+      popd
+   - |
+      pushd /tmp
+      git clone --branch=fromJsonBuilders --depth=10 -- https://github.com/rayrobdod/boardGame.git boardGame
+      cd boardGame
+      git checkout 5d0cc695e7c558502284ae547d10d849a029cece
+      sbt ++$TRAVIS_SCALA_VERSION publishLocal
+      popd
+   - |
+      pushd /tmp
+      git clone --branch=20160112 --depth=2 -- https://github.com/rayrobdod/utilities.git utilities
+      cd utilities
+      echo sbt.version=0.13.17>project/build.properties
+      sbt ++$TRAVIS_SCALA_VERSION publishLocal
+      popd
+   - sbt ++$TRAVIS_SCALA_VERSION update
 
 script:
-  - sbt set\ testOptions\ in\ Test\ +=\ Tests.Argument\(\"-l\",\ \"com.rayrobdod.deductionTactics.swingView.RequiresGui\"\) coverage test
+  - sbt ++$TRAVIS_SCALA_VERSION coverage test coverageReport
 
 after_success:
-  - sbt coveralls
+  - sbt ++$TRAVIS_SCALA_VERSION coverageAggregate coveralls

@@ -18,7 +18,6 @@
 package com.rayrobdod.deductionTactics
 
 import org.scalatest.FunSpec
-import scala.collection.immutable.Seq
 import scala.language.reflectiveCalls
 import com.rayrobdod.boardGame.SpaceClassMatcher
 
@@ -53,7 +52,7 @@ class SpaceClassTest extends FunSpec {
 			groundedMoveCost:Int,
 			attackCost:Int,
 			flyingMoveCost:Int
-	) {
+	):Unit = {
 		it ("reference is '" + reference + "' (matcher)") {
 			assertResult(enumValue){SpaceClassMatcherFactory(reference)}
 		}

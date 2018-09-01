@@ -17,23 +17,23 @@
 */
 package com.rayrobdod.deductionTactics.swingView.menuBar
 
-import com.rayrobdod.boardGame.swingView.RectangularTilesheet
-import com.rayrobdod.deductionTactics.SpaceClass
 import javax.swing.{DefaultListCellRenderer, JList, ListCellRenderer}
+import com.rayrobdod.deductionTactics.SpaceClass
+import com.rayrobdod.deductionTactics.swingView.RectangularTilesheet
 
 
 /**
  * A Listrenderer that shows a tilesheet name
  * @version a.6.0
  */
-object TilesheetListRenderer extends ListCellRenderer[RectangularTilesheet[SpaceClass]]
+object TilesheetListRenderer extends ListCellRenderer[RectangularTilesheet]
 {
 	private val back:ListCellRenderer[java.lang.Object] = new DefaultListCellRenderer()
 	
-	def getListCellRendererComponent(list:JList[_ <: RectangularTilesheet[SpaceClass]], value:RectangularTilesheet[SpaceClass], index:Int,
+	def getListCellRendererComponent(list:JList[_ <: RectangularTilesheet], value:RectangularTilesheet, index:Int,
 			isSelected:Boolean, cellHasFocus:Boolean):java.awt.Component =
 	{
 		back.getListCellRendererComponent(
-				list, value.name, index, isSelected, cellHasFocus)
+				list, value.toString, index, isSelected, cellHasFocus)
 	}
 }

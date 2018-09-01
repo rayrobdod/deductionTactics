@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics
 
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.{RectangularField, Space}
+import com.rayrobdod.boardGame.RectangularField
 import org.scalatest.FunSpec
 
 class GameStateTest extends FunSpec {
@@ -28,33 +28,33 @@ class GameStateTest extends FunSpec {
 				val initialState = genSimpleGameState()
 				val afterState = initialState.tokenMove(0,
 						initialState.tokens.tokens(0)(0),
-						initialState.board(1,1)
+						initialState.board.space(1, 1).get
 				)
-				assertResult(initialState.board(0,0))(initialState.tokens.tokens(0)(0).currentSpace)
+				assertResult(initialState.board.space(0, 0).get)(initialState.tokens.tokens(0)(0).currentSpace)
 			}
 			it ("Should not move other tokens"){
 				val initialState = genSimpleGameState()
 				val afterState = initialState.tokenMove(0,
 						initialState.tokens.tokens(0)(0),
-						initialState.board(1,1)
+						initialState.board.space(1, 1).get
 				)
-				assertResult(afterState.board(0,2))(afterState.tokens.tokens(0)(1).currentSpace)
-				assertResult(afterState.board(2,0))(afterState.tokens.tokens(1)(0).currentSpace)
-				assertResult(afterState.board(2,2))(afterState.tokens.tokens(1)(1).currentSpace)
+				assertResult(afterState.board.space(0, 2).get)(afterState.tokens.tokens(0)(1).currentSpace)
+				assertResult(afterState.board.space(2, 0).get)(afterState.tokens.tokens(1)(0).currentSpace)
+				assertResult(afterState.board.space(2, 2).get)(afterState.tokens.tokens(1)(1).currentSpace)
 			}
 			it ("Should have a moved token in the result"){
 				val initialState = genSimpleGameState()
 				val afterState = initialState.tokenMove(0,
 						initialState.tokens.tokens(0)(0),
-						initialState.board(1,1)
+						initialState.board.space(1, 1).get
 				)
-				assertResult(afterState.board(1,1))(afterState.tokens.tokens(0)(0).currentSpace)
+				assertResult(afterState.board.space(1, 1).get)(afterState.tokens.tokens(0)(0).currentSpace)
 			}
 			it ("Should change the number of spaces a token can move afterwards"){
 				val initialState = genSimpleGameState()
 				val afterState = initialState.tokenMove(0,
 						initialState.tokens.tokens(0)(0),
-						initialState.board(1,1)
+						initialState.board.space(1, 1).get
 				)
 				assertResult(1)(afterState.tokens.tokens(0)(0).canMoveThisTurn)
 			}
@@ -63,7 +63,7 @@ class GameStateTest extends FunSpec {
 					val initialState = genSimpleGameState()
 					val afterState = initialState.tokenMove(0,
 							initialState.tokens.tokens(0)(0),
-							initialState.board(2,2)
+							initialState.board.space(2, 2).get
 					)
 				}
 			}
@@ -72,7 +72,7 @@ class GameStateTest extends FunSpec {
 					val initialState = genSimpleGameState()
 					val afterState = initialState.tokenMove(1,
 							initialState.tokens.tokens(0)(0),
-							initialState.board(1,1)
+							initialState.board.space(1, 1).get
 					)
 				}
 			}
@@ -140,7 +140,7 @@ class GameStateTest extends FunSpec {
 	}
 	def genActionableToken(field:RectangularField[SpaceClass], x:Int, y:Int) = {
 		new Token(
-			currentSpace = field(x,y),
+			currentSpace = field.space(x,y).get,
 			canMoveThisTurn = 3,
 			canAttackThisTurn = true,
 			tokenClass = Some(new TokenClass("Sample",

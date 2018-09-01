@@ -20,7 +20,7 @@ package com.rayrobdod.deductionTactics
 import Elements.Element
 import Weaponkinds.Weaponkind
 import Statuses.Status
-import com.rayrobdod.boardGame.{RectangularField, Space}
+import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
 
 /**
  * @since a.6.0
@@ -31,7 +31,7 @@ final case class GameState (
 	val tokens:ListOfTokens
 ) {
 	
-	def tokenMove(player:Int, token:Token, space:Space[SpaceClass]):GameState = {
+	def tokenMove(player:Int, token:Token, space:RectangularSpace[SpaceClass]):GameState = {
 		
 		val indexOfToken:TokenIndex = {
 			val a:Seq[Seq[Token]] = tokens.tokens
@@ -169,7 +169,7 @@ final case class GameState (
 object GameState {
 	sealed trait Action
 	
-	case class TokenMove(token:Token, space:Space[SpaceClass]) extends Action
+	case class TokenMove(token:Token, space:RectangularSpace[SpaceClass]) extends Action
 	case class TokenAttackDamage(attacker:Token, attackee:Token) extends Action
 	case class TokenAttackStatus(attacker:Token, attackee:Token) extends Action
 	/* @since a.6.1 */
@@ -182,7 +182,7 @@ object GameState {
 		def tellPlayer(player:Int) = true
 	}
 	
-	case class TokenMoveResult(tokenIndex:TokenIndex, space:Space[SpaceClass]) extends Result
+	case class TokenMoveResult(tokenIndex:TokenIndex, space:RectangularSpace[SpaceClass]) extends Result
 	case class TokenAttackDamageResult(attackerIndex:TokenIndex, attackeeIndex:TokenIndex, elem:Element, kind:Weaponkind) extends Result
 	case class TokenAttackStatusResult(attackerIndex:TokenIndex, attackeeIndex:TokenIndex, status:Status) extends Result
 	/* @since a.6.1 */

@@ -18,9 +18,7 @@
 package com.rayrobdod.deductionTactics
 
 import Statuses.Status
-import com.rayrobdod.boardGame.{Space,
-		StrictRectangularSpace
-}
+import com.rayrobdod.boardGame.RectangularSpace
 
 /**
  * 
@@ -28,7 +26,7 @@ import com.rayrobdod.boardGame.{Space,
  * @version a.6.0
  */
 final case class Token (
-	val currentSpace:Space[SpaceClass],
+	val currentSpace:RectangularSpace[SpaceClass],
 	val currentHitpoints:Int = Token.maximumHitpoints,
 	val currentStatus:Status = Statuses.Normal,
 	val currentStatusTurnsLeft:Int = 0,
@@ -69,7 +67,7 @@ final case class Token (
 		val attackerClass = attacker.tokenClass.get
 		
 		
-		val path = Directions.pathDirections(this.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]], attacker.currentSpace.asInstanceOf[StrictRectangularSpace[SpaceClass]], attacker, ts)
+		val path = Directions.pathDirections(this.currentSpace, attacker.currentSpace, attacker, ts)
 		val weakDir = this.tokenClass.get.weakDirection
 		val directionMultiplier = weakDir.weaknessMultiplier(path)
 		

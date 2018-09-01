@@ -20,7 +20,7 @@ package swingView.game
 
 import javax.swing.KeyStroke
 import scala.collection.immutable.Map
-import com.rayrobdod.boardGame.swingView.RectangularTilesheet
+import com.rayrobdod.deductionTactics.swingView.RectangularTilesheet
 import com.rayrobdod.deductionTactics.swingView.{AvailibleTilesheetListModel, tilesheets}
 import KeyboardActions.KeyboardAction
 
@@ -53,7 +53,7 @@ object preferences {
 	}
 	
 	/* ... ... ... */
-	def currentTilesheet:RectangularTilesheet[SpaceClass] = {
+	def currentTilesheet:RectangularTilesheet = {
 		val size = AvailibleTilesheetListModel.getSize()
 		val pref = myPrefs.getInt(tilesheetPrefsKey, 0)
 		
@@ -62,7 +62,7 @@ object preferences {
 		)
 	}
 	
-	def currentTilesheet_=(x:RectangularTilesheet[SpaceClass]):Unit = {
+	def currentTilesheet_=(x:RectangularTilesheet):Unit = {
 		val index = tilesheets.indexOf(x);
 		myPrefs.putInt(tilesheetPrefsKey, index);
 	}

@@ -17,7 +17,6 @@
 */
 package com.rayrobdod.deductionTactics
 
-import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.Statuses._
 import org.scalatest.FunSpec
 
@@ -80,7 +79,7 @@ class StatusesTest extends FunSpec {
 	}
 	
 	
-	private def happySuite(id:Int, name:String, enumValue:Status, randMovesPerTurn:Int) {
+	private def happySuite(id:Int, name:String, enumValue:Status, randMovesPerTurn:Int):Unit = {
 		it ("id is " + id){
 			assertResult(id)(enumValue.id)
 		}

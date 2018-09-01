@@ -21,24 +21,27 @@ import scala.util.Random
 import java.awt.{Component, Graphics, Graphics2D, Color}
 import java.awt.geom.GeneralPath
 import javax.swing.Icon
-import com.rayrobdod.boardGame.RectangularField
 import com.rayrobdod.swing.SolidColorIcon
-import com.rayrobdod.boardGame.swingView.RectangularTilesheet
-import com.rayrobdod.boardGame.Space
+import com.rayrobdod.boardGame.RectangularField
+import com.rayrobdod.boardGame.RectangularSpace
+import com.rayrobdod.boardGame.RectangularIndex
+import com.rayrobdod.boardGame.Tiling
+import com.rayrobdod.boardGame.view.Tilesheet
+import com.rayrobdod.boardGame.view.RectangularDimension
+import com.rayrobdod.boardGame.view.TileLocationIcons
 import com.rayrobdod.deductionTactics.SpaceClass
 
 /**
- * A basic tilesheet that is both visually simplistic and versitile.
+ * A basic tilesheet that is both visually simplistic and versatile.
  * 
  * Is a hard-coded thing instead of a resource thing because the resources
  * were both slow and large, an the stylesheet is simple enough that it can
  * be hard-coded relatively easily.
- * @author Raymond Dodge
+ * 
  * @since a.4.1
- * @version a.6.0
+ * @version next
  */
-object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
-{
+object FieldChessTilesheet extends RectangularTilesheet {
 	private val waterLight = new Color(61, 215, 237);
 	private val waterDark  = new Color(69, 208, 228);
 	private val grassLight = new Color(61, 237, 61);
@@ -84,12 +87,13 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 			}
 	}
 	
-	def getIconFor(field:RectangularField[_ <: SpaceClass], x:Int, y:Int, rng:Random):(Icon, Icon) = {
+	override def getIconFor(field:Tiling[_ <: SpaceClass, RectangularIndex, _], xy:RectangularIndex, rng:Random):TileLocationIcons[Icon] = {
+		val (x,y) = xy
 		val useDarker = ((x + y) % 2) == 0
-		val center = spaceClassToColor(field(x, y).typeOfSpace, useDarker)
+		val center = spaceClassToColor(field.spaceClass(x, y).get, useDarker)
 		
-		def spaceSeqToColor(x:Seq[Space[_ <: SpaceClass]]):Color = {
-			val x1 = x.map{(y:Space[_ <: SpaceClass]) => spaceClassToColor(y.typeOfSpace, useDarker)}
+		def spaceSeqToColor(x:Seq[SpaceClass]):Color = {
+			val x1 = x.map{(y:SpaceClass) => spaceClassToColor(y, useDarker)}
 			Option(x1.head)
 					.filter{_ != center && x1.forall{_ == x1.head}}
 					.getOrElse(transColor)
@@ -97,38 +101,40 @@ object FieldChessTilesheet extends RectangularTilesheet[SpaceClass]
 		
 		val nw = if (field.contains(x - 1, y - 1)) {
 			spaceSeqToColor(Seq(
-				field(x - 1, y    ),
-				field(x - 1, y - 1),
-				field(x,    y - 1)
+				field.spaceClass(x - 1, y    ).get,
+				field.spaceClass(x - 1, y - 1).get,
+				field.spaceClass(x,    y - 1).get
 			))
 		} else {transColor}
 		val ne = if (field.contains(x + 1, y - 1)) {
 			spaceSeqToColor(Seq(
-				field(x + 1, y    ),
-				field(x + 1, y - 1),
-				field(x,     y - 1)
+				field.spaceClass(x + 1, y    ).get,
+				field.spaceClass(x + 1, y - 1).get,
+				field.spaceClass(x,     y - 1).get
 			))
 		} else {transColor}
 		val sw = if (field.contains(x - 1, y + 1)) {
 			spaceSeqToColor(Seq(
-				field(x - 1, y    ),
-				field(x - 1, y + 1),
-				field(x,     y + 1)
+				field.spaceClass(x - 1, y    ).get,
+				field.spaceClass(x - 1, y + 1).get,
+				field.spaceClass(x,     y + 1).get
 			))
 		} else {transColor}
 		val se = if (field.contains(x + 1, y + 1)) {
 			spaceSeqToColor(Seq(
-				field(x + 1, y    ),
-				field(x + 1, y + 1),
-				field(x,     y + 1)
+				field.spaceClass(x + 1, y    ).get,
+				field.spaceClass(x + 1, y + 1).get,
+				field.spaceClass(x,     y + 1).get
 			))
 		} else {transColor}
 		
-		((
+		TileLocationIcons(
 			new MyIcon(center, nw, ne, sw, se),
 			new SolidColorIcon(transColor, 32, 32)
-		))
+		)
 	}
+	
+	override def iconDimensions:RectangularDimension = RectangularDimension(32, 32)
 	
 	private class MyIcon(center:Color, nw:Color, ne:Color, sw:Color, se:Color) extends Icon
 	{

@@ -1,0 +1,21 @@
+{
+	"name":"Simple High Contrast",
+	"tileset":{
+		"tileWidth":32,
+		"tileHeight":32,
+		"image":"black_and_white.png"
+	},
+	"dimensions": {
+		"width": 32,
+		"height": 32
+	},
+	"rules":[
+		{ "tiles":7 },
+		{ "tiles":0, "surroundingSpaces":{"(0,0)":" " } },
+		{ "tiles":1, "surroundingSpaces":{"(0,0)":"." } },
+		{ "tiles":2, "surroundingSpaces":{"(0,0)":"|" } },
+		{ "tiles":3, "surroundingSpaces":{"(0,0)":":" } },
+		{ "tiles":5, "surroundingSpaces":{"(0,0)":"s" } },
+		{ "tiles":6, "surroundingSpaces":{"(0,0)":"f" } }
+	]
+}

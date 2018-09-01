@@ -19,7 +19,7 @@ package com.rayrobdod.deductionTactics
 
 import org.scalatest.FunSpec
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.{RectangularField, Space, StrictRectangularSpace}
+import com.rayrobdod.boardGame.{RectangularField, RectangularSpace}
 
 class TokenTest extends FunSpec {
 	describe ("Token") {
@@ -149,11 +149,11 @@ class TokenTest extends FunSpec {
 			
 			describe ("in neutral conditions") {
 				val attacker = new Token(
-					currentSpace = field(1,1).up.get,
+					currentSpace = field.space((1,1)).get.north.get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val defender = new Token(
-					currentSpace = field(1,1),
+					currentSpace = field.space((1,1)).get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val list = new ListOfTokens(Seq(Seq(attacker), Seq(defender)))
@@ -165,11 +165,11 @@ class TokenTest extends FunSpec {
 			}
 			describe ("with the attacker having a directional advantage") {
 				val attacker = new Token(
-					currentSpace = field(1,1).left.get,
+					currentSpace = field.space((1,1)).get.west.get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val defender = new Token(
-					currentSpace = field(1,1),
+					currentSpace = field.space((1,1)).get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val list = new ListOfTokens(Seq(Seq(attacker), Seq(defender)))
@@ -181,11 +181,11 @@ class TokenTest extends FunSpec {
 			}
 			describe ("with the attacker having a directional disadvantage") {
 				val attacker = new Token(
-					currentSpace = field(1,1).right.get,
+					currentSpace = field.space((1,1)).get.east.get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val defender = new Token(
-					currentSpace = field(1,1),
+					currentSpace = field.space((1,1)).get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val list = new ListOfTokens(Seq(Seq(attacker), Seq(defender)))
@@ -197,11 +197,11 @@ class TokenTest extends FunSpec {
 			}
 			describe ("with the attacker having a weaponkind advantage") {
 				val attacker = new Token(
-					currentSpace = field(1,1).up.get,
+					currentSpace = field.space((1,1)).get.north.get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val defender = new Token(
-					currentSpace = field(1,1),
+					currentSpace = field.space((1,1)).get,
 					tokenClass = Some(weaponWeakTokenClass)
 				)
 				val list = new ListOfTokens(Seq(Seq(attacker), Seq(defender)))
@@ -213,11 +213,11 @@ class TokenTest extends FunSpec {
 			}
 			describe ("with the attacker having a weaponkind disadvantage") {
 				val attacker = new Token(
-					currentSpace = field(1,1).up.get,
+					currentSpace = field.space((1,1)).get.north.get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val defender = new Token(
-					currentSpace = field(1,1),
+					currentSpace = field.space((1,1)).get,
 					tokenClass = Some(weaponResistTokenClass)
 				)
 				val list = new ListOfTokens(Seq(Seq(attacker), Seq(defender)))
@@ -229,11 +229,11 @@ class TokenTest extends FunSpec {
 			}
 			describe ("with status weakness") {
 				val attacker = new Token(
-					currentSpace = field(1,1).up.get,
+					currentSpace = field.space((1,1)).get.north.get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val defender = new Token(
-					currentSpace = field(1,1),
+					currentSpace = field.space((1,1)).get,
 					currentStatus = sample3SpeedTokenClass.weakStatus,
 					currentStatusTurnsLeft = 100,
 					tokenClass = Some(sample3SpeedTokenClass)
@@ -247,11 +247,11 @@ class TokenTest extends FunSpec {
 			}
 			describe ("with element weakness") {
 				val attacker = new Token(
-					currentSpace = field(1,1).up.get,
+					currentSpace = field.space((1,1)).get.north.get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val defender = new Token(
-					currentSpace = field(1,1),
+					currentSpace = field.space((1,1)).get,
 					tokenClass = Some(elementWeakTokenClass)
 				)
 				val list = new ListOfTokens(Seq(Seq(attacker), Seq(defender)))
@@ -263,11 +263,11 @@ class TokenTest extends FunSpec {
 			}
 			describe ("with element resistance") {
 				val attacker = new Token(
-					currentSpace = field(1,1).up.get,
+					currentSpace = field.space((1,1)).get.north.get,
 					tokenClass = Some(elementWeakTokenClass)
 				)
 				val defender = new Token(
-					currentSpace = field(1,1),
+					currentSpace = field.space((1,1)).get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val list = new ListOfTokens(Seq(Seq(attacker), Seq(defender)))
@@ -279,11 +279,11 @@ class TokenTest extends FunSpec {
 			}
 			describe ("with all weaknesses") {
 				val attacker = new Token(
-					currentSpace = field(1,1).left.get,
+					currentSpace = field.space((1,1)).get.west.get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val defender = new Token(
-					currentSpace = field(1,1),
+					currentSpace = field.space((1,1)).get,
 					currentStatus = sample3SpeedTokenClass.weakStatus,
 					currentStatusTurnsLeft = 100,
 					tokenClass = Some(multipleWeakTokenClass)
@@ -297,11 +297,11 @@ class TokenTest extends FunSpec {
 			}
 			describe ("with all resistances") {
 				val attacker = new Token(
-					currentSpace = field(1,1).right.get,
+					currentSpace = field.space((1,1)).get.east.get,
 					tokenClass = Some(sample3SpeedTokenClass)
 				)
 				val defender = new Token(
-					currentSpace = field(1,1),
+					currentSpace = field.space((1,1)).get,
 					tokenClass = Some(multipleResistTokenClass)
 				)
 				val list = new ListOfTokens(Seq(Seq(attacker), Seq(defender)))
@@ -315,9 +315,12 @@ class TokenTest extends FunSpec {
 	}
 	
 	
-	def isolatedSpace = new Space[SpaceClass]() {
-		val adjacentSpaces = Nil
-		val typeOfSpace = AttackOnlySpaceClass.apply
+	def isolatedSpace = new RectangularSpace[SpaceClass]() {
+		override def east:Option[RectangularSpace[SpaceClass]] = None
+		override def north:Option[RectangularSpace[SpaceClass]] = None
+		override def south:Option[RectangularSpace[SpaceClass]] = None
+		override def west:Option[RectangularSpace[SpaceClass]] = None
+		override val typeOfSpace = AttackOnlySpaceClass.apply
 	}
 	def sample3SpeedTokenClass = new TokenClass("Sample",
 		BodyTypes.Humanoid,

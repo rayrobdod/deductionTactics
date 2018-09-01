@@ -17,7 +17,6 @@
 */
 package com.rayrobdod.deductionTactics
 
-import scala.collection.immutable.Seq
 import com.rayrobdod.deductionTactics.Elements._
 import org.scalatest.FunSpec
 
@@ -99,7 +98,7 @@ class ElementsTest extends FunSpec {
 	}
 	
 	
-	private def happySuite(id:Int, name:String, enumValue:Element) {
+	private def happySuite(id:Int, name:String, enumValue:Element):Unit = {
 		it ("id is " + id){
 			assertResult(id)(enumValue.id)
 		}

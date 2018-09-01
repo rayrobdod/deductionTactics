@@ -19,7 +19,7 @@ package com.rayrobdod.deductionTactics
 package main
 
 import scala.collection.immutable.Seq
-import com.rayrobdod.boardGame.{Space, RectangularField}
+import com.rayrobdod.boardGame.RectangularSpace
 
 /** @version a.6.0 */
 object Main {
@@ -46,7 +46,7 @@ object Main {
 				
 				val field = map.field
 				val TokenClassToSpaceIndex:Seq[Seq[(TokenClass, (Int, Int))]] = narrowedClasses.zip(startSpaces).map({(x:Seq[TokenClass],y:Seq[(Int, Int)]) => x.zip(y)}.tupled)
-				val tokenClassToSpace:Seq[Seq[(Option[TokenClass], Space[SpaceClass])]] = TokenClassToSpaceIndex.map{_.map{(x) => ((Option(x._1), field(x._2._1, x._2._2) ))}}
+				val tokenClassToSpace:Seq[Seq[(Option[TokenClass], RectangularSpace[SpaceClass])]] = TokenClassToSpaceIndex.map{_.map{(x) => ((Option(x._1), field.space(x._2._1, x._2._2).get ))}}
 				
 				val tokens = new ListOfTokens( tokenClassToSpace.map{_.map{(x) => new Token(x._2, tokenClass = x._1)}} )
 				val initialState = GameState(field, tokens)

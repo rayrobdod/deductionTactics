@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics
 package consoleView
 
-import com.rayrobdod.boardGame.{Space}
+import com.rayrobdod.boardGame.RectangularSpace
 
 /**
  * @author Raymond Dodge
@@ -29,7 +29,7 @@ object SpaceInfoPrinter
 {
 	private def out = System.out
 	
-	def apply(space:Space[SpaceClass]):Unit = {
+	def apply(space:RectangularSpace[SpaceClass]):Unit = {
 		val spaceClass:SpaceClass = space.typeOfSpace;
 		
 		out.print("Type of space: ");

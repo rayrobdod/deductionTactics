@@ -17,7 +17,7 @@
 */
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.Space
+import com.rayrobdod.boardGame.RectangularSpace
 import com.rayrobdod.boardGame.SpaceClassMatcher
 
 /*
@@ -59,21 +59,21 @@ object SpaceClass {
 	val normalPassage = 1
 	val impossiblePassage = 1000
 	
-	type CostFunction = Space.CostFunction[SpaceClass]
+	type CostFunction = com.rayrobdod.boardGame.CostFunction[RectangularSpace[SpaceClass]]
 	type CostFunctionFactory = Function2[Token, ListOfTokens, CostFunction]
 	
 	final case class ConstantCostFunction(cost:Int) extends CostFunction {
-		override def apply(from:Space[_ <: SpaceClass], to:Space[_ <: SpaceClass]):Int = cost
+		override def apply(from:RectangularSpace[SpaceClass], to:RectangularSpace[SpaceClass]):Int = cost
 	}
 	final class SinglePassageCostFunction(tokens:ListOfTokens) extends CostFunction {
-		override def apply(from:Space[_ <: SpaceClass], to:Space[_ <: SpaceClass]):Int = {
+		override def apply(from:RectangularSpace[SpaceClass], to:RectangularSpace[SpaceClass]):Int = {
 			
 			val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.find{_.currentSpace == to}
 			tokenOnThis.map{(a) => impossiblePassage}.getOrElse{normalPassage}
 		}
 	}
 	final case class MaxCostFunction(a:CostFunction, b:CostFunction) extends CostFunction {
-		override def apply(from:Space[_ <: SpaceClass], to:Space[_ <: SpaceClass]):Int = {
+		override def apply(from:RectangularSpace[SpaceClass], to:RectangularSpace[SpaceClass]):Int = {
 			math.max(a(from, to), b(from, to))
 		}
 	}
@@ -86,7 +86,7 @@ object SpaceClass {
 	
 	object FriendPassageCostFunctionFactory extends CostFunctionFactory {
 		override def apply(myToken:Token, tokens:ListOfTokens):CostFunction = new CostFunction() {
-			def apply(from:Space[_ <: SpaceClass], to:Space[_ <: SpaceClass]):Int = {
+			def apply(from:RectangularSpace[SpaceClass], to:RectangularSpace[SpaceClass]):Int = {
 				val myTeam = tokens.tokens.zipWithIndex.find{_._1.contains(myToken)}.map{_._2}
 				val tokenOnThis:Option[Token] = tokens.aliveTokens.flatten.find{
 						_.currentSpace == to
@@ -158,7 +158,7 @@ object SpaceClassFactory {
 /**
  * @since a.6.0
  */
-object SpaceClassMatcherFactory extends com.rayrobdod.boardGame.swingView.SpaceClassMatcherFactory[SpaceClass] {
+object SpaceClassMatcherFactory extends com.rayrobdod.boardGame.view.SpaceClassMatcherFactory[SpaceClass] {
 	
 	def apply(reference:String):com.rayrobdod.boardGame.SpaceClassMatcher[SpaceClass] = reference match {
 		case " " => UniPassageSpaceClass

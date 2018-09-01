@@ -18,7 +18,7 @@
 package com.rayrobdod.deductionTactics
 package ai
 
-import com.rayrobdod.boardGame.{Space, RectangularSpace}
+import com.rayrobdod.boardGame.RectangularSpace
 import com.rayrobdod.deductionTactics.Statuses.Sleep
 import scala.collection.immutable.Seq
 import LoggerInitializer.{sleepAbuserAILogger => Logger}
@@ -96,14 +96,14 @@ final class SleepAbuserAI extends PlayerAI
 	
 	
 	
-	def fleeSpace(currentSpace:Space[SpaceClass], fleeFrom:Space[SpaceClass]):Space[SpaceClass] =
+	def fleeSpace(currentSpace:RectangularSpace[SpaceClass], fleeFrom:RectangularSpace[SpaceClass]):RectangularSpace[SpaceClass] =
 	{
 		currentSpace match {
 			case rs:RectangularSpace[_] => {
-				if (Option(fleeFrom) == rs.down) {rs.up.get}
-				else if (Option(fleeFrom) == rs.up) {rs.down.get}
-				else if (Option(fleeFrom) == rs.right) {rs.left.get}
-				else if (Option(fleeFrom) == rs.left) {rs.right.get}
+				if (Option(fleeFrom) == rs.south) {rs.north.get}
+				else if (Option(fleeFrom) == rs.north) {rs.south.get}
+				else if (Option(fleeFrom) == rs.east) {rs.west.get}
+				else if (Option(fleeFrom) == rs.west) {rs.east.get}
 				// default option, if somehow an adjacent space isn't adjacent
 				else {rs.adjacentSpaces.head}
 			}
@@ -111,7 +111,7 @@ final class SleepAbuserAI extends PlayerAI
 	}
 	
 	/** returns a sequence of actions that will cause a token to retreat to a safe space */
-	def retreatFromEnemy(player:Int, myToken:Token, susp:TokenClassSuspicion, tokens:ListOfTokens, enemyRange:Seq[Space[SpaceClass]]):Seq[GameState.Action] = 
+	def retreatFromEnemy(player:Int, myToken:Token, susp:TokenClassSuspicion, tokens:ListOfTokens, enemyRange:Seq[RectangularSpace[SpaceClass]]):Seq[GameState.Action] = 
 	{
 		Logger.entering("com.rayrobdod.deductionTactics.ai.SleepAbuserAI",
 				"retreatFromEnemy", Seq(myToken.tokenClass.get.name, "tokens{}", "enemyRange"))
@@ -122,7 +122,7 @@ final class SleepAbuserAI extends PlayerAI
 		Logger.finer("myMoveRange: " + myMoveRange.size)
 		
 		{
-			val targetableByToSpace = myMoveRange.groupBy{(rangeSpace:Space[SpaceClass]) =>
+			val targetableByToSpace = myMoveRange.groupBy{(rangeSpace:RectangularSpace[SpaceClass]) =>
 				tokens.aliveNotPlayerTokens(player).flatten.count{attackRangeOf(_, tokens, susp) contains rangeSpace}
 			}
 			Logger.finer("Zones: " + targetableByToSpace)
@@ -130,7 +130,7 @@ final class SleepAbuserAI extends PlayerAI
 		
 		val moveTo = if (safeZone.isEmpty) {
 			// is in as few token's ranges as possible
-			val targetableByToSpace = myMoveRange.groupBy{(rangeSpace:Space[SpaceClass]) => 
+			val targetableByToSpace = myMoveRange.groupBy{(rangeSpace:RectangularSpace[SpaceClass]) => 
 				tokens.aliveNotPlayerTokens(player).flatten.count{attackRangeOf(_, tokens, susp) contains rangeSpace}
 			}
 			Logger.finer("Zones: " + targetableByToSpace)
@@ -138,7 +138,7 @@ final class SleepAbuserAI extends PlayerAI
 			Logger.finer("Safest Zone Number: " + targetableByToSpace.minBy{_._1}._1)
 			
 			
-			safestZone.minBy{(mySpace:Space[SpaceClass]) =>
+			safestZone.minBy{(mySpace:RectangularSpace[SpaceClass]) =>
 				val closestToken = tokens.aliveNotPlayerTokens(player).flatten.minBy{(hisToken:Token) =>
 					mySpace.distanceTo(hisToken.currentSpace, new MoveToCostFunction(myToken, tokens))
 				}
@@ -150,7 +150,7 @@ final class SleepAbuserAI extends PlayerAI
 			// safezone space closest to any enemy token
 			Logger.finer("Safe Zone")
 			
-			safeZone.minBy{(mySpace:Space[SpaceClass]) =>
+			safeZone.minBy{(mySpace:RectangularSpace[SpaceClass]) =>
 				val closestToken = tokens.aliveNotPlayerTokens(player).flatten.minBy{(hisToken:Token) =>
 					mySpace.distanceTo(hisToken.currentSpace, new MoveToCostFunction(myToken, tokens))
 				}
@@ -173,10 +173,10 @@ final class SleepAbuserAI extends PlayerAI
 		val target = targetChoices.minBy{(x:Token) => myToken.currentSpace.distanceTo(x.currentSpace, new MoveToCostFunction(myToken, allTokens))}
 		Logger.finer("target: " + target)
 		
-		val moveToChoices = moveRangeOf(myToken, allTokens, susp).filter{(x:Space[SpaceClass]) =>
+		val moveToChoices = moveRangeOf(myToken, allTokens, susp).filter{(x:RectangularSpace[SpaceClass]) =>
 			x.spacesWithin(myToken.tokenClass.get.range, new AttackCostFunction(myToken, allTokens)) contains target.currentSpace
 		} // choose item closest to me while furthest from target.
-		val moveTo = moveToChoices.maxBy{(x:Space[SpaceClass]) =>
+		val moveTo = moveToChoices.maxBy{(x:RectangularSpace[SpaceClass]) =>
 			x.distanceTo(target.currentSpace, new AttackCostFunction(myToken, allTokens)) -
 			myToken.currentSpace.distanceTo(x, new AttackCostFunction(myToken, allTokens))
 		}

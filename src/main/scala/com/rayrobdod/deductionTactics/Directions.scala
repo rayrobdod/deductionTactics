@@ -17,7 +17,7 @@
 */
 package com.rayrobdod.deductionTactics
 
-import com.rayrobdod.boardGame.StrictRectangularSpace
+import com.rayrobdod.boardGame.RectangularSpace
 import scala.collection.immutable.Seq
 
 /**
@@ -33,17 +33,17 @@ object Directions
 	 * are determined by the token's class.
 	 */
 	final class Direction(val id:Int, val name:String,
-			val function:Function1[StrictRectangularSpace[SpaceClass],Option[StrictRectangularSpace[SpaceClass]]])
+			val function:Function1[RectangularSpace[SpaceClass],Option[RectangularSpace[SpaceClass]]])
 	{
 		/**
 		 * True if other is in the specified direction of self
 		 * @todo better name (?)
 		 */
-		def spaceIs(self:StrictRectangularSpace[SpaceClass], other:StrictRectangularSpace[SpaceClass]):Boolean =
+		def spaceIs(self:RectangularSpace[SpaceClass], other:RectangularSpace[SpaceClass]):Boolean =
 		{
 			// can't use match here, since "case other" matches everything
 			// instead of acting like "== other"
-			function(self).map[Boolean]{(mid:StrictRectangularSpace[SpaceClass]) =>
+			function(self).map[Boolean]{(mid:RectangularSpace[SpaceClass]) =>
 				if (mid == other) {
 					true
 				} else {
@@ -84,10 +84,10 @@ object Directions
 		override def toString:String = "com.rayrobdod.deductionTactics.Directions." + name
 	}
 	
-	val Left  = new Direction(0, "Left",  (th:StrictRectangularSpace[SpaceClass]) => { th.left  })
-	val Up    = new Direction(1, "Up",    (th:StrictRectangularSpace[SpaceClass]) => { th.up    })
-	val Right = new Direction(2, "Right", (th:StrictRectangularSpace[SpaceClass]) => { th.right })
-	val Down  = new Direction(3, "Down",  (th:StrictRectangularSpace[SpaceClass]) => { th.down  })
+	val Left  = new Direction(0, "Left",  (th:RectangularSpace[SpaceClass]) => { th.west })
+	val Up    = new Direction(1, "Up",    (th:RectangularSpace[SpaceClass]) => { th.north})
+	val Right = new Direction(2, "Right", (th:RectangularSpace[SpaceClass]) => { th.east })
+	val Down  = new Direction(3, "Down",  (th:RectangularSpace[SpaceClass]) => { th.south})
 	
 	def values:Seq[Direction] = Seq[Direction](Left, Up, Right, Down)
 	def apply(x:Int):Direction = values(x) // values.find{_.id == x}.get
@@ -107,17 +107,14 @@ object Directions
 	 * The directions one would move to go from fromSpace to toSpace
 	 */
 	def pathDirections(
-			fromSpace:StrictRectangularSpace[SpaceClass],
-			toSpace:StrictRectangularSpace[SpaceClass],
+			fromSpace:RectangularSpace[SpaceClass],
+			toSpace:RectangularSpace[SpaceClass],
 			movingToken:Token,
 			listOfTokens:ListOfTokens
 	):Seq[Direction] = {
-		import com.rayrobdod.boardGame.Space
+		val path:Seq[RectangularSpace[SpaceClass]] = fromSpace.pathTo(toSpace, new AttackCostFunction(movingToken, listOfTokens))
 		
-		val path2:Seq[Space[SpaceClass]] = fromSpace.pathTo(toSpace, new AttackCostFunction(movingToken, listOfTokens))
-		val path:Seq[StrictRectangularSpace[SpaceClass]] = path2.map{_.asInstanceOf[StrictRectangularSpace[SpaceClass]]}
-		
-		val pathDirections = path.tail.zip(path).map({(next:StrictRectangularSpace[SpaceClass], curr:StrictRectangularSpace[SpaceClass]) =>
+		val pathDirections = path.tail.zip(path).map({(next:RectangularSpace[SpaceClass], curr:RectangularSpace[SpaceClass]) =>
 			val candidates = Directions.values.map{
 				_.function(curr)}.zip(Directions.values).toMap
 			
@@ -130,11 +127,11 @@ object Directions
 	
 	
 	/** `spaceA is Left of spaceB` */
-	implicit class SpaceWithIs(s:StrictRectangularSpace[SpaceClass]) {
+	implicit class SpaceWithIs(s:RectangularSpace[SpaceClass]) {
 		def is(d:Direction):SpaceWithDirection = new SpaceWithDirection(s,d)
 	}
 	/** `spaceA is Left of spaceB` */
-	class SpaceWithDirection(s:StrictRectangularSpace[SpaceClass], d:Direction) {
-		def of(o:StrictRectangularSpace[SpaceClass]):Boolean = d.spaceIs(o, s)
+	class SpaceWithDirection(s:RectangularSpace[SpaceClass], d:Direction) {
+		def of(o:RectangularSpace[SpaceClass]):Boolean = d.spaceIs(o, s)
 	}
 }

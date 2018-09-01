@@ -21,7 +21,10 @@ package swingView.game
 import java.awt.Shape
 import java.awt.event.ActionEvent
 import javax.swing.{JPanel, AbstractAction}
-import com.rayrobdod.boardGame.{RectangularField, RectangularFieldIndex, StrictRectangularSpace}
+import com.rayrobdod.boardGame.{RectangularField, RectangularIndex, RectangularSpace}
+import com.rayrobdod.boardGame.view.{IconLocation, RectangularDimension}
+import com.rayrobdod.deductionTactics.swingView.RectangularTilesheet
+import com.rayrobdod.deductionTactics.swingView.RectangularFieldOps
 
 /**
  * Upon a call to action performed, this will move the cursor
@@ -30,24 +33,24 @@ import com.rayrobdod.boardGame.{RectangularField, RectangularFieldIndex, StrictR
  */
 class MoveCursorAction(
 		name:String,
-		adjustment:Function1[StrictRectangularSpace[SpaceClass], StrictRectangularSpace[SpaceClass]],
+		adjustment:Function1[RectangularSpace[SpaceClass], RectangularSpace[SpaceClass]],
 		selectedSpace:CurrentlySelectedSpaceProperty,
 		field:RectangularField[SpaceClass],
 		pieMenuLayer:JPanel,
-		pieMenuLayout:PieMenuLayout,
-		spaceBounds:Function1[(Int,Int), Shape]
+		pieMenuLayout:PieMenuLayout
+)(implicit
+		locations:IconLocation[RectangularIndex, RectangularDimension]
 ) extends AbstractAction(name) {
 	def actionPerformed(e:ActionEvent):Unit = {
 		selectedSpace.set({
-			
-			val a = field(selectedSpace.get)
+			val a = field.space(selectedSpace.get).get
 			val b = adjustment(a)
-			field.find{_._2 == b}.get._1
+			field.indexOfSpace(b).get
 		});
 		{
 			pieMenuLayer.removeAll()
 			pieMenuLayout.center = {
-				val spaceShape = spaceBounds(selectedSpace.get)
+				val spaceShape = locations.bounds(selectedSpace.get, new RectangularDimension(32, 32))
 				val spaceRect = spaceShape.getBounds()
 				val spaceCenter = new java.awt.Point(
 					spaceRect.x + spaceRect.width / 2,
@@ -82,7 +85,7 @@ class ClearSelectionAction(
  * @since a.6.0
  */
 class SelectAction(
-		selectedSpaceIndex:Function0[RectangularFieldIndex],
+		selectedSpaceIndex:Function0[RectangularIndex],
 		currentTokens:Function0[ListOfTokens],
 		field:RectangularField[SpaceClass],
 		selectedTokenIndex:CurrentlySelectedTokenProperty,
@@ -93,7 +96,7 @@ class SelectAction(
 	def actionPerformed(e:ActionEvent):Unit = {
 		pieMenuLayer.removeAll()
 		
-		val selectedSpace:StrictRectangularSpace[SpaceClass] = field(selectedSpaceIndex())
+		val selectedSpace:RectangularSpace[SpaceClass] = field.space(selectedSpaceIndex()).get
 		val tokenOnThisSpace:Option[Token] = currentTokens().aliveTokens.flatten.filter{_.currentSpace == selectedSpace}.headOption
 		val tokenOnThisSpaceIndex:Option[TokenIndex] = tokenOnThisSpace.map{currentTokens().indexOf _}
 		
@@ -198,7 +201,7 @@ class SelectNextActionableTokenAction(
 		val rotation = (currentTokens().alivePlayerTokens(playerNumber) ++ currentTokens().alivePlayerTokens(playerNumber)).drop(initialPlayerTokenIndex + 1)
 		val nextToken = rotation.filter{ListOfTokens.aliveFilter}.filter{x => x.canMoveThisTurn > 0 || x.canAttackThisTurn}.headOption
 		val nextTokenIndex = nextToken.map{x => currentTokens().indexOf(x)}
-		val nextSpaceIndex = nextToken.map{x => field.find{_._2 == x.currentSpace}.get._1}
+		val nextSpaceIndex = nextToken.map{x => field.mapIndex{idx => idx}.find{idx => Some(x.currentSpace) == field.space(idx)}.get}
 		selectedToken.set(nextTokenIndex)
 		nextSpaceIndex.foreach{x => selectedSpace.set(x)}
 	}
