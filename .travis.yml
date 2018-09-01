@@ -16,21 +16,21 @@ before_install:
 install:
    - |
       pushd /tmp
-      git clone --branch=4.0-RC1 --depth=2 -- https://github.com/rayrobdod/json.git json
+      git clone -q --branch=4.0-RC1 --depth=2 -- https://github.com/rayrobdod/json.git json
       cd json
       echo sbt.version=0.13.17>project/build.properties
       sbt ++$TRAVIS_SCALA_VERSION publishLocal
       popd
    - |
       pushd /tmp
-      git clone --branch=fromJsonBuilders --depth=10 -- https://github.com/rayrobdod/boardGame.git boardGame
+      git clone -q --branch=master --depth=50 -- https://github.com/rayrobdod/boardGame.git boardGame
       cd boardGame
-      git checkout 5d0cc695e7c558502284ae547d10d849a029cece
+      git checkout -q 07a3f9ea46dd355b0583e72b15f1aac6b22900c9
       sbt ++$TRAVIS_SCALA_VERSION publishLocal
       popd
    - |
       pushd /tmp
-      git clone --branch=20160112 --depth=2 -- https://github.com/rayrobdod/utilities.git utilities
+      git clone -q --branch=20160112 --depth=2 -- https://github.com/rayrobdod/utilities.git utilities
       cd utilities
       echo sbt.version=0.13.17>project/build.properties
       sbt ++$TRAVIS_SCALA_VERSION publishLocal

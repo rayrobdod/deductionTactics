@@ -18,8 +18,6 @@ exportJars := true
 
 mainClass in Compile := Some("com.rayrobdod.deductionTactics.main.Main")
 
-resolvers += ("rayrobdod" at "http://ivy.rayrobdod.name/")
-
 libraryDependencies += ("com.rayrobdod" %% "utilities" % "20160112")
 
 libraryDependencies += ("com.opencsv" % "opencsv" % "3.4")
